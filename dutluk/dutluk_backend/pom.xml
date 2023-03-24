@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.SWE573</groupId>
 	<artifactId>dutluk_backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>dutluk_backend</name>
 	<description>A location and date-based story sharing application</description>
 	<properties>
@@ -29,6 +29,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
