@@ -4,6 +4,7 @@ import com.SWE573.dutluk_backend.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -16,7 +17,8 @@ import static java.lang.Long.parseLong;
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "your-secret-key";
+    @Value("${SECRET_KEY}")
+    private String SECRET_KEY;
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();

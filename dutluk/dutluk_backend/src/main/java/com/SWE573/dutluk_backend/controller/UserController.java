@@ -5,6 +5,9 @@ import com.SWE573.dutluk_backend.configuration.JwtUtil;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.UserRepository;
 import com.SWE573.dutluk_backend.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.catalina.connector.Response;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +54,7 @@ public class UserController {
         newUser.setUsername(username);
         newUser.setPassword(password);
         User registeredUser = userService.addUser(newUser);
-        User tokenizedUser = userService.updateUserToken(registeredUser);
-        return tokenizedUser;
+        return userService.updateUserToken(registeredUser);
     }
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestParam("username") String username,
