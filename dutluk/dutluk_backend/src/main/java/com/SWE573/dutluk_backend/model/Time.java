@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,8 +16,8 @@ import java.time.LocalDate;
 public class Time extends BaseEntity{
     @Column(name = "story_id")
     private Long storyId;
-    @Column(name="time_type")
-    private int timeType;
+    @Column(name="time_type_flag")
+    private int timeTypeFlag;// specific date = 0,start&end date=1,decade=2
 
 
     private Long createdTimeStamp = System.currentTimeMillis();
