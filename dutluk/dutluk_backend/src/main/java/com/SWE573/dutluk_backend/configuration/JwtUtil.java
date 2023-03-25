@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static java.lang.Long.parseLong;
@@ -17,8 +18,8 @@ import static java.lang.Long.parseLong;
 @Component
 public class JwtUtil {
 
-    @Value("${SECRET_KEY}")
-    private String SECRET_KEY;
+    @Value("${JWT_SECRET_KEY}")
+    private String JWT_SECRET_KEY;
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
@@ -30,13 +31,13 @@ public class JwtUtil {
     private String createToken(Map<String, Object> claims, Long subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject.toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))// 10 hours
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY).compact();
     }
 
     public Boolean validateToken(String token, User user) {
         final Long extractedUserId = extractId(token);
-        return ((extractedUserId == user.getId()) && !isTokenExpired(token));
+        return ((Objects.equals(extractedUserId, user.getId())) && !isTokenExpired(token));
     }
 
     public Long extractId(String token) {
@@ -53,7 +54,7 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(JWT_SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token) {
