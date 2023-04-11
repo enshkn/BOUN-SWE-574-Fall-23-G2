@@ -3,7 +3,6 @@ package com.SWE573.dutluk_backend.service;
 import com.SWE573.dutluk_backend.configuration.JwtUtil;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.UserRepository;
-import com.SWE573.dutluk_backend.request.LoginRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -26,7 +25,7 @@ public class UserService{
     @Autowired
     private JwtUtil jwtUtil;
 
-    private EmailValidator emailValidator = EmailValidator.getInstance();
+    private final EmailValidator emailValidator = EmailValidator.getInstance();
 
 
     public User addUser(User user){
@@ -34,7 +33,7 @@ public class UserService{
     }
     public User validateTokenizedUser(HttpServletRequest request){
         String token = getTokenFromEndpoint(request);
-        return findUserByToken(token);
+        return findByUserToken(token);
     }
 
     public List<User> findAll(){
@@ -46,11 +45,10 @@ public class UserService{
         if (optionalUser.isEmpty()) {
             throw new NoSuchElementException("User with id '" + id + "' not found");
         }
-        User user = optionalUser.get();
-        return user;
+        return optionalUser.get();
     }
 
-    public User findUserByToken(String token){
+    public User findByUserToken(String token){
         return findByUserId(jwtUtil.extractId(token));
     }
 
@@ -59,7 +57,6 @@ public class UserService{
         if(userRepository.findByUsername(username) != null){
             User user = userRepository.findByUsername(username);
             if (user.getPassword().equals(password)) {
-                //updateUserToken(user);
                 return user;
             }
             else{
