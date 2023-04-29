@@ -3,6 +3,7 @@ package com.SWE573.dutluk_backend.service;
 import com.SWE573.dutluk_backend.configuration.JwtUtil;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.UserRepository;
+import com.SWE573.dutluk_backend.request.UpdateRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -10,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountNotFoundException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -31,9 +32,9 @@ public class UserService{
     public User addUser(User user){
         return userRepository.save(user);
     }
-    public User validateTokenizedUser(HttpServletRequest request){
+    public Long validateTokenizedUser(HttpServletRequest request){
         String token = getTokenFromEndpoint(request);
-        return findByUserToken(token);
+        return findByUserToken(token).getId();
     }
 
     public List<User> findAll(){
@@ -53,7 +54,6 @@ public class UserService{
     }
 
     public User findByUsernameAndPassword(String username, String password) throws AccountNotFoundException {
-
         if(userRepository.findByUsername(username) != null){
             User user = userRepository.findByUsername(username);
             if (user.getPassword().equals(password)) {
@@ -62,7 +62,6 @@ public class UserService{
             else{
                 throw new AccountNotFoundException("Incorrect password");
             }
-
         }
         else{
             throw new AccountNotFoundException("User with username '"+username+"' not found");
@@ -79,24 +78,19 @@ public class UserService{
         return jwtUtil.validateToken(token,user);
     }
 
-    public User updateUser(User user){
-        User foundUser = findByUserId(user.getId());
-        if(!Objects.equals(user.getBiography(), foundUser.getBiography())){
-            foundUser.setBiography(user.getBiography());
+    public User updateUser(Long userId, UpdateRequest updateRequest){
+        User foundUser = findByUserId(userId);
+        if(updateRequest.getBiography() != null &&
+                !updateRequest.getBiography().equals(foundUser.getBiography())){
+            foundUser.setBiography(updateRequest.getBiography());
         }
-        if (user.getFollowers() != foundUser.getFollowers()) {
-            foundUser.setFollowers(user.getFollowers());
-        }
-        if(user.getPhoto() != foundUser.getPhoto()){
-            foundUser.setPhoto(user.getPhoto());
+        if(updateRequest.getPhoto() != null && !Arrays.equals(updateRequest.getPhoto(), foundUser.getPhoto())){
+            foundUser.setPhoto(updateRequest.getPhoto());
         }
         return userRepository.save(foundUser);
     }
     public String getTokenFromEndpoint(HttpServletRequest request) throws IllegalArgumentException, NullPointerException, IllegalStateException, SecurityException {
 
-        if (request == null) {
-            throw new IllegalArgumentException("Request parameter cannot be null");
-        }
         // Get the cookie from the request
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
@@ -118,12 +112,9 @@ public class UserService{
     public User findByEmailAndPassword(String email,String password) throws AccountNotFoundException {
         User user = userRepository.findByEmail(email);
         if (user.getPassword().equals(password)) {
-            //updateUserToken(user);
             return user;
         }
-        else {
-            throw new AccountNotFoundException("The account has not been found");
-        }
+        throw new AccountNotFoundException("The account has not been found");
     }
     public User findByIdentifierAndPassword(String identifier,String password) throws AccountNotFoundException {
 

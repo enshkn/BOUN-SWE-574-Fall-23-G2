@@ -2,53 +2,70 @@ package com.SWE573.dutluk_backend.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="users")
 @Getter
 @Setter
-@RequiredArgsConstructor
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User extends BaseEntity{
 
 
     @Column(unique = true)
     @Email
+    @NotBlank
+    @NotNull
     private String email;
 
     @NotBlank
     @Column(unique = true)
+    @NotNull
     private String username;
 
     @NotBlank
     @Column
     @JsonIgnore
+    @NotNull
     private String password;
+
+    @Lob
+    private byte[] photo;
 
     @Column
     private String biography;
 
-    @Column
-    private ArrayList<Long> followers = new ArrayList<Long>();
 
-    @Column
-    private byte[] photo;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Story> stories;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Comment> comments;
 
 
-    @Column(unique = true)
-    private String token;
 
-    public User(String email, String username, String password) {
-        this.email = email;
-        this.username = username;
-        this.password = password;
-    }
+    @JsonIgnoreProperties({"followers", "email" , "password" , "biography" , "stories","following"})
+    @ManyToMany(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(
+            name = "followers",
+            joinColumns = @JoinColumn(name = "following_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id"))
+    private Set<User> followers = new HashSet<>();
+
+    @ManyToMany(mappedBy = "followers", fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JsonIgnoreProperties({"followers", "email" , "password" , "biography" , "stories","following"})
+    private Set<User> following = new HashSet<>();
 }
