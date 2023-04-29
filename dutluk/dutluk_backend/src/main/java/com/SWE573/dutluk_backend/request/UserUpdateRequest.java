@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdateRequest {
+public class UserUpdateRequest {
 
     private byte[] photo;
 
