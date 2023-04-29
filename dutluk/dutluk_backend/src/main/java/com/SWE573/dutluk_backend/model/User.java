@@ -41,14 +41,15 @@ public class User extends BaseEntity{
     private String password;
 
     @Lob
-    private byte[] photo;
+    private byte[] profilePhoto;
 
     @Column
     private String biography;
 
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Story> stories;
 
     @JsonIgnore

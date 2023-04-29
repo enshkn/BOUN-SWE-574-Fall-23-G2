@@ -3,7 +3,7 @@ package com.SWE573.dutluk_backend.service;
 import com.SWE573.dutluk_backend.configuration.JwtUtil;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.UserRepository;
-import com.SWE573.dutluk_backend.request.UpdateRequest;
+import com.SWE573.dutluk_backend.request.UserUpdateRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountNotFoundException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService{
@@ -32,9 +29,9 @@ public class UserService{
     public User addUser(User user){
         return userRepository.save(user);
     }
-    public Long validateTokenizedUser(HttpServletRequest request){
+    public User validateTokenizedUser(HttpServletRequest request){
         String token = getTokenFromEndpoint(request);
-        return findByUserToken(token).getId();
+        return findByUserToken(token);
     }
 
     public List<User> findAll(){
@@ -78,14 +75,13 @@ public class UserService{
         return jwtUtil.validateToken(token,user);
     }
 
-    public User updateUser(Long userId, UpdateRequest updateRequest){
-        User foundUser = findByUserId(userId);
+    public User updateUser(User foundUser, UserUpdateRequest updateRequest){
         if(updateRequest.getBiography() != null &&
                 !updateRequest.getBiography().equals(foundUser.getBiography())){
             foundUser.setBiography(updateRequest.getBiography());
         }
-        if(updateRequest.getPhoto() != null && !Arrays.equals(updateRequest.getPhoto(), foundUser.getPhoto())){
-            foundUser.setPhoto(updateRequest.getPhoto());
+        if(updateRequest.getPhoto() != null && !Arrays.equals(updateRequest.getPhoto(), foundUser.getProfilePhoto())){
+            foundUser.setProfilePhoto(updateRequest.getPhoto());
         }
         return userRepository.save(foundUser);
     }
@@ -123,6 +119,24 @@ public class UserService{
         } else {
             return findByUsernameAndPassword(identifier,password);
         }
+    }
+
+    public User followUser(User foundUser,Long userId){
+        Set<User> followingList = foundUser.getFollowing();
+        User toBeFollowedUser = findByUserId(userId);
+        Set<User> followedList = toBeFollowedUser.getFollowers();
+        if(followedList.contains(foundUser) && followingList.contains(toBeFollowedUser)){
+            followingList.remove(toBeFollowedUser);
+            followedList.remove(foundUser);
+        }
+        else{
+            followingList.add(toBeFollowedUser);
+            followedList.add(foundUser);
+        }
+        toBeFollowedUser.setFollowers(followedList);
+        foundUser.setFollowing(followingList);
+        userRepository.save(foundUser);
+        return userRepository.save(toBeFollowedUser);
     }
 }
 

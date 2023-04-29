@@ -3,9 +3,10 @@ package com.SWE573.dutluk_backend.controller;
 
 import com.SWE573.dutluk_backend.configuration.JwtUtil;
 import com.SWE573.dutluk_backend.model.User;
+import com.SWE573.dutluk_backend.request.FollowRequest;
 import com.SWE573.dutluk_backend.request.LoginRequest;
 import com.SWE573.dutluk_backend.request.RegisterRequest;
-import com.SWE573.dutluk_backend.request.UpdateRequest;
+import com.SWE573.dutluk_backend.request.UserUpdateRequest;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -37,11 +39,10 @@ public class UserController {
 
     @GetMapping("/{id}")
     @CrossOrigin
-    public User getUserById(@PathVariable Long id, @RequestHeader("Authorization") String tokenHeader) throws AccountNotFoundException {
-        String token = tokenHeader.substring(7); // remove "Bearer " prefix
+    public ResponseEntity<?> getUserById(@PathVariable Long id,HttpServletRequest request) throws AccountNotFoundException {
         User user = userService.findByUserId(id);
-        if(userService.validateToken(token, user)){
-            return user;
+        if(user != null){
+            return ResponseEntity.ok(user);
         }
         else{
             throw new AccountNotFoundException();
@@ -74,15 +75,21 @@ public class UserController {
     }
     @PostMapping("/update")
     @CrossOrigin
-    public User updateUser(@RequestBody UpdateRequest updateRequest, HttpServletRequest request){
-        Long userId = userService.validateTokenizedUser(request);
-        return userService.updateUser(userId,updateRequest);
+    public User updateUser(@RequestBody UserUpdateRequest updateRequest, HttpServletRequest request){
+        User user = userService.validateTokenizedUser(request);
+        return userService.updateUser(user,updateRequest);
     }
 
     @GetMapping("/all")
     @CrossOrigin
-    public List<User> findAllUsers(){
-        return userService.findAll();
+    public ResponseEntity<?> findAllUsers(){
+        return ResponseEntity.ok(userService.findAll());
+    }
+
+    @PostMapping("/follow")
+    public ResponseEntity<?> followUser(@RequestBody FollowRequest followRequest, HttpServletRequest request){
+        User foundUser = userService.validateTokenizedUser(request);
+        return ResponseEntity.ok(userService.followUser(foundUser, followRequest.getUserId()));
     }
 
 
