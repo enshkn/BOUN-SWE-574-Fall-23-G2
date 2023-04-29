@@ -1,9 +1,7 @@
 package com.SWE573.dutluk_backend.configuration;
 
 import com.SWE573.dutluk_backend.model.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,11 +19,9 @@ public class JwtUtil {
     @Value("${JWT_SECRET_KEY}")
     private String JWT_SECRET_KEY;
 
-    public String generateToken(User user) {
+    public String generateToken(Long userId) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("username", user.getUsername());
-        claims.put("id", user.getId());
-        return createToken(claims, user.getId());
+        return createToken(claims, userId);
     }
 
     private String createToken(Map<String, Object> claims, Long subject) {
@@ -33,11 +29,16 @@ public class JwtUtil {
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))// 10 hours
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY).compact();
+
     }
 
     public Boolean validateToken(String token, User user) {
-        final Long extractedUserId = extractId(token);
-        return ((Objects.equals(extractedUserId, user.getId())) && !isTokenExpired(token));
+        try {
+            final Long extractedUserId = extractId(token);
+            return ((Objects.equals(extractedUserId, user.getId())) && !isTokenExpired(token));
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException ex) {
+            return false;
+        }
     }
 
     public Long extractId(String token) {
@@ -53,11 +54,11 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException {
         return Jwts.parser().setSigningKey(JWT_SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
+    private Boolean isTokenExpired(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException {
         return extractExpiration(token).before(new Date());
     }
 }
