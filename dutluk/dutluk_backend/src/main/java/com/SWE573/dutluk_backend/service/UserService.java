@@ -67,7 +67,7 @@ public class UserService{
 
 
 
-    public String updateUserToken(User user){
+    public String generateUserToken(User user){
 
         return jwtUtil.generateToken(user.getId());
     }

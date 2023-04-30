@@ -16,12 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountNotFoundException;
-import java.util.List;
-import java.util.Set;
 
 
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class UserController {
 
     @Autowired
@@ -51,13 +50,10 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    @CrossOrigin
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
                                    HttpServletResponse response) throws AccountNotFoundException {
-        // verify user credentials against database or authentication service
         User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
-        // return JWT token to client
-        Cookie cookie = new Cookie("Bearer", userService.updateUserToken(foundUser));
+        Cookie cookie = new Cookie("Bearer", userService.generateUserToken(foundUser));
         cookie.setPath("/api");
         response.addCookie(cookie);
         return ResponseEntity.ok(foundUser);
@@ -90,6 +86,12 @@ public class UserController {
     public ResponseEntity<?> followUser(@RequestBody FollowRequest followRequest, HttpServletRequest request){
         User foundUser = userService.validateTokenizedUser(request);
         return ResponseEntity.ok(userService.followUser(foundUser, followRequest.getUserId()));
+    }
+
+    @GetMapping("/profile")
+    @CrossOrigin
+    public User showUserProfile(HttpServletRequest request){
+        return userService.validateTokenizedUser(request);
     }
 
 

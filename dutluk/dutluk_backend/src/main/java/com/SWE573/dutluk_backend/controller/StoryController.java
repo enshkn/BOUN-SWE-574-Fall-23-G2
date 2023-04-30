@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/story")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class StoryController {
 
     @Autowired
