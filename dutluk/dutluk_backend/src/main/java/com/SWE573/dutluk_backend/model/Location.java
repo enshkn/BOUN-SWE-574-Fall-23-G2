@@ -13,6 +13,8 @@ import lombok.*;
 @AllArgsConstructor
 public class Location extends BaseEntity{
 
+    @Column(name="location_name")
+    private String locationName;
 
     private Double latitude;
 
