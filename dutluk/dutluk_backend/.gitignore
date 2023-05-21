@@ -33,6 +33,5 @@ build/
 .vscode/
 
 ### Dockerfile ###
-Dockerfile
 env_vars.txt
 .env
