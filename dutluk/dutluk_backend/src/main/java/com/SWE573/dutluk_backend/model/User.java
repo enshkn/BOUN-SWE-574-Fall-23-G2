@@ -3,6 +3,7 @@ package com.SWE573.dutluk_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -49,7 +50,7 @@ public class User extends BaseEntity{
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @JsonIgnore
+    @JsonIncludeProperties({"story_id", "title"})
     private List<Story> stories;
 
     @JsonIgnore
