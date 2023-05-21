@@ -12,15 +12,17 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.auth.login.AccountNotFoundException;
+import java.io.IOException;
 
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class UserController {
 
     @Autowired
@@ -31,13 +33,11 @@ public class UserController {
 
 
     @GetMapping("/test")
-    @CrossOrigin
     public String helloWorld(){
         return "<h1>Hello world!</h1>";
     }
 
     @GetMapping("/{id}")
-    @CrossOrigin
     public ResponseEntity<?> getUserById(@PathVariable Long id,HttpServletRequest request) throws AccountNotFoundException {
         User user = userService.findByUserId(id);
         if(user != null){
@@ -46,7 +46,6 @@ public class UserController {
         else{
             throw new AccountNotFoundException();
         }
-
     }
 
     @PostMapping("/login")
@@ -56,10 +55,19 @@ public class UserController {
         Cookie cookie = new Cookie("Bearer", userService.generateUserToken(foundUser));
         cookie.setPath("/api");
         response.addCookie(cookie);
+        foundUser.setProfilePhoto(null);
         return ResponseEntity.ok(foundUser);
     }
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("Bearer", null);
+        cookie.setPath("/api");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return ResponseEntity.ok("Logged out");
+    }
+
     @PostMapping("/register")
-    @CrossOrigin
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
         User newUser = User.builder()
                 .email(registerRequest.getEmail())
@@ -70,11 +78,26 @@ public class UserController {
         return ResponseEntity.ok(registeredUser);
     }
     @PostMapping("/update")
-    @CrossOrigin
     public User updateUser(@RequestBody UserUpdateRequest updateRequest, HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
         return userService.updateUser(user,updateRequest);
     }
+
+    @PostMapping(value= "/photo", consumes = "multipart/form-data")
+    public ResponseEntity<?> uploadPhoto(@RequestParam("photo") MultipartFile file,HttpServletRequest request) throws Exception{
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Please select a file to upload!");
+        }
+        try {
+            byte[] uploadedPhoto = file.getBytes();
+            User foundUser = userService.validateTokenizedUser(request);
+            return ResponseEntity.ok(userService.updateUserPhoto(foundUser,uploadedPhoto));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     @GetMapping("/all")
     @CrossOrigin
@@ -89,7 +112,6 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    @CrossOrigin
     public User showUserProfile(HttpServletRequest request){
         return userService.validateTokenizedUser(request);
     }

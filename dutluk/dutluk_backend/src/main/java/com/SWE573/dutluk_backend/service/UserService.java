@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountNotFoundException;
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService{
@@ -51,28 +54,18 @@ public class UserService{
     }
 
     public User findByUsernameAndPassword(String username, String password) throws AccountNotFoundException {
-        if(userRepository.findByUsername(username) != null){
-            User user = userRepository.findByUsername(username);
-            if (user.getPassword().equals(password)) {
-                return user;
-            }
-            else{
-                throw new AccountNotFoundException("Incorrect password");
-            }
+        User user = userRepository.findByUsername(username);
+        if (user != null && user.getPassword().equals(password)) {
+            return user;
+        } else {
+            throw new AccountNotFoundException("User with username '" + username + "' not found or incorrect password");
         }
-        else{
-            throw new AccountNotFoundException("User with username '"+username+"' not found");
-        }
-        }
+    }
 
 
 
     public String generateUserToken(User user){
-
         return jwtUtil.generateToken(user.getId());
-    }
-    public boolean validateToken(String token, User user) {
-        return jwtUtil.validateToken(token,user);
     }
 
     public User updateUser(User foundUser, UserUpdateRequest updateRequest){
@@ -80,27 +73,20 @@ public class UserService{
                 !updateRequest.getBiography().equals(foundUser.getBiography())){
             foundUser.setBiography(updateRequest.getBiography());
         }
-        if(updateRequest.getPhoto() != null && !Arrays.equals(updateRequest.getPhoto(), foundUser.getProfilePhoto())){
-            foundUser.setProfilePhoto(updateRequest.getPhoto());
-        }
         return userRepository.save(foundUser);
     }
     public String getTokenFromEndpoint(HttpServletRequest request) throws IllegalArgumentException, NullPointerException, IllegalStateException, SecurityException {
 
-        // Get the cookie from the request
+
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
-            // Handle case where no cookies are present
             throw new IllegalArgumentException("Cookies cannot be null");
         }
-        // Loop through cookies to find the one with the token
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("Bearer")) {
-                // Return the token as a response
                 return cookie.getValue();
             }
         }
-        // Handle case where no cookie with token is present
         throw new IllegalArgumentException("Bearer value cannot be null");
     }
 
@@ -137,6 +123,11 @@ public class UserService{
         foundUser.setFollowing(followingList);
         userRepository.save(foundUser);
         return userRepository.save(toBeFollowedUser);
+    }
+
+    public User updateUserPhoto(User foundUser, byte[] uploadedPhoto) {
+        foundUser.setProfilePhoto(uploadedPhoto);
+        return userRepository.save(foundUser);
     }
 }
 
