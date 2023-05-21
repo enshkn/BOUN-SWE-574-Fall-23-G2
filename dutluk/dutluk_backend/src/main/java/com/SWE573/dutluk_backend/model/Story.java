@@ -26,13 +26,13 @@ public class Story extends BaseEntity{
     @NotBlank
     private String title;
 
-
+    @ElementCollection
     @Column
-    private ArrayList<String> labels = new ArrayList<>();
+    private List<String> labels = new ArrayList<>();
 
 
 
-    @JsonIncludeProperties(value = {"id" , "name"})
+    @JsonIncludeProperties(value = {"id" , "username"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -40,6 +40,7 @@ public class Story extends BaseEntity{
     @OneToMany(mappedBy = "story")
     private List<Comment> comments;
 
+    @Column(name = "likes")
     private Set<Long> likes = new HashSet<>();
 
     @OneToMany(mappedBy = "story", cascade = CascadeType.ALL)
@@ -49,12 +50,19 @@ public class Story extends BaseEntity{
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    @Column(name="start_time_stamp")
+    @Column(name = "start_time_stamp")
+    @JsonFormat(pattern="dd/MM/yyyy")
     private LocalDate startTimeStamp;
 
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    @Column(name="end_time_stamp")
+    @Column(name = "end_time_stamp")
+    @JsonFormat(pattern="dd/MM/yyyy")
     private LocalDate endTimeStamp;
+
+
+    private String season;
+
+    private String decade;
+
+
 
 }
