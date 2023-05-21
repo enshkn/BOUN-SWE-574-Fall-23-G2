@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+  backend:
+    build:
+      context: ./dutluk_backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./dutluk_backend/.env
+    depends_on:
+      - db
+
+  frontend:
+    build: ./dutluk_frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./dutluk_frontend/.env
+    depends_on:
+      - backend
+
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./.env
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+#docker compose up --build -d
