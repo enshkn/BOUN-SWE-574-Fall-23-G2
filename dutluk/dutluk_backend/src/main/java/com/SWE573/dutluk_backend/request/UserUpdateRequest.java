@@ -7,7 +7,5 @@ import lombok.Setter;
 @Setter
 public class UserUpdateRequest {
 
-    private byte[] photo;
-
     private String biography;
 }
