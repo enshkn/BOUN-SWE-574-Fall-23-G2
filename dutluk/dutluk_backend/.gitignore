@@ -34,3 +34,5 @@ build/
 
 ### Dockerfile ###
 Dockerfile
+env_vars.txt
+.env
