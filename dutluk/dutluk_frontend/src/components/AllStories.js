@@ -4,7 +4,7 @@ import "./css/AllStories.css";
 
 function AllStories() {
   const [allStories, setAllStories] = useState([]);
-  const BACKEND_LINK = process.env.REACT_APP_BACKEND_LINK;
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -21,7 +21,7 @@ function AllStories() {
 
   useEffect(() => {
     axios
-      .get("http://" + BACKEND_LINK + ":8080/api/story/all", {
+      .get(`http://${BACKEND_URL}:8080/api/story/all`, {
         withCredentials: true,
       })
       .then((response) => {

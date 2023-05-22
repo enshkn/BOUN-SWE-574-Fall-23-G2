@@ -8,8 +8,8 @@ const RegisterComponent = () => {
   const [password, setPassword] = useState("");
   const [retypePassword, setRetypePassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const BACKEND_LINK = process.env.REACT_APP_BACKEND_LINK;
-  const FRONTEND_LINK = process.env.REACT_APP_FRONTEND_LINK;
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,12 +27,12 @@ const RegisterComponent = () => {
 
     try {
       const response = await axios.post(
-        "http://" + BACKEND_LINK + ":8080/api/user/register",
+        "http://" + BACKEND_URL + ":8080/api/user/register",
         data
       );
       console.log(response.data);
       alert("Registered successfully!");
-      window.location.href = "http:// "+ FRONTEND_LINK +" :3000/login";
+      window.location.href = "http:// " + FRONTEND_URL + " :3000/login";
     } catch (error) {
       console.error(error);
       alert("Error occurred during registration!");

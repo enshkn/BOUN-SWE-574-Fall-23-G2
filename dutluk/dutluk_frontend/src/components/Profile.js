@@ -9,11 +9,11 @@ function Profile() {
   const [error, setError] = useState("");
   const [isFollowing, setIsFollowing] = useState();
   const [followButtonName, setFollowButtonName] = useState();
-  const BACKEND_LINK = process.env.REACT_APP_BACKEND_LINK;
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     axios
-      .get("http://" + BACKEND_LINK + ":8080/api/user/profile", {
+      .get("http://" + BACKEND_URL + ":8080/api/user/profile", {
         withCredentials: true,
       })
       .then((response) => {
@@ -33,7 +33,7 @@ function Profile() {
 
   useEffect(() => {
     axios
-      .get(`http://` + BACKEND_LINK + `:8080/api/user/${id}`, {
+      .get(`http://` + BACKEND_URL + `:8080/api/user/${id}`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -48,7 +48,7 @@ function Profile() {
     if (isFollowing) {
       axios
         .post(
-          "http://" + BACKEND_LINK + ":8080/api/user/follow/",
+          "http://" + BACKEND_URL + ":8080/api/user/follow/",
           { userId: id },
           { withCredentials: true }
         )
@@ -62,7 +62,7 @@ function Profile() {
     } else {
       axios
         .post(
-          "http://" + BACKEND_LINK + ":8080/api/user/follow",
+          "http://" + BACKEND_URL + ":8080/api/user/follow",
           { userId: id },
           { withCredentials: true }
         )

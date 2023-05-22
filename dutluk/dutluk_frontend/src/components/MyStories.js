@@ -2,10 +2,9 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import "./css/AllStories.css";
 
-
 function MyStories() {
   const [myStories, setMyStories] = useState([]);
-  const BACKEND_LINK = process.env.REACT_APP_BACKEND_LINK;
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -22,7 +21,7 @@ function MyStories() {
 
   useEffect(() => {
     axios
-      .get("http://" + BACKEND_LINK + ":8080/api/story/fromUser", {
+      .get("http://" + BACKEND_URL + ":8080/api/story/fromUser", {
         withCredentials: true,
       })
       .then((response) => {

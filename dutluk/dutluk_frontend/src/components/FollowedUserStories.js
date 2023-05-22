@@ -4,7 +4,7 @@ import "./css/AllStories.css";
 
 function FollowedUserStories() {
   const [followedUserStories, setFollowedUserStories] = useState([]);
-  const BACKEND_LINK = process.env.REACT_APP_BACKEND_LINK;
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -21,7 +21,7 @@ function FollowedUserStories() {
 
   useEffect(() => {
     axios
-      .get("http://" + BACKEND_LINK + ":8080/api/story/following", {
+      .get("http://" + BACKEND_URL + ":8080/api/story/following", {
         withCredentials: true,
       })
       .then((response) => {

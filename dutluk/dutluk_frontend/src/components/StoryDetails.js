@@ -23,12 +23,12 @@ function StoryDetails() {
   const { id } = useParams();
   const [story, setStory] = useState(null);
   const [commentText, setCommentText] = useState("");
-  const BACKEND_LINK = process.env.REACT_APP_BACKEND_LINK;
-
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
     axios
-      .get(`http://`+BACKEND_LINK+`:8080/api/story/${id}`, {
+      .get(`http://` + BACKEND_URL + `:8080/api/story/${id}`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -49,7 +49,7 @@ function StoryDetails() {
 
     try {
       const response = await axios.post(
-        `http://` + BACKEND_LINK + `:8080/api/comment/add`,
+        "http://" + BACKEND_URL + ":8080/api/comment/add",
         comment,
         {
           withCredentials: true,
@@ -68,7 +68,7 @@ function StoryDetails() {
   const handleLikeStory = async () => {
     try {
       const response = await axios.post(
-        "http://"+BACKEND_LINK+":8080/api/story/like/",
+        "http://" + BACKEND_URL + ":8080/api/story/like/",
         { likedEntityId: story.id },
         {
           withCredentials: true,
@@ -82,7 +82,7 @@ function StoryDetails() {
   const handleLikeComment = async (commentId) => {
     try {
       const response = await axios.post(
-        "http://" + BACKEND_LINK + ":8080/api/comment/like/",
+        "http://" + BACKEND_URL + ":8080/api/comment/like/",
         { likedEntityId: commentId },
         {
           withCredentials: true,
@@ -137,20 +137,27 @@ function StoryDetails() {
         <b>Season:</b>
         {story.season}
       </p>
-      <p><b>Decade:</b>
-      {story.decade}</p>
+      <p>
+        <b>Decade:</b>
+        {story.decade}
+      </p>
       <label>
         <b>Selected Locations:</b>
+        <ul className="locations-list">
+          {story.locations.map((location) => (
+            <li key={location.id}>{location.locationName}</li>
+          ))}
+        </ul>
       </label>
-      <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+      <LoadScript googleMapsApiKey={API_KEY}>
         <GoogleMap
           mapContainerStyle={{ width: "80%", height: "400px" }}
           center={{ lat: 41.085064, lng: 29.044687 }}
           zoom={10}
         >
-          {story.locations.map((location, index) => (
+          {story.locations.map((location) => (
             <Marker
-              key={index}
+              key={location.id}
               position={{ lat: location.latitude, lng: location.longitude }}
             />
           ))}
