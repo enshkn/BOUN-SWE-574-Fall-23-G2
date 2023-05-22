@@ -11,7 +11,6 @@ function Profile() {
   const [followButtonName, setFollowButtonName] = useState();
   const BACKEND_LINK = process.env.REACT_APP_BACKEND_LINK;
 
-  
   useEffect(() => {
     axios
       .get("http://" + BACKEND_LINK + ":8080/api/user/profile", {
@@ -34,7 +33,7 @@ function Profile() {
 
   useEffect(() => {
     axios
-      .get(`http://"+BACKEND_LINK+":8080/api/user/${id}`, {
+      .get(`http://` + BACKEND_LINK + `:8080/api/user/${id}`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -49,7 +48,7 @@ function Profile() {
     if (isFollowing) {
       axios
         .post(
-          "http://"+BACKEND_LINK+":8080/api/user/follow/",
+          "http://" + BACKEND_LINK + ":8080/api/user/follow/",
           { userId: id },
           { withCredentials: true }
         )

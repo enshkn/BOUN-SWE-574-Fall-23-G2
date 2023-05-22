@@ -18,7 +18,7 @@ function UserComponent({ userId }) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${cookieValue}`;
 
     axios
-      .get("http://localhost:8080/api/user/profile", { withCredentials: true })
+      .get("http://"+BACKEND_LINK+":8080/api/user/profile", { withCredentials: true })
       .then((response) => setUser(response.data))
       .catch((error) => setError(error.response.data.message));
   }, []);
@@ -37,7 +37,7 @@ function UserComponent({ userId }) {
 
     axios
       .post(
-        "http://localhost:8080/api/user/update",
+        "http://" + BACKEND_LINK + ":8080/api/user/update",
         { biography },
         { withCredentials: true }
       )
@@ -55,7 +55,7 @@ function UserComponent({ userId }) {
     formData.append("photo", photoFile);
 
     axios
-      .post("http://localhost:8080/api/user/photo", formData, {
+      .post("http://" + BACKEND_LINK + ":8080/api/user/photo", formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
