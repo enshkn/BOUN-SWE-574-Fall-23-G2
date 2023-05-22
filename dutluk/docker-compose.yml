@@ -6,7 +6,7 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - ./dutluk_backend/.env
+      - ./.env
     depends_on:
       - db
 
@@ -15,7 +15,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - ./dutluk_frontend/.env
+      - ./.env
     depends_on:
       - backend
 

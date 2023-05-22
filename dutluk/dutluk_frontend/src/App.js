@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 import DutlukImage from "./dutlukfinal_1.jpg";
-import DutlukLogo from "./dutluk_logo.jpg";
+import DutlukLogo from "./dutluk_logo.png";
 import User from "./components/User";
 import Profile from "./components/Profile";
 import Login from "./components/Login";
