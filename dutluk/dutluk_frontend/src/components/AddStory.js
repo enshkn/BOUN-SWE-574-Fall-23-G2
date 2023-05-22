@@ -20,6 +20,8 @@ const AddStoryForm = () => {
   const [season, setSeason] = useState("");
   const [decade, setDecade] = useState("");
   const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+  const BACKEND_LINK = process.env.REACT_APP_BACKEND_LINK;
+  const FRONTEND_LINK = process.env.REACT_APP_FRONTEND_LINK;
 
   const handleEditorChange = (value) => {
     setText(value);
@@ -73,14 +75,14 @@ const AddStoryForm = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/story/add",
+        "http://" + BACKEND_LINK + ":8080/api/story/add",
         story,
         {
           withCredentials: true,
         }
       );
       console.log(response);
-      window.location.href = "http://localhost:3000/user/my-profile";
+      window.location.href = "http://" + FRONTEND_LINK + ":3000/user/my-profile";
     } catch (error) {
       console.log(error);
     }

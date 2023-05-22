@@ -12,6 +12,7 @@ const StorySearch = () => {
   const [searchSeason, setSearchSeason] = useState(null);
   const [searchDecade, setSearchDecade] = useState(null);
   const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+  const BACKEND_LINK = process.env.REACT_APP_BACKEND_LINK;
 
   const handleSearch = useCallback(async () => {
     if (searchQuery && searchQuery.length < 4) {
@@ -44,7 +45,7 @@ const StorySearch = () => {
       }
 
       const response = await axios.get(
-        "http://localhost:8080/api/story/search",
+        "http://" + BACKEND_LINK + ":8080/api/story/search",
         {
           params: {
             query: searchQuery,

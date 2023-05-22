@@ -18,10 +18,11 @@ import axios from "axios";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const BACKEND_LINK = process.env.REACT_APP_BACKEND_LINK;
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/user/profile", { withCredentials: true })
+      .get("http://"+BACKEND_LINK+":8080/api/user/profile", { withCredentials: true })
       .then((response) => {
         setLoggedIn(true);
       })
@@ -32,7 +33,7 @@ function App() {
 
   const handleLogout = () => {
     axios
-      .get("http://localhost:8080/api/user/logout", null, {
+      .get("http://" + BACKEND_LINK + ":8080/api/user/logout", null, {
         withCredentials: true,
       })
       .then((response) => {

@@ -8,6 +8,7 @@ function UserComponent({ userId }) {
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [biography, setBiography] = useState("");
+  const BACKEND_LINK = process.env.REACT_APP_BACKEND_LINK;
 
   useEffect(() => {
     const cookieValue = document.cookie.replace(

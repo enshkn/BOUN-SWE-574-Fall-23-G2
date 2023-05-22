@@ -23,10 +23,12 @@ function StoryDetails() {
   const { id } = useParams();
   const [story, setStory] = useState(null);
   const [commentText, setCommentText] = useState("");
+  const BACKEND_LINK = process.env.REACT_APP_BACKEND_LINK;
+
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/story/${id}`, {
+      .get(`http://`+BACKEND_LINK+`:8080/api/story/${id}`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -47,7 +49,7 @@ function StoryDetails() {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/comment/add`,
+        `http://` + BACKEND_LINK + `:8080/api/comment/add`,
         comment,
         {
           withCredentials: true,
@@ -66,7 +68,7 @@ function StoryDetails() {
   const handleLikeStory = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/story/like/",
+        "http://"+BACKEND_LINK+":8080/api/story/like/",
         { likedEntityId: story.id },
         {
           withCredentials: true,
@@ -80,7 +82,7 @@ function StoryDetails() {
   const handleLikeComment = async (commentId) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/comment/like/",
+        "http://" + BACKEND_LINK + ":8080/api/comment/like/",
         { likedEntityId: commentId },
         {
           withCredentials: true,

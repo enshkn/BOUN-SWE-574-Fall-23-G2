@@ -6,20 +6,23 @@ function LoginComponent() {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const BACKEND_LINK = process.env.REACT_APP_BACKEND_LINK;
+  const FRONTEND_LINK = process.env.REACT_APP_FRONTEND_LINK;
 
   const handleLogin = (event) => {
     event.preventDefault();
 
     axios
       .post(
-        "http://localhost:8080/api/user/login",
+        "http://" + BACKEND_LINK + ":8080/api/user/login",
         { identifier, password },
         { withCredentials: true }
       )
       .then((response) => {
         const cookieValue = response.headers["bearer"];
         localStorage.setItem("authToken", cookieValue);
-        window.location.href = "http://localhost:3000/story/followings";
+        window.location.href =
+          "http://" + FRONTEND_LINK + ":3000/story/followings";
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
