@@ -21,7 +21,7 @@ function AllStories() {
 
   useEffect(() => {
     axios
-      .get(`http://${BACKEND_URL}:8080/api/story/all`, {
+      .get(`http://172.17.0.1:8080/api/story/all`, {
         withCredentials: true,
       })
       .then((response) => {

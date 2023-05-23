@@ -27,12 +27,12 @@ const RegisterComponent = () => {
 
     try {
       const response = await axios.post(
-        `http://${BACKEND_URL}:8080/api/user/register`,
+        `http://172.17.0.1:8080/api/user/register`,
         data
       );
       console.log(response.data);
       alert("Registered successfully!");
-      window.location.href = `http://${FRONTEND_URL}:3000/login`;
+      window.location.href = `http://172.17.0.1:3000/login`;
     } catch (error) {
       console.error(error);
       alert("Error occurred during registration!");

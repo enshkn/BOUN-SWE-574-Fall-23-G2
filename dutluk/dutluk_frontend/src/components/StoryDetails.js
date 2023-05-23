@@ -28,7 +28,7 @@ function StoryDetails() {
 
   useEffect(() => {
     axios
-      .get(`http://` + BACKEND_URL + `:8080/api/story/${id}`, {
+      .get(`http://172.17.0.1:8080/api/story/${id}`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -49,7 +49,7 @@ function StoryDetails() {
 
     try {
       const response = await axios.post(
-        `http://${BACKEND_URL}:8080/api/comment/add`,
+        `http://172.17.0.1:8080/api/comment/add`,
         comment,
         {
           withCredentials: true,
@@ -68,7 +68,7 @@ function StoryDetails() {
   const handleLikeStory = async () => {
     try {
       const response = await axios.post(
-        "http://" + BACKEND_URL + ":8080/api/story/like/",
+        "http://172.17.0.1:8080/api/story/like/",
         { likedEntityId: story.id },
         {
           withCredentials: true,
@@ -82,7 +82,7 @@ function StoryDetails() {
   const handleLikeComment = async (commentId) => {
     try {
       const response = await axios.post(
-        "http://" + BACKEND_URL + ":8080/api/comment/like/",
+        "http://172.17.0.1:8080/api/comment/like/",
         { likedEntityId: commentId },
         {
           withCredentials: true,

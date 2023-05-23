@@ -13,7 +13,7 @@ function Profile() {
 
   useEffect(() => {
     axios
-      .get(`http://${BACKEND_URL}:8080/api/user/profile`, {
+      .get(`http://172.17.0.1:8080/api/user/profile`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -29,11 +29,11 @@ function Profile() {
       .catch((error) => {
         setError(error);
       });
-  }, [id, BACKEND_URL]);
+  }, [id]);
 
   useEffect(() => {
     axios
-      .get(`http://` + BACKEND_URL + `:8080/api/user/${id}`, {
+      .get(`http://172.17.0.1:8080/api/user/${id}`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -48,7 +48,7 @@ function Profile() {
     if (isFollowing) {
       axios
         .post(
-          "http://" + BACKEND_URL + ":8080/api/user/follow/",
+          "http://172.17.0.1:8080/api/user/follow/",
           { userId: id },
           { withCredentials: true }
         )
@@ -62,7 +62,7 @@ function Profile() {
     } else {
       axios
         .post(
-          "http://" + BACKEND_URL + ":8080/api/user/follow",
+          "http://172.17.0.1:8080/api/user/follow",
           { userId: id },
           { withCredentials: true }
         )
