@@ -20,8 +20,8 @@ const AddStoryForm = () => {
   const [season, setSeason] = useState("");
   const [decade, setDecade] = useState("");
   const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL;
+  const BACKEND_URL = "host.docker.internal";
+  const FRONTEND_URL = "host.docker.internal";
 
   const handleEditorChange = (value) => {
     setText(value);

@@ -23,7 +23,7 @@ function StoryDetails() {
   const { id } = useParams();
   const [story, setStory] = useState(null);
   const [commentText, setCommentText] = useState("");
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = "host.docker.internal";
   const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {

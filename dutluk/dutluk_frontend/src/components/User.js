@@ -8,7 +8,7 @@ function UserComponent({ userId }) {
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [biography, setBiography] = useState("");
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = "host.docker.internal";
 
   useEffect(() => {
     const cookieValue = document.cookie.replace(

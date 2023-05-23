@@ -4,7 +4,7 @@ import "./css/AllStories.css";
 
 function FollowedUserStories() {
   const [followedUserStories, setFollowedUserStories] = useState([]);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = "host.docker.internal";
 
   function formatDate(dateString) {
     const date = new Date(dateString);

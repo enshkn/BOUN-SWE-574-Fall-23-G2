@@ -6,8 +6,8 @@ function LoginComponent() {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL;
+  const BACKEND_URL = "host.docker.internal";
+  const FRONTEND_URL = "host.docker.internal";
 
   const handleLogin = (event) => {
     event.preventDefault();

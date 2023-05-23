@@ -17,7 +17,7 @@ import axios from "axios";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = "host.docker.internal";
 
   useEffect(() => {
     axios

@@ -8,8 +8,8 @@ const RegisterComponent = () => {
   const [password, setPassword] = useState("");
   const [retypePassword, setRetypePassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL;
+  const BACKEND_URL = "host.docker.internal";
+  const FRONTEND_URL = "host.docker.internal";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
