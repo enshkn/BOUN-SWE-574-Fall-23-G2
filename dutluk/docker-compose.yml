@@ -29,7 +29,7 @@ services:
     ports:
       - "5432:5432"
     env_file:
-      - ./.env
+      - ./dutluk_frontend/.env
 
 
 #docker compose up --build -d
