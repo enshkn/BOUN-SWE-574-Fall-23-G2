@@ -109,7 +109,7 @@ public class StoryService {
     }
 
     public List<Story> searchStoriesWithSeason(String season){
-        return storyRepository.findByDecadeContainingIgnoreCase(season);
+        return storyRepository.findBySeasonContainingIgnoreCase(season);
     }
 
     public List<Story> searchStoriesWithSingleDate(LocalDate startTimeStamp){
