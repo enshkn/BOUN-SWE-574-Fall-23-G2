@@ -69,7 +69,7 @@ const StorySearch = () => {
     selectedLocation,
     searchDate,
     searchSeason,
-    searchDecade
+    searchDecade,
   ]);
 
   const handleMapClick = (event) => {
@@ -240,7 +240,9 @@ const StorySearch = () => {
         </button>
       </div>
       <div className="search-results">
-        <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+        <LoadScript
+          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+        >
           <GoogleMap
             mapContainerStyle={{ width: "100%", height: "400px" }}
             center={{ lat: 41.085064, lng: 29.044687 }}
