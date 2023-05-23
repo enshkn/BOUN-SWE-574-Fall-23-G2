@@ -94,6 +94,29 @@ const AddStoryForm = () => {
     lng: 29.044687,
   };
 
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
+    ],
+  };
+
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+  ];
+
   const handleMapClick = async (event) => {
     const clickedLat = event.latLng.lat();
     const clickedLng = event.latLng.lng();
@@ -190,6 +213,8 @@ const AddStoryForm = () => {
         <ReactQuill
           value={text}
           onChange={handleEditorChange}
+          modules={modules}
+          formats={formats}
           className="add-story-editor"
         />
       </label>

@@ -12,7 +12,7 @@
 }
 
 .add-story-input {
-  width: 300px;
+  width: 500px;
   height: 30px;
   margin-bottom: 10px;
   padding: 5px;
@@ -21,7 +21,7 @@
 }
 
 .add-story-editor {
-  width: 400px;
+  width: 800px;
   height: 200px;
   margin-bottom: 10px;
   border: 1px solid #ccc;
