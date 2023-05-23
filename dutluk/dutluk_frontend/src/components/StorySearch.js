@@ -12,7 +12,7 @@ const StorySearch = () => {
   const [searchSeason, setSearchSeason] = useState(null);
   const [searchDecade, setSearchDecade] = useState(null);
   const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-  const BACKEND_URL = "host.docker.internal";
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const handleSearch = useCallback(async () => {
     if (searchQuery && searchQuery.length < 4) {

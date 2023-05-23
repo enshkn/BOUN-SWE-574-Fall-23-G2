@@ -4,7 +4,7 @@ import "./css/AllStories.css";
 
 function AllStories() {
   const [allStories, setAllStories] = useState([]);
-  const BACKEND_URL = "host.docker.internal";
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   function formatDate(dateString) {
     const date = new Date(dateString);

@@ -3,6 +3,7 @@ services:
   backend:
     build:
       context: ./dutluk_backend
+    container_name: dutluk-backend
     ports:
       - "8080:8080"
     env_file:
@@ -11,7 +12,9 @@ services:
       - db
 
   frontend:
-    build: ./dutluk_frontend
+    build: 
+        context: ./dutluk_frontend
+    container_name: dutluk-frontend
     ports:
       - "3000:3000"
     env_file:
@@ -22,9 +25,11 @@ services:
   db:
     image: postgres
     restart: always
+    container_name: db
     ports:
       - "5432:5432"
     env_file:
       - ./.env
+
 
 #docker compose up --build -d
