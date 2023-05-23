@@ -19,10 +19,6 @@ const AddStoryForm = () => {
   const [endTimeStamp, setEndTimeStamp] = useState(null);
   const [season, setSeason] = useState("");
   const [decade, setDecade] = useState("");
-  const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL;
-
   const handleEditorChange = (value) => {
     setText(value);
   };
@@ -75,14 +71,14 @@ const AddStoryForm = () => {
 
     try {
       const response = await axios.post(
-        `http://172.17.0.1:8080/api/story/add`,
+        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/add`,
         story,
         {
           withCredentials: true,
         }
       );
       console.log(response);
-      window.location.href = `http://172.17.0.1:3000/user/my-profile`;
+      window.location.href = `http://${process.env.REACT_APP_FRONTEND_URL}:3000/user/my-profile`;
     } catch (error) {
       console.log(error);
     }
@@ -104,7 +100,7 @@ const AddStoryForm = () => {
 
     try {
       const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${clickedLat},${clickedLng}&key=${API_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${clickedLat},${clickedLng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
       );
       const locationName = response.data.results[0]?.formatted_address || "";
       console.log(response.data.results);
@@ -136,7 +132,7 @@ const AddStoryForm = () => {
 
   return (
     <form className="add-story-form" onSubmit={handleSubmit}>
-      <LoadScript googleMapsApiKey={API_KEY}>
+      <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           center={center}

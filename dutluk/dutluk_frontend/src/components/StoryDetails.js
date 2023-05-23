@@ -23,12 +23,10 @@ function StoryDetails() {
   const { id } = useParams();
   const [story, setStory] = useState(null);
   const [commentText, setCommentText] = useState("");
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
     axios
-      .get(`http://172.17.0.1:8080/api/story/${id}`, {
+      .get(`http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/${id}`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -37,7 +35,7 @@ function StoryDetails() {
       .catch((error) => {
         console.log(error);
       });
-  }, [id, BACKEND_URL]);
+  }, [id]);
 
   const handleCommentSubmit = async (event) => {
     event.preventDefault();
@@ -49,7 +47,7 @@ function StoryDetails() {
 
     try {
       const response = await axios.post(
-        `http://172.17.0.1:8080/api/comment/add`,
+        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/comment/add`,
         comment,
         {
           withCredentials: true,
@@ -68,7 +66,7 @@ function StoryDetails() {
   const handleLikeStory = async () => {
     try {
       const response = await axios.post(
-        "http://172.17.0.1:8080/api/story/like/",
+        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/like/`,
         { likedEntityId: story.id },
         {
           withCredentials: true,
@@ -82,7 +80,7 @@ function StoryDetails() {
   const handleLikeComment = async (commentId) => {
     try {
       const response = await axios.post(
-        "http://172.17.0.1:8080/api/comment/like/",
+        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/comment/like/`,
         { likedEntityId: commentId },
         {
           withCredentials: true,
@@ -149,7 +147,7 @@ function StoryDetails() {
           ))}
         </ul>
       </label>
-      <LoadScript googleMapsApiKey={API_KEY}>
+      <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
         <GoogleMap
           mapContainerStyle={{ width: "80%", height: "400px" }}
           center={{ lat: 41.085064, lng: 29.044687 }}

@@ -4,7 +4,6 @@ import "./css/AllStories.css";
 
 function FollowedUserStories() {
   const [followedUserStories, setFollowedUserStories] = useState([]);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -21,7 +20,7 @@ function FollowedUserStories() {
 
   useEffect(() => {
     axios
-      .get(`http://172.17.0.1:8080/api/story/following`, {
+      .get(`http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/following`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -30,7 +29,7 @@ function FollowedUserStories() {
       .catch((error) => {
         console.log(error);
       });
-  }, [BACKEND_URL]);
+  }, []);
 
   return (
     <div className="all-stories">

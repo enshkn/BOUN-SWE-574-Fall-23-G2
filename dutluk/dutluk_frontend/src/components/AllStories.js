@@ -4,7 +4,6 @@ import "./css/AllStories.css";
 
 function AllStories() {
   const [allStories, setAllStories] = useState([]);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -21,7 +20,7 @@ function AllStories() {
 
   useEffect(() => {
     axios
-      .get(`http://172.17.0.1:8080/api/story/all`, {
+      .get(`http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/all`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -30,7 +29,7 @@ function AllStories() {
       .catch((error) => {
         console.log(error);
       });
-  }, [BACKEND_URL]);
+  }, []);
 
   return (
     <div className="all-stories">

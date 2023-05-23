@@ -11,8 +11,6 @@ const StorySearch = () => {
   const [searchDate, setSearchDate] = useState({ type: null, value: null });
   const [searchSeason, setSearchSeason] = useState(null);
   const [searchDecade, setSearchDecade] = useState(null);
-  const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const handleSearch = useCallback(async () => {
     if (searchQuery && searchQuery.length < 4) {
@@ -45,7 +43,7 @@ const StorySearch = () => {
       }
 
       const response = await axios.get(
-        `http://172.17.0.1:8080/api/story/search`,
+        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/search`,
         {
           params: {
             query: searchQuery,
@@ -71,8 +69,7 @@ const StorySearch = () => {
     selectedLocation,
     searchDate,
     searchSeason,
-    searchDecade,
-    BACKEND_URL
+    searchDecade
   ]);
 
   const handleMapClick = (event) => {
@@ -243,7 +240,7 @@ const StorySearch = () => {
         </button>
       </div>
       <div className="search-results">
-        <LoadScript googleMapsApiKey={API_KEY}>
+        <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
           <GoogleMap
             mapContainerStyle={{ width: "100%", height: "400px" }}
             center={{ lat: 41.085064, lng: 29.044687 }}

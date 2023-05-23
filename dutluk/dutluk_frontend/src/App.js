@@ -17,26 +17,32 @@ import axios from "axios";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     axios
-      .get(`http://172.17.0.1:8080/api/user/profile`, {
-        withCredentials: true,
-      })
+      .get(
+        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/user/profile`,
+        {
+          withCredentials: true,
+        }
+      )
       .then((response) => {
         setLoggedIn(true);
       })
       .catch((error) => {
         setLoggedIn(false);
       });
-  }, [BACKEND_URL]);
+  }, []);
 
   const handleLogout = () => {
     axios
-      .get(`http://172.17.0.1:8080/api/user/logout`, null, {
-        withCredentials: true,
-      })
+      .get(
+        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/user/logout`,
+        null,
+        {
+          withCredentials: true,
+        }
+      )
       .then((response) => {
         document.cookie =
           "Bearer=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/api;";
