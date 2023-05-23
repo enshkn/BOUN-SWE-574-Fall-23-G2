@@ -18,12 +18,12 @@ function UserComponent({ userId }) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${cookieValue}`;
 
     axios
-      .get("http://" + BACKEND_URL + ":8080/api/user/profile", {
+      .get(`http://${BACKEND_URL}:8080/api/user/profile`, {
         withCredentials: true,
       })
       .then((response) => setUser(response.data))
       .catch((error) => setError(error.response.data.message));
-  }, []);
+  }, [BACKEND_URL]);
 
   const handleFileChange = (event) => {
     setPhotoFile(event.target.files[0]);
@@ -39,7 +39,7 @@ function UserComponent({ userId }) {
 
     axios
       .post(
-        "http://" + BACKEND_URL + ":8080/api/user/update",
+        `http://${BACKEND_URL}:8080/api/user/update`,
         { biography },
         { withCredentials: true }
       )

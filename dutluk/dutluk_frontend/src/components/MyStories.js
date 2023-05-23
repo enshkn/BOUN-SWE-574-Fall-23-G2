@@ -21,7 +21,7 @@ function MyStories() {
 
   useEffect(() => {
     axios
-      .get("http://" + BACKEND_URL + ":8080/api/story/fromUser", {
+      .get(`http://${BACKEND_URL}:8080/api/story/fromUser`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -30,7 +30,7 @@ function MyStories() {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [BACKEND_URL]);
 
   return (
     <div className="all-stories">

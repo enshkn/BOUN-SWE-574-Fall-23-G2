@@ -6,7 +6,7 @@ function LoginComponent() {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const BACKEND_URL = "host.docker.internal";
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL;
 
   const handleLogin = (event) => {
@@ -14,15 +14,14 @@ function LoginComponent() {
 
     axios
       .post(
-        "http://" + BACKEND_URL + ":8080/api/user/login",
+        `http://${BACKEND_URL}:8080/api/user/login`,
         { identifier, password },
         { withCredentials: true }
       )
       .then((response) => {
         const cookieValue = response.headers["bearer"];
         localStorage.setItem("authToken", cookieValue);
-        window.location.href =
-          "http://" + FRONTEND_URL + ":3000/story/followings";
+        window.location.href = `http://${FRONTEND_URL}:3000/story/followings`;
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {

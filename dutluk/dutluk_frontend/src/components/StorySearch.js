@@ -45,7 +45,7 @@ const StorySearch = () => {
       }
 
       const response = await axios.get(
-        "http://" + BACKEND_URL + ":8080/api/story/search",
+        `http://${BACKEND_URL}:8080/api/story/search`,
         {
           params: {
             query: searchQuery,
@@ -72,6 +72,7 @@ const StorySearch = () => {
     searchDate,
     searchSeason,
     searchDecade,
+    BACKEND_URL
   ]);
 
   const handleMapClick = (event) => {

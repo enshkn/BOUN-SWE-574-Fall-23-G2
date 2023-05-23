@@ -13,7 +13,7 @@ function Profile() {
 
   useEffect(() => {
     axios
-      .get("http://" + BACKEND_URL + ":8080/api/user/profile", {
+      .get(`http://${BACKEND_URL}:8080/api/user/profile`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -29,7 +29,7 @@ function Profile() {
       .catch((error) => {
         setError(error);
       });
-  }, [id]);
+  }, [id, BACKEND_URL]);
 
   useEffect(() => {
     axios
@@ -42,7 +42,7 @@ function Profile() {
       .catch((error) => {
         setError(error);
       });
-  }, [id]);
+  }, [id, BACKEND_URL]);
 
   const handleFollowClick = () => {
     if (isFollowing) {

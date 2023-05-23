@@ -21,7 +21,7 @@ function FollowedUserStories() {
 
   useEffect(() => {
     axios
-      .get("http://" + BACKEND_URL + ":8080/api/story/following", {
+      .get(`http://${BACKEND_URL}:8080/api/story/following`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -30,7 +30,7 @@ function FollowedUserStories() {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [BACKEND_URL]);
 
   return (
     <div className="all-stories">

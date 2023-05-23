@@ -37,7 +37,7 @@ function StoryDetails() {
       .catch((error) => {
         console.log(error);
       });
-  }, [id]);
+  }, [id, BACKEND_URL]);
 
   const handleCommentSubmit = async (event) => {
     event.preventDefault();
@@ -49,7 +49,7 @@ function StoryDetails() {
 
     try {
       const response = await axios.post(
-        "http://" + BACKEND_URL + ":8080/api/comment/add",
+        `http://${BACKEND_URL}:8080/api/comment/add`,
         comment,
         {
           withCredentials: true,

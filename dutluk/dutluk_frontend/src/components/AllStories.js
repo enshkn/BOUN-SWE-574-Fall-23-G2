@@ -30,7 +30,7 @@ function AllStories() {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [BACKEND_URL]);
 
   return (
     <div className="all-stories">

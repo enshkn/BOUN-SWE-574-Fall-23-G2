@@ -21,7 +21,7 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("http://" + BACKEND_URL + ":8080/api/user/profile", {
+      .get(`http://${BACKEND_URL}:8080/api/user/profile`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -30,11 +30,11 @@ function App() {
       .catch((error) => {
         setLoggedIn(false);
       });
-  }, []);
+  }, [BACKEND_URL]);
 
   const handleLogout = () => {
     axios
-      .get("http://" + BACKEND_URL + ":8080/api/user/logout", null, {
+      .get(`http://${BACKEND_URL}:8080/api/user/logout`, null, {
         withCredentials: true,
       })
       .then((response) => {
