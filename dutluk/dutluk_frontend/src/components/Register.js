@@ -32,7 +32,7 @@ const RegisterComponent = () => {
       );
       console.log(response.data);
       alert("Registered successfully!");
-      window.location.href = "http:// " + FRONTEND_URL + " :3000/login";
+      window.location.href = "http://" + FRONTEND_URL + ":3000/login";
     } catch (error) {
       console.error(error);
       alert("Error occurred during registration!");
