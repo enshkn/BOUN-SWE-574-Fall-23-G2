@@ -6,8 +6,6 @@ import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.StoryRepository;
 import com.SWE573.dutluk_backend.repository.UserRepository;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
-import com.SWE573.dutluk_backend.service.StoryService;
-import com.SWE573.dutluk_backend.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -369,7 +367,7 @@ class StoryServiceTest {
 
     @Test
     void testSearchStoriesWithSeason() {
-        // Prepare the test data
+
         String season = "Summer";
 
         Story story1 = Story.builder()
@@ -382,16 +380,16 @@ class StoryServiceTest {
                 .season("Spring")
                 .build();
 
-        // Mock the dependencies
-        when(storyRepository.findByDecadeContainingIgnoreCase(season)).thenReturn(Collections.singletonList(story1));
 
-        // Execute the method
+        when(storyRepository.findBySeasonContainingIgnoreCase(season)).thenReturn(Collections.singletonList(story1));
+
+
         List<Story> searchResults = storyService.searchStoriesWithSeason(season);
 
-        // Verify the interactions
-        verify(storyRepository, times(1)).findByDecadeContainingIgnoreCase(season);
 
-        // Verify the result
+        verify(storyRepository, times(1)).findBySeasonContainingIgnoreCase(season);
+
+
         assertNotNull(searchResults);
         assertEquals(1, searchResults.size());
         assertEquals("Story 1", searchResults.get(0).getTitle());
@@ -399,7 +397,7 @@ class StoryServiceTest {
 
     @Test
     void testSearchStoriesWithSingleDate() {
-        // Prepare the test data
+
         LocalDate startTimeStamp = LocalDate.now();
 
         Story story1 = Story.builder()
@@ -412,13 +410,13 @@ class StoryServiceTest {
                 .startTimeStamp(startTimeStamp.plusDays(1))
                 .build();
 
-        // Mock the dependencies
+
         when(storyRepository.findByStartTimeStamp(startTimeStamp)).thenReturn(Collections.singletonList(story1));
 
-        // Execute the method
+
         List<Story> searchResults = storyService.searchStoriesWithSingleDate(startTimeStamp);
 
-        // Verify the interactions
+
         verify(storyRepository, times(1)).findByStartTimeStamp(startTimeStamp);
 
         // Verify the result
