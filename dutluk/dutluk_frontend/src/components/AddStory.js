@@ -219,7 +219,7 @@ const AddStoryForm = () => {
         />
       </label>
       <label className="add-story-label">
-        Start Date and Time:
+        Start Date:
         <DatePicker
           selected={startTimeStamp}
           onChange={setStartTimeStamp}
@@ -229,7 +229,7 @@ const AddStoryForm = () => {
       </label>
       <br />
       <label className="add-story-label">
-        End Date and Time:
+        End Date:
         <DatePicker
           selected={endTimeStamp}
           onChange={setEndTimeStamp}
