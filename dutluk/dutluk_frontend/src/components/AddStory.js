@@ -199,7 +199,7 @@ const AddStoryForm = () => {
       </label>
       <br />
       <label className="add-story-label">
-        Labels:
+        Labels:(comma separated)
         <input
           type="text"
           className="add-story-input"
