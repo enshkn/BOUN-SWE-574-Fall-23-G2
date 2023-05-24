@@ -10,10 +10,12 @@ services:
       - ./dutluk_frontend/.env
     depends_on:
       - db
+    volumes:
+      - backend-data:/path/to/backend/data
 
   frontend:
     build: 
-        context: ./dutluk_frontend
+      context: ./dutluk_frontend
     container_name: dutluk-frontend
     ports:
       - "3000:3000"
@@ -30,6 +32,13 @@ services:
       - "5432:5432"
     env_file:
       - ./dutluk_frontend/.env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  backend-data: /backend-data
+  db-data: /db-data
+
 
 
 #docker compose up --build -d
