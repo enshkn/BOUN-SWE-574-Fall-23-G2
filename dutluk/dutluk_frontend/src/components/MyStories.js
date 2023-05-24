@@ -37,7 +37,7 @@ function MyStories() {
 
   return (
     <div className="all-stories">
-      <h1>All Stories</h1>
+      <h1>My Stories</h1>
       {myStories.map((story) => (
         <div key={story.id} className="story">
           <h2 className="story-title">
