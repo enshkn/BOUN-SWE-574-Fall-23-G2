@@ -57,7 +57,9 @@ function App() {
     <Router>
       <nav className="nav">
         <div className="logo-container">
-          <img src={DutlukLogo} alt="Logo" className="logo" />
+          <Link to="/">
+            <img src={DutlukLogo} alt="Logo" className="logo" />
+          </Link>
         </div>
         <Link to="/" className="nav-link">
           Home
