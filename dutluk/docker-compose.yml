@@ -36,8 +36,8 @@ services:
       - db-data:/var/lib/postgresql/data
 
 volumes:
-  backend-data: /backend-data
-  db-data: /db-data
+  backend-data:
+  db-data:
 
 
 
