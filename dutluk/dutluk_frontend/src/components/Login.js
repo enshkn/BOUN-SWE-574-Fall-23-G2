@@ -19,7 +19,7 @@ function LoginComponent() {
       .then((response) => {
         const cookieValue = response.headers["bearer"];
         localStorage.setItem("authToken", cookieValue);
-        window.location.href = `http://${process.env.REACT_APP_FRONTEND_URL}:3000//story/all-stories`;
+        window.location.href = `http://${process.env.REACT_APP_FRONTEND_URL}:3000/story/all-stories`;
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
