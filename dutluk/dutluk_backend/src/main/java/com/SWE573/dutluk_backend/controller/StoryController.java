@@ -72,9 +72,9 @@ public class StoryController {
             @RequestParam(required = false) String season) {
         Set<Story> storySet = new HashSet<>();
         if(query != null){
-            if(latitude != null && longitude != null && radius != null){
+            if(latitude != null && longitude != null && (radius != null || radius != 0)){
                 storySet.addAll(storyService.searchStoriesWithLocation(query,radius,latitude,longitude));
-            }else {
+            }else if(!query.equalsIgnoreCase("")){
                 storySet.addAll(storyService.searchStoriesWithQuery(query));
             }
         }
@@ -91,6 +91,11 @@ public class StoryController {
         }
         if(season != null){
             storySet.addAll(storyService.searchStoriesWithSeason(season));
+        }
+        if(storySet.isEmpty()){
+            Set<String> nullSet = new HashSet<>();
+            nullSet.add("No story found!");
+            return ResponseEntity.ok(nullSet);
         }
         return ResponseEntity.ok(Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
     }
