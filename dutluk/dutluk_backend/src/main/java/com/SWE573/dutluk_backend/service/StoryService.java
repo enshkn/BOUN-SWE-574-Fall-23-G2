@@ -118,4 +118,13 @@ public class StoryService {
     public List<Story> searchStoriesWithMultipleDate(LocalDate startTimeStamp,LocalDate endTimeStamp){
         return storyRepository.findByStartTimeStampBetween(startTimeStamp, endTimeStamp);
     }
+
+    public boolean deleteByStoryId(Long userId, Long storyId) {
+        Story story = getStoryByStoryId(storyId);
+        if(findAllStoriesByUserId(userId).contains(story)){
+            storyRepository.delete(story);
+            return true;
+        }
+        return false;
+    }
 }

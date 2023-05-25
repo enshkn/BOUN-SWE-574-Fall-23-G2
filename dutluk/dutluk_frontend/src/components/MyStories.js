@@ -35,6 +35,24 @@ function MyStories() {
       });
   }, [BACKEND_URL]);
 
+  const handleDelete = (storyId) => {
+    axios
+      .get(
+        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/${storyId}`,
+        {
+          withCredentials: true,
+        }
+      )
+      .then(() => {
+        setMyStories((prevStories) =>
+          prevStories.filter((story) => story.id !== storyId)
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <div className="all-stories">
       <h1>My Stories</h1>
@@ -73,6 +91,12 @@ function MyStories() {
               <li key={location.id}>{location.locationName}</li>
             ))}
           </ul>
+          <button
+            className="delete-button"
+            onClick={() => handleDelete(story.id)}
+          >
+            Delete
+          </button>
         </div>
       ))}
     </div>
