@@ -23,13 +23,12 @@ const AddStoryForm = () => {
   useEffect(() => {
     if (startTimeStamp) {
       const startYear = getYear(startTimeStamp);
-      const startDecade = `${startYear}s`;
-      setDecade(startDecade);
+      const startDecade = startYear - (startYear % 10);
+      setDecade(`${startDecade}s`);
     } else {
       setDecade("");
     }
   }, [startTimeStamp]);
-
   const handleEditorChange = (value) => {
     setText(value);
   };
