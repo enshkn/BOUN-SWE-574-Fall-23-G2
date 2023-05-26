@@ -39,11 +39,15 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    private Comment getCommentByCommentId(Long commentId) {
+    public Comment getCommentByCommentId(Long commentId) {
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
         if (optionalComment.isEmpty()) {
             throw new NoSuchElementException("Comment with id '" + commentId + "' not found");
         }
         return optionalComment.get();
+    }
+
+    public void deleteComment(Comment comment){
+        commentRepository.delete(comment);
     }
 }

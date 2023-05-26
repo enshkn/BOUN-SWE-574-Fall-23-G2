@@ -38,7 +38,7 @@ function MyStories() {
   const handleDelete = (storyId) => {
     axios
       .get(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/${storyId}`,
+        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/delete/${storyId}`,
         {
           withCredentials: true,
         }

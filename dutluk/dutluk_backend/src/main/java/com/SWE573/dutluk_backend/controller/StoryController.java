@@ -8,7 +8,6 @@ import com.SWE573.dutluk_backend.service.StoryService;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -105,14 +104,10 @@ public class StoryController {
         User tokenizedUser = userService.validateTokenizedUser(request);
         return ResponseEntity.ok(storyService.likeStory(likeRequest.getLikedEntityId(),tokenizedUser.getId()));
     }
-    @GetMapping("/delete/{id}")
-    public ResponseEntity<?> deleteStory(@PathVariable Long id, HttpServletRequest request) {
+    @GetMapping("/delete/{storyId}")
+    public ResponseEntity<?> deleteStory(@PathVariable Long storyId, HttpServletRequest request) {
         User tokenizedUser = userService.validateTokenizedUser(request);
-        boolean deleted = storyService.deleteByStoryId(tokenizedUser.getId(), id);
-        if (deleted) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.ok(storyService.deleteByStoryId(storyService.getStoryByStoryId(storyId)));
+
     }
 }

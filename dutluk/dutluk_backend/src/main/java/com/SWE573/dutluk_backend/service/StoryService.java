@@ -1,5 +1,6 @@
 package com.SWE573.dutluk_backend.service;
 
+import com.SWE573.dutluk_backend.model.Comment;
 import com.SWE573.dutluk_backend.model.Location;
 import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
@@ -17,8 +18,9 @@ public class StoryService {
 
     @Autowired
     StoryRepository storyRepository;
+
     @Autowired
-    private UserService userService;
+    CommentService commentService;
     public List<Story> findAll(){
         return storyRepository.findAll();
     }
@@ -119,12 +121,12 @@ public class StoryService {
         return storyRepository.findByStartTimeStampBetween(startTimeStamp, endTimeStamp);
     }
 
-    public boolean deleteByStoryId(Long userId, Long storyId) {
-        Story story = getStoryByStoryId(storyId);
-        if(findAllStoriesByUserId(userId).contains(story)){
-            storyRepository.delete(story);
-            return true;
+    public String deleteByStoryId(Story story) {
+        List<Comment> commentList = story.getComments();
+        for (Comment comment: commentList) {
+            commentService.deleteComment(comment);
         }
-        return false;
+        storyRepository.deleteById(story.getId());
+        return "deleted";
     }
 }
