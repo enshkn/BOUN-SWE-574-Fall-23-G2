@@ -29,6 +29,7 @@ const AddStoryForm = () => {
       setDecade("");
     }
   }, [startTimeStamp]);
+
   const handleEditorChange = (value) => {
     setText(value);
   };
@@ -48,15 +49,11 @@ const AddStoryForm = () => {
     let formattedEndTimeStamp = null;
 
     if (decade) {
-      const decadeYear = parseInt(decade.slice(0, 4));
       formattedStartTimeStamp = format(
-        new Date(decadeYear, 0, 1),
+        startTimeStamp,
         "dd/MM/yyyy"
       );
-      formattedEndTimeStamp = format(
-        new Date(decadeYear + 9, 11, 31),
-        "dd/MM/yyyy"
-      );
+      formattedEndTimeStamp = format(endTimeStamp, "dd/MM/yyyy");
     } else {
       formattedStartTimeStamp = format(startTimeStamp, "dd/MM/yyyy");
       formattedEndTimeStamp = endTimeStamp
@@ -151,21 +148,14 @@ const AddStoryForm = () => {
 
   const handleStartDateChange = (date) => {
     setStartTimeStamp(date);
+    const startYear = getYear(date);
+    const startDecade = startYear - (startYear % 10);
+    setDecade(`${startDecade}s`);
   };
 
-  const handleDecadeChange = (e) => {
-    const selectedDecade = e.target.value;
-    setDecade(selectedDecade);
-
-    if (selectedDecade) {
-      const decadeYear = parseInt(selectedDecade.slice(0, 4));
-      setStartTimeStamp(new Date(decadeYear, 0, 1));
-      setEndTimeStamp(new Date(decadeYear + 9, 11, 31));
-    } else {
-      setStartTimeStamp(null);
-      setEndTimeStamp(null);
-    }
-  };
+  const handleDecadeChange = (decade) => {
+    setDecade(decade);
+  }
 
   return (
     <form className="add-story-form" onSubmit={handleSubmit}>
