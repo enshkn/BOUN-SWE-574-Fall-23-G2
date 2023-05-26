@@ -233,6 +233,7 @@ const StorySearch = () => {
             <option value="1990s">1990s</option>
             <option value="2000s">2000s</option>
             <option value="2010s">2010s</option>
+            <option value="2020s">2020s</option>
           </select>
         </label>
         <button type="button" onClick={handleSearch}>

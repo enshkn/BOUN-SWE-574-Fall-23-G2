@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import ReactQuill from "react-quill";
@@ -6,7 +6,7 @@ import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format } from "date-fns";
+import { format, getYear } from "date-fns";
 import "./css/AddStory.css";
 
 const AddStoryForm = () => {
@@ -19,6 +19,17 @@ const AddStoryForm = () => {
   const [endTimeStamp, setEndTimeStamp] = useState(null);
   const [season, setSeason] = useState("");
   const [decade, setDecade] = useState("");
+
+  useEffect(() => {
+    if (startTimeStamp) {
+      const startYear = getYear(startTimeStamp);
+      const startDecade = `${startYear}s`;
+      setDecade(startDecade);
+    } else {
+      setDecade("");
+    }
+  }, [startTimeStamp]);
+
   const handleEditorChange = (value) => {
     setText(value);
   };
@@ -26,13 +37,13 @@ const AddStoryForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const currentDateTime = new Date();
-  if (startTimeStamp && startTimeStamp > currentDateTime) {
-    return;
-  }
+    if (startTimeStamp && startTimeStamp > currentDateTime) {
+      return;
+    }
 
-  if (endTimeStamp && endTimeStamp > currentDateTime) {
-    return;
-  }
+    if (endTimeStamp && endTimeStamp > currentDateTime) {
+      return;
+    }
 
     let formattedStartTimeStamp = null;
     let formattedEndTimeStamp = null;
@@ -139,6 +150,10 @@ const AddStoryForm = () => {
     }
   };
 
+  const handleStartDateChange = (date) => {
+    setStartTimeStamp(date);
+  };
+
   const handleDecadeChange = (e) => {
     const selectedDecade = e.target.value;
     setDecade(selectedDecade);
@@ -222,7 +237,7 @@ const AddStoryForm = () => {
         Start Date:
         <DatePicker
           selected={startTimeStamp}
-          onChange={setStartTimeStamp}
+          onChange={handleStartDateChange}
           dateFormat="dd/MM/yyyy"
           className="add-story-datepicker"
         />
@@ -271,6 +286,7 @@ const AddStoryForm = () => {
           <option value="1990s">1990s</option>
           <option value="2000s">2000s</option>
           <option value="2010s">2010s</option>
+          <option value="2020s">2020s</option>
         </select>
       </label>
       <br />
