@@ -1,0 +1,9 @@
+{
+    "appTitleDev": "My Eng App Dev",
+    "appTitleProd": "My Eng App Prod",
+    "appLang": "English",
+    "tabs": {
+        "home": "Home",
+        "profile": "Profile"
+    }
+}
