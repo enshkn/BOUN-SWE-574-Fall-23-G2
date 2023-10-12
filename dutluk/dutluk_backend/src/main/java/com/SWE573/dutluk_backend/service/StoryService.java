@@ -21,6 +21,9 @@ public class StoryService {
 
     @Autowired
     CommentService commentService;
+
+
+
     public List<Story> findAll(){
         return storyRepository.findAll();
     }
