@@ -7,7 +7,7 @@ part 'user.g.dart';
 @freezed
 class User extends BaseEntity<User> with _$User {
   const factory User({
-    String? id,
+    int? id,
     String? username,
     String? email,
     String? password,
@@ -15,6 +15,7 @@ class User extends BaseEntity<User> with _$User {
     String? token,
     List<User>? followers,
     List<User>? following,
+    List<String>? profilePhoto,
   }) = _User;
   const User._();
   factory User.initial() => const User();

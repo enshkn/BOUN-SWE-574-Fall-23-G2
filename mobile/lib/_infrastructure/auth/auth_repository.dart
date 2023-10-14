@@ -40,7 +40,7 @@ class AuthRepository implements IAuthRepository {
         // final status = response.status ?? false;
         // if (!status) return left(Failure(message: response.errorMessage));
 
-        final user = response.data as User;
+        final user = response.entity as User;
 
         final tokenModel = _cacheManager.getData();
         await _cacheManager.setData(

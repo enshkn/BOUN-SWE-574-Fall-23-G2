@@ -26,7 +26,8 @@ extension MediaQueryExtension on BuildContext {
   double get highWidthValue => width * 0.1;
   double customWidthValue(double value) => width * value;
 
-  double customTextSize(double value) => width > 1024 ? width/2 * value : width * value;
+  double customTextSize(double value) =>
+      width > 1024 ? width / 2 * value : width * value;
 }
 
 extension ThemeExtension on BuildContext {
@@ -40,13 +41,17 @@ extension PaddingExtension on BuildContext {
   EdgeInsets get paddingNormal => EdgeInsets.all(normalHeightValue);
   EdgeInsets get paddingMedium => EdgeInsets.all(mediumHeightValue);
   EdgeInsets get paddingHigh => EdgeInsets.all(highHeightValue);
-  EdgeInsets get paddingHorizontalLow => EdgeInsets.symmetric(horizontal: lowHeightValue);
-  EdgeInsets get paddingHorizontalNormal => EdgeInsets.symmetric(horizontal: normalHeightValue);
-  EdgeInsets get paddingHorizontalHigh => EdgeInsets.symmetric(horizontal: highHeightValue);
+  EdgeInsets get paddingHorizontalLow =>
+      EdgeInsets.symmetric(horizontal: lowHeightValue);
+  EdgeInsets get paddingHorizontalNormal =>
+      EdgeInsets.symmetric(horizontal: normalHeightValue);
+  EdgeInsets get paddingHorizontalHigh =>
+      EdgeInsets.symmetric(horizontal: highHeightValue);
 }
 
 extension PageExtension on BuildContext {
   Color get randomColor => Colors.primaries[Random().nextInt(17)];
+  Color get appBarColor => Colors.blue;
 }
 
 extension DurationExtension on BuildContext {
