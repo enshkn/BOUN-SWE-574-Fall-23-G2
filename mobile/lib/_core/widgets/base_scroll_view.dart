@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'custom_scroll_behaviour.dart';
 
 class BaseScrollView extends StatelessWidget {
-  final Widget child;
+  final ScrollController? controller;
+  final CrossAxisAlignment crossAxisAlignment;
+  final List<Widget> children;
   const BaseScrollView({
+    required this.children,
     super.key,
-    required this.child,
+    this.controller,
+    this.crossAxisAlignment = CrossAxisAlignment.start,
   });
 
   @override
@@ -15,8 +19,12 @@ class BaseScrollView extends StatelessWidget {
     return ScrollConfiguration(
       behavior: CustomScrollBehavior(),
       child: SingleChildScrollView(
+        controller: controller,
         physics: const ClampingScrollPhysics(),
-        child: child,
+        child: Column(
+          crossAxisAlignment: crossAxisAlignment,
+          children: children,
+        ),
       ),
     );
   }

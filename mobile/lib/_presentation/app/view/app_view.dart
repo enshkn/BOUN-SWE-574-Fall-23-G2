@@ -58,6 +58,7 @@ class _AppViewState extends State<AppView> {
           builder: (context, child) {
             tabsRouter = context.tabsRouter;
             return Scaffold(
+              backgroundColor: Colors.white,
               body: child,
               bottomNavigationBar: buildBottomNavigationBar(
                 tabsRouter!,
@@ -83,49 +84,56 @@ class _AppViewState extends State<AppView> {
         final userLoggedIn = user != null;
         return DecoratedBox(
           position: DecorationPosition.foreground,
-          decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(color: context.theme.primaryColor),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
             ),
           ),
-          child: BottomNavigationBar(
-            backgroundColor: context.theme.scaffoldBackgroundColor,
-            type: BottomNavigationBarType.fixed,
-            selectedFontSize: 10.5,
-            unselectedFontSize: 10.5,
-            onTap: (index) {
-              cubit.changeBottomTab(BottomTabs.fromValue(index));
-            },
-            currentIndex: tabsRouter.activeIndex,
-            items: [
-              _buidNavigationItem(
-                state,
-                context,
-                bottomTab: BottomTabs.home,
-                label: LocaleKeys.tabs_home,
-                icon: Icon(
-                  FontAwesomeIcons.houseChimney,
-                  size: 20,
-                  color: state.bottomTab == BottomTabs.home
-                      ? context.theme.primaryColor
-                      : const Color(0xFF071F05).withOpacity(0.5),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
+            child: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.grey.shade100,
+              selectedFontSize: 10.5,
+              unselectedFontSize: 10.5,
+              onTap: (index) {
+                cubit.changeBottomTab(BottomTabs.fromValue(index));
+              },
+              currentIndex: tabsRouter.activeIndex,
+              items: [
+                _buidNavigationItem(
+                  state,
+                  context,
+                  bottomTab: BottomTabs.home,
+                  label: LocaleKeys.tabs_home,
+                  icon: Icon(
+                    FontAwesomeIcons.houseChimney,
+                    size: 20,
+                    color: state.bottomTab == BottomTabs.home
+                        ? context.appBarColor
+                        : const Color(0xFF071F05).withOpacity(0.5),
+                  ),
+                  size: 30,
                 ),
-                size: 30,
-              ),
-              _buidNavigationItem(
-                state,
-                context,
-                bottomTab: BottomTabs.profile,
-                label: LocaleKeys.tabs_profile,
-                icon: Icon(
-                  FontAwesomeIcons.person,
-                  size: 20,
-                  color: state.bottomTab == BottomTabs.home
-                      ? context.theme.primaryColor
-                      : const Color(0xFF071F05).withOpacity(0.5),
+                _buidNavigationItem(
+                  state,
+                  context,
+                  bottomTab: BottomTabs.profile,
+                  label: LocaleKeys.tabs_profile,
+                  icon: Icon(
+                    FontAwesomeIcons.person,
+                    size: 20,
+                    color: state.bottomTab == BottomTabs.sample
+                        ? context.appBarColor
+                        : const Color(0xFF071F05).withOpacity(0.5),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -150,7 +158,7 @@ class _AppViewState extends State<AppView> {
                 svgName.toSvg,
                 width: size ?? 20,
                 color: state.bottomTab == bottomTab
-                    ? context.theme.primaryColor
+                    ? context.appBarColor
                     : const Color(0xFF071F05).withOpacity(0.5),
               ),
       ),
