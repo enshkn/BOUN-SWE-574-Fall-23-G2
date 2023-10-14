@@ -37,6 +37,15 @@ public class StoryController {
         return ResponseEntity.ok(successfulResponse);
     }
 
+    //MOCK UNTIL ACTIVITY FEED LOGIC IS ESTABLISHED
+    @GetMapping("/feed")
+    @CrossOrigin
+    public ResponseEntity<?> findFeedStories(HttpServletRequest request){
+        successfulResponse.setEntity(storyService.findAll());
+        successfulResponse.setCount(storyService.findAll().size());
+        return ResponseEntity.ok(successfulResponse);
+    }
+
     @PostMapping("/add")
     @CrossOrigin
     public ResponseEntity<?> addStory(@RequestBody StoryCreateRequest storyCreateRequest,HttpServletRequest request) throws ParseException {
