@@ -70,4 +70,7 @@ public class User extends BaseEntity{
     @ManyToMany(mappedBy = "followers", fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JsonIgnoreProperties({"followers", "email" , "password" , "biography" , "stories","following"})
     private Set<User> following = new HashSet<>();
+
+    @Transient
+    private String token;
 }
