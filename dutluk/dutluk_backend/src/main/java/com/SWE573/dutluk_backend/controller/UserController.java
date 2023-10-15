@@ -62,7 +62,10 @@ public class UserController {
         cookie.setPath("/api");
         response.addCookie(cookie);
         foundUser.setProfilePhoto(null);
-        successfulResponse.setEntity(userService.generateUserToken(foundUser));
+        HashMap<String, Object> tokenMap = new HashMap<>();
+        tokenMap.put("token",userService.generateUserToken(foundUser));
+        successfulResponse.setEntity(tokenMap);
+        //successfulResponse.setEntity(foundUser);
         return ResponseEntity.ok(successfulResponse);
     }
     @GetMapping("/logout")
