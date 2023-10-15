@@ -18,6 +18,8 @@ public class JwtUtil {
 
     @Value("${JWT_SECRET_KEY}")
     private String JWT_SECRET_KEY;
+    @Value("${TOKEN_EXPIRATION_HOUR}")
+    private long TOKEN_EXPIRATION_HOUR;
 
     public String generateToken(Long userId) {
         Map<String, Object> claims = new HashMap<>();
@@ -27,7 +29,7 @@ public class JwtUtil {
     private String createToken(Map<String, Object> claims, Long subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject.toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))// 10 hours
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * TOKEN_EXPIRATION_HOUR))// 10 hours
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY).compact();
 
     }
