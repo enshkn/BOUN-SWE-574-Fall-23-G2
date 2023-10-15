@@ -7,6 +7,8 @@ import com.SWE573.dutluk_backend.request.FollowRequest;
 import com.SWE573.dutluk_backend.request.LoginRequest;
 import com.SWE573.dutluk_backend.request.RegisterRequest;
 import com.SWE573.dutluk_backend.request.UserUpdateRequest;
+import com.SWE573.dutluk_backend.response.Response;
+import com.SWE573.dutluk_backend.response.SuccessfulResponse;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +33,8 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    private Response successfulResponse = new SuccessfulResponse();
+
 
     @GetMapping("/test")
     public String helloWorld(){
@@ -41,7 +45,8 @@ public class UserController {
     public ResponseEntity<?> getUserById(@PathVariable Long id,HttpServletRequest request) throws AccountNotFoundException {
         User user = userService.findByUserId(id);
         if(user != null){
-            return ResponseEntity.ok(user);
+            successfulResponse.setEntity(user);
+            return ResponseEntity.ok(successfulResponse);
         }
         else{
             throw new AccountNotFoundException();
@@ -56,7 +61,8 @@ public class UserController {
         cookie.setPath("/api");
         response.addCookie(cookie);
         foundUser.setProfilePhoto(null);
-        return ResponseEntity.ok(foundUser);
+        successfulResponse.setEntity(foundUser);
+        return ResponseEntity.ok(successfulResponse);
     }
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
@@ -64,7 +70,8 @@ public class UserController {
         cookie.setPath("/api");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        return ResponseEntity.ok("Logged out");
+        successfulResponse.setEntity("Logged out");
+        return ResponseEntity.ok(successfulResponse);
     }
 
     @PostMapping("/register")
@@ -75,12 +82,14 @@ public class UserController {
                 .password(registerRequest.getPassword())
                 .build();
         User registeredUser = userService.addUser(newUser);
-        return ResponseEntity.ok(registeredUser);
+        successfulResponse.setEntity(registeredUser);
+        return ResponseEntity.ok(successfulResponse);
     }
     @PostMapping("/update")
-    public User updateUser(@RequestBody UserUpdateRequest updateRequest, HttpServletRequest request){
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequest updateRequest, HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        return userService.updateUser(user,updateRequest);
+        successfulResponse.setEntity(userService.updateUser(user,updateRequest));
+        return ResponseEntity.ok(successfulResponse);
     }
 
     @PostMapping(value= "/photo", consumes = "multipart/form-data")
@@ -91,7 +100,8 @@ public class UserController {
         try {
             byte[] uploadedPhoto = file.getBytes();
             User foundUser = userService.validateTokenizedUser(request);
-            return ResponseEntity.ok(userService.updateUserPhoto(foundUser,uploadedPhoto));
+            successfulResponse.setEntity(userService.updateUserPhoto(foundUser,uploadedPhoto));
+            return ResponseEntity.ok(successfulResponse);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -102,18 +112,21 @@ public class UserController {
     @GetMapping("/all")
     @CrossOrigin
     public ResponseEntity<?> findAllUsers(){
-        return ResponseEntity.ok(userService.findAll());
+        successfulResponse.setEntity(userService.findAll());
+        return ResponseEntity.ok(successfulResponse);
     }
 
     @PostMapping("/follow")
     public ResponseEntity<?> followUser(@RequestBody FollowRequest followRequest, HttpServletRequest request){
         User foundUser = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(userService.followUser(foundUser, followRequest.getUserId()));
+        successfulResponse.setEntity(userService.followUser(foundUser, followRequest.getUserId()));
+        return ResponseEntity.ok(successfulResponse);
     }
 
     @GetMapping("/profile")
-    public User showUserProfile(HttpServletRequest request){
-        return userService.validateTokenizedUser(request);
+    public ResponseEntity<?> showUserProfile(HttpServletRequest request){
+        successfulResponse.setEntity(userService.validateTokenizedUser(request));
+        return ResponseEntity.ok(successfulResponse);
     }
 
 
