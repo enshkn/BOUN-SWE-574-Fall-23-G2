@@ -13,6 +13,7 @@ dependencies:
   cached_network_image: ^3.2.3
   connectivity_plus: ^4.0.2
   cupertino_icons: ^1.0.2
+  carousel_slider: ^4.2.1
   easy_localization: ^3.0.1
   envied: ^0.3.0+3
   firebase_core: ^2.8.0
@@ -22,6 +23,9 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.1.2
   flutter_cache_manager: ^3.3.0
+  flutter_dotenv: ^5.1.0
+  flutter_html: ^3.0.0-beta.2
+  flutter_quill: ^7.4.7
   flutter_svg: ^2.0.4
   font_awesome_flutter: ^10.4.0
   freezed_annotation: ^2.2.0
