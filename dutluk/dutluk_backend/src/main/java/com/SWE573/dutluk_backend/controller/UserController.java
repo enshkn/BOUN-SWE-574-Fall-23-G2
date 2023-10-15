@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 
 
 @RestController
@@ -61,7 +62,7 @@ public class UserController {
         cookie.setPath("/api");
         response.addCookie(cookie);
         foundUser.setProfilePhoto(null);
-        successfulResponse.setEntity(foundUser);
+        successfulResponse.setEntity(userService.generateUserToken(foundUser));
         return ResponseEntity.ok(successfulResponse);
     }
     @GetMapping("/logout")
