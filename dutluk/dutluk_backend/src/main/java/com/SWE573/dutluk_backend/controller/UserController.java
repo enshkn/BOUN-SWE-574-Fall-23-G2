@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 
 
 @RestController
@@ -57,10 +58,15 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
                                    HttpServletResponse response) throws AccountNotFoundException {
         User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
-        Cookie cookie = new Cookie("Bearer", userService.generateUserToken(foundUser));
+        String token = userService.generateUserToken(foundUser);
+        Cookie cookie = new Cookie("Bearer", token);
         cookie.setPath("/api");
         response.addCookie(cookie);
         foundUser.setProfilePhoto(null);
+        /*HashMap<String, Object> tokenMap = new HashMap<>();
+        tokenMap.put("token",userService.generateUserToken(foundUser));
+        successfulResponse.setEntity(tokenMap);*/
+        foundUser.setToken(token);
         successfulResponse.setEntity(foundUser);
         return ResponseEntity.ok(successfulResponse);
     }
