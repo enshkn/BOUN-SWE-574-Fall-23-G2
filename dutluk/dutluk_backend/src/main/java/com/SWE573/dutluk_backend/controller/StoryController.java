@@ -4,6 +4,7 @@ import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.request.LikeRequest;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
+import com.SWE573.dutluk_backend.response.SuccessfulResponse;
 import com.SWE573.dutluk_backend.service.StoryService;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,30 +26,48 @@ public class StoryController {
     StoryService storyService;
     @Autowired
     private UserService userService;
+
+    private SuccessfulResponse successfulResponse = new SuccessfulResponse();
+
     @GetMapping("/all")
     @CrossOrigin
-    public List<Story> findAllStories(HttpServletRequest request){
-        return storyService.findAll();
+    public ResponseEntity<?> findAllStories(HttpServletRequest request){
+        successfulResponse.setEntity(storyService.findAll());
+        successfulResponse.setCount(storyService.findAll().size());
+        return ResponseEntity.ok(successfulResponse);
+    }
+
+    //MOCK UNTIL ACTIVITY FEED LOGIC IS ESTABLISHED
+    @GetMapping("/feed")
+    @CrossOrigin
+    public ResponseEntity<?> findFeedStories(HttpServletRequest request){
+        successfulResponse.setEntity(storyService.findAll());
+        successfulResponse.setCount(storyService.findAll().size());
+        return ResponseEntity.ok(successfulResponse);
     }
 
     @PostMapping("/add")
     @CrossOrigin
     public ResponseEntity<?> addStory(@RequestBody StoryCreateRequest storyCreateRequest,HttpServletRequest request) throws ParseException {
         User user = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(storyService.createStory(user,storyCreateRequest));
+        successfulResponse.setEntity(storyService.createStory(user,storyCreateRequest));
+        return ResponseEntity.ok(successfulResponse);
     }
 
     @GetMapping("/fromUser")
     public ResponseEntity<?> findAllStoriesfromUser(HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(storyService.findAllStoriesByUserId(user.getId()));
+        successfulResponse.setEntity(storyService.findAllStoriesByUserId(user.getId()));
+        successfulResponse.setCount(storyService.findAllStoriesByUserId(user.getId()).size());
+        return ResponseEntity.ok(successfulResponse);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getStoryById(@PathVariable Long id,HttpServletRequest request){
         Story foundStory = storyService.getStoryByStoryId(id);
         if (foundStory!=null) {
-            return ResponseEntity.ok(foundStory);
+            successfulResponse.setEntity(foundStory);
+            return ResponseEntity.ok(successfulResponse);
         }
         return ResponseEntity.notFound().build();
     }
@@ -57,6 +75,8 @@ public class StoryController {
     @GetMapping("/following")
     public ResponseEntity<?> findAllStoriesfromFollowings(HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
+        successfulResponse.setEntity(storyService.findFollowingStories(tokenizedUser));
+        successfulResponse.setCount(storyService.findFollowingStories(tokenizedUser).size());
         return ResponseEntity.ok(storyService.findFollowingStories(tokenizedUser));
     }
 
@@ -97,7 +117,9 @@ public class StoryController {
             nullSet.add("No story found!");
             return ResponseEntity.ok(nullSet);
         }
-        return ResponseEntity.ok(Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+        successfulResponse.setEntity(Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+        successfulResponse.setCount(storySet.size());
+        return ResponseEntity.ok(successfulResponse);
     }
     @PostMapping("/like/")
     public ResponseEntity<?> likeStory(@RequestBody LikeRequest likeRequest, HttpServletRequest request){
@@ -107,7 +129,8 @@ public class StoryController {
     @GetMapping("/delete/{storyId}")
     public ResponseEntity<?> deleteStory(@PathVariable Long storyId, HttpServletRequest request) {
         User tokenizedUser = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(storyService.deleteByStoryId(storyService.getStoryByStoryId(storyId)));
+        successfulResponse.setEntity(storyService.deleteByStoryId(storyService.getStoryByStoryId(storyId)));
+        return ResponseEntity.ok(successfulResponse);
 
     }
 }

@@ -1,0 +1,7 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/amine/Documents/GitHub/BOUN-SWE-574-Fall-23-G2/mobile/build/ios/Debug-dev-iphonesimulator/FirebaseCoreExtension/FirebaseCoreExtension.framework/FirebaseCoreExtension'
+relocations:
+  - { offsetInCU: 0x33, offset: 0x33, size: 0x8, addend: 0x0, symName: _FirebaseCoreExtensionVersionString, symObjAddr: 0x0, symBinAddr: 0x3FA0, symSize: 0x0 }
+  - { offsetInCU: 0x67, offset: 0x67, size: 0x8, addend: 0x0, symName: _FirebaseCoreExtensionVersionNumber, symObjAddr: 0x38, symBinAddr: 0x3FD8, symSize: 0x0 }
+...

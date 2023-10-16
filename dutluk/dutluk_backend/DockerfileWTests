@@ -1,0 +1,11 @@
+# Stage 1: Build and test
+FROM maven:3.8.4-openjdk-17-slim AS build
+COPY . /dutluk_backend
+WORKDIR /dutluk_backend
+RUN mvn clean test install
+
+# Stage 2: Prepare the deployment image
+FROM openjdk:17-slim
+COPY --from=build /dutluk_backend/target/dutluk_backend-0.0.1.jar /app/dutluk_backend.jar
+EXPOSE 8080
+CMD ["java", "-jar", "/app/dutluk_backend.jar"]
