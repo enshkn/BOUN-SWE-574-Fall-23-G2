@@ -4,7 +4,7 @@ import '../../_common/constants/hive_constants.dart';
 import '../../_core/storage/hive/i_cache_service.dart';
 import '../../_domain/cache/model/config.dart';
 
-@Named(HiveConstants.configServiceKey)
+@named
 @LazySingleton(as: ICacheManager<Config>)
 class ConfigCacheService extends ICacheManager<Config> {
   ConfigCacheService() : super(HiveConstants.configServiceKey);

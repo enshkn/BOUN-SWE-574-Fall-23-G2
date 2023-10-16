@@ -30,4 +30,5 @@ extension StringExtensions on String {
 
 extension NullableStringExtension on String? {
   bool get isNullOrEmpty => this == null || (this?.isEmpty ?? false);
+  bool get isNorNullOrEmpty => this != null && this!.isNotEmpty;
 }

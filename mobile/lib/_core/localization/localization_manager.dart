@@ -20,16 +20,8 @@ class LocalizationManager {
 
   Locale selectedLocale = const Locale('tr');
 
-  void getCachedLocale(BuildContext context) {
-    selectedLocale = context.locale;
-    di<AppNetworkManager>().changeLangHeader(selectedLocale.languageCode);
-  }
-
   void changeLocale(BuildContext context) {
     final currentLocale = context.locale;
     if (currentLocale == selectedLocale) return;
-
-    selectedLocale = currentLocale;
-    di<AppNetworkManager>().changeLangHeader(selectedLocale.languageCode);
   }
 }

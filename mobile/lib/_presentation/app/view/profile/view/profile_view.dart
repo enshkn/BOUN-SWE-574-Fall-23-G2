@@ -40,7 +40,9 @@ class _ProfileViewState extends State<ProfileView> {
                       Icons.person,
                       color: Colors.white,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      cubit.getProfileInfo();
+                    },
                   ),
                 ),
               ),
@@ -50,7 +52,10 @@ class _ProfileViewState extends State<ProfileView> {
             children: [
               const Divider(),
               ButtonCard(
-                onPressed: () {},
+                onPressed: () {
+                  ///
+                  ///
+                },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,

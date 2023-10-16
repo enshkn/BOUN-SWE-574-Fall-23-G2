@@ -4,7 +4,7 @@ import '../../_common/constants/hive_constants.dart';
 import '../../_core/storage/hive/i_cache_service.dart';
 import '../../_domain/cache/model/token_model.dart';
 
-@Named(HiveConstants.tokenServiceKey)
+@named
 @LazySingleton(as: ICacheManager<TokenModel>)
 class TokenCacheService extends ICacheManager<TokenModel> {
   TokenCacheService() : super(HiveConstants.tokenServiceKey);

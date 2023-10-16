@@ -20,7 +20,7 @@ class StoryModel extends BaseEntity<StoryModel> with _$StoryModel {
     String? decade,
     String? startTimeStamp,
     String? endTimeStamp,
-    List<CommentModel>? comments,
+    List<String>? comments,
     List<LocationModel>? locations,
     List<int>? likes,
   }) = _StoryModel;

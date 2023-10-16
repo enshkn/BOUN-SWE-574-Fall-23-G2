@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:swe/_common/style/text_styles.dart';
+import 'package:swe/_core/extensions/context_extensions.dart';
 
 import '../../../_application/splash/splash_cubit.dart';
 import '../../../_application/splash/splash_state.dart';
@@ -17,9 +19,13 @@ class SplashView extends StatelessWidget {
         cubit.init();
       },
       builder: (context, SplashCubit cubit, SplashState state) {
-        return const Scaffold(
+        return Scaffold(
           body: Center(
-            child: Text('Splash View'),
+            child: Text(
+              'StoryTeller',
+              style: const TextStyles.hugeTitle()
+                  .copyWith(letterSpacing: 0.4, color: context.appBarColor),
+            ),
           ),
         );
       },

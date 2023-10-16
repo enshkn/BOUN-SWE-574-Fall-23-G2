@@ -64,13 +64,13 @@ class AppNetworkManager {
     }
   }
 
-  void changeLangHeader(String langCode) {
-    _networkManager.removeHeader('Lang');
-    _networkManager.addHeader({'Lang': langCode});
+  void addCookieTokenHeader(String token) {
+    _networkManager.removeHeader('Cookie');
+    _networkManager.addHeader({'Cookie': 'Bearer=$token'});
   }
 
-  void addAuthHeader(String token) {
-    removeAuthHeader();
+  void addAuthorizationHeader(String token) {
+    _networkManager.removeAuthorizationHeader();
     _networkManager.addAuthorizationHeader(token);
   }
 
