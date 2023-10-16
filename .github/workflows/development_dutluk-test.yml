@@ -16,6 +16,30 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: 17
+        distribution: 'zulu' # Alternative distribution options are available.
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+    - name: Build and analyze
+      working-directory: ./dutluk/dutluk_backend
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=enshkn_BOUN-SWE-574-Fall-23-G2 -Dsonar.organization=enshkn
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
@@ -31,7 +55,7 @@ jobs:
       with:
         push: true
         tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_6adda7013959400fa2ce1744554a178f }}/dutluk-be-test:${{ github.sha }}
-        file: ./dutluk/dutluk_backend/Dockerfile
+        file: ./dutluk/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
