@@ -31,9 +31,8 @@ jobs:
       with:
         push: true
         tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_6adda7013959400fa2ce1744554a178f }}/dutluk-be-test:${{ github.sha }}
-        context: ./dutluk/dutluk_backend/
-        file: Dockerfile.WTest
-        
+        file: ./dutluk/dutluk_backend/DockerfileWTest
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
