@@ -58,7 +58,6 @@ public class Story extends BaseEntity{
     @JsonFormat(pattern="dd/MM/yyyy")
     private LocalDate endTimeStamp;
 
-
     private String season;
 
     private String decade;
