@@ -27,7 +27,7 @@ case $1 in
             flutter build apk --release
         else
             flutter clean
-            flutter build apk --release --flavor $2 -t lib/main_$2.dart
+            flutter build apk --release --flavor $2 -t lib/main/flavor/main_$2.dart --no-tree-shake-icons
         fi
         
         ;;
@@ -41,7 +41,7 @@ case $1 in
             flutter build appbundle
         else
             flutter clean
-            flutter build appbundle --flavor $2 -t lib/main_$2.dart
+            flutter build appbundle --flavor $2 -t lib/main/flavor/main_$2.dart
         fi
         ;;
     *)
