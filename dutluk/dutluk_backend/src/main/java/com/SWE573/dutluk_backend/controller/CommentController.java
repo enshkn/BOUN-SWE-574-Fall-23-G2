@@ -39,7 +39,7 @@ public class CommentController {
         Story story = storyService.getStoryByStoryId(commentRequest.getStoryId());
         return ResponseEntity.ok(commentService.createComment(commentRequest,user,story));
     }
-    @PostMapping("/like/")
+    @PostMapping("/like")
     public ResponseEntity<?> likeComment(@RequestBody LikeRequest likeRequest, HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
 

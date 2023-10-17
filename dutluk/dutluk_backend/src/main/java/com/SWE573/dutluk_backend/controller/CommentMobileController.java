@@ -38,7 +38,7 @@ public class CommentMobileController {
         successfulResponse.setEntity(commentService.createComment(commentRequest,user,story));
         return ResponseEntity.ok(successfulResponse);
     }
-    @PostMapping("/like/")
+    @PostMapping("/like")
     public ResponseEntity<?> likeComment(@RequestBody LikeRequest likeRequest, HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
         successfulResponse.setEntity(commentService.likeComment(likeRequest.getLikedEntityId(),tokenizedUser.getId()));
