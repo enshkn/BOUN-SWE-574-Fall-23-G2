@@ -1,0 +1,45 @@
+.all-stories {
+  padding: 20px;
+}
+
+.story {
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+}
+
+.story-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.story-details {
+  margin-bottom: 10px;
+}
+
+.story-details b {
+  font-weight: bold;
+}
+
+.author {
+  font-size: 16px;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.published-at {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.locations-list {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+
+.locations-list li {
+  margin-bottom: 5px;
+}
