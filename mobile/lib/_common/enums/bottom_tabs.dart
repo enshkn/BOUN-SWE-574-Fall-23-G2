@@ -1,3 +1,5 @@
+import 'package:swe/_presentation/_route/router.dart';
+
 enum BottomTabs {
   home(0),
   sample(1),
@@ -10,4 +12,13 @@ enum BottomTabs {
   static BottomTabs fromValue(int value) {
     return BottomTabs.values.firstWhere((e) => e.value == value);
   }
+
+  /* String get getTabRoute {
+    switch (this) {
+      case BottomTabs.home:
+        return HomeTabRoute.name;
+      case BottomTabs.sample:
+        return ProfileTabRoute.name;
+    }
+  } */
 }

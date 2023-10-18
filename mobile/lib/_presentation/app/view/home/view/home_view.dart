@@ -9,6 +9,7 @@ import 'package:swe/_core/widgets/base_scroll_view.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
+import 'package:swe/_presentation/_route/router.dart';
 import 'package:swe/_presentation/widgets/base/base_carousel_slider.dart';
 import 'package:swe/_presentation/widgets/base/base_header_title.dart';
 import 'package:swe/_presentation/widgets/base/base_list_view.dart';
@@ -30,6 +31,7 @@ class _HomeViewState extends State<HomeView> {
       onCubitReady: (cubit) async {
         cubit.setContext(context);
         cubit.init();
+        await cubit.getStoryAll();
         await cubit.getActivityFeeed();
         await cubit.getFallowedStories();
       },
@@ -100,7 +102,11 @@ class _HomeViewState extends State<HomeView> {
                                 vertical: 4,
                               ),
                               child: GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  context.router.push(
+                                    StoryDetailsRoute(model: model),
+                                  );
+                                },
                                 child: RecommendedCard(
                                   storyModel: model,
                                   onFavouriteTap: () {},
@@ -120,13 +126,10 @@ class _HomeViewState extends State<HomeView> {
                           ),
                         ),
                         SizedBox(
-                          height: 450 * 10,
+                          height: 450 * state.allStories.length.toDouble(),
                           child: BaseListView<StoryModel>(
                             physics: const NeverScrollableScrollPhysics(),
-                            items: List.generate(
-                              10,
-                              (index) => StoryModel.sample(),
-                            ),
+                            items: state.allStories,
                             itemBuilder: (item) {
                               return Container(
                                 padding: const EdgeInsets.symmetric(
@@ -135,7 +138,11 @@ class _HomeViewState extends State<HomeView> {
                                 ),
                                 height: 450,
                                 child: GestureDetector(
-                                  onTap: () {},
+                                  onTap: () {
+                                    context.router.push(
+                                      StoryDetailsRoute(model: item),
+                                    );
+                                  },
                                   child: StoryCard(
                                     storyModel: item,
                                     onFavouriteTap: () {},
