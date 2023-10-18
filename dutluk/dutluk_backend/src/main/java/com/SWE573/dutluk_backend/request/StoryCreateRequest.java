@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -21,12 +22,12 @@ public class StoryCreateRequest {
 
 
 
-    @JsonFormat(pattern="dd/MM/yyyy")
-    private LocalDate startTimeStamp;
+    //@JsonFormat(pattern="dd/MM/yyyy")
+    private Date startTimeStamp;
 
 
-    @JsonFormat(pattern="dd/MM/yyyy")
-    private LocalDate endTimeStamp;
+    //@JsonFormat(pattern="dd/MM/yyyy")
+    private Date endTimeStamp;
 
     private String season;
 
