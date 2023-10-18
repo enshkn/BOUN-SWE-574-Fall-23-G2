@@ -51,12 +51,12 @@ public class Story extends BaseEntity{
     private Date createdAt;
 
     @Column(name = "start_time_stamp")
-    @JsonFormat(pattern="dd/MM/yyyy")
-    private LocalDate startTimeStamp;
+    //@JsonFormat(pattern="dd/MM/yyyy")
+    private Date startTimeStamp;
 
     @Column(name = "end_time_stamp")
-    @JsonFormat(pattern="dd/MM/yyyy")
-    private LocalDate endTimeStamp;
+    //@JsonFormat(pattern="dd/MM/yyyy")
+    private Date endTimeStamp;
 
     private String season;
 

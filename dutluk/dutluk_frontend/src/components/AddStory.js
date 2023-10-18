@@ -4,8 +4,8 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datetime-picker"; // Import react-datetime-picker
+import "react-datetime-picker/dist/DateTimePicker.css"; // Import the styles for react-datetime-picker
 import { format, getYear } from "date-fns";
 import "./css/AddStory.css";
 
@@ -51,13 +51,16 @@ const AddStoryForm = () => {
     if (decade) {
       formattedStartTimeStamp = format(
         startTimeStamp,
-        "dd/MM/yyyy"
+        "yyyy-MM-dd'T'HH:mm:ss.SSS"
       );
-      formattedEndTimeStamp = format(endTimeStamp, "dd/MM/yyyy");
+      formattedEndTimeStamp = format(endTimeStamp, "yyyy-MM-dd'T'HH:mm:ss.SSS");
     } else {
-      formattedStartTimeStamp = format(startTimeStamp, "dd/MM/yyyy");
+      formattedStartTimeStamp = format(
+        startTimeStamp,
+        "yyyy-MM-dd'T'HH:mm:ss.SSS"
+      );
       formattedEndTimeStamp = endTimeStamp
-        ? format(endTimeStamp, "dd/MM/yyyy")
+        ? format(endTimeStamp, "yyyy-MM-dd'T'HH:mm:ss.SSS")
         : null;
     }
 
@@ -155,8 +158,11 @@ const AddStoryForm = () => {
 
   const handleDecadeChange = (decade) => {
     setDecade(decade);
-  }
+  };
 
+  const handleEndDateChange = (date) => {
+    setEndTimeStamp(date);
+  };
   return (
     <form className="add-story-form" onSubmit={handleSubmit}>
       <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
@@ -223,23 +229,19 @@ const AddStoryForm = () => {
         />
       </label>
       <label className="add-story-label">
-        Start Date:
+        Start Date and Time:
         <DatePicker
-          selected={startTimeStamp}
+          value={startTimeStamp}
           onChange={handleStartDateChange}
-          dateFormat="dd/MM/yyyy"
           className="add-story-datepicker"
         />
       </label>
       <br />
       <label className="add-story-label">
-        End Date:
+        End Date and Time:
         <DatePicker
-          selected={endTimeStamp}
-          onChange={setEndTimeStamp}
-          dateFormat="dd/MM/yyyy"
-          isClearable
-          placeholderText="Optional"
+          value={endTimeStamp}
+          onChange={handleEndDateChange}
           className="add-story-datepicker"
         />
       </label>
