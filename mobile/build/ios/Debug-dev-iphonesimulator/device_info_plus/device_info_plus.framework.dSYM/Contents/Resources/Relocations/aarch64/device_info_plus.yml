@@ -1,0 +1,11 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/amine/Documents/GitHub/BOUN-SWE-574-Fall-23-G2/mobile/build/ios/Debug-dev-iphonesimulator/device_info_plus/device_info_plus.framework/device_info_plus'
+relocations:
+  - { offsetInCU: 0x33, offset: 0x3C6C, size: 0x8, addend: 0x0, symName: _device_info_plusVersionString, symObjAddr: 0x0, symBinAddr: 0x3200, symSize: 0x0 }
+  - { offsetInCU: 0x67, offset: 0x3CA0, size: 0x8, addend: 0x0, symName: _device_info_plusVersionNumber, symObjAddr: 0x30, symBinAddr: 0x3230, symSize: 0x0 }
+  - { offsetInCU: 0x27, offset: 0x3CDC, size: 0x8, addend: 0x0, symName: '+[FLTDeviceInfoPlusPlugin registerWithRegistrar:]', symObjAddr: 0x0, symBinAddr: 0x2968, symSize: 0xA4 }
+  - { offsetInCU: 0xB3, offset: 0x3D68, size: 0x8, addend: 0x0, symName: '+[FLTDeviceInfoPlusPlugin registerWithRegistrar:]', symObjAddr: 0x0, symBinAddr: 0x2968, symSize: 0xA4 }
+  - { offsetInCU: 0x10C, offset: 0x3DC1, size: 0x8, addend: 0x0, symName: '-[FLTDeviceInfoPlusPlugin handleMethodCall:result:]', symObjAddr: 0xA4, symBinAddr: 0x2A0C, symSize: 0x468 }
+  - { offsetInCU: 0x1E9, offset: 0x3E9E, size: 0x8, addend: 0x0, symName: '-[FLTDeviceInfoPlusPlugin isDevicePhysical]', symObjAddr: 0x50C, symBinAddr: 0x2E74, symSize: 0xC }
+...

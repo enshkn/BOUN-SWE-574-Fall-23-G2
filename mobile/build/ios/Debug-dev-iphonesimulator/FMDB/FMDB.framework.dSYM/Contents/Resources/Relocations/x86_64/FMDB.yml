@@ -1,0 +1,317 @@
+---
+triple:          'x86_64-apple-darwin'
+binary-path:     '/Users/amine/Documents/GitHub/BOUN-SWE-574-Fall-23-G2/mobile/build/ios/Debug-dev-iphonesimulator/FMDB/FMDB.framework/FMDB'
+relocations:
+  - { offsetInCU: 0x34, offset: 0x58376, size: 0x8, addend: 0x0, symName: _FMDBVersionString, symObjAddr: 0x0, symBinAddr: 0xD0C0, symSize: 0x0 }
+  - { offsetInCU: 0x69, offset: 0x583AB, size: 0x8, addend: 0x0, symName: _FMDBVersionNumber, symObjAddr: 0x28, symBinAddr: 0xD0E8, symSize: 0x0 }
+  - { offsetInCU: 0x27, offset: 0x583E8, size: 0x8, addend: 0x0, symName: '+[FMDatabase databaseWithPath:]', symObjAddr: 0x0, symBinAddr: 0x3B58, symSize: 0x49 }
+  - { offsetInCU: 0x48, offset: 0x58409, size: 0x8, addend: 0x0, symName: '+[FMDatabase FMDBVersion]', symObjAddr: 0x25F, symBinAddr: 0x3DB7, symSize: 0x5E }
+  - { offsetInCU: 0x72, offset: 0x58433, size: 0x8, addend: 0x0, symName: _FMDBVersion.once, symObjAddr: 0x1D718, symBinAddr: 0x13C90, symSize: 0x0 }
+  - { offsetInCU: 0x88, offset: 0x58449, size: 0x8, addend: 0x0, symName: _FMDBVersion.FMDBVersionVal, symObjAddr: 0x1D720, symBinAddr: 0x13C98, symSize: 0x0 }
+  - { offsetInCU: 0xE7, offset: 0x584A8, size: 0x8, addend: 0x0, symName: '-[FMDatabase inSavePoint:]', symObjAddr: 0x423A, symBinAddr: 0x7D92, symSize: 0x16D }
+  - { offsetInCU: 0x113, offset: 0x584D4, size: 0x8, addend: 0x0, symName: '_inSavePoint:.savePointIdx', symObjAddr: 0x1D728, symBinAddr: 0x13CA0, symSize: 0x0 }
+  - { offsetInCU: 0x5E1, offset: 0x589A2, size: 0x8, addend: 0x0, symName: '+[FMDatabase databaseWithPath:]', symObjAddr: 0x0, symBinAddr: 0x3B58, symSize: 0x49 }
+  - { offsetInCU: 0x665, offset: 0x58A26, size: 0x8, addend: 0x0, symName: '+[FMDatabase databaseWithURL:]', symObjAddr: 0x49, symBinAddr: 0x3BA1, symSize: 0x49 }
+  - { offsetInCU: 0x6E9, offset: 0x58AAA, size: 0x8, addend: 0x0, symName: '-[FMDatabase init]', symObjAddr: 0x92, symBinAddr: 0x3BEA, symSize: 0x14 }
+  - { offsetInCU: 0x738, offset: 0x58AF9, size: 0x8, addend: 0x0, symName: '-[FMDatabase initWithURL:]', symObjAddr: 0xA6, symBinAddr: 0x3BFE, symSize: 0x56 }
+  - { offsetInCU: 0x7B3, offset: 0x58B74, size: 0x8, addend: 0x0, symName: '-[FMDatabase initWithPath:]', symObjAddr: 0xFC, symBinAddr: 0x3C54, symSize: 0xE2 }
+  - { offsetInCU: 0x88C, offset: 0x58C4D, size: 0x8, addend: 0x0, symName: '-[FMDatabase initWithPath:].cold.1', symObjAddr: 0x4B6D, symBinAddr: 0xCAC9, symSize: 0x21 }
+  - { offsetInCU: 0x8A4, offset: 0x58C65, size: 0x8, addend: 0x0, symName: '-[FMDatabase dealloc]', symObjAddr: 0x1DE, symBinAddr: 0x3D36, symSize: 0x3E }
+  - { offsetInCU: 0x8EC, offset: 0x58CAD, size: 0x8, addend: 0x0, symName: '-[FMDatabase databaseURL]', symObjAddr: 0x21C, symBinAddr: 0x3D74, symSize: 0x36 }
+  - { offsetInCU: 0x92F, offset: 0x58CF0, size: 0x8, addend: 0x0, symName: '+[FMDatabase FMDBUserVersion]', symObjAddr: 0x252, symBinAddr: 0x3DAA, symSize: 0xD }
+  - { offsetInCU: 0x9A2, offset: 0x58D63, size: 0x8, addend: 0x0, symName: '___25+[FMDatabase FMDBVersion]_block_invoke', symObjAddr: 0x2BD, symBinAddr: 0x3E15, symSize: 0x118 }
+  - { offsetInCU: 0xAB4, offset: 0x58E75, size: 0x8, addend: 0x0, symName: '+[FMDatabase sqliteLibVersion]', symObjAddr: 0x3D5, symBinAddr: 0x3F2D, symSize: 0x34 }
+  - { offsetInCU: 0xB15, offset: 0x58ED6, size: 0x8, addend: 0x0, symName: '+[FMDatabase isSQLiteThreadSafe]', symObjAddr: 0x409, symBinAddr: 0x3F61, symSize: 0x10 }
+  - { offsetInCU: 0xB56, offset: 0x58F17, size: 0x8, addend: 0x0, symName: '-[FMDatabase sqliteHandle]', symObjAddr: 0x419, symBinAddr: 0x3F71, symSize: 0xA }
+  - { offsetInCU: 0xB8B, offset: 0x58F4C, size: 0x8, addend: 0x0, symName: '-[FMDatabase sqlitePath]', symObjAddr: 0x423, symBinAddr: 0x3F7B, symSize: 0x52 }
+  - { offsetInCU: 0xBDA, offset: 0x58F9B, size: 0x8, addend: 0x0, symName: '-[FMDatabase open]', symObjAddr: 0x475, symBinAddr: 0x3FCD, symSize: 0x95 }
+  - { offsetInCU: 0xC8B, offset: 0x5904C, size: 0x8, addend: 0x0, symName: '-[FMDatabase openWithFlags:]', symObjAddr: 0x50A, symBinAddr: 0x4062, symSize: 0x14 }
+  - { offsetInCU: 0xCF1, offset: 0x590B2, size: 0x8, addend: 0x0, symName: '-[FMDatabase openWithFlags:vfs:]', symObjAddr: 0x51E, symBinAddr: 0x4076, symSize: 0xE3 }
+  - { offsetInCU: 0xE11, offset: 0x591D2, size: 0x8, addend: 0x0, symName: '-[FMDatabase close]', symObjAddr: 0x601, symBinAddr: 0x4159, symSize: 0xC6 }
+  - { offsetInCU: 0xF5F, offset: 0x59320, size: 0x8, addend: 0x0, symName: '-[FMDatabase setMaxBusyRetryTimeInterval:]', symObjAddr: 0x6C7, symBinAddr: 0x421F, symSize: 0x34 }
+  - { offsetInCU: 0xFE2, offset: 0x593A3, size: 0x8, addend: 0x0, symName: _FMDBDatabaseBusyHandler, symObjAddr: 0x6FB, symBinAddr: 0x4253, symSize: 0xAE }
+  - { offsetInCU: 0x1111, offset: 0x594D2, size: 0x8, addend: 0x0, symName: '-[FMDatabase maxBusyRetryTimeInterval]', symObjAddr: 0x7A9, symBinAddr: 0x4301, symSize: 0xB }
+  - { offsetInCU: 0x1147, offset: 0x59508, size: 0x8, addend: 0x0, symName: '-[FMDatabase busyRetryTimeout]', symObjAddr: 0x7B4, symBinAddr: 0x430C, symSize: 0x33 }
+  - { offsetInCU: 0x117B, offset: 0x5953C, size: 0x8, addend: 0x0, symName: '-[FMDatabase setBusyRetryTimeout:]', symObjAddr: 0x7E7, symBinAddr: 0x433F, symSize: 0x2E }
+  - { offsetInCU: 0x11B8, offset: 0x59579, size: 0x8, addend: 0x0, symName: '-[FMDatabase hasOpenResultSets]', symObjAddr: 0x815, symBinAddr: 0x436D, symSize: 0x1D }
+  - { offsetInCU: 0x11FC, offset: 0x595BD, size: 0x8, addend: 0x0, symName: '-[FMDatabase closeOpenResultSets]', symObjAddr: 0x832, symBinAddr: 0x438A, symSize: 0x1DC }
+  - { offsetInCU: 0x1351, offset: 0x59712, size: 0x8, addend: 0x0, symName: '-[FMDatabase resultSetDidClose:]', symObjAddr: 0xA0E, symBinAddr: 0x4566, symSize: 0x54 }
+  - { offsetInCU: 0x13CF, offset: 0x59790, size: 0x8, addend: 0x0, symName: '-[FMDatabase clearCachedStatements]', symObjAddr: 0xA62, symBinAddr: 0x45BA, symSize: 0x260 }
+  - { offsetInCU: 0x14E3, offset: 0x598A4, size: 0x8, addend: 0x0, symName: '-[FMDatabase cachedStatementForQuery:]', symObjAddr: 0xCC2, symBinAddr: 0x481A, symSize: 0x85 }
+  - { offsetInCU: 0x1585, offset: 0x59946, size: 0x8, addend: 0x0, symName: '___38-[FMDatabase cachedStatementForQuery:]_block_invoke', symObjAddr: 0xD47, symBinAddr: 0x489F, symSize: 0x24 }
+  - { offsetInCU: 0x15E9, offset: 0x599AA, size: 0x8, addend: 0x0, symName: '-[FMDatabase setCachedStatement:forQuery:]', symObjAddr: 0xD6B, symBinAddr: 0x48C3, symSize: 0x104 }
+  - { offsetInCU: 0x173E, offset: 0x59AFF, size: 0x8, addend: 0x0, symName: '-[FMDatabase rekey:]', symObjAddr: 0xE6F, symBinAddr: 0x49C7, symSize: 0xC2 }
+  - { offsetInCU: 0x1812, offset: 0x59BD3, size: 0x8, addend: 0x0, symName: '-[FMDatabase rekeyWithData:]', symObjAddr: 0xF31, symBinAddr: 0x4A89, symSize: 0x8 }
+  - { offsetInCU: 0x1853, offset: 0x59C14, size: 0x8, addend: 0x0, symName: '-[FMDatabase setKey:]', symObjAddr: 0xF39, symBinAddr: 0x4A91, symSize: 0xC2 }
+  - { offsetInCU: 0x1927, offset: 0x59CE8, size: 0x8, addend: 0x0, symName: '-[FMDatabase setKeyWithData:]', symObjAddr: 0xFFB, symBinAddr: 0x4B53, symSize: 0x8 }
+  - { offsetInCU: 0x1968, offset: 0x59D29, size: 0x8, addend: 0x0, symName: '+[FMDatabase storeableDateFormat:]', symObjAddr: 0x1003, symBinAddr: 0x4B5B, symSize: 0xD7 }
+  - { offsetInCU: 0x1A6F, offset: 0x59E30, size: 0x8, addend: 0x0, symName: '-[FMDatabase hasDateFormatter]', symObjAddr: 0x10DA, symBinAddr: 0x4C32, symSize: 0xE }
+  - { offsetInCU: 0x1AA5, offset: 0x59E66, size: 0x8, addend: 0x0, symName: '-[FMDatabase setDateFormat:]', symObjAddr: 0x10E8, symBinAddr: 0x4C40, symSize: 0x11 }
+  - { offsetInCU: 0x1AE8, offset: 0x59EA9, size: 0x8, addend: 0x0, symName: '-[FMDatabase dateFromString:]', symObjAddr: 0x10F9, symBinAddr: 0x4C51, symSize: 0x16 }
+  - { offsetInCU: 0x1B44, offset: 0x59F05, size: 0x8, addend: 0x0, symName: '-[FMDatabase stringFromDate:]', symObjAddr: 0x110F, symBinAddr: 0x4C67, symSize: 0x16 }
+  - { offsetInCU: 0x1BA0, offset: 0x59F61, size: 0x8, addend: 0x0, symName: '-[FMDatabase goodConnection]', symObjAddr: 0x1125, symBinAddr: 0x4C7D, symSize: 0x60 }
+  - { offsetInCU: 0x1C19, offset: 0x59FDA, size: 0x8, addend: 0x0, symName: '-[FMDatabase warnInUse]', symObjAddr: 0x1185, symBinAddr: 0x4CDD, symSize: 0x17 }
+  - { offsetInCU: 0x1C4D, offset: 0x5A00E, size: 0x8, addend: 0x0, symName: '-[FMDatabase databaseExists]', symObjAddr: 0x119C, symBinAddr: 0x4CF4, symSize: 0x27 }
+  - { offsetInCU: 0x1C85, offset: 0x5A046, size: 0x8, addend: 0x0, symName: '-[FMDatabase lastErrorMessage]', symObjAddr: 0x11C3, symBinAddr: 0x4D1B, symSize: 0x2F }
+  - { offsetInCU: 0x1CF2, offset: 0x5A0B3, size: 0x8, addend: 0x0, symName: '-[FMDatabase hadError]', symObjAddr: 0x11F2, symBinAddr: 0x4D4A, symSize: 0x1B }
+  - { offsetInCU: 0x1D50, offset: 0x5A111, size: 0x8, addend: 0x0, symName: '-[FMDatabase lastErrorCode]', symObjAddr: 0x120D, symBinAddr: 0x4D65, symSize: 0xE }
+  - { offsetInCU: 0x1DA9, offset: 0x5A16A, size: 0x8, addend: 0x0, symName: '-[FMDatabase lastExtendedErrorCode]', symObjAddr: 0x121B, symBinAddr: 0x4D73, symSize: 0xE }
+  - { offsetInCU: 0x1E02, offset: 0x5A1C3, size: 0x8, addend: 0x0, symName: '-[FMDatabase errorWithMessage:]', symObjAddr: 0x1229, symBinAddr: 0x4D81, symSize: 0x89 }
+  - { offsetInCU: 0x1E92, offset: 0x5A253, size: 0x8, addend: 0x0, symName: '-[FMDatabase lastError]', symObjAddr: 0x12B2, symBinAddr: 0x4E0A, symSize: 0x5F }
+  - { offsetInCU: 0x1EF6, offset: 0x5A2B7, size: 0x8, addend: 0x0, symName: '-[FMDatabase lastInsertRowId]', symObjAddr: 0x1311, symBinAddr: 0x4E69, symSize: 0x3B }
+  - { offsetInCU: 0x1F74, offset: 0x5A335, size: 0x8, addend: 0x0, symName: '-[FMDatabase changes]', symObjAddr: 0x134C, symBinAddr: 0x4EA4, symSize: 0x3B }
+  - { offsetInCU: 0x1FF2, offset: 0x5A3B3, size: 0x8, addend: 0x0, symName: '-[FMDatabase bindObject:toColumn:inStatement:]', symObjAddr: 0x1387, symBinAddr: 0x4EDF, symSize: 0x59F }
+  - { offsetInCU: 0x24EB, offset: 0x5A8AC, size: 0x8, addend: 0x0, symName: '-[FMDatabase extractSQL:argumentsList:intoString:arguments:]', symObjAddr: 0x1926, symBinAddr: 0x547E, symSize: 0x82A }
+  - { offsetInCU: 0x279B, offset: 0x5AB5C, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeQuery:withParameterDictionary:]', symObjAddr: 0x2150, symBinAddr: 0x5CA8, symSize: 0x1A }
+  - { offsetInCU: 0x2822, offset: 0x5ABE3, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeQuery:withArgumentsInArray:orDictionary:orVAList:]', symObjAddr: 0x216A, symBinAddr: 0x5CC2, symSize: 0x85E }
+  - { offsetInCU: 0x2D84, offset: 0x5B145, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeQuery:]', symObjAddr: 0x29C8, symBinAddr: 0x6520, symSize: 0xB2 }
+  - { offsetInCU: 0x2DF7, offset: 0x5B1B8, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeQueryWithFormat:]', symObjAddr: 0x2A7A, symBinAddr: 0x65D2, symSize: 0x176 }
+  - { offsetInCU: 0x2F16, offset: 0x5B2D7, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeQuery:withArgumentsInArray:]', symObjAddr: 0x2BF0, symBinAddr: 0x6748, symSize: 0x18 }
+  - { offsetInCU: 0x2F9B, offset: 0x5B35C, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeQuery:values:error:]', symObjAddr: 0x2C08, symBinAddr: 0x6760, symSize: 0x6D }
+  - { offsetInCU: 0x302B, offset: 0x5B3EC, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeQuery:withVAList:]', symObjAddr: 0x2C75, symBinAddr: 0x67CD, symSize: 0x1A }
+  - { offsetInCU: 0x30B2, offset: 0x5B473, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeUpdate:error:withArgumentsInArray:orDictionary:orVAList:]', symObjAddr: 0x2C8F, symBinAddr: 0x67E7, symSize: 0xBB0 }
+  - { offsetInCU: 0x372C, offset: 0x5BAED, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeUpdate:]', symObjAddr: 0x383F, symBinAddr: 0x7397, symSize: 0xAA }
+  - { offsetInCU: 0x37B2, offset: 0x5BB73, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeUpdate:withArgumentsInArray:]', symObjAddr: 0x38E9, symBinAddr: 0x7441, symSize: 0x2B }
+  - { offsetInCU: 0x383D, offset: 0x5BBFE, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeUpdate:values:error:]', symObjAddr: 0x3914, symBinAddr: 0x746C, symSize: 0x2F }
+  - { offsetInCU: 0x38DB, offset: 0x5BC9C, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeUpdate:withParameterDictionary:]', symObjAddr: 0x3943, symBinAddr: 0x749B, symSize: 0x2B }
+  - { offsetInCU: 0x3966, offset: 0x5BD27, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeUpdate:withVAList:]', symObjAddr: 0x396E, symBinAddr: 0x74C6, symSize: 0x27 }
+  - { offsetInCU: 0x39EF, offset: 0x5BDB0, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeUpdateWithFormat:]', symObjAddr: 0x3995, symBinAddr: 0x74ED, symSize: 0x165 }
+  - { offsetInCU: 0x3B24, offset: 0x5BEE5, size: 0x8, addend: 0x0, symName: _FMDBExecuteBulkSQLCallback, symObjAddr: 0x3AFA, symBinAddr: 0x7652, symSize: 0x178 }
+  - { offsetInCU: 0x3C9E, offset: 0x5C05F, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeStatements:]', symObjAddr: 0x3C72, symBinAddr: 0x77CA, symSize: 0x14 }
+  - { offsetInCU: 0x3D06, offset: 0x5C0C7, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeStatements:withResultBlock:]', symObjAddr: 0x3C86, symBinAddr: 0x77DE, symSize: 0xF6 }
+  - { offsetInCU: 0x3EA8, offset: 0x5C269, size: 0x8, addend: 0x0, symName: '-[FMDatabase executeUpdate:withErrorAndBindings:]', symObjAddr: 0x3D7C, symBinAddr: 0x78D4, symSize: 0xA4 }
+  - { offsetInCU: 0x3F39, offset: 0x5C2FA, size: 0x8, addend: 0x0, symName: '-[FMDatabase update:withErrorAndBindings:]', symObjAddr: 0x3E20, symBinAddr: 0x7978, symSize: 0xA4 }
+  - { offsetInCU: 0x3FCA, offset: 0x5C38B, size: 0x8, addend: 0x0, symName: '-[FMDatabase rollback]', symObjAddr: 0x3EC4, symBinAddr: 0x7A1C, symSize: 0x2E }
+  - { offsetInCU: 0x4024, offset: 0x5C3E5, size: 0x8, addend: 0x0, symName: '-[FMDatabase commit]', symObjAddr: 0x3EF2, symBinAddr: 0x7A4A, symSize: 0x2E }
+  - { offsetInCU: 0x407E, offset: 0x5C43F, size: 0x8, addend: 0x0, symName: '-[FMDatabase beginTransaction]', symObjAddr: 0x3F20, symBinAddr: 0x7A78, symSize: 0x2E }
+  - { offsetInCU: 0x40D8, offset: 0x5C499, size: 0x8, addend: 0x0, symName: '-[FMDatabase beginDeferredTransaction]', symObjAddr: 0x3F4E, symBinAddr: 0x7AA6, symSize: 0x2E }
+  - { offsetInCU: 0x4132, offset: 0x5C4F3, size: 0x8, addend: 0x0, symName: '-[FMDatabase beginImmediateTransaction]', symObjAddr: 0x3F7C, symBinAddr: 0x7AD4, symSize: 0x2E }
+  - { offsetInCU: 0x418C, offset: 0x5C54D, size: 0x8, addend: 0x0, symName: '-[FMDatabase beginExclusiveTransaction]', symObjAddr: 0x3FAA, symBinAddr: 0x7B02, symSize: 0x2E }
+  - { offsetInCU: 0x41E6, offset: 0x5C5A7, size: 0x8, addend: 0x0, symName: '-[FMDatabase inTransaction]', symObjAddr: 0x3FD8, symBinAddr: 0x7B30, symSize: 0x9 }
+  - { offsetInCU: 0x421C, offset: 0x5C5DD, size: 0x8, addend: 0x0, symName: '-[FMDatabase interrupt]', symObjAddr: 0x3FE1, symBinAddr: 0x7B39, symSize: 0x31 }
+  - { offsetInCU: 0x4299, offset: 0x5C65A, size: 0x8, addend: 0x0, symName: '-[FMDatabase startSavePointWithName:error:]', symObjAddr: 0x4012, symBinAddr: 0x7B6A, symSize: 0xB8 }
+  - { offsetInCU: 0x4391, offset: 0x5C752, size: 0x8, addend: 0x0, symName: '-[FMDatabase releaseSavePointWithName:error:]', symObjAddr: 0x40CA, symBinAddr: 0x7C22, symSize: 0xB8 }
+  - { offsetInCU: 0x4489, offset: 0x5C84A, size: 0x8, addend: 0x0, symName: '-[FMDatabase rollbackToSavePointWithName:error:]', symObjAddr: 0x4182, symBinAddr: 0x7CDA, symSize: 0xB8 }
+  - { offsetInCU: 0x4581, offset: 0x5C942, size: 0x8, addend: 0x0, symName: '-[FMDatabase checkpoint:error:]', symObjAddr: 0x43A7, symBinAddr: 0x7EFF, symSize: 0x27 }
+  - { offsetInCU: 0x460A, offset: 0x5C9CB, size: 0x8, addend: 0x0, symName: '-[FMDatabase checkpoint:name:error:]', symObjAddr: 0x43CE, symBinAddr: 0x7F26, symSize: 0x25 }
+  - { offsetInCU: 0x46A6, offset: 0x5CA67, size: 0x8, addend: 0x0, symName: '-[FMDatabase checkpoint:name:logFrameCount:checkpointCount:error:]', symObjAddr: 0x43F3, symBinAddr: 0x7F4B, symSize: 0x10F }
+  - { offsetInCU: 0x482D, offset: 0x5CBEE, size: 0x8, addend: 0x0, symName: '-[FMDatabase shouldCacheStatements]', symObjAddr: 0x4502, symBinAddr: 0x805A, symSize: 0x9 }
+  - { offsetInCU: 0x4863, offset: 0x5CC24, size: 0x8, addend: 0x0, symName: '-[FMDatabase setShouldCacheStatements:]', symObjAddr: 0x450B, symBinAddr: 0x8063, symSize: 0x87 }
+  - { offsetInCU: 0x4904, offset: 0x5CCC5, size: 0x8, addend: 0x0, symName: _FMDBBlockSQLiteCallBackFunction, symObjAddr: 0x4592, symBinAddr: 0x80EA, symSize: 0x62 }
+  - { offsetInCU: 0x49BF, offset: 0x5CD80, size: 0x8, addend: 0x0, symName: '-[FMDatabase makeFunctionNamed:maximumArguments:withBlock:]', symObjAddr: 0x45F4, symBinAddr: 0x814C, symSize: 0x12 }
+  - { offsetInCU: 0x4A4B, offset: 0x5CE0C, size: 0x8, addend: 0x0, symName: '-[FMDatabase makeFunctionNamed:arguments:block:]', symObjAddr: 0x4606, symBinAddr: 0x815E, symSize: 0xF5 }
+  - { offsetInCU: 0x4C0E, offset: 0x5CFCF, size: 0x8, addend: 0x0, symName: '-[FMDatabase valueType:]', symObjAddr: 0x46FB, symBinAddr: 0x8253, symSize: 0xD }
+  - { offsetInCU: 0x4C7B, offset: 0x5D03C, size: 0x8, addend: 0x0, symName: '-[FMDatabase valueInt:]', symObjAddr: 0x4708, symBinAddr: 0x8260, symSize: 0xD }
+  - { offsetInCU: 0x4CE8, offset: 0x5D0A9, size: 0x8, addend: 0x0, symName: '-[FMDatabase valueLong:]', symObjAddr: 0x4715, symBinAddr: 0x826D, symSize: 0xD }
+  - { offsetInCU: 0x4D55, offset: 0x5D116, size: 0x8, addend: 0x0, symName: '-[FMDatabase valueDouble:]', symObjAddr: 0x4722, symBinAddr: 0x827A, symSize: 0xD }
+  - { offsetInCU: 0x4DC2, offset: 0x5D183, size: 0x8, addend: 0x0, symName: '-[FMDatabase valueData:]', symObjAddr: 0x472F, symBinAddr: 0x8287, symSize: 0x54 }
+  - { offsetInCU: 0x4E88, offset: 0x5D249, size: 0x8, addend: 0x0, symName: '-[FMDatabase valueString:]', symObjAddr: 0x4783, symBinAddr: 0x82DB, symSize: 0x3D }
+  - { offsetInCU: 0x4F25, offset: 0x5D2E6, size: 0x8, addend: 0x0, symName: '-[FMDatabase resultNullInContext:]', symObjAddr: 0x47C0, symBinAddr: 0x8318, symSize: 0xD }
+  - { offsetInCU: 0x4F8A, offset: 0x5D34B, size: 0x8, addend: 0x0, symName: '-[FMDatabase resultInt:context:]', symObjAddr: 0x47CD, symBinAddr: 0x8325, symSize: 0xF }
+  - { offsetInCU: 0x500B, offset: 0x5D3CC, size: 0x8, addend: 0x0, symName: '-[FMDatabase resultLong:context:]', symObjAddr: 0x47DC, symBinAddr: 0x8334, symSize: 0x10 }
+  - { offsetInCU: 0x508C, offset: 0x5D44D, size: 0x8, addend: 0x0, symName: '-[FMDatabase resultDouble:context:]', symObjAddr: 0x47EC, symBinAddr: 0x8344, symSize: 0xD }
+  - { offsetInCU: 0x510D, offset: 0x5D4CE, size: 0x8, addend: 0x0, symName: '-[FMDatabase resultData:context:]', symObjAddr: 0x47F9, symBinAddr: 0x8351, symSize: 0x72 }
+  - { offsetInCU: 0x51F0, offset: 0x5D5B1, size: 0x8, addend: 0x0, symName: '-[FMDatabase resultString:context:]', symObjAddr: 0x486B, symBinAddr: 0x83C3, symSize: 0x3E }
+  - { offsetInCU: 0x5290, offset: 0x5D651, size: 0x8, addend: 0x0, symName: '-[FMDatabase resultError:context:]', symObjAddr: 0x48A9, symBinAddr: 0x8401, symSize: 0x37 }
+  - { offsetInCU: 0x5324, offset: 0x5D6E5, size: 0x8, addend: 0x0, symName: '-[FMDatabase resultErrorCode:context:]', symObjAddr: 0x48E0, symBinAddr: 0x8438, symSize: 0xF }
+  - { offsetInCU: 0x53A5, offset: 0x5D766, size: 0x8, addend: 0x0, symName: '-[FMDatabase resultErrorNoMemoryInContext:]', symObjAddr: 0x48EF, symBinAddr: 0x8447, symSize: 0xD }
+  - { offsetInCU: 0x540A, offset: 0x5D7CB, size: 0x8, addend: 0x0, symName: '-[FMDatabase resultErrorTooBigInContext:]', symObjAddr: 0x48FC, symBinAddr: 0x8454, symSize: 0xD }
+  - { offsetInCU: 0x546F, offset: 0x5D830, size: 0x8, addend: 0x0, symName: '-[FMDatabase traceExecution]', symObjAddr: 0x4909, symBinAddr: 0x8461, symSize: 0xB }
+  - { offsetInCU: 0x54A4, offset: 0x5D865, size: 0x8, addend: 0x0, symName: '-[FMDatabase setTraceExecution:]', symObjAddr: 0x4914, symBinAddr: 0x846C, symSize: 0x9 }
+  - { offsetInCU: 0x54E1, offset: 0x5D8A2, size: 0x8, addend: 0x0, symName: '-[FMDatabase checkedOut]', symObjAddr: 0x491D, symBinAddr: 0x8475, symSize: 0xB }
+  - { offsetInCU: 0x5516, offset: 0x5D8D7, size: 0x8, addend: 0x0, symName: '-[FMDatabase setCheckedOut:]', symObjAddr: 0x4928, symBinAddr: 0x8480, symSize: 0x9 }
+  - { offsetInCU: 0x5553, offset: 0x5D914, size: 0x8, addend: 0x0, symName: '-[FMDatabase crashOnErrors]', symObjAddr: 0x4931, symBinAddr: 0x8489, symSize: 0xB }
+  - { offsetInCU: 0x5588, offset: 0x5D949, size: 0x8, addend: 0x0, symName: '-[FMDatabase setCrashOnErrors:]', symObjAddr: 0x493C, symBinAddr: 0x8494, symSize: 0x9 }
+  - { offsetInCU: 0x55C5, offset: 0x5D986, size: 0x8, addend: 0x0, symName: '-[FMDatabase logsErrors]', symObjAddr: 0x4945, symBinAddr: 0x849D, symSize: 0xB }
+  - { offsetInCU: 0x55FA, offset: 0x5D9BB, size: 0x8, addend: 0x0, symName: '-[FMDatabase setLogsErrors:]', symObjAddr: 0x4950, symBinAddr: 0x84A8, symSize: 0x9 }
+  - { offsetInCU: 0x5637, offset: 0x5D9F8, size: 0x8, addend: 0x0, symName: '-[FMDatabase cachedStatements]', symObjAddr: 0x4959, symBinAddr: 0x84B1, symSize: 0x14 }
+  - { offsetInCU: 0x566E, offset: 0x5DA2F, size: 0x8, addend: 0x0, symName: '-[FMDatabase setCachedStatements:]', symObjAddr: 0x496D, symBinAddr: 0x84C5, symSize: 0xF }
+  - { offsetInCU: 0x56AD, offset: 0x5DA6E, size: 0x8, addend: 0x0, symName: '-[FMDatabase isOpen]', symObjAddr: 0x497C, symBinAddr: 0x84D4, symSize: 0x9 }
+  - { offsetInCU: 0x56E2, offset: 0x5DAA3, size: 0x8, addend: 0x0, symName: '-[FMDatabase setIsOpen:]', symObjAddr: 0x4985, symBinAddr: 0x84DD, symSize: 0x9 }
+  - { offsetInCU: 0x571F, offset: 0x5DAE0, size: 0x8, addend: 0x0, symName: '-[FMDatabase isInTransaction]', symObjAddr: 0x498E, symBinAddr: 0x84E6, symSize: 0x9 }
+  - { offsetInCU: 0x5755, offset: 0x5DB16, size: 0x8, addend: 0x0, symName: '-[FMDatabase databasePath]', symObjAddr: 0x4997, symBinAddr: 0x84EF, symSize: 0xA }
+  - { offsetInCU: 0x578B, offset: 0x5DB4C, size: 0x8, addend: 0x0, symName: '-[FMDatabase .cxx_destruct]', symObjAddr: 0x49A1, symBinAddr: 0x84F9, symSize: 0x49 }
+  - { offsetInCU: 0x57BE, offset: 0x5DB7F, size: 0x8, addend: 0x0, symName: '-[FMStatement dealloc]', symObjAddr: 0x49EA, symBinAddr: 0x8542, symSize: 0x3E }
+  - { offsetInCU: 0x5807, offset: 0x5DBC8, size: 0x8, addend: 0x0, symName: '-[FMStatement close]', symObjAddr: 0x4A28, symBinAddr: 0x8580, symSize: 0x2A }
+  - { offsetInCU: 0x5849, offset: 0x5DC0A, size: 0x8, addend: 0x0, symName: '-[FMStatement reset]', symObjAddr: 0x4A52, symBinAddr: 0x85AA, symSize: 0x22 }
+  - { offsetInCU: 0x588B, offset: 0x5DC4C, size: 0x8, addend: 0x0, symName: '-[FMStatement description]', symObjAddr: 0x4A74, symBinAddr: 0x85CC, symSize: 0x8A }
+  - { offsetInCU: 0x58E3, offset: 0x5DCA4, size: 0x8, addend: 0x0, symName: '-[FMStatement useCount]', symObjAddr: 0x4AFE, symBinAddr: 0x8656, symSize: 0xA }
+  - { offsetInCU: 0x5919, offset: 0x5DCDA, size: 0x8, addend: 0x0, symName: '-[FMStatement setUseCount:]', symObjAddr: 0x4B08, symBinAddr: 0x8660, symSize: 0xA }
+  - { offsetInCU: 0x5957, offset: 0x5DD18, size: 0x8, addend: 0x0, symName: '-[FMStatement query]', symObjAddr: 0x4B12, symBinAddr: 0x866A, symSize: 0x14 }
+  - { offsetInCU: 0x598F, offset: 0x5DD50, size: 0x8, addend: 0x0, symName: '-[FMStatement setQuery:]', symObjAddr: 0x4B26, symBinAddr: 0x867E, symSize: 0xF }
+  - { offsetInCU: 0x59CF, offset: 0x5DD90, size: 0x8, addend: 0x0, symName: '-[FMStatement statement]', symObjAddr: 0x4B35, symBinAddr: 0x868D, symSize: 0xA }
+  - { offsetInCU: 0x5A05, offset: 0x5DDC6, size: 0x8, addend: 0x0, symName: '-[FMStatement setStatement:]', symObjAddr: 0x4B3F, symBinAddr: 0x8697, symSize: 0xA }
+  - { offsetInCU: 0x5A43, offset: 0x5DE04, size: 0x8, addend: 0x0, symName: '-[FMStatement inUse]', symObjAddr: 0x4B49, symBinAddr: 0x86A1, symSize: 0xB }
+  - { offsetInCU: 0x5A79, offset: 0x5DE3A, size: 0x8, addend: 0x0, symName: '-[FMStatement setInUse:]', symObjAddr: 0x4B54, symBinAddr: 0x86AC, symSize: 0x9 }
+  - { offsetInCU: 0x5AB7, offset: 0x5DE78, size: 0x8, addend: 0x0, symName: '-[FMStatement .cxx_destruct]', symObjAddr: 0x4B5D, symBinAddr: 0x86B5, symSize: 0x10 }
+  - { offsetInCU: 0x27, offset: 0x5E279, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) stringForQuery:]', symObjAddr: 0x0, symBinAddr: 0x86C5, symSize: 0x11B }
+  - { offsetInCU: 0x83, offset: 0x5E2D5, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) stringForQuery:]', symObjAddr: 0x0, symBinAddr: 0x86C5, symSize: 0x11B }
+  - { offsetInCU: 0x158, offset: 0x5E3AA, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) intForQuery:]', symObjAddr: 0x11B, symBinAddr: 0x87E0, symSize: 0x10D }
+  - { offsetInCU: 0x23F, offset: 0x5E491, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) longForQuery:]', symObjAddr: 0x228, symBinAddr: 0x88ED, symSize: 0x10F }
+  - { offsetInCU: 0x326, offset: 0x5E578, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) boolForQuery:]', symObjAddr: 0x337, symBinAddr: 0x89FC, symSize: 0x10D }
+  - { offsetInCU: 0x409, offset: 0x5E65B, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) doubleForQuery:]', symObjAddr: 0x444, symBinAddr: 0x8B09, symSize: 0x115 }
+  - { offsetInCU: 0x4F0, offset: 0x5E742, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) dataForQuery:]', symObjAddr: 0x559, symBinAddr: 0x8C1E, symSize: 0x11B }
+  - { offsetInCU: 0x5C5, offset: 0x5E817, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) dateForQuery:]', symObjAddr: 0x674, symBinAddr: 0x8D39, symSize: 0x11B }
+  - { offsetInCU: 0x69A, offset: 0x5E8EC, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) tableExists:]', symObjAddr: 0x78F, symBinAddr: 0x8E54, symSize: 0x8D }
+  - { offsetInCU: 0x759, offset: 0x5E9AB, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) getSchema]', symObjAddr: 0x81C, symBinAddr: 0x8EE1, symSize: 0x1B }
+  - { offsetInCU: 0x7AF, offset: 0x5EA01, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) getTableSchema:]', symObjAddr: 0x837, symBinAddr: 0x8EFC, symSize: 0x74 }
+  - { offsetInCU: 0x82E, offset: 0x5EA80, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) columnExists:inTableWithName:]', symObjAddr: 0x8AB, symBinAddr: 0x8F70, symSize: 0x14C }
+  - { offsetInCU: 0x9AD, offset: 0x5EBFF, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) applicationID]', symObjAddr: 0x9F7, symBinAddr: 0x90BC, symSize: 0x7D }
+  - { offsetInCU: 0xA5A, offset: 0x5ECAC, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) setApplicationID:]', symObjAddr: 0xA74, symBinAddr: 0x9139, symSize: 0x91 }
+  - { offsetInCU: 0xB15, offset: 0x5ED67, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) userVersion]', symObjAddr: 0xB05, symBinAddr: 0x91CA, symSize: 0x7D }
+  - { offsetInCU: 0xBC2, offset: 0x5EE14, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) setUserVersion:]', symObjAddr: 0xB82, symBinAddr: 0x9247, symSize: 0x91 }
+  - { offsetInCU: 0xC7D, offset: 0x5EECF, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) columnExists:columnName:]', symObjAddr: 0xC13, symBinAddr: 0x92D8, symSize: 0x1B }
+  - { offsetInCU: 0xCF7, offset: 0x5EF49, size: 0x8, addend: 0x0, symName: '-[FMDatabase(FMDatabaseAdditions) validateSQL:error:]', symObjAddr: 0xC2E, symBinAddr: 0x92F3, symSize: 0x16E }
+  - { offsetInCU: 0x27, offset: 0x5F371, size: 0x8, addend: 0x0, symName: '+[FMDatabasePool databasePoolWithPath:]', symObjAddr: 0x0, symBinAddr: 0x9461, symSize: 0x49 }
+  - { offsetInCU: 0x35, offset: 0x5F37F, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool inSavePoint:]', symObjAddr: 0xF6C, symBinAddr: 0xA3CD, symSize: 0x18B }
+  - { offsetInCU: 0x61, offset: 0x5F3AB, size: 0x8, addend: 0x0, symName: '_inSavePoint:.savePointIdx', symObjAddr: 0x9948, symBinAddr: 0x13CA8, symSize: 0x0 }
+  - { offsetInCU: 0x3A7, offset: 0x5F6F1, size: 0x8, addend: 0x0, symName: '+[FMDatabasePool databasePoolWithPath:]', symObjAddr: 0x0, symBinAddr: 0x9461, symSize: 0x49 }
+  - { offsetInCU: 0x42B, offset: 0x5F775, size: 0x8, addend: 0x0, symName: '+[FMDatabasePool databasePoolWithURL:]', symObjAddr: 0x49, symBinAddr: 0x94AA, symSize: 0x83 }
+  - { offsetInCU: 0x4D6, offset: 0x5F820, size: 0x8, addend: 0x0, symName: '+[FMDatabasePool databasePoolWithPath:flags:]', symObjAddr: 0xCC, symBinAddr: 0x952D, symSize: 0x56 }
+  - { offsetInCU: 0x571, offset: 0x5F8BB, size: 0x8, addend: 0x0, symName: '+[FMDatabasePool databasePoolWithURL:flags:]', symObjAddr: 0x122, symBinAddr: 0x9583, symSize: 0x89 }
+  - { offsetInCU: 0x633, offset: 0x5F97D, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool initWithURL:flags:vfs:]', symObjAddr: 0x1AB, symBinAddr: 0x960C, symSize: 0x7E }
+  - { offsetInCU: 0x705, offset: 0x5FA4F, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool initWithPath:flags:vfs:]', symObjAddr: 0x229, symBinAddr: 0x968A, symSize: 0x172 }
+  - { offsetInCU: 0x89B, offset: 0x5FBE5, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool initWithPath:flags:]', symObjAddr: 0x39B, symBinAddr: 0x97FC, symSize: 0x15 }
+  - { offsetInCU: 0x916, offset: 0x5FC60, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool initWithURL:flags:]', symObjAddr: 0x3B0, symBinAddr: 0x9811, symSize: 0x5C }
+  - { offsetInCU: 0x9AE, offset: 0x5FCF8, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool initWithPath:]', symObjAddr: 0x40C, symBinAddr: 0x986D, symSize: 0x17 }
+  - { offsetInCU: 0xA13, offset: 0x5FD5D, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool initWithURL:]', symObjAddr: 0x423, symBinAddr: 0x9884, symSize: 0x56 }
+  - { offsetInCU: 0xA8E, offset: 0x5FDD8, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool init]', symObjAddr: 0x479, symBinAddr: 0x98DA, symSize: 0x14 }
+  - { offsetInCU: 0xADD, offset: 0x5FE27, size: 0x8, addend: 0x0, symName: '+[FMDatabasePool databaseClass]', symObjAddr: 0x48D, symBinAddr: 0x98EE, symSize: 0x19 }
+  - { offsetInCU: 0xB1C, offset: 0x5FE66, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool dealloc]', symObjAddr: 0x4A6, symBinAddr: 0x9907, symSize: 0x4F }
+  - { offsetInCU: 0xB6C, offset: 0x5FEB6, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool executeLocked:]', symObjAddr: 0x4F5, symBinAddr: 0x9956, symSize: 0x11 }
+  - { offsetInCU: 0xC39, offset: 0x5FF83, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool pushDatabaseBackInPool:]', symObjAddr: 0x506, symBinAddr: 0x9967, symSize: 0x90 }
+  - { offsetInCU: 0xCE0, offset: 0x6002A, size: 0x8, addend: 0x0, symName: '___41-[FMDatabasePool pushDatabaseBackInPool:]_block_invoke', symObjAddr: 0x596, symBinAddr: 0x99F7, symSize: 0xB3 }
+  - { offsetInCU: 0xD7F, offset: 0x600C9, size: 0x8, addend: 0x0, symName: ___copy_helper_block_e8_32s40s, symObjAddr: 0x649, symBinAddr: 0x9AAA, symSize: 0x25 }
+  - { offsetInCU: 0xDC0, offset: 0x6010A, size: 0x8, addend: 0x0, symName: ___destroy_helper_block_e8_32s40s, symObjAddr: 0x66E, symBinAddr: 0x9ACF, symSize: 0x25 }
+  - { offsetInCU: 0xDF7, offset: 0x60141, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool db]', symObjAddr: 0x693, symBinAddr: 0x9AF4, symSize: 0xD7 }
+  - { offsetInCU: 0xE77, offset: 0x601C1, size: 0x8, addend: 0x0, symName: ___Block_byref_object_copy_, symObjAddr: 0x76A, symBinAddr: 0x9BCB, symSize: 0x16 }
+  - { offsetInCU: 0xE9C, offset: 0x601E6, size: 0x8, addend: 0x0, symName: ___Block_byref_object_dispose_, symObjAddr: 0x780, symBinAddr: 0x9BE1, symSize: 0xF }
+  - { offsetInCU: 0xEC7, offset: 0x60211, size: 0x8, addend: 0x0, symName: '___20-[FMDatabasePool db]_block_invoke', symObjAddr: 0x78F, symBinAddr: 0x9BF0, symSize: 0x29F }
+  - { offsetInCU: 0x107A, offset: 0x603C4, size: 0x8, addend: 0x0, symName: ___copy_helper_block_e8_32s40r, symObjAddr: 0xA2E, symBinAddr: 0x9E8F, symSize: 0x30 }
+  - { offsetInCU: 0x10AF, offset: 0x603F9, size: 0x8, addend: 0x0, symName: ___destroy_helper_block_e8_32s40r, symObjAddr: 0xA5E, symBinAddr: 0x9EBF, symSize: 0x27 }
+  - { offsetInCU: 0x10DA, offset: 0x60424, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool countOfCheckedInDatabases]', symObjAddr: 0xA85, symBinAddr: 0x9EE6, symSize: 0xA1 }
+  - { offsetInCU: 0x1142, offset: 0x6048C, size: 0x8, addend: 0x0, symName: '___43-[FMDatabasePool countOfCheckedInDatabases]_block_invoke', symObjAddr: 0xB26, symBinAddr: 0x9F87, symSize: 0x31 }
+  - { offsetInCU: 0x119D, offset: 0x604E7, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool countOfCheckedOutDatabases]', symObjAddr: 0xB57, symBinAddr: 0x9FB8, symSize: 0xA1 }
+  - { offsetInCU: 0x1205, offset: 0x6054F, size: 0x8, addend: 0x0, symName: '___44-[FMDatabasePool countOfCheckedOutDatabases]_block_invoke', symObjAddr: 0xBF8, symBinAddr: 0xA059, symSize: 0x31 }
+  - { offsetInCU: 0x1260, offset: 0x605AA, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool countOfOpenDatabases]', symObjAddr: 0xC29, symBinAddr: 0xA08A, symSize: 0xA1 }
+  - { offsetInCU: 0x12C8, offset: 0x60612, size: 0x8, addend: 0x0, symName: '___38-[FMDatabasePool countOfOpenDatabases]_block_invoke', symObjAddr: 0xCCA, symBinAddr: 0xA12B, symSize: 0x53 }
+  - { offsetInCU: 0x133F, offset: 0x60689, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool releaseAllDatabases]', symObjAddr: 0xD1D, symBinAddr: 0xA17E, symSize: 0x4C }
+  - { offsetInCU: 0x138E, offset: 0x606D8, size: 0x8, addend: 0x0, symName: '___37-[FMDatabasePool releaseAllDatabases]_block_invoke', symObjAddr: 0xD69, symBinAddr: 0xA1CA, symSize: 0x43 }
+  - { offsetInCU: 0x13F5, offset: 0x6073F, size: 0x8, addend: 0x0, symName: ___copy_helper_block_e8_32s, symObjAddr: 0xDAC, symBinAddr: 0xA20D, symSize: 0xF }
+  - { offsetInCU: 0x1428, offset: 0x60772, size: 0x8, addend: 0x0, symName: ___destroy_helper_block_e8_32s, symObjAddr: 0xDBB, symBinAddr: 0xA21C, symSize: 0xF }
+  - { offsetInCU: 0x1453, offset: 0x6079D, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool inDatabase:]', symObjAddr: 0xDCA, symBinAddr: 0xA22B, symSize: 0x7C }
+  - { offsetInCU: 0x151A, offset: 0x60864, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool beginTransaction:withBlock:]', symObjAddr: 0xE46, symBinAddr: 0xA2A7, symSize: 0xC4 }
+  - { offsetInCU: 0x1638, offset: 0x60982, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool inTransaction:]', symObjAddr: 0xF0A, symBinAddr: 0xA36B, symSize: 0x17 }
+  - { offsetInCU: 0x169E, offset: 0x609E8, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool inDeferredTransaction:]', symObjAddr: 0xF21, symBinAddr: 0xA382, symSize: 0x1A }
+  - { offsetInCU: 0x1704, offset: 0x60A4E, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool inExclusiveTransaction:]', symObjAddr: 0xF3B, symBinAddr: 0xA39C, symSize: 0x17 }
+  - { offsetInCU: 0x176A, offset: 0x60AB4, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool inImmediateTransaction:]', symObjAddr: 0xF52, symBinAddr: 0xA3B3, symSize: 0x1A }
+  - { offsetInCU: 0x17D0, offset: 0x60B1A, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool path]', symObjAddr: 0x10F7, symBinAddr: 0xA558, symSize: 0x14 }
+  - { offsetInCU: 0x1807, offset: 0x60B51, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool setPath:]', symObjAddr: 0x110B, symBinAddr: 0xA56C, symSize: 0xF }
+  - { offsetInCU: 0x1846, offset: 0x60B90, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool delegate]', symObjAddr: 0x111A, symBinAddr: 0xA57B, symSize: 0xA }
+  - { offsetInCU: 0x187B, offset: 0x60BC5, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool setDelegate:]', symObjAddr: 0x1124, symBinAddr: 0xA585, symSize: 0xA }
+  - { offsetInCU: 0x18B8, offset: 0x60C02, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool maximumNumberOfDatabasesToCreate]', symObjAddr: 0x112E, symBinAddr: 0xA58F, symSize: 0xA }
+  - { offsetInCU: 0x18ED, offset: 0x60C37, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool setMaximumNumberOfDatabasesToCreate:]', symObjAddr: 0x1138, symBinAddr: 0xA599, symSize: 0xA }
+  - { offsetInCU: 0x192A, offset: 0x60C74, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool openFlags]', symObjAddr: 0x1142, symBinAddr: 0xA5A3, symSize: 0x9 }
+  - { offsetInCU: 0x195F, offset: 0x60CA9, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool vfsName]', symObjAddr: 0x114B, symBinAddr: 0xA5AC, symSize: 0x14 }
+  - { offsetInCU: 0x1996, offset: 0x60CE0, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool setVfsName:]', symObjAddr: 0x115F, symBinAddr: 0xA5C0, symSize: 0xF }
+  - { offsetInCU: 0x19D5, offset: 0x60D1F, size: 0x8, addend: 0x0, symName: '-[FMDatabasePool .cxx_destruct]', symObjAddr: 0x116E, symBinAddr: 0xA5CF, symSize: 0x3E }
+  - { offsetInCU: 0x27, offset: 0x612A4, size: 0x8, addend: 0x0, symName: '+[FMDatabaseQueue databaseQueueWithPath:]', symObjAddr: 0x0, symBinAddr: 0xA60D, symSize: 0x49 }
+  - { offsetInCU: 0x41, offset: 0x612BE, size: 0x8, addend: 0x0, symName: _kDispatchQueueSpecificKey, symObjAddr: 0x18B8, symBinAddr: 0x10420, symSize: 0x0 }
+  - { offsetInCU: 0x69, offset: 0x612E6, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue inSavePoint:]', symObjAddr: 0xA7E, symBinAddr: 0xB048, symSize: 0xFE }
+  - { offsetInCU: 0x95, offset: 0x61312, size: 0x8, addend: 0x0, symName: '_inSavePoint:.savePointIdx', symObjAddr: 0x9750, symBinAddr: 0x13CB0, symSize: 0x0 }
+  - { offsetInCU: 0x35A, offset: 0x615D7, size: 0x8, addend: 0x0, symName: '+[FMDatabaseQueue databaseQueueWithPath:]', symObjAddr: 0x0, symBinAddr: 0xA60D, symSize: 0x49 }
+  - { offsetInCU: 0x3EE, offset: 0x6166B, size: 0x8, addend: 0x0, symName: '+[FMDatabaseQueue databaseQueueWithURL:]', symObjAddr: 0x49, symBinAddr: 0xA656, symSize: 0x62 }
+  - { offsetInCU: 0x461, offset: 0x616DE, size: 0x8, addend: 0x0, symName: '+[FMDatabaseQueue databaseQueueWithPath:flags:]', symObjAddr: 0xAB, symBinAddr: 0xA6B8, symSize: 0x56 }
+  - { offsetInCU: 0x50C, offset: 0x61789, size: 0x8, addend: 0x0, symName: '+[FMDatabaseQueue databaseQueueWithURL:flags:]', symObjAddr: 0x101, symBinAddr: 0xA70E, symSize: 0x65 }
+  - { offsetInCU: 0x58F, offset: 0x6180C, size: 0x8, addend: 0x0, symName: '+[FMDatabaseQueue databaseClass]', symObjAddr: 0x166, symBinAddr: 0xA773, symSize: 0x19 }
+  - { offsetInCU: 0x5CE, offset: 0x6184B, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue initWithURL:flags:vfs:]', symObjAddr: 0x17F, symBinAddr: 0xA78C, symSize: 0x7E }
+  - { offsetInCU: 0x6A0, offset: 0x6191D, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue initWithPath:flags:vfs:]', symObjAddr: 0x1FD, symBinAddr: 0xA80A, symSize: 0x1B1 }
+  - { offsetInCU: 0x8A0, offset: 0x61B1D, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue initWithPath:flags:]', symObjAddr: 0x3AE, symBinAddr: 0xA9BB, symSize: 0x15 }
+  - { offsetInCU: 0x91B, offset: 0x61B98, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue initWithURL:flags:]', symObjAddr: 0x3C3, symBinAddr: 0xA9D0, symSize: 0x5C }
+  - { offsetInCU: 0x9B3, offset: 0x61C30, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue initWithURL:]', symObjAddr: 0x41F, symBinAddr: 0xAA2C, symSize: 0x56 }
+  - { offsetInCU: 0xA2E, offset: 0x61CAB, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue initWithPath:]', symObjAddr: 0x475, symBinAddr: 0xAA82, symSize: 0x1A }
+  - { offsetInCU: 0xA99, offset: 0x61D16, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue init]', symObjAddr: 0x48F, symBinAddr: 0xAA9C, symSize: 0x14 }
+  - { offsetInCU: 0xAE8, offset: 0x61D65, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue dealloc]', symObjAddr: 0x4A3, symBinAddr: 0xAAB0, symSize: 0x47 }
+  - { offsetInCU: 0xB38, offset: 0x61DB5, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue close]', symObjAddr: 0x4EA, symBinAddr: 0xAAF7, symSize: 0x4B }
+  - { offsetInCU: 0xB9B, offset: 0x61E18, size: 0x8, addend: 0x0, symName: '___24-[FMDatabaseQueue close]_block_invoke', symObjAddr: 0x535, symBinAddr: 0xAB42, symSize: 0x3A }
+  - { offsetInCU: 0xBF2, offset: 0x61E6F, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue interrupt]', symObjAddr: 0x58D, symBinAddr: 0xAB7C, symSize: 0x3D }
+  - { offsetInCU: 0xC51, offset: 0x61ECE, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue database]', symObjAddr: 0x5CA, symBinAddr: 0xABB9, symSize: 0xCE }
+  - { offsetInCU: 0xD07, offset: 0x61F84, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue inDatabase:]', symObjAddr: 0x698, symBinAddr: 0xAC87, symSize: 0xCB }
+  - { offsetInCU: 0xDFF, offset: 0x6207C, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue inDatabase:].cold.1', symObjAddr: 0x114B, symBinAddr: 0xCAEA, symSize: 0x23 }
+  - { offsetInCU: 0xE17, offset: 0x62094, size: 0x8, addend: 0x0, symName: '___30-[FMDatabaseQueue inDatabase:]_block_invoke', symObjAddr: 0x763, symBinAddr: 0xAD52, symSize: 0x69 }
+  - { offsetInCU: 0xEC1, offset: 0x6213E, size: 0x8, addend: 0x0, symName: ___copy_helper_block_e8_32s40b, symObjAddr: 0x7CC, symBinAddr: 0xADBB, symSize: 0x30 }
+  - { offsetInCU: 0xEF6, offset: 0x62173, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue beginTransaction:withBlock:]', symObjAddr: 0x821, symBinAddr: 0xADEB, symSize: 0xA1 }
+  - { offsetInCU: 0xFA7, offset: 0x62224, size: 0x8, addend: 0x0, symName: '___46-[FMDatabaseQueue beginTransaction:withBlock:]_block_invoke', symObjAddr: 0x8C2, symBinAddr: 0xAE8C, symSize: 0x15A }
+  - { offsetInCU: 0x10D0, offset: 0x6234D, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue inTransaction:]', symObjAddr: 0xA1C, symBinAddr: 0xAFE6, symSize: 0x17 }
+  - { offsetInCU: 0x1134, offset: 0x623B1, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue inDeferredTransaction:]', symObjAddr: 0xA33, symBinAddr: 0xAFFD, symSize: 0x1A }
+  - { offsetInCU: 0x1198, offset: 0x62415, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue inExclusiveTransaction:]', symObjAddr: 0xA4D, symBinAddr: 0xB017, symSize: 0x17 }
+  - { offsetInCU: 0x11FC, offset: 0x62479, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue inImmediateTransaction:]', symObjAddr: 0xA64, symBinAddr: 0xB02E, symSize: 0x1A }
+  - { offsetInCU: 0x1260, offset: 0x624DD, size: 0x8, addend: 0x0, symName: ___Block_byref_object_copy_, symObjAddr: 0xB7C, symBinAddr: 0xB146, symSize: 0x16 }
+  - { offsetInCU: 0x1285, offset: 0x62502, size: 0x8, addend: 0x0, symName: ___Block_byref_object_dispose_, symObjAddr: 0xB92, symBinAddr: 0xB15C, symSize: 0xF }
+  - { offsetInCU: 0x12B0, offset: 0x6252D, size: 0x8, addend: 0x0, symName: '___31-[FMDatabaseQueue inSavePoint:]_block_invoke', symObjAddr: 0xBA1, symBinAddr: 0xB16B, symSize: 0x1DF }
+  - { offsetInCU: 0x1462, offset: 0x626DF, size: 0x8, addend: 0x0, symName: ___copy_helper_block_e8_32s40b48r, symObjAddr: 0xD80, symBinAddr: 0xB34A, symSize: 0x42 }
+  - { offsetInCU: 0x1497, offset: 0x62714, size: 0x8, addend: 0x0, symName: ___destroy_helper_block_e8_32s40s48r, symObjAddr: 0xDC2, symBinAddr: 0xB38C, symSize: 0x33 }
+  - { offsetInCU: 0x14CE, offset: 0x6274B, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue checkpoint:error:]', symObjAddr: 0xDF5, symBinAddr: 0xB3BF, symSize: 0x27 }
+  - { offsetInCU: 0x1557, offset: 0x627D4, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue checkpoint:name:error:]', symObjAddr: 0xE1C, symBinAddr: 0xB3E6, symSize: 0x25 }
+  - { offsetInCU: 0x15F3, offset: 0x62870, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue checkpoint:name:logFrameCount:checkpointCount:error:]', symObjAddr: 0xE41, symBinAddr: 0xB40B, symSize: 0x154 }
+  - { offsetInCU: 0x170D, offset: 0x6298A, size: 0x8, addend: 0x0, symName: '___71-[FMDatabaseQueue checkpoint:name:logFrameCount:checkpointCount:error:]_block_invoke', symObjAddr: 0xF95, symBinAddr: 0xB55F, symSize: 0x9D }
+  - { offsetInCU: 0x17D3, offset: 0x62A50, size: 0x8, addend: 0x0, symName: ___copy_helper_block_e8_32s40s48r56r, symObjAddr: 0x1032, symBinAddr: 0xB5FC, symSize: 0x56 }
+  - { offsetInCU: 0x1814, offset: 0x62A91, size: 0x8, addend: 0x0, symName: ___destroy_helper_block_e8_32s40s48r56r, symObjAddr: 0x1088, symBinAddr: 0xB652, symSize: 0x41 }
+  - { offsetInCU: 0x184B, offset: 0x62AC8, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue path]', symObjAddr: 0x10C9, symBinAddr: 0xB693, symSize: 0x14 }
+  - { offsetInCU: 0x1882, offset: 0x62AFF, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue setPath:]', symObjAddr: 0x10DD, symBinAddr: 0xB6A7, symSize: 0xF }
+  - { offsetInCU: 0x18C1, offset: 0x62B3E, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue openFlags]', symObjAddr: 0x10EC, symBinAddr: 0xB6B6, symSize: 0x9 }
+  - { offsetInCU: 0x18F6, offset: 0x62B73, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue vfsName]', symObjAddr: 0x10F5, symBinAddr: 0xB6BF, symSize: 0x14 }
+  - { offsetInCU: 0x192D, offset: 0x62BAA, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue setVfsName:]', symObjAddr: 0x1109, symBinAddr: 0xB6D3, symSize: 0xF }
+  - { offsetInCU: 0x196C, offset: 0x62BE9, size: 0x8, addend: 0x0, symName: '-[FMDatabaseQueue .cxx_destruct]', symObjAddr: 0x1118, symBinAddr: 0xB6E2, symSize: 0x33 }
+  - { offsetInCU: 0x27, offset: 0x63101, size: 0x8, addend: 0x0, symName: '+[FMResultSet resultSetWithStatement:usingParentDatabase:]', symObjAddr: 0x0, symBinAddr: 0xB715, symSize: 0xAB }
+  - { offsetInCU: 0x2D1, offset: 0x633AB, size: 0x8, addend: 0x0, symName: '+[FMResultSet resultSetWithStatement:usingParentDatabase:]', symObjAddr: 0x0, symBinAddr: 0xB715, symSize: 0xAB }
+  - { offsetInCU: 0x3DA, offset: 0x634B4, size: 0x8, addend: 0x0, symName: '-[FMResultSet dealloc]', symObjAddr: 0xAB, symBinAddr: 0xB7C0, symSize: 0x66 }
+  - { offsetInCU: 0x43A, offset: 0x63514, size: 0x8, addend: 0x0, symName: '-[FMResultSet close]', symObjAddr: 0x111, symBinAddr: 0xB826, symSize: 0x57 }
+  - { offsetInCU: 0x4B3, offset: 0x6358D, size: 0x8, addend: 0x0, symName: '-[FMResultSet columnCount]', symObjAddr: 0x168, symBinAddr: 0xB87D, symSize: 0x1E }
+  - { offsetInCU: 0x51C, offset: 0x635F6, size: 0x8, addend: 0x0, symName: '-[FMResultSet columnNameToIndexMap]', symObjAddr: 0x186, symBinAddr: 0xB89B, symSize: 0x171 }
+  - { offsetInCU: 0x67D, offset: 0x63757, size: 0x8, addend: 0x0, symName: '-[FMResultSet kvcMagic:]', symObjAddr: 0x2F7, symBinAddr: 0xBA0C, symSize: 0x138 }
+  - { offsetInCU: 0x843, offset: 0x6391D, size: 0x8, addend: 0x0, symName: '-[FMResultSet resultDict]', symObjAddr: 0x42F, symBinAddr: 0xBB44, symSize: 0x17A }
+  - { offsetInCU: 0x9F1, offset: 0x63ACB, size: 0x8, addend: 0x0, symName: '-[FMResultSet resultDictionary]', symObjAddr: 0x5A9, symBinAddr: 0xBCBE, symSize: 0x165 }
+  - { offsetInCU: 0xB7A, offset: 0x63C54, size: 0x8, addend: 0x0, symName: '-[FMResultSet next]', symObjAddr: 0x70E, symBinAddr: 0xBE23, symSize: 0x14 }
+  - { offsetInCU: 0xBCA, offset: 0x63CA4, size: 0x8, addend: 0x0, symName: '-[FMResultSet nextWithError:]', symObjAddr: 0x722, symBinAddr: 0xBE37, symSize: 0x23C }
+  - { offsetInCU: 0xD47, offset: 0x63E21, size: 0x8, addend: 0x0, symName: '-[FMResultSet hasAnotherRow]', symObjAddr: 0x95E, symBinAddr: 0xC073, symSize: 0x25 }
+  - { offsetInCU: 0xDAB, offset: 0x63E85, size: 0x8, addend: 0x0, symName: '-[FMResultSet columnIndexForName:]', symObjAddr: 0x983, symBinAddr: 0xC098, symSize: 0xB9 }
+  - { offsetInCU: 0xE72, offset: 0x63F4C, size: 0x8, addend: 0x0, symName: '-[FMResultSet intForColumn:]', symObjAddr: 0xA3C, symBinAddr: 0xC151, symSize: 0x30 }
+  - { offsetInCU: 0xEEA, offset: 0x63FC4, size: 0x8, addend: 0x0, symName: '-[FMResultSet intForColumnIndex:]', symObjAddr: 0xA6C, symBinAddr: 0xC181, symSize: 0x29 }
+  - { offsetInCU: 0xF6B, offset: 0x64045, size: 0x8, addend: 0x0, symName: '-[FMResultSet longForColumn:]', symObjAddr: 0xA95, symBinAddr: 0xC1AA, symSize: 0x30 }
+  - { offsetInCU: 0xFE3, offset: 0x640BD, size: 0x8, addend: 0x0, symName: '-[FMResultSet longForColumnIndex:]', symObjAddr: 0xAC5, symBinAddr: 0xC1DA, symSize: 0x29 }
+  - { offsetInCU: 0x1064, offset: 0x6413E, size: 0x8, addend: 0x0, symName: '-[FMResultSet longLongIntForColumn:]', symObjAddr: 0xAEE, symBinAddr: 0xC203, symSize: 0x30 }
+  - { offsetInCU: 0x10DC, offset: 0x641B6, size: 0x8, addend: 0x0, symName: '-[FMResultSet longLongIntForColumnIndex:]', symObjAddr: 0xB1E, symBinAddr: 0xC233, symSize: 0x29 }
+  - { offsetInCU: 0x1145, offset: 0x6421F, size: 0x8, addend: 0x0, symName: '-[FMResultSet unsignedLongLongIntForColumn:]', symObjAddr: 0xB47, symBinAddr: 0xC25C, symSize: 0x30 }
+  - { offsetInCU: 0x11BF, offset: 0x64299, size: 0x8, addend: 0x0, symName: '-[FMResultSet unsignedLongLongIntForColumnIndex:]', symObjAddr: 0xB77, symBinAddr: 0xC28C, symSize: 0x12 }
+  - { offsetInCU: 0x1221, offset: 0x642FB, size: 0x8, addend: 0x0, symName: '-[FMResultSet boolForColumn:]', symObjAddr: 0xB89, symBinAddr: 0xC29E, symSize: 0x30 }
+  - { offsetInCU: 0x129B, offset: 0x64375, size: 0x8, addend: 0x0, symName: '-[FMResultSet boolForColumnIndex:]', symObjAddr: 0xBB9, symBinAddr: 0xC2CE, symSize: 0x18 }
+  - { offsetInCU: 0x1301, offset: 0x643DB, size: 0x8, addend: 0x0, symName: '-[FMResultSet doubleForColumn:]', symObjAddr: 0xBD1, symBinAddr: 0xC2E6, symSize: 0x30 }
+  - { offsetInCU: 0x137B, offset: 0x64455, size: 0x8, addend: 0x0, symName: '-[FMResultSet doubleForColumnIndex:]', symObjAddr: 0xC01, symBinAddr: 0xC316, symSize: 0x29 }
+  - { offsetInCU: 0x13FE, offset: 0x644D8, size: 0x8, addend: 0x0, symName: '-[FMResultSet stringForColumnIndex:]', symObjAddr: 0xC2A, symBinAddr: 0xC33F, symSize: 0xA2 }
+  - { offsetInCU: 0x14F2, offset: 0x645CC, size: 0x8, addend: 0x0, symName: '-[FMResultSet stringForColumn:]', symObjAddr: 0xCCC, symBinAddr: 0xC3E1, symSize: 0x30 }
+  - { offsetInCU: 0x156C, offset: 0x64646, size: 0x8, addend: 0x0, symName: '-[FMResultSet dateForColumn:]', symObjAddr: 0xCFC, symBinAddr: 0xC411, symSize: 0x30 }
+  - { offsetInCU: 0x15E6, offset: 0x646C0, size: 0x8, addend: 0x0, symName: '-[FMResultSet dateForColumnIndex:]', symObjAddr: 0xD2C, symBinAddr: 0xC441, symSize: 0x105 }
+  - { offsetInCU: 0x16DA, offset: 0x647B4, size: 0x8, addend: 0x0, symName: '-[FMResultSet dataForColumn:]', symObjAddr: 0xE31, symBinAddr: 0xC546, symSize: 0x30 }
+  - { offsetInCU: 0x1754, offset: 0x6482E, size: 0x8, addend: 0x0, symName: '-[FMResultSet dataForColumnIndex:]', symObjAddr: 0xE61, symBinAddr: 0xC576, symSize: 0xC8 }
+  - { offsetInCU: 0x189B, offset: 0x64975, size: 0x8, addend: 0x0, symName: '-[FMResultSet dataNoCopyForColumn:]', symObjAddr: 0xF29, symBinAddr: 0xC63E, symSize: 0x30 }
+  - { offsetInCU: 0x1915, offset: 0x649EF, size: 0x8, addend: 0x0, symName: '-[FMResultSet dataNoCopyForColumnIndex:]', symObjAddr: 0xF59, symBinAddr: 0xC66E, symSize: 0xC3 }
+  - { offsetInCU: 0x1A39, offset: 0x64B13, size: 0x8, addend: 0x0, symName: '-[FMResultSet columnIndexIsNull:]', symObjAddr: 0x101C, symBinAddr: 0xC731, symSize: 0x30 }
+  - { offsetInCU: 0x1AA4, offset: 0x64B7E, size: 0x8, addend: 0x0, symName: '-[FMResultSet columnIsNull:]', symObjAddr: 0x104C, symBinAddr: 0xC761, symSize: 0x30 }
+  - { offsetInCU: 0x1B1E, offset: 0x64BF8, size: 0x8, addend: 0x0, symName: '-[FMResultSet UTF8StringForColumnIndex:]', symObjAddr: 0x107C, symBinAddr: 0xC791, symSize: 0x7D }
+  - { offsetInCU: 0x1BDD, offset: 0x64CB7, size: 0x8, addend: 0x0, symName: '-[FMResultSet UTF8StringForColumn:]', symObjAddr: 0x10F9, symBinAddr: 0xC80E, symSize: 0x30 }
+  - { offsetInCU: 0x1C57, offset: 0x64D31, size: 0x8, addend: 0x0, symName: '-[FMResultSet UTF8StringForColumnName:]', symObjAddr: 0x1129, symBinAddr: 0xC83E, symSize: 0x12 }
+  - { offsetInCU: 0x1CB9, offset: 0x64D93, size: 0x8, addend: 0x0, symName: '-[FMResultSet objectForColumnIndex:]', symObjAddr: 0x113B, symBinAddr: 0xC850, symSize: 0x124 }
+  - { offsetInCU: 0x1DD6, offset: 0x64EB0, size: 0x8, addend: 0x0, symName: '-[FMResultSet objectForColumnName:]', symObjAddr: 0x125F, symBinAddr: 0xC974, symSize: 0x12 }
+  - { offsetInCU: 0x1E38, offset: 0x64F12, size: 0x8, addend: 0x0, symName: '-[FMResultSet objectForColumn:]', symObjAddr: 0x1271, symBinAddr: 0xC986, symSize: 0x30 }
+  - { offsetInCU: 0x1EB2, offset: 0x64F8C, size: 0x8, addend: 0x0, symName: '-[FMResultSet columnNameForIndex:]', symObjAddr: 0x12A1, symBinAddr: 0xC9B6, symSize: 0x4E }
+  - { offsetInCU: 0x1F31, offset: 0x6500B, size: 0x8, addend: 0x0, symName: '-[FMResultSet objectAtIndexedSubscript:]', symObjAddr: 0x12EF, symBinAddr: 0xCA04, symSize: 0x12 }
+  - { offsetInCU: 0x1F93, offset: 0x6506D, size: 0x8, addend: 0x0, symName: '-[FMResultSet objectForKeyedSubscript:]', symObjAddr: 0x1301, symBinAddr: 0xCA16, symSize: 0x12 }
+  - { offsetInCU: 0x1FF5, offset: 0x650CF, size: 0x8, addend: 0x0, symName: '-[FMResultSet parentDB]', symObjAddr: 0x1313, symBinAddr: 0xCA28, symSize: 0xA }
+  - { offsetInCU: 0x202A, offset: 0x65104, size: 0x8, addend: 0x0, symName: '-[FMResultSet setParentDB:]', symObjAddr: 0x131D, symBinAddr: 0xCA32, symSize: 0x11 }
+  - { offsetInCU: 0x2069, offset: 0x65143, size: 0x8, addend: 0x0, symName: '-[FMResultSet query]', symObjAddr: 0x132E, symBinAddr: 0xCA43, symSize: 0x14 }
+  - { offsetInCU: 0x20A0, offset: 0x6517A, size: 0x8, addend: 0x0, symName: '-[FMResultSet setQuery:]', symObjAddr: 0x1342, symBinAddr: 0xCA57, symSize: 0xF }
+  - { offsetInCU: 0x20DF, offset: 0x651B9, size: 0x8, addend: 0x0, symName: '-[FMResultSet statement]', symObjAddr: 0x1351, symBinAddr: 0xCA66, symSize: 0x14 }
+  - { offsetInCU: 0x2116, offset: 0x651F0, size: 0x8, addend: 0x0, symName: '-[FMResultSet setStatement:]', symObjAddr: 0x1365, symBinAddr: 0xCA7A, symSize: 0xF }
+  - { offsetInCU: 0x2155, offset: 0x6522F, size: 0x8, addend: 0x0, symName: '-[FMResultSet .cxx_destruct]', symObjAddr: 0x1374, symBinAddr: 0xCA89, symSize: 0x3E }
+...

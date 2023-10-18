@@ -75,7 +75,7 @@ app.*.map.json
 
 /ios/Podfile.lock
 /lib/injection/get_it_container.config.dart
-/lib/_presentation/_route/tuyap_router.gr.dart
+/lib/_presentation/_route/router.gr.dart
 
 
 #env variables
