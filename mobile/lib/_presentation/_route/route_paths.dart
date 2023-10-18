@@ -10,4 +10,7 @@ class RoutePaths {
   static const APP = '/app';
   static const HOME = 'home';
   static const PROFILE = 'profile';
+
+  //Story
+  static const STORYDETAILS = 'story-details';
 }

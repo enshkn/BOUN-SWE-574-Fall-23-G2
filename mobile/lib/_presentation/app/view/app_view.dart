@@ -46,8 +46,8 @@ class _AppViewState extends State<AppView> {
         return AutoTabsRouter(
           lazyLoad: false,
           routes: const [
-            HomeRoute(),
-            ProfileRoute(),
+            HomeTabRoute(),
+            ProfileTabRoute(),
           ],
           duration: const Duration(milliseconds: 400),
           transitionBuilder: (context, child, animation) => FadeTransition(
