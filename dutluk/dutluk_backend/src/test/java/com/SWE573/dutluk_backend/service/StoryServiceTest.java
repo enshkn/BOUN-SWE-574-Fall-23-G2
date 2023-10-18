@@ -38,7 +38,7 @@ class StoryServiceTest {
                 .username("testUser")
                 .build();
         when(userService.findByUserId(1L)).thenReturn(foundUser);
-
+        Date date = new Date();
 
         StoryCreateRequest storyCreateRequest = new StoryCreateRequest();
         ArrayList<String> labels = new ArrayList<>();
@@ -47,8 +47,8 @@ class StoryServiceTest {
         storyCreateRequest.setTitle("Test Story");
         storyCreateRequest.setLabels(labels);
         storyCreateRequest.setText("Test story text");
-        storyCreateRequest.setStartTimeStamp(LocalDate.now());
-        storyCreateRequest.setEndTimeStamp(LocalDate.now());
+        storyCreateRequest.setStartTimeStamp(date);
+        storyCreateRequest.setEndTimeStamp(date);
         storyCreateRequest.setSeason("Summer");
         storyCreateRequest.setDecade("2020s");
         List<Location> locations = new ArrayList<>();
@@ -64,8 +64,8 @@ class StoryServiceTest {
                 .title("Test Story")
                 .labels(Arrays.asList("label1", "label2"))
                 .text("Test story text")
-                .startTimeStamp(LocalDate.now())
-                .endTimeStamp(LocalDate.now())
+                .startTimeStamp(date)
+                .endTimeStamp(date)
                 .season("Summer")
                 .user(foundUser)
                 .decade("2010s")
@@ -87,8 +87,8 @@ class StoryServiceTest {
         assertEquals("Test Story", createdStory.getTitle());
         assertEquals(Arrays.asList("label1", "label2"), createdStory.getLabels());
         assertEquals("Test story text", createdStory.getText());
-        assertEquals(LocalDate.now(), createdStory.getStartTimeStamp());
-        assertEquals(LocalDate.now(), createdStory.getEndTimeStamp());
+        assertEquals(date.getTime(), createdStory.getStartTimeStamp().getTime());
+        assertEquals(date.getTime(), createdStory.getEndTimeStamp().getTime());
         assertEquals("Summer", createdStory.getSeason());
         assertEquals("2010s", createdStory.getDecade());
         assertEquals(foundUser, createdStory.getUser());
@@ -394,7 +394,7 @@ class StoryServiceTest {
     @Test
     void testSearchStoriesWithSingleDate() {
 
-        LocalDate startTimeStamp = LocalDate.now();
+        Date startTimeStamp = new Date();
 
         Story story1 = Story.builder()
                 .title("Story 1")
@@ -403,7 +403,7 @@ class StoryServiceTest {
 
         Story story2 = Story.builder()
                 .title("Story 2")
-                .startTimeStamp(startTimeStamp.plusDays(1))
+                .startTimeStamp(new Date())
                 .build();
 
 
@@ -424,8 +424,8 @@ class StoryServiceTest {
     @Test
     void testSearchStoriesWithMultipleDate() {
 
-        LocalDate startTimeStamp = LocalDate.now();
-        LocalDate endTimeStamp = LocalDate.now().plusDays(5);
+        Date startTimeStamp = new Date();
+        Date endTimeStamp = new Date();
 
         Story story1 = Story.builder()
                 .title("Story 1")
@@ -435,8 +435,8 @@ class StoryServiceTest {
 
         Story story2 = Story.builder()
                 .title("Story 2")
-                .startTimeStamp(startTimeStamp.plusDays(1))
-                .endTimeStamp(endTimeStamp.plusDays(1))
+                .startTimeStamp(startTimeStamp)
+                .endTimeStamp(endTimeStamp)
                 .build();
 
 

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -86,8 +87,8 @@ public class StoryMobileController {
             @RequestParam(required = false) Integer radius,
             @RequestParam(required = false) Double latitude,
             @RequestParam(required = false) Double longitude,
-            @RequestParam(required = false) LocalDate startTimeStamp,
-            @RequestParam(required = false) LocalDate endTimeStamp,
+            @RequestParam(required = false) Date startTimeStamp,
+            @RequestParam(required = false) Date endTimeStamp,
             @RequestParam(required = false) String decade,
             @RequestParam(required = false) String season) {
         Set<Story> storySet = new HashSet<>();

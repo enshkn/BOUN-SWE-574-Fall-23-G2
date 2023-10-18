@@ -117,10 +117,10 @@ public class StoryService {
         return storyRepository.findBySeasonContainingIgnoreCase(season);
     }
 
-    public List<Story> searchStoriesWithSingleDate(LocalDate startTimeStamp){
+    public List<Story> searchStoriesWithSingleDate(Date startTimeStamp){
         return storyRepository.findByStartTimeStamp(startTimeStamp);
     }
-    public List<Story> searchStoriesWithMultipleDate(LocalDate startTimeStamp,LocalDate endTimeStamp){
+    public List<Story> searchStoriesWithMultipleDate(Date startTimeStamp,Date endTimeStamp){
         return storyRepository.findByStartTimeStampBetween(startTimeStamp, endTimeStamp);
     }
 
