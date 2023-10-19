@@ -127,7 +127,7 @@ class _AppViewState extends State<AppView> {
                   icon: Icon(
                     FontAwesomeIcons.person,
                     size: 20,
-                    color: state.bottomTab == BottomTabs.sample
+                    color: state.bottomTab == BottomTabs.profile
                         ? context.appBarColor
                         : const Color(0xFF071F05).withOpacity(0.5),
                   ),
