@@ -55,7 +55,7 @@ jobs:
       with:
         push: true
         tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_f03ae9c659ec4574af52b01c85839b3c }}/dutluk-be-prod:${{ github.sha }}
-        file: ./dutluk/Dockerfile
+        file: ./dutluk/build_dockerfiles/backend/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
