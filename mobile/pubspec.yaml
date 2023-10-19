@@ -37,6 +37,8 @@ dependencies:
   onesignal_flutter: ^3.5.1
   share_plus: ^7.1.0
   shared_preferences: ^2.0.18
+  html: ^0.15.4
+  
 
 dev_dependencies:
   auto_route_generator: ^7.3.1
@@ -58,3 +60,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/i10n/
+    - assets/lottie/
+    - assets/images/

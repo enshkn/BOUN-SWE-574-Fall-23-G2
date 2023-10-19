@@ -7,11 +7,22 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - ./.env
+      - ./dutluk_frontend/.env
     depends_on:
       - db
     volumes:
       - backend-data:/path/to/backend/data
+
+  frontend:
+    build:
+      context: ./dutluk_frontend
+    container_name: dutluk-frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./dutluk_frontend/.env
+    depends_on:
+      - backend
 
   db:
     image: postgres
@@ -20,7 +31,7 @@ services:
     ports:
       - "5432:5432"
     env_file:
-      - ./.env
+      - ./dutluk_frontend/.env
     volumes:
       - db-data:/var/lib/postgresql/data
 
@@ -28,6 +39,14 @@ volumes:
   backend-data:
   db-data:
 
-
-
+#sudo su -
+#apt-get update
+#apt-get install docker-compose
+#apt-get install git
+#git clone https://github.com/enshkn/BOUN-SWE-574-Fall-23-G2
+#cd BOUN-SWE-574-Fall-23-G2/
+#cd dutluk/
+#cd dutluk_frontend/
+#nano .env (paste the necessary env variables here)
+#cd ..
 #docker compose up --build -d

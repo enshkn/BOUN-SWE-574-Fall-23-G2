@@ -32,10 +32,14 @@ public class UserController {
     private JwtUtil jwtUtil;
 
 
+
+
     @GetMapping("/test")
     public String helloWorld(){
         return "<h1>Hello world!</h1>";
     }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id,HttpServletRequest request) throws AccountNotFoundException {
@@ -52,12 +56,15 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
                                    HttpServletResponse response) throws AccountNotFoundException {
         User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
-        Cookie cookie = new Cookie("Bearer", userService.generateUserToken(foundUser));
+        String token = userService.generateUserToken(foundUser);
+        Cookie cookie = new Cookie("Bearer", token);
         cookie.setPath("/api");
         response.addCookie(cookie);
         foundUser.setProfilePhoto(null);
         return ResponseEntity.ok(foundUser);
     }
+
+
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
         Cookie cookie = new Cookie("Bearer", null);
@@ -66,6 +73,8 @@ public class UserController {
         response.addCookie(cookie);
         return ResponseEntity.ok("Logged out");
     }
+
+
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
@@ -77,10 +86,11 @@ public class UserController {
         User registeredUser = userService.addUser(newUser);
         return ResponseEntity.ok(registeredUser);
     }
+
     @PostMapping("/update")
-    public User updateUser(@RequestBody UserUpdateRequest updateRequest, HttpServletRequest request){
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequest updateRequest, HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        return userService.updateUser(user,updateRequest);
+        return ResponseEntity.ok(userService.updateUser(user,updateRequest));
     }
 
     @PostMapping(value= "/photo", consumes = "multipart/form-data")
@@ -112,8 +122,8 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public User showUserProfile(HttpServletRequest request){
-        return userService.validateTokenizedUser(request);
+    public ResponseEntity<?> showUserProfile(HttpServletRequest request){
+        return ResponseEntity.ok(userService.validateTokenizedUser(request));
     }
 
 

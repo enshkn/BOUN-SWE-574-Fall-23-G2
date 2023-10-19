@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,10 +26,16 @@ public class StoryController {
     StoryService storyService;
     @Autowired
     private UserService userService;
+
     @GetMapping("/all")
-    @CrossOrigin
-    public List<Story> findAllStories(HttpServletRequest request){
-        return storyService.findAll();
+    public ResponseEntity<?> findAllStories(HttpServletRequest request){
+        return ResponseEntity.ok(storyService.findAll());
+    }
+
+    //MOCK UNTIL ACTIVITY FEED LOGIC IS ESTABLISHED
+    @GetMapping("/feed")
+    public ResponseEntity<?> findFeedStories(HttpServletRequest request){
+        return ResponseEntity.ok(storyService.findAll());
     }
 
     @PostMapping("/add")
@@ -66,8 +72,8 @@ public class StoryController {
             @RequestParam(required = false) Integer radius,
             @RequestParam(required = false) Double latitude,
             @RequestParam(required = false) Double longitude,
-            @RequestParam(required = false) LocalDate startTimeStamp,
-            @RequestParam(required = false) LocalDate endTimeStamp,
+            @RequestParam(required = false) Date startTimeStamp,
+            @RequestParam(required = false) Date endTimeStamp,
             @RequestParam(required = false) String decade,
             @RequestParam(required = false) String season) {
         Set<Story> storySet = new HashSet<>();

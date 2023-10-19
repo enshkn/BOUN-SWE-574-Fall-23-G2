@@ -14,6 +14,10 @@ final class SessionCubit extends BaseCubit<SessionState> {
     safeEmit(state.copyWith(authUser: user));
   }
 
+  void setFirstLogin(bool isFirstLogin) {
+    safeEmit(state.copyWith(isFirstLogin: isFirstLogin));
+  }
+
   @override
   void setLoading(bool loading) {
     safeEmit(state.copyWith(isLoading: loading));

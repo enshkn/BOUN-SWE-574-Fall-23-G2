@@ -11,6 +11,15 @@ extension StringExtensions on String {
     }
   }
 
+  String get t => this;
+  String toLocation() {
+    final firstSpaceIndex = indexOf(' ');
+    if (firstSpaceIndex != -1) {
+      return substring(firstSpaceIndex + 1).trim();
+    }
+    return this;
+  }
+
   String capitalize() {
     return "${this[0].toUpperCase()}${substring(1)}";
   }
@@ -30,4 +39,5 @@ extension StringExtensions on String {
 
 extension NullableStringExtension on String? {
   bool get isNullOrEmpty => this == null || (this?.isEmpty ?? false);
+  bool get isNorNullOrEmpty => this != null && this!.isNotEmpty;
 }
