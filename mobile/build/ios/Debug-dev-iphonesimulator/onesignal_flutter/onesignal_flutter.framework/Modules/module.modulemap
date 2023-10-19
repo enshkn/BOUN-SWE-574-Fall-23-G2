@@ -1,6 +1,0 @@
-framework module onesignal_flutter {
-  umbrella header "onesignal_flutter-umbrella.h"
-
-  export *
-  module * { export * }
-}
