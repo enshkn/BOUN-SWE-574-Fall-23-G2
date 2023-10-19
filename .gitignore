@@ -26,3 +26,5 @@ hs_err_pid*
 #env variables
 .env
 /.run/DutlukBackendApplication.run.xml
+dutluk/dutluk_backend/.run/DutlukBackendApplication.run.xml
+dutluk/dutluk_backend/.run/DutlukBackendApplication.run.xml

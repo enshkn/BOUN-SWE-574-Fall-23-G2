@@ -4,6 +4,7 @@ import com.SWE573.dutluk_backend.model.Story;
 import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 
@@ -22,7 +23,7 @@ public interface StoryRepository extends CrudRepository<Story,Long> {
 
     List<Story> findBySeasonContainingIgnoreCase(String query);
 
-    List<Story> findByStartTimeStampBetween(LocalDate startDate, LocalDate endDate);
+    List<Story> findByStartTimeStampBetween(Date startDate, Date endDate);
 
-    List<Story> findByStartTimeStamp(LocalDate startTimeStamp);
+    List<Story> findByStartTimeStamp(Date startTimeStamp);
 }
