@@ -27,6 +27,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const ForgotPasswordView(),
       );
     },
+    HomeTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const HomeTabView(),
+      );
+    },
     HomeRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -45,6 +51,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const OnboardingView(),
       );
     },
+    ProfileTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const ProfileTabView(),
+      );
+    },
     ProfileRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -61,6 +73,16 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const SplashView(),
+      );
+    },
+    StoryDetailsRoute.name: (routeData) {
+      final args = routeData.argsAs<StoryDetailsRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: StoryDetailsView(
+          model: args.model,
+          key: args.key,
+        ),
       );
     },
   };
@@ -90,6 +112,20 @@ class ForgotPasswordRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'ForgotPasswordRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [HomeTabView]
+class HomeTabRoute extends PageRouteInfo<void> {
+  const HomeTabRoute({List<PageRouteInfo>? children})
+      : super(
+          HomeTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'HomeTabRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
@@ -137,6 +173,20 @@ class OnboardingRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ProfileTabView]
+class ProfileTabRoute extends PageRouteInfo<void> {
+  const ProfileTabRoute({List<PageRouteInfo>? children})
+      : super(
+          ProfileTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ProfileTabRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [ProfileView]
 class ProfileRoute extends PageRouteInfo<void> {
   const ProfileRoute({List<PageRouteInfo>? children})
@@ -176,4 +226,42 @@ class SplashRoute extends PageRouteInfo<void> {
   static const String name = 'SplashRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [StoryDetailsView]
+class StoryDetailsRoute extends PageRouteInfo<StoryDetailsRouteArgs> {
+  StoryDetailsRoute({
+    required StoryModel model,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          StoryDetailsRoute.name,
+          args: StoryDetailsRouteArgs(
+            model: model,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'StoryDetailsRoute';
+
+  static const PageInfo<StoryDetailsRouteArgs> page =
+      PageInfo<StoryDetailsRouteArgs>(name);
+}
+
+class StoryDetailsRouteArgs {
+  const StoryDetailsRouteArgs({
+    required this.model,
+    this.key,
+  });
+
+  final StoryModel model;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'StoryDetailsRouteArgs{model: $model, key: $key}';
+  }
 }

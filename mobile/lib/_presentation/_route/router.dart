@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:swe/_domain/story/model/story_model.dart';
+import 'package:swe/_presentation/story/story_details_view.dart';
 import '../app/view/app_view.dart';
 import '../app/view/home/view/home_view.dart';
 import '../app/view/profile/view/profile_view.dart';
@@ -28,13 +30,43 @@ class AppRouter extends _$AppRouter {
         RedirectRoute(path: '', redirectTo: 'home'),
         AutoRoute(
           path: RoutePaths.HOME,
-          page: HomeRoute.page,
+          page: HomeTabRoute.page,
+          children: [
+            AutoRoute(path: '', page: HomeRoute.page),
+            AutoRoute(
+              path: RoutePaths.STORYDETAILS,
+              page: StoryDetailsRoute.page,
+            ),
+          ],
         ),
         AutoRoute(
           path: RoutePaths.PROFILE,
-          page: ProfileRoute.page,
+          page: ProfileTabRoute.page,
+          children: [
+            AutoRoute(path: '', page: ProfileRoute.page),
+          ],
         ),
       ],
     ),
   ];
+}
+
+@RoutePage()
+class HomeTabView extends StatelessWidget {
+  const HomeTabView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const AutoRouter();
+  }
+}
+
+@RoutePage()
+class ProfileTabView extends StatelessWidget {
+  const ProfileTabView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const AutoRouter();
+  }
 }
