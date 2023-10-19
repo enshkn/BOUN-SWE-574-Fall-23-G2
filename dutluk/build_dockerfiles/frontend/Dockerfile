@@ -13,6 +13,8 @@ RUN npm install
 # Build the app
 RUN npm run build
 
+RUN npm install -g serve
+
 # Expose the port that the application will be running on
 EXPOSE 80
 
