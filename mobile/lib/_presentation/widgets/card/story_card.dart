@@ -157,7 +157,7 @@ class StoryCard extends StatelessWidget {
 
     return Positioned(
       bottom: 8,
-      left: 8,
+      right: 8,
       child: SizedBox(
         width: 50,
         height: 30,
@@ -190,9 +190,9 @@ class StoryCard extends StatelessWidget {
   Widget buildUser() {
     return Positioned(
       bottom: 8,
-      right: 10,
+      left: 4,
       child: SizedBox(
-        width: 90,
+        width: 150,
         height: 30,
         child: Center(
           child: Row(
