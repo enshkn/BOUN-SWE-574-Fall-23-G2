@@ -28,3 +28,7 @@ hs_err_pid*
 /.run/DutlukBackendApplication.run.xml
 dutluk/dutluk_backend/.run/DutlukBackendApplication.run.xml
 dutluk/dutluk_backend/.run/DutlukBackendApplication.run.xml
+
+# node modules and build files
+dutluk/dutluk_frontend/build
+dutluk/dutluk_frontend/node_modules
