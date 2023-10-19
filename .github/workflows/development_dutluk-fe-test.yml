@@ -31,7 +31,7 @@ jobs:
       with:
         push: true
         tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_14afa918bbbd466aba6c10063a6a99ad }}/docket-fe-test:${{ github.sha }}
-        file: ./Dockerfile
+        file: ./dutluk/build_dockerfiles/frontend/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
