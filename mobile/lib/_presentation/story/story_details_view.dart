@@ -258,33 +258,29 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
     bool isFavorite,
     String likeCount,
   ) {
-    return Positioned(
-      bottom: 8,
-      left: 8,
-      child: SizedBox(
-        width: 50,
-        height: 30,
-        child: Center(
-          child: Row(
-            children: [
-              ButtonCard(
-                minScale: 0.8,
-                onPressed: () {},
-                child: Icon(
-                  Icons.favorite,
-                  color: isFavorite ? Colors.red : Colors.grey,
-                  size: 28,
-                ),
+    return SizedBox(
+      width: 50,
+      height: 30,
+      child: Center(
+        child: Row(
+          children: [
+            ButtonCard(
+              minScale: 0.8,
+              onPressed: () {},
+              child: Icon(
+                Icons.favorite,
+                color: isFavorite ? Colors.red : Colors.grey,
+                size: 28,
               ),
-              const SizedBox(
-                width: 4,
-              ),
-              Text(
-                likeCount ?? '0',
-                style: const TextStyle(fontSize: 16),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(
+              width: 4,
+            ),
+            Text(
+              likeCount ?? '0',
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
         ),
       ),
     );
