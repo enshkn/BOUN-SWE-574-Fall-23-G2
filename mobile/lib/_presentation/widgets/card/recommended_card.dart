@@ -1,10 +1,17 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:swe/_common/constants/default_image.dart';
 import 'package:swe/_common/style/text_styles.dart';
+import 'package:swe/_core/extensions/string_extensions.dart';
 import 'package:swe/_core/widgets/base_cached_network_image.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/widgets/base/base_list_view.dart';
 import 'package:swe/_presentation/widgets/card/button_card.dart';
+import 'package:html/dom.dart' as dom;
+import 'package:html/parser.dart';
+import 'dart:convert';
 
 class RecommendedCard extends StatelessWidget {
   final StoryModel storyModel;
@@ -26,19 +33,18 @@ class RecommendedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = storyModel.text;
-
-    final imgRegex = RegExp(r'<img>(.*?)<\/img>');
-    final Iterable<Match> matches = imgRegex.allMatches(text);
-    var imgContent = '';
-    for (final match in matches) {
-      imgContent = match.group(1)!;
-    }
-
-    final locationName = storyModel.locations?[0].locationName;
-    final firstSpaceIndex = text.indexOf(' ');
-    String? parsedLocationName = '';
-    if (firstSpaceIndex != -1) {
-      parsedLocationName = locationName?.substring(firstSpaceIndex + 1).trim();
+    final document = parse(text);
+    final link = document.querySelector('img');
+    final noImage = link == null ? true : false;
+    var uint8list =
+        Uint8List.fromList(base64.decode(DefaultImage.defaultImage));
+    if (!noImage) {
+      final imageLink = link != null ? link.attributes['src'] : '';
+      final imageBeforeParse = imageLink?.split('base64,');
+      imageBeforeParse?[1].replaceAll(r'\', 'END.');
+      final imageBeforeSecondParse = imageBeforeParse?[1].split(' END.');
+      final imgUrl = imageBeforeSecondParse?[0];
+      uint8list = Uint8List.fromList(base64.decode(imgUrl!));
     }
 
     return Material(
@@ -62,14 +68,18 @@ class RecommendedCard extends StatelessWidget {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            buildContent(context, imgContent, parsedLocationName),
+            buildContent(context, uint8list, noImage),
           ],
         ),
       ),
     );
   }
 
-  Card buildContent(BuildContext context, String? image, String? location) {
+  Card buildContent(
+    BuildContext context,
+    Uint8List? imageBytes,
+    bool noImage,
+  ) {
     return Card(
       elevation: 0,
       shape: const RoundedRectangleBorder(
@@ -83,17 +93,12 @@ class RecommendedCard extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.4,
             child: Center(
               child: ClipRRect(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(24),
-                ),
+                borderRadius: BorderRadius.circular(24),
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
-                  child: BaseCachedNetworkImage(
-                    width: MediaQuery.of(context).size.width,
-                    imageUrl: image == '' || image == null
-                        ? 'https://picsum.photos/1600/900'
-                        : image,
-                    fit: BoxFit.contain,
+                  child: Image.memory(
+                    imageBytes!,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -111,7 +116,7 @@ class RecommendedCard extends StatelessWidget {
           BaseWidgets.lowerGap,
           if (storyModel.locations != null)
             Text(
-              location ?? '',
+              storyModel.locations![0].locationName!.toLocation() ?? '',
               style: const TextStyles.body().copyWith(
                 letterSpacing: 0.016,
               ),

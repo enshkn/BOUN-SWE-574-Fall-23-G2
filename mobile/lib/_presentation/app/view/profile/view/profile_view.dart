@@ -6,7 +6,9 @@ import 'package:swe/_common/style/text_styles.dart';
 import 'package:swe/_core/widgets/base_scroll_view.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
+import 'package:swe/_presentation/widgets/app_button.dart';
 import 'package:swe/_presentation/widgets/card/button_card.dart';
+import 'package:swe/_presentation/widgets/modals.dart';
 
 @RoutePage()
 class ProfileView extends StatefulWidget {
@@ -124,6 +126,21 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
               ),
               const Divider(),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: AppButton(
+                  label: 'Logout',
+                  labelStyle: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  centerLabel: true,
+                  noIcon: true,
+                  onPressed: () {
+                    showLogoutModal(context, cubit);
+                  },
+                ),
+              ),
             ],
           ),
         );
