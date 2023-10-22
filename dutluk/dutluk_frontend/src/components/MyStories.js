@@ -22,7 +22,7 @@ function MyStories() {
   useEffect(() => {
     axios
       .get(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/fromUser`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/story/fromUser`,
         {
           withCredentials: true,
         }
@@ -38,7 +38,7 @@ function MyStories() {
   const handleDelete = (storyId) => {
     axios
       .get(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/delete/${storyId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/story/delete/${storyId}`,
         {
           withCredentials: true,
         }

@@ -21,7 +21,7 @@ function App() {
   useEffect(() => {
     axios
       .get(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/user/profile`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/profile`,
         {
           withCredentials: true,
         }
@@ -37,7 +37,7 @@ function App() {
   const handleLogout = () => {
     axios
       .get(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/user/logout`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/logout`,
         null,
         {
           withCredentials: true,

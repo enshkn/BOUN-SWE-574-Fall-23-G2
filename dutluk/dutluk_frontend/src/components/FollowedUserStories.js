@@ -20,7 +20,7 @@ function FollowedUserStories() {
 
   useEffect(() => {
     axios
-      .get(`http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/following`, {
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/following`, {
         withCredentials: true,
       })
       .then((response) => {
