@@ -57,10 +57,10 @@ public class UserController {
                                    HttpServletResponse response) throws AccountNotFoundException {
         User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
         String token = userService.generateUserToken(foundUser);
-        Cookie cookie = new Cookie("Bearer", token);
-        cookie.setPath("/api");
-        response.setHeader("Set-Cookie", response.getHeader("Set-Cookie")+"; Same-Site=None; Secure=True");
-        response.addCookie(cookie);
+        //Cookie cookie = new Cookie("Bearer", token);
+        //cookie.setPath("/api");
+        response.setHeader("Set-Cookie", "Bearer="+token+"; Path=/api; SameSite=None; Secure");
+        //response.addCookie(cookie);
         foundUser.setProfilePhoto(null);
         return ResponseEntity.ok(foundUser);
     }
