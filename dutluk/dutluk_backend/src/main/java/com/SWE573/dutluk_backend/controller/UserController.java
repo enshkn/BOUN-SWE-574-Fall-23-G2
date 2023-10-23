@@ -59,8 +59,7 @@ public class UserController {
         String token = userService.generateUserToken(foundUser);
         Cookie cookie = new Cookie("Bearer", token);
         cookie.setPath("/api");
-        cookie.setPath("/api");
-        response.setHeader("Set-Cookie", response.getHeader("Set-Cookie")+"; Same-Site=None; Secure");
+        response.setHeader("Set-Cookie", response.getHeader("Set-Cookie")+"; Same-Site=None; Secure=True");
         response.addCookie(cookie);
         foundUser.setProfilePhoto(null);
         return ResponseEntity.ok(foundUser);
