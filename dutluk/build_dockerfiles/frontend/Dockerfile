@@ -10,6 +10,9 @@ COPY ./dutluk/dutluk_frontend /app
 # Install npm
 RUN npm install
 
+# Declare the build argument
+ARG REACT_APP_BACKEND_URL
+
 # SET Env variables
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 
