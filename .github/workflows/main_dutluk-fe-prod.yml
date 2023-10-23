@@ -32,7 +32,10 @@ jobs:
         push: true
         tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_c5ec559191f2491a88af5504a08339fa }}/dutluk-fe-prod:${{ github.sha }}
         file: ./dutluk/build_dockerfiles/frontend/Dockerfile
-        build-args: REACT_APP_BACKEND_URL=${{ secrets.REACT_APP_BACKEND_URL_PROD }}
+        build-args: |
+          REACT_APP_BACKEND_URL=${{ secrets.REACT_APP_BACKEND_URL_PROD }}
+          REACT_APP_FRONTEND_URL=${{ secrets.REACT_APP_FRONTEND_URL_PROD  }}
+          REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY  }}
 
   deploy:
     runs-on: ubuntu-latest
