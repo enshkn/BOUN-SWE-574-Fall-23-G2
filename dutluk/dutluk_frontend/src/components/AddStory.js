@@ -81,14 +81,14 @@ const AddStoryForm = () => {
 
     try {
       const response = await axios.post(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/add`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/story/add`,
         story,
         {
           withCredentials: true,
         }
       );
       console.log(response);
-      window.location.href = `http://${process.env.REACT_APP_FRONTEND_URL}:3000/user/my-profile`;
+      window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/user/my-profile`;
     } catch (error) {
       console.log(error);
     }

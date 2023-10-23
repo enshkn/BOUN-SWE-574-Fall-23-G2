@@ -12,14 +12,14 @@ function LoginComponent() {
 
     axios
       .post(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/user/login`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/login`,
         { identifier, password },
         { withCredentials: true }
       )
       .then((response) => {
         const cookieValue = response.headers["bearer"];
         localStorage.setItem("authToken", cookieValue);
-        window.location.href = `http://${process.env.REACT_APP_FRONTEND_URL}:3000/story/all-stories`;
+        window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/story/all-stories`;
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {

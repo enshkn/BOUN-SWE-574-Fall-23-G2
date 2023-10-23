@@ -20,7 +20,7 @@ function AllStories() {
 
   useEffect(() => {
     axios
-      .get(`http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/all`, {
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/all`, {
         withCredentials: true,
       })
       .then((response) => {

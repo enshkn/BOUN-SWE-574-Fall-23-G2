@@ -43,7 +43,7 @@ const StorySearch = () => {
       }
 
       const response = await axios.get(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/search`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/story/search`,
         {
           params: {
             query: searchQuery,

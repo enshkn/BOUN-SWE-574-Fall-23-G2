@@ -18,7 +18,7 @@ function UserComponent({ userId }) {
 
     axios
       .get(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/user/profile`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/profile`,
         {
           withCredentials: true,
         }
@@ -41,7 +41,7 @@ function UserComponent({ userId }) {
 
     axios
       .post(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/user/update`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/update`,
         { biography },
         { withCredentials: true }
       )
@@ -60,7 +60,7 @@ function UserComponent({ userId }) {
 
     axios
       .post(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/user/photo`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/photo`,
         formData,
         {
           withCredentials: true,

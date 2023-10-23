@@ -14,7 +14,7 @@ function Profile() {
   useEffect(() => {
     axios
       .get(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/user/profile`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/profile`,
         {
           withCredentials: true,
         }
@@ -36,7 +36,7 @@ function Profile() {
 
   useEffect(() => {
     axios
-      .get(`http://${process.env.REACT_APP_BACKEND_URL}:8080/api/user/${id}`, {
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/${id}`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -51,7 +51,7 @@ function Profile() {
     if (isFollowing) {
       axios
         .post(
-          `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/user/follow/`,
+          `${process.env.REACT_APP_BACKEND_URL}/api/user/follow/`,
           { userId: id },
           { withCredentials: true }
         )
@@ -65,7 +65,7 @@ function Profile() {
     } else {
       axios
         .post(
-          `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/user/follow`,
+          `${process.env.REACT_APP_BACKEND_URL}/api/user/follow`,
           { userId: id },
           { withCredentials: true }
         )

@@ -25,12 +25,12 @@ const RegisterComponent = () => {
 
     try {
       const response = await axios.post(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/user/register`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/register`,
         data
       );
       console.log(response.data);
       alert("Registered successfully!");
-      window.location.href = `http://${process.env.REACT_APP_FRONTEND_URL}:3000/login`;
+      window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/login`;
     } catch (error) {
       console.error(error);
       alert("Error occurred during registration!");

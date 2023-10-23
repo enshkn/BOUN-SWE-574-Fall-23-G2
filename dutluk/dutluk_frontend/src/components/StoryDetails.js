@@ -26,7 +26,7 @@ function StoryDetails() {
 
   useEffect(() => {
     axios
-      .get(`http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/${id}`, {
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${id}`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -47,7 +47,7 @@ function StoryDetails() {
 
     try {
       const response = await axios.post(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/comment/add`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/comment/add`,
         comment,
         {
           withCredentials: true,
@@ -66,7 +66,7 @@ function StoryDetails() {
   const handleLikeStory = async () => {
     try {
       const response = await axios.post(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/story/like/`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/story/like/`,
         { likedEntityId: story.id },
         {
           withCredentials: true,
@@ -80,7 +80,7 @@ function StoryDetails() {
   const handleLikeComment = async (commentId) => {
     try {
       const response = await axios.post(
-        `http://${process.env.REACT_APP_BACKEND_URL}:8080/api/comment/like/`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/comment/like/`,
         { likedEntityId: commentId },
         {
           withCredentials: true,
