@@ -1,17 +1,23 @@
+# Choose a base image
 FROM node:16-alpine
 
+# Set the working directory
 WORKDIR /app
 
-COPY package*.json ./
+# Copy the entire frontend
+COPY ./dutluk/dutluk_frontend /app
 
+# Install npm
 RUN npm install
 
+# SET Env variables
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 
+
+# Build the app
 RUN npm run build
 
 RUN npm install -g serve
 
-EXPOSE 3000
-
-CMD ["serve", "-s", "build"]
+# Expose the port that the application will be running on
+EXPOSE 80
