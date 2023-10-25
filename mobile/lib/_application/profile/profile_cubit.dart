@@ -38,4 +38,17 @@ final class ProfileCubit extends BaseCubit<ProfileState> {
       },
     );
   }
+
+  Future<void> logout() async {
+    setLoading(true);
+    await _authRepository.logout();
+    setLoading(false);
+    final appCubit = context.read<AppCubit>();
+    await appCubit.changeBottomTab(BottomTabs.home);
+
+    final sessionCubit = context.read<SessionCubit>();
+    sessionCubit.updateUser(null);
+    sessionCubit.setFirstLogin(true);
+    await context.router.replaceAll([const LoginRoute()]);
+  }
 }

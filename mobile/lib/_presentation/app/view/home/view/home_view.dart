@@ -31,8 +31,6 @@ class _HomeViewState extends State<HomeView> {
       onCubitReady: (cubit) async {
         cubit.setContext(context);
         cubit.init();
-        await cubit.getStoryAll();
-        await cubit.getActivityFeeed();
         await cubit.getFallowedStories();
       },
       builder: (context, StoryCubit cubit, StoryState state) {
@@ -68,7 +66,9 @@ class _HomeViewState extends State<HomeView> {
                       Icons.edit,
                       color: Colors.white,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      context.router.push(const AddStoryRoute());
+                    },
                   ),
                 ),
               ),
@@ -81,7 +81,7 @@ class _HomeViewState extends State<HomeView> {
                   isLoading: state.isLoading,
                   child: BaseScrollView(
                     children: [
-                      if (state.activityFeedStories.isNotEmpty) ...[
+                      /*  if (state.activityFeedStories.isNotEmpty) ...[
                         Padding(
                           padding: const EdgeInsets.all(20),
                           child: BaseHeaderTitle(
@@ -116,8 +116,8 @@ class _HomeViewState extends State<HomeView> {
                           },
                         ),
                         BaseWidgets.lowerGap,
-                      ],
-                      ...[
+                      ], */
+                      if (state.fallowedStories != null) ...[
                         Padding(
                           padding: const EdgeInsets.all(20),
                           child: BaseHeaderTitle(
@@ -126,10 +126,11 @@ class _HomeViewState extends State<HomeView> {
                           ),
                         ),
                         SizedBox(
-                          height: 450 * state.allStories.length.toDouble(),
+                          height:
+                              450 * state.fallowedStories!.length.toDouble(),
                           child: BaseListView<StoryModel>(
                             physics: const NeverScrollableScrollPhysics(),
-                            items: state.allStories,
+                            items: state.fallowedStories!,
                             itemBuilder: (item) {
                               return Container(
                                 padding: const EdgeInsets.symmetric(
