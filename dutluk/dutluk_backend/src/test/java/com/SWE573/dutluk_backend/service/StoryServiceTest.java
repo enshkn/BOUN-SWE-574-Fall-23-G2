@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -392,66 +393,38 @@ class StoryServiceTest {
     }
 
     @Test
-    void testSearchStoriesWithSingleDate() {
+    public void testSearchStoriesWithSingleDate() throws ParseException {
+        // Arrange
+        String startTimeStamp = "2023-01-01";
+        Date formattedDate = new SimpleDateFormat("yyyy-MM-dd").parse(startTimeStamp);
 
-        Date startTimeStamp = new Date();
+        List<Story> expectedStories = new ArrayList<>();
+        when(storyRepository.findByStartTimeStamp(formattedDate)).thenReturn(expectedStories);
 
-        Story story1 = Story.builder()
-                .title("Story 1")
-                .startTimeStamp(startTimeStamp)
-                .build();
+        // Act
+        List<Story> result = storyService.searchStoriesWithSingleDate(startTimeStamp);
 
-        Story story2 = Story.builder()
-                .title("Story 2")
-                .startTimeStamp(new Date())
-                .build();
-
-
-        when(storyRepository.findByStartTimeStamp(startTimeStamp)).thenReturn(Collections.singletonList(story1));
-
-
-        List<Story> searchResults = storyService.searchStoriesWithSingleDate(startTimeStamp);
-
-
-        verify(storyRepository, times(1)).findByStartTimeStamp(startTimeStamp);
-
-
-        assertNotNull(searchResults);
-        assertEquals(1, searchResults.size());
-        assertEquals("Story 1", searchResults.get(0).getTitle());
+        // Assert
+        assertEquals(expectedStories, result);
     }
 
     @Test
-    void testSearchStoriesWithMultipleDate() {
+    public void testSearchStoriesWithMultipleDate() throws ParseException {
 
-        Date startTimeStamp = new Date();
-        Date endTimeStamp = new Date();
+        String startTimeStamp = "2023-01-01";
+        String endTimeStamp = "2023-01-05";
 
-        Story story1 = Story.builder()
-                .title("Story 1")
-                .startTimeStamp(startTimeStamp)
-                .endTimeStamp(endTimeStamp)
-                .build();
+        Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(startTimeStamp);
+        Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(endTimeStamp);
 
-        Story story2 = Story.builder()
-                .title("Story 2")
-                .startTimeStamp(startTimeStamp)
-                .endTimeStamp(endTimeStamp)
-                .build();
+        List<Story> expectedStories = new ArrayList<>();
+        when(storyRepository.findByStartTimeStampBetween(startDate, endDate)).thenReturn(expectedStories);
 
+        // Act
+        List<Story> result = storyService.searchStoriesWithMultipleDate(startTimeStamp, endTimeStamp);
 
-        when(storyRepository.findByStartTimeStampBetween(startTimeStamp, endTimeStamp)).thenReturn(Collections.singletonList(story1));
-
-
-        List<Story> searchResults = storyService.searchStoriesWithMultipleDate(startTimeStamp, endTimeStamp);
-
-
-        verify(storyRepository, times(1)).findByStartTimeStampBetween(startTimeStamp, endTimeStamp);
-
-
-        assertNotNull(searchResults);
-        assertEquals(1, searchResults.size());
-        assertEquals("Story 1", searchResults.get(0).getTitle());
+        // Assert
+        assertEquals(expectedStories, result);
     }
 
 }

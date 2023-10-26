@@ -87,13 +87,12 @@ public class StoryController {
             }
         }
         if(startTimeStamp != null){
-            Date formattedStartDate = storyService.stringToDate(startTimeStamp);
             if(endTimeStamp != null){
                 Date formattedEndDate = storyService.stringToDate(endTimeStamp);
-                storySet.addAll(storyService.searchStoriesWithMultipleDate(formattedStartDate,formattedEndDate));
+                storySet.addAll(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
             }
             else{
-                storySet.addAll(storyService.searchStoriesWithSingleDate(formattedStartDate));
+                storySet.addAll(storyService.searchStoriesWithSingleDate(startTimeStamp));
             }
         }
         if(decade != null){

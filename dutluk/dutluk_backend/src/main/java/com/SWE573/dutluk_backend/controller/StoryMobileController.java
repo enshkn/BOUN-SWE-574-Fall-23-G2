@@ -87,8 +87,8 @@ public class StoryMobileController {
             @RequestParam(required = false) Integer radius,
             @RequestParam(required = false) Double latitude,
             @RequestParam(required = false) Double longitude,
-            @RequestParam(required = false) Date startTimeStamp,
-            @RequestParam(required = false) Date endTimeStamp,
+            @RequestParam(required = false) String startTimeStamp,
+            @RequestParam(required = false) String endTimeStamp,
             @RequestParam(required = false) String decade,
             @RequestParam(required = false) String season) {
         Set<Story> storySet = new HashSet<>();
