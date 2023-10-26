@@ -294,12 +294,6 @@ class _AddStoryViewState extends State<AddStoryView>
               selectedItem: selectedDecade,
             ),
             BaseWidgets.lowerGap,
-            DropDownMenu(
-              list: month,
-              hintText: 'Choose Month',
-              selectedItem: selectedMonth,
-            ),
-            BaseWidgets.lowerGap,
             const Divider(
               color: Colors.black,
             ),

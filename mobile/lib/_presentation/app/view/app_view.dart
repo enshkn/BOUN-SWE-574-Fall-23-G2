@@ -108,7 +108,7 @@ class _AppViewState extends State<AppView> {
                   state,
                   context,
                   bottomTab: BottomTabs.home,
-                  label: LocaleKeys.tabs_home,
+                  label: 'Home',
                   icon: Icon(
                     FontAwesomeIcons.houseChimney,
                     size: 20,
@@ -122,7 +122,7 @@ class _AppViewState extends State<AppView> {
                   state,
                   context,
                   bottomTab: BottomTabs.profile,
-                  label: LocaleKeys.tabs_profile,
+                  label: 'Profile',
                   icon: Icon(
                     FontAwesomeIcons.person,
                     size: 20,
