@@ -68,7 +68,7 @@ class MaskedTextController extends TextEditingController {
       'A': RegExp('[A-Za-z]'),
       '0': RegExp('[0-9]'),
       '@': RegExp('[A-Za-z0-9]'),
-      '*': RegExp('.*')
+      '*': RegExp('.*'),
     };
   }
 

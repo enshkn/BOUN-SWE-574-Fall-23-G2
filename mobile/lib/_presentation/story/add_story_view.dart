@@ -1,22 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart' hide Text;
+import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:intl/intl.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:swe/_application/story/story_cubit.dart';
 import 'package:swe/_application/story/story_state.dart';
 import 'package:swe/_common/mixins/form_page_view_mixin.dart';
 import 'package:swe/_core/extensions/context_extensions.dart';
-import 'package:swe/_core/extensions/date_extensions.dart';
-import 'package:swe/_core/widgets/base_scroll_view.dart';
-import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
 import 'package:swe/_presentation/widgets/appBar/customAppBar.dart';
 import 'package:swe/_presentation/widgets/app_button.dart';
 import 'package:swe/_presentation/widgets/drop_down_menu.dart';
-import 'package:swe/_presentation/widgets/modals.dart';
 import 'package:swe/_presentation/widgets/textformfield/app_text_form_field.dart';
-import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 
 enum AddStoryStepType {
   story(0),

@@ -1,9 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:swe/_application/app/app_cubit.dart';
-import 'package:swe/_application/profile/profile_cubit.dart';
-import 'package:swe/_common/enums/bottom_tabs.dart';
 import 'package:swe/_common/style/text_styles.dart';
 import 'package:swe/_core/extensions/context_extensions.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';

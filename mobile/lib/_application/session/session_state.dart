@@ -1,5 +1,5 @@
-import 'package:swe/_application/core/base_state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:swe/_application/core/base_state.dart';
 
 import '../../_domain/auth/model/user.dart';
 

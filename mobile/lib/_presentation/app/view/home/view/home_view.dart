@@ -2,18 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:swe/_application/story/story_cubit.dart';
 import 'package:swe/_application/story/story_state.dart';
-import 'package:swe/_core/extensions/context_extensions.dart';
-import 'package:swe/_core/widgets/base_cached_network_image.dart';
 import 'package:swe/_core/widgets/base_loader.dart';
 import 'package:swe/_core/widgets/base_scroll_view.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
 import 'package:swe/_presentation/_route/router.dart';
-import 'package:swe/_presentation/widgets/base/base_carousel_slider.dart';
 import 'package:swe/_presentation/widgets/base/base_header_title.dart';
 import 'package:swe/_presentation/widgets/base/base_list_view.dart';
-import 'package:swe/_presentation/widgets/card/recommended_card.dart';
 import 'package:swe/_presentation/widgets/card/story_card.dart';
 
 @RoutePage()

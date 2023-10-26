@@ -1,9 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../_domain/network/app_network_manager.dart';
-import '../utility/helper_functions.dart';
-
 class LocalizationManager {
   static final LocalizationManager _instance = LocalizationManager._init();
   static LocalizationManager get instance => _instance;
