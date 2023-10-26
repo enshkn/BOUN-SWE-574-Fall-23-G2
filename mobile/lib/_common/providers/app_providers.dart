@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_constructors_over_static_methods
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:swe/_application/profile/profile_cubit.dart';
-
 import '../../_application/app/app_cubit.dart';
 import '../../_application/services/connectivity/connectivity_cubit.dart';
 import '../../_application/session/session_cubit.dart';

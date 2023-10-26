@@ -1,17 +1,14 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
 import 'package:swe/_common/constants/default_image.dart';
 import 'package:swe/_common/style/text_styles.dart';
 import 'package:swe/_core/extensions/string_extensions.dart';
-import 'package:swe/_core/widgets/base_cached_network_image.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
-import 'package:swe/_presentation/widgets/base/base_list_view.dart';
 import 'package:swe/_presentation/widgets/card/button_card.dart';
-import 'package:html/dom.dart' as dom;
-import 'package:html/parser.dart';
-import 'dart:convert';
 
 class RecommendedCard extends StatelessWidget {
   final StoryModel storyModel;
@@ -186,21 +183,6 @@ class RecommendedCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildChip(String label) {
-    return Chip(
-      labelPadding: const EdgeInsets.all(2),
-      label: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white,
-        ),
-      ),
-      backgroundColor: Colors.blue,
-      elevation: 4,
-      padding: const EdgeInsets.all(8),
     );
   }
 }

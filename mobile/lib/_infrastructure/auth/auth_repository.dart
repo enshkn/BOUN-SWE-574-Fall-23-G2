@@ -1,12 +1,12 @@
 import 'package:busenet/busenet.dart';
-import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swe/_core/extensions/string_extensions.dart';
 import 'package:swe/_domain/auth/model/register_model.dart';
 import 'package:swe/_domain/network/app_network_manager.dart';
-import 'package:injectable/injectable.dart';
 import 'package:swe/_domain/network/model/app_failure.dart';
 import 'package:swe/_infrastructure/cache/token_cache_service.dart';
+
 import '../../_core/classes/typedefs.dart';
 import '../../_core/storage/hive/i_cache_service.dart';
 import '../../_core/utility/record_utils.dart';

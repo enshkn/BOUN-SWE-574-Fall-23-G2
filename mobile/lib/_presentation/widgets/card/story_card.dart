@@ -2,17 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:html/parser.dart';
 import 'package:swe/_common/constants/default_image.dart';
 import 'package:swe/_common/style/text_styles.dart';
 import 'package:swe/_core/extensions/string_extensions.dart';
-import 'package:swe/_core/widgets/base_cached_network_image.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/widgets/base/base_list_view.dart';
 import 'package:swe/_presentation/widgets/card/button_card.dart';
-import 'package:html/dom.dart' as dom;
 
 class StoryCard extends StatelessWidget {
   final StoryModel storyModel;

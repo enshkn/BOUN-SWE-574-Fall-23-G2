@@ -1,22 +1,22 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart' hide Text;
+import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:swe/_application/story/story_cubit.dart';
 import 'package:swe/_application/story/story_state.dart';
 import 'package:swe/_common/mixins/form_page_view_mixin.dart';
 import 'package:swe/_core/extensions/context_extensions.dart';
-import 'package:swe/_core/extensions/date_extensions.dart';
-import 'package:swe/_core/widgets/base_scroll_view.dart';
-import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
 import 'package:swe/_presentation/widgets/appBar/customAppBar.dart';
 import 'package:swe/_presentation/widgets/app_button.dart';
 import 'package:swe/_presentation/widgets/drop_down_menu.dart';
-import 'package:swe/_presentation/widgets/modals.dart';
 import 'package:swe/_presentation/widgets/textformfield/app_text_form_field.dart';
-import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 
 enum AddStoryStepType {
   story(0),
@@ -52,7 +52,12 @@ class _AddStoryViewState extends State<AddStoryView>
   late String selectedMonth;
   late DateTime selectedStartDateTime;
   late DateTime selectedEndDateTime;
-  //static const LatLng _pInitialCameraPos = LatLng(37.42223, -122.0848);
+  static const LatLng _pInitialCameraPos = LatLng(37.42223, -122.0848);
+  final Completer<GoogleMapController> _controller = Completer();
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
+  }
 
   String? formattedStartDate;
   String? formattedEndDate;
@@ -214,11 +219,14 @@ class _AddStoryViewState extends State<AddStoryView>
   }
 
   Widget storyLocationWidget() {
-    return Container();
-    /* const GoogleMap(
-      initialCameraPosition:
-          CameraPosition(target: _pInitialCameraPos, zoom: 13),
-    ); */
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
+      child: GoogleMap(
+        onMapCreated: _onMapCreated,
+        initialCameraPosition:
+            const CameraPosition(target: _pInitialCameraPos, zoom: 13),
+      ),
+    );
   }
 
   Widget storyInfoWidget() {
@@ -284,12 +292,6 @@ class _AddStoryViewState extends State<AddStoryView>
               list: decade,
               hintText: 'Choose Decade',
               selectedItem: selectedDecade,
-            ),
-            BaseWidgets.lowerGap,
-            DropDownMenu(
-              list: month,
-              hintText: 'Choose Month',
-              selectedItem: selectedMonth,
             ),
             BaseWidgets.lowerGap,
             const Divider(

@@ -60,6 +60,9 @@ mobile/build/
 *.g.dart
 /dosyalar/
 /ios/codesigndoc_exports
+mobile/.env_development
+mobile/.env_production
+
 
 # Symbolication related
 app.*.symbols

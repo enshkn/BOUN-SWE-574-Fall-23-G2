@@ -1,8 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:swe/_application/app/app_cubit.dart';
-import 'package:swe/_core/utility/record_utils.dart';
 import 'package:injectable/injectable.dart';
+import 'package:swe/_core/utility/record_utils.dart';
 import 'package:swe/_domain/auth/model/register_model.dart';
 
 import '../../_domain/auth/i_auth_repository.dart';
