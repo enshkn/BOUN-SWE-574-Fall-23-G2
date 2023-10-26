@@ -22,11 +22,11 @@ public class StoryCreateRequest {
 
 
 
-    //@JsonFormat(pattern="dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
     private Date startTimeStamp;
 
 
-    //@JsonFormat(pattern="dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
     private Date endTimeStamp;
 
     private String season;
