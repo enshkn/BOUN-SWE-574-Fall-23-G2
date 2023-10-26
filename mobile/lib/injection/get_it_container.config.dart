@@ -58,47 +58,33 @@ extension GetItInjectableX on _i1.GetIt {
       instanceName: 'ConfigCacheService',
     );
     gh.lazySingleton<_i10.INetworkManager<_i11.ResponseModel>>(
-      () => injectionModule.manager,
-    );
+        () => injectionModule.manager);
     gh.factory<_i12.SessionCubit>(() => _i12.SessionCubit());
     gh.singleton<_i13.AppNetworkManager>(
-      _i13.AppNetworkManager(gh<_i10.INetworkManager<_i11.ResponseModel>>()),
-    );
-    gh.lazySingleton<_i14.IAuthRepository>(
-      () => _i15.AuthRepository(
-        gh<_i13.AppNetworkManager>(),
-        gh<_i5.ICacheManager<_i6.TokenModel>>(
-          instanceName: 'TokenCacheService',
-        ),
-      ),
-    );
+        _i13.AppNetworkManager(gh<_i10.INetworkManager<_i11.ResponseModel>>()));
+    gh.lazySingleton<_i14.IAuthRepository>(() => _i15.AuthRepository(
+          gh<_i13.AppNetworkManager>(),
+          gh<_i5.ICacheManager<_i6.TokenModel>>(
+              instanceName: 'TokenCacheService'),
+        ));
     gh.lazySingleton<_i16.IProfileRepository>(
-      () => _i17.ProfileRepository(gh<_i13.AppNetworkManager>()),
-    );
+        () => _i17.ProfileRepository(gh<_i13.AppNetworkManager>()));
     gh.lazySingleton<_i18.IStoryRepository>(
-      () => _i19.StoryRepository(gh<_i13.AppNetworkManager>()),
-    );
-    gh.factory<_i20.ProfileCubit>(
-      () => _i20.ProfileCubit(
-        gh<_i16.IProfileRepository>(),
-        gh<_i14.IAuthRepository>(),
-      ),
-    );
-    gh.factory<_i21.SplashCubit>(
-      () => _i21.SplashCubit(
-        gh<_i5.ICacheManager<_i8.Config>>(instanceName: 'ConfigCacheService'),
-        gh<_i5.ICacheManager<_i6.TokenModel>>(
-          instanceName: 'TokenCacheService',
-        ),
-        gh<_i14.IAuthRepository>(),
-      ),
-    );
+        () => _i19.StoryRepository(gh<_i13.AppNetworkManager>()));
+    gh.factory<_i20.ProfileCubit>(() => _i20.ProfileCubit(
+          gh<_i16.IProfileRepository>(),
+          gh<_i14.IAuthRepository>(),
+        ));
+    gh.factory<_i21.SplashCubit>(() => _i21.SplashCubit(
+          gh<_i5.ICacheManager<_i8.Config>>(instanceName: 'ConfigCacheService'),
+          gh<_i5.ICacheManager<_i6.TokenModel>>(
+              instanceName: 'TokenCacheService'),
+          gh<_i14.IAuthRepository>(),
+        ));
     gh.factory<_i22.StoryCubit>(
-      () => _i22.StoryCubit(gh<_i18.IStoryRepository>()),
-    );
+        () => _i22.StoryCubit(gh<_i18.IStoryRepository>()));
     gh.factory<_i23.AuthCubit>(
-      () => _i23.AuthCubit(gh<_i14.IAuthRepository>()),
-    );
+        () => _i23.AuthCubit(gh<_i14.IAuthRepository>()));
     return this;
   }
 }

@@ -11,7 +11,7 @@ dependencies:
   auto_route: ^7.8.0
   busenet: ^0.7.0+4
   cached_network_image: ^3.2.3
-  connectivity_plus: ^4.0.2
+  connectivity_plus: ^5.0.1
   cupertino_icons: ^1.0.2
   carousel_slider: ^4.2.1
   easy_localization: ^3.0.1
