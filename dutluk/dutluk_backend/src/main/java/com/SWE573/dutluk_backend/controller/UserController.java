@@ -12,6 +12,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,8 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Value("${REACT_APP_BACKEND_URL}")
+    private String REACT_APP_BACKEND_URL;
 
 
 
@@ -54,13 +57,14 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
-                                   HttpServletResponse response) throws AccountNotFoundException {
+                                         HttpServletResponse response) throws AccountNotFoundException {
         User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
         String token = userService.generateUserToken(foundUser);
         Cookie cookie = new Cookie("Bearer", token);
         cookie.setPath("/api");
         response.addCookie(cookie);
         foundUser.setProfilePhoto(null);
+        foundUser.setToken(token);
         return ResponseEntity.ok(foundUser);
     }
 

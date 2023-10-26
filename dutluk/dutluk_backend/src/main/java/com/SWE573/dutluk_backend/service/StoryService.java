@@ -7,9 +7,11 @@ import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.StoryRepository;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -117,11 +119,14 @@ public class StoryService {
         return storyRepository.findBySeasonContainingIgnoreCase(season);
     }
 
-    public List<Story> searchStoriesWithSingleDate(Date startTimeStamp){
-        return storyRepository.findByStartTimeStamp(startTimeStamp);
+    public List<Story> searchStoriesWithSingleDate(String startTimeStamp){
+        Date formattedDate = stringToDate(startTimeStamp);
+        return storyRepository.findByStartTimeStamp(formattedDate);
     }
-    public List<Story> searchStoriesWithMultipleDate(Date startTimeStamp,Date endTimeStamp){
-        return storyRepository.findByStartTimeStampBetween(startTimeStamp, endTimeStamp);
+    public List<Story> searchStoriesWithMultipleDate(String startTimeStamp,String endTimeStamp){
+        Date formattedStartDate = stringToDate(startTimeStamp);
+        Date formattedEndDate = stringToDate(endTimeStamp);
+        return storyRepository.findByStartTimeStampBetween(formattedStartDate, formattedEndDate);
     }
 
     public String deleteByStoryId(Story story) {
@@ -131,5 +136,16 @@ public class StoryService {
         }
         storyRepository.deleteById(story.getId());
         return "deleted";
+    }
+
+    public Date stringToDate(String timeStamp){
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date formattedDate = dateFormat.parse(timeStamp);
+            return formattedDate;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

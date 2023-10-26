@@ -4,8 +4,8 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
-import DatePicker from "react-datetime-picker"; // Import react-datetime-picker
-import "react-datetime-picker/dist/DateTimePicker.css"; // Import the styles for react-datetime-picker
+import DatePicker from "react-datetime-picker";
+import "react-datetime-picker/dist/DateTimePicker.css";
 import { format, getYear } from "date-fns";
 import "./css/AddStory.css";
 
@@ -49,18 +49,12 @@ const AddStoryForm = () => {
     let formattedEndTimeStamp = null;
 
     if (decade) {
-      formattedStartTimeStamp = format(
-        startTimeStamp,
-        "yyyy-MM-dd'T'HH:mm:ss.SSS"
-      );
-      formattedEndTimeStamp = format(endTimeStamp, "yyyy-MM-dd'T'HH:mm:ss.SSS");
+      formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
+      formattedEndTimeStamp = format(endTimeStamp, "yyyy-MM-dd HH:mm");
     } else {
-      formattedStartTimeStamp = format(
-        startTimeStamp,
-        "yyyy-MM-dd'T'HH:mm:ss.SSS"
-      );
+      formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
       formattedEndTimeStamp = endTimeStamp
-        ? format(endTimeStamp, "yyyy-MM-dd'T'HH:mm:ss.SSS")
+        ? format(endTimeStamp, "yyyy-MM-dd HH:mm")
         : null;
     }
 
@@ -163,6 +157,7 @@ const AddStoryForm = () => {
   const handleEndDateChange = (date) => {
     setEndTimeStamp(date);
   };
+
   return (
     <form className="add-story-form" onSubmit={handleSubmit}>
       <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>

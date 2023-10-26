@@ -8,10 +8,12 @@ import com.SWE573.dutluk_backend.service.StoryService;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
@@ -72,8 +74,8 @@ public class StoryController {
             @RequestParam(required = false) Integer radius,
             @RequestParam(required = false) Double latitude,
             @RequestParam(required = false) Double longitude,
-            @RequestParam(required = false) Date startTimeStamp,
-            @RequestParam(required = false) Date endTimeStamp,
+            @RequestParam(required = false) String startTimeStamp,
+            @RequestParam(required = false) String endTimeStamp,
             @RequestParam(required = false) String decade,
             @RequestParam(required = false) String season) {
         Set<Story> storySet = new HashSet<>();
@@ -86,7 +88,8 @@ public class StoryController {
         }
         if(startTimeStamp != null){
             if(endTimeStamp != null){
-                storySet.addAll(storyService.searchStoriesWithMultipleDate(startTimeStamp, endTimeStamp));
+                Date formattedEndDate = storyService.stringToDate(endTimeStamp);
+                storySet.addAll(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
             }
             else{
                 storySet.addAll(storyService.searchStoriesWithSingleDate(startTimeStamp));
