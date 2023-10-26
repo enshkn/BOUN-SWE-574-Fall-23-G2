@@ -57,18 +57,14 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
-                                   HttpServletResponse response) throws AccountNotFoundException {
+                                         HttpServletResponse response) throws AccountNotFoundException {
         User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
         String token = userService.generateUserToken(foundUser);
-        if(REACT_APP_BACKEND_URL.contains("8080")){
-            Cookie cookie = new Cookie("Bearer", token);
-            cookie.setPath("/api");
-            response.addCookie(cookie);
-        }
-        else{
-            response.setHeader("Set-Cookie", "Bearer="+token+"; Path=/api; SameSite=None; Secure");
-        }
+        Cookie cookie = new Cookie("Bearer", token);
+        cookie.setPath("/api");
+        response.addCookie(cookie);
         foundUser.setProfilePhoto(null);
+        foundUser.setToken(token);
         return ResponseEntity.ok(foundUser);
     }
 
