@@ -31,7 +31,6 @@ public class StoryMobileController {
     private SuccessfulResponse successfulResponse = new SuccessfulResponse();
 
     @GetMapping("/all")
-    @CrossOrigin
     public ResponseEntity<?> findAllStories(HttpServletRequest request){
         successfulResponse.setEntity(storyService.findAll());
         successfulResponse.setCount(storyService.findAll().size());
@@ -40,7 +39,6 @@ public class StoryMobileController {
 
     //MOCK UNTIL ACTIVITY FEED LOGIC IS ESTABLISHED
     @GetMapping("/feed")
-    @CrossOrigin
     public ResponseEntity<?> findFeedStories(HttpServletRequest request){
         successfulResponse.setEntity(storyService.findAll());
         successfulResponse.setCount(storyService.findAll().size());
@@ -48,7 +46,6 @@ public class StoryMobileController {
     }
 
     @PostMapping("/add")
-    @CrossOrigin
     public ResponseEntity<?> addStory(@RequestBody StoryCreateRequest storyCreateRequest, HttpServletRequest request) throws ParseException {
         User user = userService.validateTokenizedUser(request);
         successfulResponse.setEntity(storyService.createStory(user,storyCreateRequest));

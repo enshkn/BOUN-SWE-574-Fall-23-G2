@@ -114,7 +114,6 @@ public class UserController {
 
 
     @GetMapping("/all")
-    @CrossOrigin
     public ResponseEntity<?> findAllUsers(){
         return ResponseEntity.ok(userService.findAll());
     }
