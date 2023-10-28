@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
 
 @Service
 public class StoryService {
@@ -23,6 +25,9 @@ public class StoryService {
 
     @Autowired
     CommentService commentService;
+
+    @Autowired
+    ImageService imageService;
 
 
 
@@ -34,7 +39,7 @@ public class StoryService {
         Story createdStory = Story.builder()
                 .title(storyCreateRequest.getTitle())
                 .labels(storyCreateRequest.getLabels())
-                .text(storyCreateRequest.getText())
+                .text(imageService.parseAndSaveImages(storyCreateRequest.getText()))
                 .startTimeStamp(storyCreateRequest.getStartTimeStamp())
                 .endTimeStamp(storyCreateRequest.getEndTimeStamp())
                 .season(storyCreateRequest.getSeason())
