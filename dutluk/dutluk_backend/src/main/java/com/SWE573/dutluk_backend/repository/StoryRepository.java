@@ -10,7 +10,10 @@ import java.util.List;
 
 public interface StoryRepository extends CrudRepository<Story,Long> {
     List<Story> findAll();
+    List<Story> findAllByOrderByIdDesc();
     List<Story> findByUserId(Long userId);
+
+    List<Story> findByUserIdOrderByIdDesc(Long userId);
 
     List<Story> findByTitleContainingIgnoreCase(String query);
 

@@ -35,6 +35,10 @@ public class StoryService {
         return storyRepository.findAll();
     }
 
+    public List<Story> findAllByOrderByIdDesc(){
+        return storyRepository.findAllByOrderByIdDesc();
+    }
+
     public Story createStory(User foundUser, StoryCreateRequest storyCreateRequest) throws ParseException{
         Story createdStory = Story.builder()
                 .title(storyCreateRequest.getTitle())
@@ -61,6 +65,11 @@ public class StoryService {
         return storyRepository.findByUserId(userId);
     }
 
+    public List<Story> findByUserIdOrderByIdDesc(Long userId){
+        return storyRepository.findByUserIdOrderByIdDesc(userId);
+    }
+
+
     public Story getStoryByStoryId(Long id) {
         Optional<Story> optionalStory = storyRepository.findById(id);
         if (optionalStory.isEmpty()) {
@@ -77,7 +86,7 @@ public class StoryService {
             idList.add(user.getId());
         }
         for(Long id : idList){
-            storyList.addAll(findAllStoriesByUserId(id));
+            storyList.addAll(findByUserIdOrderByIdDesc(id));
         }
         return storyList;
 
