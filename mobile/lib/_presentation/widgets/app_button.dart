@@ -44,7 +44,7 @@ class AppButton extends StatelessWidget {
     this.suffixIconDirection = SuffixIconDirection.right,
     this.noIcon = false,
     this.inactive = false,
-  })  : backgroundColor = context.theme.primaryColor,
+  })  : backgroundColor = context.appBarColor,
         labelStyle =
             const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         suffixIconColor = Colors.white;

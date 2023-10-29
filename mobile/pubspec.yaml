@@ -11,7 +11,7 @@ dependencies:
   auto_route: ^7.8.0
   busenet: ^0.7.0+4
   cached_network_image: ^3.2.3
-  connectivity_plus: ^4.0.2
+  connectivity_plus: ^5.0.1
   cupertino_icons: ^1.0.2
   carousel_slider: ^4.2.1
   easy_localization: ^3.0.1
@@ -25,7 +25,6 @@ dependencies:
   flutter_cache_manager: ^3.3.0
   flutter_dotenv: ^5.1.0
   flutter_html: ^3.0.0-beta.2
-  flutter_quill: ^7.4.7
   flutter_svg: ^2.0.4
   font_awesome_flutter: ^10.4.0
   freezed_annotation: ^2.2.0
@@ -38,6 +37,16 @@ dependencies:
   share_plus: ^7.1.0
   shared_preferences: ^2.0.18
   html: ^0.15.4
+  flutter_quill_extensions: ^0.5.0
+  intl: ^0.18.1
+  omni_datetime_picker: ^1.0.9
+  google_maps_flutter: ^2.3.1
+  location: ^5.0.3
+  map_location_picker: ^1.2.8+3
+  html_editor_enhanced: ^2.5.1
+  quill_html_editor: ^2.2.6
+ 
+ 
   
 
 dev_dependencies:

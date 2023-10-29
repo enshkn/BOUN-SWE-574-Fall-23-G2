@@ -13,4 +13,5 @@ class RoutePaths {
 
   //Story
   static const STORYDETAILS = 'story-details';
+  static const ADDSTORY = '/add-story';
 }

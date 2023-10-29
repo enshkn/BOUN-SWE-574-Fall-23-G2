@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:swe/_application/core/base_state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:swe/_application/core/base_state.dart';
 
 import '../../_common/enums/bottom_tabs.dart';
 

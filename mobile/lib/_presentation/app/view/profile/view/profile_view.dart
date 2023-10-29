@@ -22,6 +22,9 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     return BaseView<ProfileCubit, ProfileState>(
+      onCubitReady: (cubit) {
+        cubit.setContext(context);
+      },
       builder: (context, cubit, state) {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -137,7 +140,7 @@ class _ProfileViewState extends State<ProfileView> {
                   centerLabel: true,
                   noIcon: true,
                   onPressed: () {
-                    showLogoutModal(context, cubit);
+                    showLogoutModal(context, cubit.logout);
                   },
                 ),
               ),

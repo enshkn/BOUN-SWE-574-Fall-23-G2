@@ -18,18 +18,18 @@ class AppTextFormField extends TextFormField {
   }) : super(
           decoration: InputDecoration(
             isDense: true,
-            fillColor: readOnly ? Colors.grey.shade50 : Colors.white,
+            fillColor: readOnly ? Colors.grey.shade100 : Colors.white,
             filled: true,
             border: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.transparent),
+              borderSide: const BorderSide(color: Colors.blue),
               borderRadius: BorderRadius.circular(12),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.transparent),
+              borderSide: const BorderSide(color: Colors.blue),
               borderRadius: BorderRadius.circular(12),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.transparent),
+              borderSide: const BorderSide(color: Colors.blue),
               borderRadius: BorderRadius.circular(12),
             ),
             errorBorder: OutlineInputBorder(
