@@ -1,21 +1,23 @@
 import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart' hide Text;
-import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:location/location.dart';
+import 'package:map_location_picker/map_location_picker.dart' hide Location;
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
+import 'package:quill_html_editor/quill_html_editor.dart';
 import 'package:swe/_application/story/story_cubit.dart';
 import 'package:swe/_application/story/story_state.dart';
 import 'package:swe/_common/mixins/form_page_view_mixin.dart';
+import 'package:swe/_core/env/env.dart';
 import 'package:swe/_core/extensions/context_extensions.dart';
+import 'package:swe/_core/widgets/base_loader.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
+import 'package:swe/_domain/story/model/addStory_model.dart';
+import 'package:swe/_domain/story/model/location_model.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
 import 'package:swe/_presentation/widgets/appBar/customAppBar.dart';
 import 'package:swe/_presentation/widgets/app_button.dart';
-import 'package:swe/_presentation/widgets/drop_down_menu.dart';
 import 'package:swe/_presentation/widgets/textformfield/app_text_form_field.dart';
 
 enum AddStoryStepType {
@@ -42,28 +44,67 @@ class AddStoryView extends StatefulWidget {
 class _AddStoryViewState extends State<AddStoryView>
     with FormPageViewMixin, SingleTickerProviderStateMixin {
   late StoryCubit cubit;
+
   late TextEditingController titleController;
   late TextEditingController tagController;
   late TextEditingController textController;
-  final QuillController _quillcontroller = QuillController.basic();
-  final FocusNode _focusNode = FocusNode();
-  late String selectedSeason;
-  late String selectedDecade;
+  late QuillEditorController controller;
+  late TextEditingController seasonController;
+  late TextEditingController decadeController;
+
+  final customToolBarList = [
+    ToolBarStyle.bold,
+    ToolBarStyle.italic,
+    ToolBarStyle.align,
+    ToolBarStyle.color,
+    ToolBarStyle.background,
+    ToolBarStyle.listBullet,
+    ToolBarStyle.listOrdered,
+    ToolBarStyle.clean,
+    ToolBarStyle.addTable,
+    ToolBarStyle.editTable,
+    ToolBarStyle.link,
+    ToolBarStyle.image,
+  ];
+
+  final _toolbarColor = Colors.grey.shade200;
+  final _backgroundColor = Colors.white70;
+  final _toolbarIconColor = Colors.black87;
+  final _editorTextStyle = const TextStyle(
+    fontSize: 18,
+    color: Colors.black,
+    fontWeight: FontWeight.normal,
+    fontFamily: 'Roboto',
+  );
+  final _hintTextStyle = const TextStyle(
+    fontSize: 18,
+    color: Colors.black38,
+    fontWeight: FontWeight.normal,
+  );
+  final bool _hasFocus = false;
+  String? selectedSeason;
+  String? selectedDecade;
   late String selectedMonth;
   late DateTime selectedStartDateTime;
   late DateTime selectedEndDateTime;
-  static const LatLng _pInitialCameraPos = LatLng(37.42223, -122.0848);
-  final Completer<GoogleMapController> _controller = Completer();
-
-  void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-  }
-
+  String selectedAddress = 'null';
+  double selectedLat = 0;
+  double selectedLng = 0;
+  final FocusNode _focusNode = FocusNode();
+  late LatLng? _currentPosition = const LatLng(0, 0);
+  final Location _locationController = Location();
+  bool locationLoading = true;
+  bool hasPermission = false;
   String? formattedStartDate;
   String? formattedEndDate;
+  LocationModel? selectedLocation;
+  late List<LocationModel> locations = [];
+  String? htmlText;
+  String? story;
 
   late TabController _tabController;
   int currnetIndex = 0;
+  bool showBottomNav = true;
 
   List<String> season = <String>['Winter', 'Spring', 'Summer', 'Fall'];
   List<String> decade = <String>[
@@ -75,31 +116,21 @@ class _AddStoryViewState extends State<AddStoryView>
     '1990s',
     '2000s',
     '2010s',
-  ];
-  List<String> month = <String>[
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    '2020s',
   ];
 
   @override
   void initState() {
     super.initState();
+    permissionCheck();
+    getCurrentLocation();
+    seasonController = TextEditingController();
+    decadeController = TextEditingController();
     titleController = TextEditingController();
     tagController = TextEditingController();
     textController = TextEditingController();
-    selectedSeason = season.first;
-    selectedDecade = decade.first;
-    selectedMonth = month.first;
+    controller = QuillEditorController();
+    story = '';
 
     selectedStartDateTime = DateTime(
       0,
@@ -128,10 +159,17 @@ class _AddStoryViewState extends State<AddStoryView>
   @override
   void dispose() {
     titleController.clear();
+    controller.clear();
+    controller.dispose();
     tagController.clear();
     textController.clear();
     _tabController.removeListener(tabListener);
     _tabController.dispose();
+    decadeController.dispose();
+    decadeController.clear();
+    seasonController.dispose();
+    seasonController.clear();
+
     super.dispose();
   }
 
@@ -142,7 +180,9 @@ class _AddStoryViewState extends State<AddStoryView>
   final formlocationKey = GlobalKey<FormState>();
 
   Future<bool> onPressedBack() async {
+    FocusScope.of(context).unfocus();
     if (pageController.page == 0) return true;
+    showBottomNav = true;
     previousPage();
     return false;
   }
@@ -161,10 +201,11 @@ class _AddStoryViewState extends State<AddStoryView>
         if (!formStoryKey.currentState!.validate()) return;
         nextPage();
       case AddStoryStepType.time:
+        showBottomNav = false;
         nextPage();
       case AddStoryStepType.location:
-        //onPressSubmit();
-        break;
+
+      //onPressSubmit();
     }
   }
 
@@ -176,41 +217,47 @@ class _AddStoryViewState extends State<AddStoryView>
         cubit.setContext(context);
       },
       builder: (context, cubit, state) {
-        return WillPopScope(
-          onWillPop: onPressedBack,
-          child: Scaffold(
-            backgroundColor: Colors.white,
-            appBar: CustomAppBar(
-              context,
-              title: 'ADD STORY',
-            ),
-            body: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 24,
-                  ),
-                  child: PageView(
-                    controller: pageController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      Form(
-                        key: formStoryKey,
-                        child: storyInfoWidget(),
+        return BaseLoader(
+          isLoading: locationLoading,
+          child: WillPopScope(
+            onWillPop: onPressedBack,
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              appBar: CustomAppBar(
+                context,
+                title: 'ADD STORY',
+              ),
+              body: GestureDetector(
+                onTap: _focusNode.unfocus,
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 24,
                       ),
-                      Form(
-                        key: formTimeKey,
-                        child: storyInfoTimeWidget(),
+                      child: PageView(
+                        controller: pageController,
+                        physics: const NeverScrollableScrollPhysics(),
+                        children: [
+                          Form(
+                            key: formStoryKey,
+                            child: storyInfoWidget(),
+                          ),
+                          Form(
+                            key: formTimeKey,
+                            child: storyInfoTimeWidget(),
+                          ),
+                          Form(
+                            key: formlocationKey,
+                            child: storyLocationWidget(),
+                          ),
+                        ],
                       ),
-                      Form(
-                        key: formlocationKey,
-                        child: storyLocationWidget(),
-                      ),
-                    ],
-                  ),
+                    ),
+                    if (showBottomNav) buttonArea(context),
+                  ],
                 ),
-                buttonArea(context),
-              ],
+              ),
             ),
           ),
         );
@@ -220,13 +267,70 @@ class _AddStoryViewState extends State<AddStoryView>
 
   Widget storyLocationWidget() {
     return SizedBox(
-      height: MediaQuery.of(context).size.height,
-      child: GoogleMap(
-        onMapCreated: _onMapCreated,
-        initialCameraPosition:
-            const CameraPosition(target: _pInitialCameraPos, zoom: 13),
+      height: MediaQuery.of(context).size.height * 0.5,
+      child: MapLocationPicker(
+        apiKey: AppEnv.apiKey,
+        currentLatLng: _currentPosition,
+        hideBackButton: true,
+        bottomCardShape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        hideMoreOptions: true,
+        hasLocationPermission: hasPermission,
+        getLocation: () {
+          getCurrentLocation();
+        },
+        onNext: (GeocodingResult? decodedAddress) {
+          setState(() {
+            selectedLat = decodedAddress!.geometry.location.lat;
+            selectedLng = decodedAddress.geometry.location.lng;
+            selectedAddress = decodedAddress.formattedAddress ?? '';
+
+            selectedLocation = LocationModel(
+              locationName: selectedAddress,
+              latitude: selectedLat,
+              longitude: selectedLng,
+            );
+            if (selectedLocation != null) {
+              locations.add(selectedLocation!);
+            }
+          });
+          onPressSubmit();
+        },
       ),
     );
+  }
+
+  Future<void> permissionCheck() async {
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+
+    serviceEnabled = await _locationController.serviceEnabled();
+    if (serviceEnabled) {
+      serviceEnabled = await _locationController.requestService();
+    } else {
+      return;
+    }
+
+    permissionGranted = await _locationController.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await _locationController.requestPermission();
+      if (permissionGranted == PermissionStatus.granted) {
+        hasPermission = true;
+        return;
+      }
+    }
+  }
+
+  Future<void> getCurrentLocation() async {
+    LocationData currentLocation;
+    currentLocation = await _locationController.getLocation();
+    if (currentLocation.latitude != null && currentLocation.longitude != null) {
+      setState(() {
+        _currentPosition =
+            LatLng(currentLocation.latitude!, currentLocation.longitude!);
+        locationLoading = false;
+      });
+    }
   }
 
   Widget storyInfoWidget() {
@@ -247,25 +351,49 @@ class _AddStoryViewState extends State<AddStoryView>
             BaseWidgets.lowerGap,
             Container(
               width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.5,
               decoration: BoxDecoration(
                 border: Border.all(color: context.appBarColor),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
                 children: [
-                  QuillToolbar.basic(
-                    controller: _quillcontroller,
-                    embedButtons: FlutterQuillEmbeds.buttons(
-                      showVideoButton: false,
+                  ToolBar(
+                    toolBarColor: _toolbarColor,
+                    padding: const EdgeInsets.all(8),
+                    iconColor: _toolbarIconColor,
+                    activeIconColor: Colors.greenAccent.shade400,
+                    controller: controller,
+                    customButtons: const [],
+                    toolBarConfig: customToolBarList,
+                  ),
+                  Expanded(
+                    child: QuillHtmlEditor(
+                      text: story,
+                      hintText: 'Write your story',
+                      controller: controller,
+                      minHeight: 500,
+                      textStyle: _editorTextStyle,
+                      hintTextStyle: _hintTextStyle,
+                      padding: const EdgeInsets.only(left: 10, top: 10),
+                      hintTextPadding: const EdgeInsets.only(left: 20),
+                      backgroundColor: _backgroundColor,
+                      onTextChanged: (text) {
+                        setState(() async {
+                          story = text;
+                          htmlText = await controller.getText();
+                        });
+                      },
+                      loadingBuilder: (context) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1,
+                            color: Colors.red,
+                          ),
+                        );
+                      },
                     ),
                   ),
-                  BaseWidgets.normalGap,
-                  QuillEditor.basic(
-                    controller: _quillcontroller,
-                    readOnly: false,
-                    embedBuilders: FlutterQuillEmbeds.builders(),
-                  ),
-                  BaseWidgets.highGap,
                 ],
               ),
             ),
@@ -282,16 +410,90 @@ class _AddStoryViewState extends State<AddStoryView>
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            DropDownMenu(
-              list: season,
+            DropdownMenu<String>(
+              controller: seasonController,
               hintText: 'Choose Season',
-              selectedItem: selectedSeason,
+              width: MediaQuery.of(context).size.width * 0.92,
+              inputDecorationTheme: InputDecorationTheme(
+                border: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red.shade900),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              menuStyle: MenuStyle(
+                side: MaterialStateProperty.all(
+                  const BorderSide(
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
+              onSelected: (String? value) {
+                setState(() {
+                  selectedSeason = value;
+                });
+              },
+              dropdownMenuEntries:
+                  season.map<DropdownMenuEntry<String>>((String value) {
+                return DropdownMenuEntry<String>(
+                  value: value,
+                  label: value,
+                );
+              }).toList(),
             ),
             BaseWidgets.lowerGap,
-            DropDownMenu(
-              list: decade,
+            DropdownMenu<String>(
+              controller: decadeController,
               hintText: 'Choose Decade',
-              selectedItem: selectedDecade,
+              width: MediaQuery.of(context).size.width * 0.92,
+              inputDecorationTheme: InputDecorationTheme(
+                border: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red.shade900),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              menuStyle: MenuStyle(
+                side: MaterialStateProperty.all(
+                  const BorderSide(
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
+              onSelected: (String? value) {
+                setState(() {
+                  selectedDecade = value;
+                });
+              },
+              dropdownMenuEntries:
+                  decade.map<DropdownMenuEntry<String>>((String value) {
+                return DropdownMenuEntry<String>(
+                  value: value,
+                  label: value,
+                );
+              }).toList(),
             ),
             BaseWidgets.lowerGap,
             const Divider(
@@ -366,7 +568,12 @@ class _AddStoryViewState extends State<AddStoryView>
                                   selectedEndDateTime,
                                 );
                                 setState(() {
-                                  selectedEndDateTime = dateTime!;
+                                  selectedEndDateTime = dateTime ??
+                                      DateTime(
+                                        0,
+                                        0,
+                                        0,
+                                      );
                                   formattedEndDate = DateFormat.yMd()
                                       .add_jm()
                                       .format(selectedEndDateTime);
@@ -516,5 +723,42 @@ class _AddStoryViewState extends State<AddStoryView>
         ),
       ],
     );
+  }
+
+  Future<void> onPressSubmit() async {
+    final tagsList = tagController.text.split(',');
+    final parsedStartTime = selectedStartDateTime.toString();
+    final startTime = parsedStartTime.split(':00.000');
+    final parsedEndTime = selectedEndDateTime.toString();
+    final endTime = parsedEndTime.split(':00.000');
+    final model = AddStoryModel(
+      text: htmlText,
+      title: titleController.text,
+      labels: tagsList,
+      season: selectedSeason,
+      decade: selectedDecade,
+      startTimeStamp: startTime[0],
+      endTimeStamp: endTime[0],
+      locations: locations,
+    );
+    await cubit.addStory(model).then((value) {
+      if (value) {
+        Navigator.of(context).pop();
+      }
+    });
+  }
+
+  Future<String> getHtmlText() async {
+    final htmlText = await controller.getText();
+    debugPrint(htmlText);
+    return htmlText;
+  }
+
+  Future<void> insertNetworkImage(String url) async {
+    await controller.embedImage(url);
+  }
+
+  Future<void> insertVideoURL(String url) async {
+    await controller.embedVideo(url);
   }
 }

@@ -25,17 +25,11 @@ class StoryDetailsView extends StatefulWidget {
 }
 
 class _StoryDetailsViewState extends State<StoryDetailsView> {
-  String startTimeStamp = '';
-  String endTimeStamp = '';
   late final ExpansionTileController controller;
   late final ExpansionTileController controller2;
 
   @override
   void initState() {
-    startTimeStamp =
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(widget.model.startTimeStamp!);
-    endTimeStamp =
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(widget.model.endTimeStamp!);
     controller = ExpansionTileController();
     controller2 = ExpansionTileController();
 
@@ -110,7 +104,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               children: <Widget>[
                 if (widget.model.startTimeStamp != null)
                   Text(
-                    'Start Time: $startTimeStamp',
+                    'Start Time: ${widget.model.startTimeStamp}',
                     style: const TextStyles.body().copyWith(
                       letterSpacing: 0.016,
                     ),
@@ -121,7 +115,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                 BaseWidgets.lowerGap,
                 if (widget.model.endTimeStamp != null)
                   Text(
-                    'End Time: $endTimeStamp',
+                    'End Time: ${widget.model.endTimeStamp}',
                     style: const TextStyles.body().copyWith(
                       letterSpacing: 0.016,
                     ),
