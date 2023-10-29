@@ -21,6 +21,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final FocusNode _focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
     return BaseView<StoryCubit, StoryState>(
@@ -63,6 +64,7 @@ class _HomeViewState extends State<HomeView> {
                       color: Colors.white,
                     ),
                     onPressed: () {
+                      _focusNode.unfocus();
                       context.router.push(const AddStoryRoute());
                     },
                   ),

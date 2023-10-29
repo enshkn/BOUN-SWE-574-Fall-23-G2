@@ -6,6 +6,7 @@ import 'package:swe/_core/utility/record_utils.dart';
 import 'package:swe/_domain/network/app_network_manager.dart';
 import 'package:swe/_domain/network/network_paths.dart';
 import 'package:swe/_domain/story/i_story_repository.dart';
+import 'package:swe/_domain/story/model/addStory_model.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 
 @LazySingleton(as: IStoryRepository)
@@ -59,6 +60,23 @@ class StoryRepository implements IStoryRepository {
     switch (response.statusCode) {
       case 1:
         return right(response.entity as List<StoryModel>);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<StoryModel> addStoryModel(AddStoryModel model) async {
+    final response = await manager.fetch<StoryModel, StoryModel>(
+      NetworkPaths.addStory,
+      type: HttpTypes.post,
+      parserModel: StoryModel(),
+      data: model.toJson(),
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as StoryModel);
       default:
         return left(response.errorType);
     }

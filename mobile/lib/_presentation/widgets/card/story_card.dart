@@ -31,18 +31,24 @@ class StoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = storyModel.text;
+
     final document = parse(text);
-    final link = document.querySelector('img');
-    final noImage = link == null ? true : false;
-    var uint8list =
-        Uint8List.fromList(base64.decode(DefaultImage.defaultImage));
-    if (!noImage) {
-      final imageLink = link != null ? link.attributes['src'] : '';
-      final imageBeforeParse = imageLink?.split('base64,');
-      imageBeforeParse?[1].replaceAll(r'\', 'END.');
-      final imageBeforeSecondParse = imageBeforeParse?[1].split(' END.');
-      final imgUrl = imageBeforeSecondParse?[0];
-      uint8list = Uint8List.fromList(base64.decode(imgUrl!));
+    String? imgurl;
+    var noImage = true;
+
+    if (document.outerHtml.contains('<img>')) {
+      final parsedImage = text.split('<img>');
+      final secondParse = parsedImage[1].split('/>');
+      final finalParse = secondParse[0];
+      imgurl = finalParse;
+      noImage = false;
+    }
+    if (document.outerHtml.contains('<img src=')) {
+      final parsedImage = text.split('img src="');
+      final secondParse = parsedImage[1].split('">');
+      final finalParse = secondParse[0];
+      imgurl = finalParse;
+      noImage = false;
     }
 
     return Material(
@@ -65,7 +71,7 @@ class StoryCard extends StatelessWidget {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            buildContent(context, uint8list, noImage),
+            buildContent(context, imgurl, noImage),
             if (showFavouriteButton) buildFavourite(),
             buildUser(),
           ],
@@ -76,7 +82,7 @@ class StoryCard extends StatelessWidget {
 
   Card buildContent(
     BuildContext context,
-    Uint8List? imageBytes,
+    String? imgUrl,
     bool noImage,
   ) {
     return Card(
@@ -94,10 +100,13 @@ class StoryCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
-                  child: Image.memory(
-                    imageBytes!,
-                    fit: BoxFit.cover,
-                  ),
+                  child: noImage
+                      ? Image.asset(
+                          'assets/images/dutluk_logo.png',
+                        )
+                      : Image.network(
+                          imgUrl!,
+                        ),
                 ),
               ),
             ),
