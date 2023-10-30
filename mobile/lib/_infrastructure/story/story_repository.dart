@@ -81,4 +81,20 @@ class StoryRepository implements IStoryRepository {
         return left(response.errorType);
     }
   }
+
+  @override
+  EitherFuture<List<StoryModel>> myStories() async {
+    final response = await manager.fetch<StoryModel, List<StoryModel>>(
+      NetworkPaths.myStories,
+      type: HttpTypes.get,
+      parserModel: StoryModel(),
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as List<StoryModel>);
+      default:
+        return left(response.errorType);
+    }
+  }
 }

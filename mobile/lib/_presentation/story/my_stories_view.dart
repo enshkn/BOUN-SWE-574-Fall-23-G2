@@ -13,14 +13,14 @@ import 'package:swe/_presentation/widgets/base/base_list_view.dart';
 import 'package:swe/_presentation/widgets/card/story_card.dart';
 
 @RoutePage()
-class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+class MyStoriesView extends StatefulWidget {
+  const MyStoriesView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  State<MyStoriesView> createState() => _MyStoriesViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _MyStoriesViewState extends State<MyStoriesView> {
   final FocusNode _focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
@@ -28,11 +28,10 @@ class _HomeViewState extends State<HomeView> {
       onCubitReady: (cubit) async {
         cubit.setContext(context);
         cubit.init();
-        await cubit.getFallowedStories();
+        await cubit.getMyStories();
       },
       builder: (context, StoryCubit cubit, StoryState state) {
         return Scaffold(
-          backgroundColor: Colors.white,
           appBar: AppBar(
             leading: SizedBox(
               child: Center(
@@ -76,80 +75,43 @@ class _HomeViewState extends State<HomeView> {
             isLoading: state.isLoading,
             child: BaseScrollView(
               children: [
-                /*  if (state.activityFeedStories.isNotEmpty) ...[
+                if (state.myStories.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: BaseHeaderTitle(
-                      title: 'Recommended Feed',
-                      showAllButton: true,
+                      title: 'My Stories',
                       onShowAllButtonPressed: () {},
                     ),
                   ),
-                  BaseCarouselSlider<StoryModel>.withIndicator(
-                    autoPlayInterval: const Duration(seconds: 6),
-                    height: 250,
-                    viewportFraction: 1,
-                    sliders: state.activityFeedStories,
-                    itemBuilder: (model) {
-                      return Padding(
+                SizedBox(
+                  child: BaseListView<StoryModel>(
+                    shrinkWrap: true,
+                    items: state.myStories,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (item) {
+                      return Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 20,
-                          vertical: 4,
+                          vertical: 8,
                         ),
+                        height: 450,
                         child: GestureDetector(
                           onTap: () {
                             context.router.push(
-                              StoryDetailsRoute(model: model),
+                              StoryDetailsRoute(model: item),
                             );
                           },
-                          child: RecommendedCard(
-                            storyModel: model,
+                          child: StoryCard(
+                            myStories: true,
+                            storyModel: item,
                             onFavouriteTap: () {},
                           ),
                         ),
                       );
                     },
                   ),
-                  BaseWidgets.lowerGap,
-                ], */
-
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: BaseHeaderTitle(
-                    title: 'Activity Feed',
-                    onShowAllButtonPressed: () {},
-                  ),
                 ),
-                if (state.fallowedStories != null &&
-                    state.fallowedStories!.isNotEmpty)
-                  SizedBox(
-                    child: BaseListView<StoryModel>(
-                      physics: const NeverScrollableScrollPhysics(),
-                      items: state.fallowedStories!,
-                      shrinkWrap: true,
-                      itemBuilder: (item) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 8,
-                          ),
-                          height: 450,
-                          child: GestureDetector(
-                            onTap: () {
-                              context.router.push(
-                                StoryDetailsRoute(model: item),
-                              );
-                            },
-                            child: StoryCard(
-                              storyModel: item,
-                              onFavouriteTap: () {},
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                BaseWidgets.normalGap,
+                BaseWidgets.highGap,
               ],
             ),
           ),

@@ -15,17 +15,21 @@ class StoryCard extends StatelessWidget {
   final StoryModel storyModel;
   final void Function(StoryModel)? onTap;
   final VoidCallback? onFavouriteTap;
+  final VoidCallback? onDeleteTap;
   final bool isFavorite;
   final bool isFavoriteLoading;
   final bool showFavouriteButton;
+  final bool myStories;
   const StoryCard({
     required this.storyModel,
+    this.myStories = false,
     super.key,
     this.onTap,
     this.onFavouriteTap,
     this.showFavouriteButton = true,
     this.isFavorite = false,
     this.isFavoriteLoading = false,
+    this.onDeleteTap,
   });
 
   @override
@@ -74,6 +78,7 @@ class StoryCard extends StatelessWidget {
             buildContent(context, imgurl, noImage),
             if (showFavouriteButton) buildFavourite(),
             buildUser(),
+            if (myStories) buildDelete(),
           ],
         ),
       ),
@@ -212,6 +217,36 @@ class StoryCard extends StatelessWidget {
                 width: 4,
               ),
               Text(storyModel.user?.username ?? ''),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildDelete() {
+    return Positioned(
+      top: 8,
+      right: 0,
+      child: SizedBox(
+        width: 52,
+        height: 30,
+        child: Center(
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  onDeleteTap?.call();
+                },
+                icon: const Icon(
+                  Icons.delete,
+                  size: 32,
+                  color: Colors.red,
+                ),
+              ),
+              const SizedBox(
+                width: 4,
+              ),
             ],
           ),
         ),
