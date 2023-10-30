@@ -72,92 +72,86 @@ class _HomeViewState extends State<HomeView> {
               ),
             ],
           ),
-          body: Column(
-            children: [
-              Expanded(
-                child: BaseLoader(
-                  isLoading: state.isLoading,
-                  child: BaseScrollView(
-                    children: [
-                      /*  if (state.activityFeedStories.isNotEmpty) ...[
-                        Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: BaseHeaderTitle(
-                            title: 'Recommended Feed',
-                            showAllButton: true,
-                            onShowAllButtonPressed: () {},
-                          ),
+          body: BaseLoader(
+            isLoading: state.isLoading,
+            child: BaseScrollView(
+              children: [
+                /*  if (state.activityFeedStories.isNotEmpty) ...[
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: BaseHeaderTitle(
+                      title: 'Recommended Feed',
+                      showAllButton: true,
+                      onShowAllButtonPressed: () {},
+                    ),
+                  ),
+                  BaseCarouselSlider<StoryModel>.withIndicator(
+                    autoPlayInterval: const Duration(seconds: 6),
+                    height: 250,
+                    viewportFraction: 1,
+                    sliders: state.activityFeedStories,
+                    itemBuilder: (model) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 4,
                         ),
-                        BaseCarouselSlider<StoryModel>.withIndicator(
-                          autoPlayInterval: const Duration(seconds: 6),
-                          height: 250,
-                          viewportFraction: 1,
-                          sliders: state.activityFeedStories,
-                          itemBuilder: (model) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 4,
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  context.router.push(
-                                    StoryDetailsRoute(model: model),
-                                  );
-                                },
-                                child: RecommendedCard(
-                                  storyModel: model,
-                                  onFavouriteTap: () {},
-                                ),
-                              ),
+                        child: GestureDetector(
+                          onTap: () {
+                            context.router.push(
+                              StoryDetailsRoute(model: model),
                             );
                           },
-                        ),
-                        BaseWidgets.lowerGap,
-                      ], */
-                      if (state.fallowedStories != null) ...[
-                        Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: BaseHeaderTitle(
-                            title: 'Activity Feed',
-                            onShowAllButtonPressed: () {},
+                          child: RecommendedCard(
+                            storyModel: model,
+                            onFavouriteTap: () {},
                           ),
                         ),
-                        SizedBox(
-                          height:
-                              450 * state.fallowedStories!.length.toDouble(),
-                          child: BaseListView<StoryModel>(
-                            physics: const NeverScrollableScrollPhysics(),
-                            items: state.fallowedStories!,
-                            itemBuilder: (item) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 8,
-                                ),
-                                height: 450,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    context.router.push(
-                                      StoryDetailsRoute(model: item),
-                                    );
-                                  },
-                                  child: StoryCard(
-                                    storyModel: item,
-                                    onFavouriteTap: () {},
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        BaseWidgets.normalGap,
-                      ],
-                    ],
+                      );
+                    },
+                  ),
+                  BaseWidgets.lowerGap,
+                ], */
+
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: BaseHeaderTitle(
+                    title: 'Activity Feed',
+                    onShowAllButtonPressed: () {},
                   ),
                 ),
-              ),
-            ],
+                if (state.fallowedStories != null &&
+                    state.fallowedStories!.isNotEmpty)
+                  SizedBox(
+                    child: BaseListView<StoryModel>(
+                      physics: const NeverScrollableScrollPhysics(),
+                      items: state.fallowedStories!,
+                      shrinkWrap: true,
+                      itemBuilder: (item) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 8,
+                          ),
+                          height: 450,
+                          child: GestureDetector(
+                            onTap: () {
+                              context.router.push(
+                                StoryDetailsRoute(model: item),
+                              );
+                            },
+                            child: StoryCard(
+                              storyModel: item,
+                              onFavouriteTap: () {},
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                BaseWidgets.normalGap,
+              ],
+            ),
           ),
         );
       },

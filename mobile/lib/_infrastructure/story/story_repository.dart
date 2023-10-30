@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:swe/_core/classes/typedefs.dart';
 import 'package:swe/_core/utility/record_utils.dart';
 import 'package:swe/_domain/network/app_network_manager.dart';
+import 'package:swe/_domain/network/model/app_failure.dart';
 import 'package:swe/_domain/network/network_paths.dart';
 import 'package:swe/_domain/story/i_story_repository.dart';
 import 'package:swe/_domain/story/model/addStory_model.dart';
@@ -77,6 +78,39 @@ class StoryRepository implements IStoryRepository {
     switch (response.statusCode) {
       case 1:
         return right(response.entity as StoryModel);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<List<StoryModel>> myStories() async {
+    final response = await manager.fetch<StoryModel, List<StoryModel>>(
+      NetworkPaths.myStories,
+      type: HttpTypes.get,
+      parserModel: StoryModel(),
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as List<StoryModel>);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<bool> deleteStory(int storyId) async {
+    final response = await manager.fetch<NoResultResponse, NoResultResponse>(
+      '/api/mobile/story/delete/$storyId',
+      type: HttpTypes.get,
+      parserModel: NoResultResponse(),
+    );
+    switch (response.statusCode) {
+      case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+        return right(true);
       default:
         return left(response.errorType);
     }
