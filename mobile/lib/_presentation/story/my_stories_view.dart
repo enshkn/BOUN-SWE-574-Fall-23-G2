@@ -33,26 +33,18 @@ class _MyStoriesViewState extends State<MyStoriesView> {
       builder: (context, StoryCubit cubit, StoryState state) {
         return Scaffold(
           appBar: AppBar(
-            leading: SizedBox(
-              child: Center(
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(24),
-                  ),
-                  child: Image.asset(
-                    'assets/images/dutlukfinal_1.jpg',
-                    fit: BoxFit.fill,
-                  ),
-                ),
+            leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
               ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
-            title: Text(
-              'DutlukApp',
-              style: const TextStyle().copyWith(color: Colors.black),
-            ),
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.grey.shade200,
             elevation: 0,
-            actions: [
+            /*  actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: CircleAvatar(
@@ -69,7 +61,7 @@ class _MyStoriesViewState extends State<MyStoriesView> {
                   ),
                 ),
               ),
-            ],
+            ], */
           ),
           body: BaseLoader(
             isLoading: state.isLoading,
@@ -105,6 +97,10 @@ class _MyStoriesViewState extends State<MyStoriesView> {
                             myStories: true,
                             storyModel: item,
                             onFavouriteTap: () {},
+                            onDeleteTap: () async {
+                              await cubit.deleteStory(item.id);
+                              //await cubit.getMyStories();
+                            },
                           ),
                         ),
                       );

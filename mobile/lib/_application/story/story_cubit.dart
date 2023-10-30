@@ -80,4 +80,21 @@ final class StoryCubit extends BaseCubit<StoryState> {
       },
     );
   }
+
+  Future<bool> deleteStory(int storyId) async {
+    setLoading(true);
+    final result = await _storyRepository.deleteStory(storyId);
+    setLoading(false);
+    return result.fold(
+      (failure) {
+        showNotification(failure?.message ?? '', isError: true);
+        return false;
+      },
+      (data) {
+        showNotification('Your Story is deleted.');
+
+        return true;
+      },
+    );
+  }
 }
