@@ -2,50 +2,57 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:html/parser.dart';
 import 'package:swe/_common/constants/default_image.dart';
 import 'package:swe/_common/style/text_styles.dart';
 import 'package:swe/_core/extensions/string_extensions.dart';
-import 'package:swe/_core/widgets/base_cached_network_image.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/widgets/base/base_list_view.dart';
 import 'package:swe/_presentation/widgets/card/button_card.dart';
-import 'package:html/dom.dart' as dom;
 
 class StoryCard extends StatelessWidget {
   final StoryModel storyModel;
   final void Function(StoryModel)? onTap;
   final VoidCallback? onFavouriteTap;
+  final VoidCallback? onDeleteTap;
   final bool isFavorite;
   final bool isFavoriteLoading;
   final bool showFavouriteButton;
+  final bool myStories;
   const StoryCard({
     required this.storyModel,
+    this.myStories = false,
     super.key,
     this.onTap,
     this.onFavouriteTap,
     this.showFavouriteButton = true,
     this.isFavorite = false,
     this.isFavoriteLoading = false,
+    this.onDeleteTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final text = storyModel.text;
+
     final document = parse(text);
-    final link = document.querySelector('img');
-    final noImage = link == null ? true : false;
-    var uint8list =
-        Uint8List.fromList(base64.decode(DefaultImage.defaultImage));
-    if (!noImage) {
-      final imageLink = link != null ? link.attributes['src'] : '';
-      final imageBeforeParse = imageLink?.split('base64,');
-      imageBeforeParse?[1].replaceAll(r'\', 'END.');
-      final imageBeforeSecondParse = imageBeforeParse?[1].split(' END.');
-      final imgUrl = imageBeforeSecondParse?[0];
-      uint8list = Uint8List.fromList(base64.decode(imgUrl!));
+    String? imgurl;
+    var noImage = true;
+
+    if (document.outerHtml.contains('<img>')) {
+      final parsedImage = text.split('<img>');
+      final secondParse = parsedImage[1].split('/>');
+      final finalParse = secondParse[0];
+      imgurl = finalParse;
+      noImage = false;
+    }
+    if (document.outerHtml.contains('<img src=')) {
+      final parsedImage = text.split('img src="');
+      final secondParse = parsedImage[1].split('">');
+      final finalParse = secondParse[0];
+      imgurl = finalParse;
+      noImage = false;
     }
 
     return Material(
@@ -68,9 +75,10 @@ class StoryCard extends StatelessWidget {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            buildContent(context, uint8list, noImage),
+            buildContent(context, imgurl, noImage),
             if (showFavouriteButton) buildFavourite(),
             buildUser(),
+            if (myStories) buildDelete(),
           ],
         ),
       ),
@@ -79,7 +87,7 @@ class StoryCard extends StatelessWidget {
 
   Card buildContent(
     BuildContext context,
-    Uint8List? imageBytes,
+    String? imgUrl,
     bool noImage,
   ) {
     return Card(
@@ -97,10 +105,13 @@ class StoryCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
-                  child: Image.memory(
-                    imageBytes!,
-                    fit: BoxFit.cover,
-                  ),
+                  child: noImage
+                      ? Image.asset(
+                          'assets/images/dutluk_logo.png',
+                        )
+                      : Image.network(
+                          imgUrl!,
+                        ),
                 ),
               ),
             ),
@@ -206,6 +217,36 @@ class StoryCard extends StatelessWidget {
                 width: 4,
               ),
               Text(storyModel.user?.username ?? ''),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildDelete() {
+    return Positioned(
+      top: 8,
+      right: 0,
+      child: SizedBox(
+        width: 52,
+        height: 30,
+        child: Center(
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  onDeleteTap?.call();
+                },
+                icon: const Icon(
+                  Icons.delete,
+                  size: 32,
+                  color: Colors.red,
+                ),
+              ),
+              const SizedBox(
+                width: 4,
+              ),
             ],
           ),
         ),

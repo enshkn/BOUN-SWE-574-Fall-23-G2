@@ -32,16 +32,16 @@ public class StoryMobileController {
 
     @GetMapping("/all")
     public ResponseEntity<?> findAllStories(HttpServletRequest request){
-        successfulResponse.setEntity(storyService.findAll());
-        successfulResponse.setCount(storyService.findAll().size());
+        successfulResponse.setEntity(storyService.findAllByOrderByIdDesc());
+        successfulResponse.setCount(storyService.findAllByOrderByIdDesc().size());
         return ResponseEntity.ok(successfulResponse);
     }
 
     //MOCK UNTIL ACTIVITY FEED LOGIC IS ESTABLISHED
     @GetMapping("/feed")
     public ResponseEntity<?> findFeedStories(HttpServletRequest request){
-        successfulResponse.setEntity(storyService.findAll());
-        successfulResponse.setCount(storyService.findAll().size());
+        successfulResponse.setEntity(storyService.findAllByOrderByIdDesc());
+        successfulResponse.setCount(storyService.findAllByOrderByIdDesc().size());
         return ResponseEntity.ok(successfulResponse);
     }
 
@@ -55,8 +55,8 @@ public class StoryMobileController {
     @GetMapping("/fromUser")
     public ResponseEntity<?> findAllStoriesfromUser(HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        successfulResponse.setEntity(storyService.findAllStoriesByUserId(user.getId()));
-        successfulResponse.setCount(storyService.findAllStoriesByUserId(user.getId()).size());
+        successfulResponse.setEntity(storyService.findByUserIdOrderByIdDesc(user.getId()));
+        successfulResponse.setCount(storyService.findByUserIdOrderByIdDesc(user.getId()).size());
         return ResponseEntity.ok(successfulResponse);
     }
 

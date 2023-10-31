@@ -1,12 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swe/_core/extensions/context_extensions.dart';
 import 'package:swe/_core/extensions/string_extensions.dart';
 import 'package:swe/core/localization/locale_keys.g.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:injectable/injectable.dart';
 
 import '../../../_application/app/app_cubit.dart';
 import '../../../_application/app/app_state.dart';
@@ -109,7 +108,7 @@ class _AppViewState extends State<AppView> {
                   state,
                   context,
                   bottomTab: BottomTabs.home,
-                  label: LocaleKeys.tabs_home,
+                  label: 'Home',
                   icon: Icon(
                     FontAwesomeIcons.houseChimney,
                     size: 20,
@@ -123,7 +122,7 @@ class _AppViewState extends State<AppView> {
                   state,
                   context,
                   bottomTab: BottomTabs.profile,
-                  label: LocaleKeys.tabs_profile,
+                  label: 'Profile',
                   icon: Icon(
                     FontAwesomeIcons.person,
                     size: 20,

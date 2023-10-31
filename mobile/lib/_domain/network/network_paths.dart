@@ -14,4 +14,7 @@ class NetworkPaths {
   static const String getAllStory = '/api/mobile/story/all';
   static const String getActivityFeed = '/api/mobile/story/feed';
   static const String getFallowedStories = '/api/mobile/story/following';
+  static const String addStory = '/api/mobile/story/add';
+  static const String myStories = '/api/mobile/story/fromUser';
+  static const String deleteStory = '/api/mobile/story/delete';
 }

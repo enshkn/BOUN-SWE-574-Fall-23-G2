@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
 
 @Service
 public class StoryService {
@@ -24,17 +26,24 @@ public class StoryService {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    ImageService imageService;
+
 
 
     public List<Story> findAll(){
         return storyRepository.findAll();
     }
 
+    public List<Story> findAllByOrderByIdDesc(){
+        return storyRepository.findAllByOrderByIdDesc();
+    }
+
     public Story createStory(User foundUser, StoryCreateRequest storyCreateRequest) throws ParseException{
         Story createdStory = Story.builder()
                 .title(storyCreateRequest.getTitle())
                 .labels(storyCreateRequest.getLabels())
-                .text(storyCreateRequest.getText())
+                .text(imageService.parseAndSaveImages(storyCreateRequest.getText()))
                 .startTimeStamp(storyCreateRequest.getStartTimeStamp())
                 .endTimeStamp(storyCreateRequest.getEndTimeStamp())
                 .season(storyCreateRequest.getSeason())
@@ -56,6 +65,11 @@ public class StoryService {
         return storyRepository.findByUserId(userId);
     }
 
+    public List<Story> findByUserIdOrderByIdDesc(Long userId){
+        return storyRepository.findByUserIdOrderByIdDesc(userId);
+    }
+
+
     public Story getStoryByStoryId(Long id) {
         Optional<Story> optionalStory = storyRepository.findById(id);
         if (optionalStory.isEmpty()) {
@@ -72,7 +86,7 @@ public class StoryService {
             idList.add(user.getId());
         }
         for(Long id : idList){
-            storyList.addAll(findAllStoriesByUserId(id));
+            storyList.addAll(findByUserIdOrderByIdDesc(id));
         }
         return storyList;
 

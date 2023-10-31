@@ -31,13 +31,13 @@ public class StoryController {
 
     @GetMapping("/all")
     public ResponseEntity<?> findAllStories(HttpServletRequest request){
-        return ResponseEntity.ok(storyService.findAll());
+        return ResponseEntity.ok(storyService.findAllByOrderByIdDesc());
     }
 
     //MOCK UNTIL ACTIVITY FEED LOGIC IS ESTABLISHED
     @GetMapping("/feed")
     public ResponseEntity<?> findFeedStories(HttpServletRequest request){
-        return ResponseEntity.ok(storyService.findAll());
+        return ResponseEntity.ok(storyService.findAllByOrderByIdDesc());
     }
 
     @PostMapping("/add")
@@ -50,7 +50,7 @@ public class StoryController {
     @GetMapping("/fromUser")
     public ResponseEntity<?> findAllStoriesfromUser(HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(storyService.findAllStoriesByUserId(user.getId()));
+        return ResponseEntity.ok(storyService.findByUserIdOrderByIdDesc(user.getId()));
     }
 
     @GetMapping("/{id}")

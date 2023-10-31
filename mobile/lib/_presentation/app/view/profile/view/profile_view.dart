@@ -6,6 +6,7 @@ import 'package:swe/_common/style/text_styles.dart';
 import 'package:swe/_core/widgets/base_scroll_view.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
+import 'package:swe/_presentation/_route/router.dart';
 import 'package:swe/_presentation/widgets/app_button.dart';
 import 'package:swe/_presentation/widgets/card/button_card.dart';
 import 'package:swe/_presentation/widgets/modals.dart';
@@ -22,6 +23,9 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     return BaseView<ProfileCubit, ProfileState>(
+      onCubitReady: (cubit) {
+        cubit.setContext(context);
+      },
       builder: (context, cubit, state) {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -55,8 +59,7 @@ class _ProfileViewState extends State<ProfileView> {
               const Divider(),
               ButtonCard(
                 onPressed: () {
-                  ///
-                  ///
+                  context.router.push(const MyStoriesRoute());
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -137,7 +140,7 @@ class _ProfileViewState extends State<ProfileView> {
                   centerLabel: true,
                   noIcon: true,
                   onPressed: () {
-                    showLogoutModal(context, cubit);
+                    showLogoutModal(context, cubit.logout);
                   },
                 ),
               ),

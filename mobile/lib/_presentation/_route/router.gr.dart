@@ -15,6 +15,12 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    AddStoryRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const AddStoryView(),
+      );
+    },
     AppRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -43,6 +49,12 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const LoginView(),
+      );
+    },
+    MyStoriesRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MyStoriesView(),
       );
     },
     OnboardingRoute.name: (routeData) {
@@ -86,6 +98,20 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
   };
+}
+
+/// generated route for
+/// [AddStoryView]
+class AddStoryRoute extends PageRouteInfo<void> {
+  const AddStoryRoute({List<PageRouteInfo>? children})
+      : super(
+          AddStoryRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AddStoryRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
@@ -154,6 +180,20 @@ class LoginRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'LoginRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MyStoriesView]
+class MyStoriesRoute extends PageRouteInfo<void> {
+  const MyStoriesRoute({List<PageRouteInfo>? children})
+      : super(
+          MyStoriesRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MyStoriesRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
