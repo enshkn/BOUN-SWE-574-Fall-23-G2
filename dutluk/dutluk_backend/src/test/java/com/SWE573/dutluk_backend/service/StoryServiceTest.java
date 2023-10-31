@@ -28,6 +28,9 @@ class StoryServiceTest {
     @InjectMocks
     private StoryService storyService;
 
+    @Mock
+    private ImageService imageService;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -193,9 +196,9 @@ class StoryServiceTest {
                 .build();
         story3.setId(3L);
 
-        when(storyRepository.findByUserId(1L)).thenReturn(Collections.singletonList(story1));
-        when(storyRepository.findByUserId(2L)).thenReturn(Collections.singletonList(story2));
-        when(storyRepository.findByUserId(3L)).thenReturn(Collections.singletonList(story3));
+        when(storyRepository.findByUserIdOrderByIdDesc(1L)).thenReturn(Collections.singletonList(story1));
+        when(storyRepository.findByUserIdOrderByIdDesc(2L)).thenReturn(Collections.singletonList(story2));
+        when(storyRepository.findByUserIdOrderByIdDesc(3L)).thenReturn(Collections.singletonList(story3));
 
 
         User foundUser = User.builder()
@@ -209,8 +212,8 @@ class StoryServiceTest {
         List<Story> followingStories = storyService.findFollowingStories(foundUser);
 
 
-        verify(storyRepository, times(1)).findByUserId(2L);
-        verify(storyRepository, times(1)).findByUserId(3L);
+        verify(storyRepository, times(1)).findByUserIdOrderByIdDesc(2L);
+        verify(storyRepository, times(1)).findByUserIdOrderByIdDesc(3L);
 
 
         assertNotNull(followingStories);
