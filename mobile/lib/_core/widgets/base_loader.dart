@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 import '../extensions/context_extensions.dart';
 
 class BaseLoader extends StatelessWidget {
-  const BaseLoader({super.key, required this.isLoading, required this.child});
+  const BaseLoader({required this.isLoading, required this.child, super.key});
   final bool isLoading;
   final Widget child;
 

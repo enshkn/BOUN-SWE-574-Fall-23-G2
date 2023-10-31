@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
+import 'package:swe/_presentation/story/add_story_view.dart';
+import 'package:swe/_presentation/story/my_stories_view.dart';
 import 'package:swe/_presentation/story/story_details_view.dart';
 import '../app/view/app_view.dart';
 import '../app/view/home/view/home_view.dart';
@@ -23,6 +25,7 @@ class AppRouter extends _$AppRouter {
     AutoRoute(path: RoutePaths.LOGIN, page: LoginRoute.page),
     AutoRoute(path: RoutePaths.REGISTER, page: RegisterRoute.page),
     AutoRoute(path: RoutePaths.FORGOT_PASSWORD, page: ForgotPasswordRoute.page),
+    AutoRoute(path: RoutePaths.ADDSTORY, page: AddStoryRoute.page),
     AutoRoute(
       path: RoutePaths.APP,
       page: AppRoute.page,
@@ -44,6 +47,14 @@ class AppRouter extends _$AppRouter {
           page: ProfileTabRoute.page,
           children: [
             AutoRoute(path: '', page: ProfileRoute.page),
+            AutoRoute(
+              path: RoutePaths.MYSTORIES,
+              page: MyStoriesRoute.page,
+            ),
+            AutoRoute(
+              path: RoutePaths.STORYDETAILS,
+              page: StoryDetailsRoute.page,
+            ),
           ],
         ),
       ],
