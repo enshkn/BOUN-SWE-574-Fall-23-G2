@@ -121,7 +121,26 @@ public class StoryMobileController {
         successfulResponse.setCount(storySet.size());
         return ResponseEntity.ok(successfulResponse);
     }
-    @PostMapping("/like/")
+    @GetMapping("/nearby")
+    public ResponseEntity<?> nearbyStories(
+            @RequestParam(required = false) Integer radius,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double longitude) throws ParseException {
+        Set<Story> storySet = new HashSet<>();
+        String query = null;
+        if(latitude != null && longitude != null && (radius != null || radius != 0)){
+            storySet.addAll(storyService.searchStoriesWithLocation(query,radius,latitude,longitude));
+        }
+        if(storySet.isEmpty()){
+            Set<String> nullSet = new HashSet<>();
+            nullSet.add("No story found!");
+            return ResponseEntity.ok(nullSet);
+        }
+        successfulResponse.setEntity(Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+        successfulResponse.setCount(storySet.size());
+        return ResponseEntity.ok(successfulResponse);
+    }
+    @PostMapping("/like")
     public ResponseEntity<?> likeStory(@RequestBody LikeRequest likeRequest, HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
         successfulResponse.setEntity(storyService.likeStory(likeRequest.getLikedEntityId(),tokenizedUser.getId()));
@@ -139,6 +158,7 @@ public class StoryMobileController {
     public ResponseEntity<?> editStory(@PathVariable Long storyId, @RequestBody StoryEditRequest storyEditRequest, HttpServletRequest request) throws ParseException, IOException {
         User tokenizedUser = userService.validateTokenizedUser(request);
         successfulResponse.setEntity(storyService.editStory(storyEditRequest,tokenizedUser,storyId));
+        successfulResponse.setCount(1);
         return ResponseEntity.ok(successfulResponse);
     }
 }

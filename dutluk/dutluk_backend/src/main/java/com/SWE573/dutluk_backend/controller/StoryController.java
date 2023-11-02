@@ -110,6 +110,24 @@ public class StoryController {
         }
         return ResponseEntity.ok(Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
     }
+
+    @GetMapping("/nearby")
+    public ResponseEntity<?> nearbyStories(
+            @RequestParam(required = false) Integer radius,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double longitude) throws ParseException {
+        Set<Story> storySet = new HashSet<>();
+        String query = null;
+        if(latitude != null && longitude != null && (radius != null || radius != 0)){
+            storySet.addAll(storyService.searchStoriesWithLocation(query,radius,latitude,longitude));
+        }
+        if(storySet.isEmpty()){
+            Set<String> nullSet = new HashSet<>();
+            nullSet.add("No story found!");
+            return ResponseEntity.ok(nullSet);
+        }
+        return ResponseEntity.ok(Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+    }
     @PostMapping("/like/")
     public ResponseEntity<?> likeStory(@RequestBody LikeRequest likeRequest, HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
