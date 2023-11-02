@@ -4,6 +4,7 @@ import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.request.LikeRequest;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
+import com.SWE573.dutluk_backend.request.StoryEditRequest;
 import com.SWE573.dutluk_backend.service.StoryService;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -42,7 +44,7 @@ public class StoryController {
 
     @PostMapping("/add")
     @CrossOrigin
-    public ResponseEntity<?> addStory(@RequestBody StoryCreateRequest storyCreateRequest,HttpServletRequest request) throws ParseException {
+    public ResponseEntity<?> addStory(@RequestBody StoryCreateRequest storyCreateRequest,HttpServletRequest request) throws ParseException, IOException {
         User user = userService.validateTokenizedUser(request);
         return ResponseEntity.ok(storyService.createStory(user,storyCreateRequest));
     }
@@ -77,7 +79,7 @@ public class StoryController {
             @RequestParam(required = false) String startTimeStamp,
             @RequestParam(required = false) String endTimeStamp,
             @RequestParam(required = false) String decade,
-            @RequestParam(required = false) String season) {
+            @RequestParam(required = false) String season) throws ParseException {
         Set<Story> storySet = new HashSet<>();
         if(query != null){
             if(latitude != null && longitude != null && (radius != null || radius != 0)){
@@ -117,6 +119,13 @@ public class StoryController {
     public ResponseEntity<?> deleteStory(@PathVariable Long storyId, HttpServletRequest request) {
         User tokenizedUser = userService.validateTokenizedUser(request);
         return ResponseEntity.ok(storyService.deleteByStoryId(storyService.getStoryByStoryId(storyId)));
+
+    }
+
+    @PostMapping("/edit/{storyId}")
+    public ResponseEntity<?> editStory(@PathVariable Long storyId, @RequestBody StoryEditRequest storyEditRequest, HttpServletRequest request) throws ParseException, IOException {
+        User tokenizedUser = userService.validateTokenizedUser(request);
+        return ResponseEntity.ok(storyService.editStory(storyEditRequest,tokenizedUser,storyId));
 
     }
 }

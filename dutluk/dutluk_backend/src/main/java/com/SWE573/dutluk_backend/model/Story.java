@@ -48,15 +48,15 @@ public class Story extends BaseEntity{
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTC+3")
     private Date createdAt;
 
     @Column(name = "start_time_stamp")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTC+3")
     private Date startTimeStamp;
 
     @Column(name = "end_time_stamp")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTC+3")
     private Date endTimeStamp;
 
     private String season;

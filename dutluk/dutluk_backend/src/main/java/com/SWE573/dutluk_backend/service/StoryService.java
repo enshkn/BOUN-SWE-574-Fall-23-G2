@@ -6,14 +6,13 @@ import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.StoryRepository;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
+import com.SWE573.dutluk_backend.request.StoryEditRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class StoryService {
         return storyRepository.findAllByOrderByIdDesc();
     }
 
-    public Story createStory(User foundUser, StoryCreateRequest storyCreateRequest) throws ParseException{
+    public Story createStory(User foundUser, StoryCreateRequest storyCreateRequest) throws ParseException, IOException {
         Story createdStory = Story.builder()
                 .title(storyCreateRequest.getTitle())
                 .labels(storyCreateRequest.getLabels())
@@ -92,6 +91,7 @@ public class StoryService {
 
     }
 
+
     public Story likeStory(Long storyId,Long userId){
         Story story = getStoryByStoryId(storyId);
         Set<Long> likesList = story.getLikes();
@@ -133,11 +133,11 @@ public class StoryService {
         return storyRepository.findBySeasonContainingIgnoreCase(season);
     }
 
-    public List<Story> searchStoriesWithSingleDate(String startTimeStamp){
+    public List<Story> searchStoriesWithSingleDate(String startTimeStamp) throws ParseException {
         Date formattedDate = stringToDate(startTimeStamp);
         return storyRepository.findByStartTimeStamp(formattedDate);
     }
-    public List<Story> searchStoriesWithMultipleDate(String startTimeStamp,String endTimeStamp){
+    public List<Story> searchStoriesWithMultipleDate(String startTimeStamp,String endTimeStamp) throws ParseException {
         Date formattedStartDate = stringToDate(startTimeStamp);
         Date formattedEndDate = stringToDate(endTimeStamp);
         return storyRepository.findByStartTimeStampBetween(formattedStartDate, formattedEndDate);
@@ -152,13 +152,41 @@ public class StoryService {
         return "deleted";
     }
 
-    public Date stringToDate(String timeStamp){
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date formattedDate = dateFormat.parse(timeStamp);
-            return formattedDate;
-        } catch (ParseException e) {
-            e.printStackTrace();
+    public Date stringToDate(String timeStamp) throws ParseException{
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.parse(timeStamp);
+    }
+
+    public Story enterStory(User foundUser, StoryEditRequest storyEditRequestRequest) throws ParseException, IOException {
+        Story createdStory = Story.builder()
+                .title(storyEditRequestRequest.getTitle())
+                .labels(storyEditRequestRequest.getLabels())
+                .text(imageService.parseAndSaveImages(storyEditRequestRequest.getText()))
+                .startTimeStamp(storyEditRequestRequest.getStartTimeStamp())
+                .endTimeStamp(storyEditRequestRequest.getEndTimeStamp())
+                .season(storyEditRequestRequest.getSeason())
+                .user(foundUser)
+                .decade(storyEditRequestRequest.getDecade())
+                .createdAt(new Date())
+                .likes(new HashSet<>())
+                .build();
+        ArrayList<Location> allLocations = storyEditRequestRequest.getLocations();
+        for (Location location : allLocations) {
+            location.setStory(createdStory);
+        }
+        createdStory.setLocations(allLocations);
+        return createdStory;
+    }
+
+    public Story editStory(StoryEditRequest request, User user, Long storyId) throws ParseException, IOException {
+        Story story = getStoryByStoryId(storyId);
+        if(Objects.equals(story.getUser().getId(),user.getId())){
+            Story enteredStory = enterStory(user,request);
+            enteredStory.setId(storyId);
+            enteredStory.setLikes(story.getLikes());
+            enteredStory.setId(story.getId());
+            enteredStory.setComments(story.getComments());
+            return storyRepository.save(enteredStory);
         }
         return null;
     }
