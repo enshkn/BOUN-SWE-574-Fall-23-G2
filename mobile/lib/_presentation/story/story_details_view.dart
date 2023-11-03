@@ -2,11 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:google_map_location_picker/map_location_picker.dart';
 import 'package:swe/_application/session/session_cubit.dart';
 import 'package:swe/_application/session/session_state.dart';
 import 'package:swe/_application/story/story_cubit.dart';
 import 'package:swe/_application/story/story_state.dart';
 import 'package:swe/_common/style/text_styles.dart';
+import 'package:swe/_core/env/env.dart';
 import 'package:swe/_core/extensions/context_extensions.dart';
 import 'package:swe/_core/extensions/string_extensions.dart';
 import 'package:swe/_core/widgets/base_scroll_view.dart';
@@ -41,6 +43,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
   late final ExpansionTileController controller2;
   late final StoryCubit cubit;
   bool addFavoriteTriggered = false;
+  Map<String, LatLng> additionalMarkers = {};
   @override
   void initState() {
     controller = ExpansionTileController();
@@ -265,12 +268,50 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                             physics: const NeverScrollableScrollPhysics(),
                             items: widget.model.locations!,
                             itemBuilder: (item) {
-                              return Text(
-                                item.locationName!.toLocation(),
-                                style: const TextStyles.body().copyWith(
-                                  letterSpacing: 0.016,
-                                ),
-                                overflow: TextOverflow.ellipsis,
+                              return Row(
+                                children: [
+                                  SizedBox(
+                                    width: 300,
+                                    child: Text(
+                                      item.locationName!.toLocation(),
+                                      style: const TextStyles.body().copyWith(
+                                        letterSpacing: 0.016,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      final storyLocation = LatLng(
+                                        item.latitude!,
+                                        item.longitude!,
+                                      );
+
+                                      for (var i = 0;
+                                          i <= widget.model.locations!.length;
+                                          i++) {
+                                        additionalMarkers['marker$i'] = LatLng(
+                                          widget.model.locations![i].latitude!,
+                                          widget.model.locations![i].longitude!,
+                                        );
+                                      }
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MapView(
+                                            storyLocation: storyLocation,
+                                            additionalMarkers:
+                                                additionalMarkers,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.location_on,
+                                    ),
+                                  ),
+                                ],
                               );
                             },
                           ),
@@ -342,6 +383,36 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
       backgroundColor: Colors.blue,
       elevation: 4,
       padding: const EdgeInsets.all(8),
+    );
+  }
+}
+
+class MapView extends StatefulWidget {
+  final LatLng storyLocation;
+  final Map<String, LatLng>? additionalMarkers;
+  const MapView({
+    required this.storyLocation,
+    super.key,
+    this.additionalMarkers,
+  });
+
+  @override
+  State<MapView> createState() => _MapViewState();
+}
+
+class _MapViewState extends State<MapView> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: MapLocationPicker(
+        apiKey: AppEnv.apiKey,
+        currentLatLng: widget.storyLocation,
+        hideBottomCard: true,
+        hideLocationButton: true,
+        hideMapTypeButton: true,
+        hideMoreOptions: true,
+        additionalMarkers: widget.additionalMarkers,
+      ),
     );
   }
 }
