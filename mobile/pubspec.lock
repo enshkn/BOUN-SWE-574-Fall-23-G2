@@ -879,6 +879,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  google_map_location_picker:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: d97ed5623ec6bec632226751b21d7c1630b37ae9
+      url: "https://github.com/amineglr/google_map_location_picker.git"
+    source: git
+    version: "1.2.8+4"
   google_maps:
     dependency: transitive
     description:
@@ -1236,14 +1245,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.0"
-  map_location_picker:
-    dependency: "direct main"
-    description:
-      name: map_location_picker
-      sha256: "08f8751b858d297703d96ae9bdddd740f7a65930ca9d74ceb4b4012c331df033"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.8+3"
   matcher:
     dependency: transitive
     description:

@@ -12,6 +12,7 @@ services:
       - db
     volumes:
       - backend-data:/path/to/backend/data
+    restart: always
 
   frontend:
     build:
@@ -23,6 +24,7 @@ services:
       - ./dutluk_frontend/.env
     depends_on:
       - backend
+    restart: always
 
   db:
     image: postgres

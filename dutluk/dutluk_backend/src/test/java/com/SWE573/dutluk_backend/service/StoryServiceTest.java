@@ -5,12 +5,14 @@ import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.StoryRepository;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
+import com.SWE573.dutluk_backend.request.StoryEditRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -37,7 +39,7 @@ class StoryServiceTest {
     }
 
     @Test
-    void testCreateStory() throws ParseException {
+    void testCreateStory() throws ParseException, IOException {
         User foundUser = User.builder()
                 .username("testUser")
                 .build();
@@ -397,17 +399,17 @@ class StoryServiceTest {
 
     @Test
     public void testSearchStoriesWithSingleDate() throws ParseException {
-        // Arrange
+
         String startTimeStamp = "2023-01-01";
         Date formattedDate = new SimpleDateFormat("yyyy-MM-dd").parse(startTimeStamp);
 
         List<Story> expectedStories = new ArrayList<>();
         when(storyRepository.findByStartTimeStamp(formattedDate)).thenReturn(expectedStories);
 
-        // Act
+
         List<Story> result = storyService.searchStoriesWithSingleDate(startTimeStamp);
 
-        // Assert
+
         assertEquals(expectedStories, result);
     }
 
@@ -423,11 +425,57 @@ class StoryServiceTest {
         List<Story> expectedStories = new ArrayList<>();
         when(storyRepository.findByStartTimeStampBetween(startDate, endDate)).thenReturn(expectedStories);
 
-        // Act
+
         List<Story> result = storyService.searchStoriesWithMultipleDate(startTimeStamp, endTimeStamp);
 
-        // Assert
+
         assertEquals(expectedStories, result);
+    }
+
+    @Test
+    public void testEditStory_SuccessfulEdit() throws ParseException, IOException {
+
+        User foundUser = User.builder()
+                .username("testUser")
+                .build();
+        when(userService.findByUserId(1L)).thenReturn(foundUser);
+        StoryEditRequest request = new StoryEditRequest();
+        Long storyId = 1L;
+
+        Story existingStory = new Story();
+        existingStory.setId(storyId);
+        existingStory.setUser(foundUser);
+
+        when(storyRepository.findById(storyId)).thenReturn(Optional.of(existingStory));
+
+
+        Story editedStory = storyService.editStory(request, foundUser, storyId);
+
+
+        assertNotNull(existingStory);
+        assertEquals(storyId, existingStory.getId());
+        assertEquals(foundUser, existingStory.getUser());
+    }
+
+    @Test
+    public void testEditStory_UserMismatch() throws ParseException, IOException {
+
+        User user = new User();
+        User anotherUser = new User();
+        StoryEditRequest request = new StoryEditRequest();
+        Long storyId = 1L;
+
+        Story existingStory = new Story();
+        existingStory.setId(storyId);
+        existingStory.setUser(anotherUser);
+
+        when(storyRepository.findById(storyId)).thenReturn(Optional.of(existingStory));
+
+
+        Story editedStory = storyService.editStory(request, user, storyId);
+
+
+        assertNull(editedStory);
     }
 
 }

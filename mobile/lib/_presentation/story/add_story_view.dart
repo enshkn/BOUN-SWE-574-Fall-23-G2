@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_map_location_picker/map_location_picker.dart'
+    hide Location;
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
-import 'package:map_location_picker/map_location_picker.dart' hide Location;
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
 import 'package:swe/_application/story/story_cubit.dart';
@@ -18,6 +20,8 @@ import 'package:swe/_domain/story/model/location_model.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
 import 'package:swe/_presentation/widgets/appBar/customAppBar.dart';
 import 'package:swe/_presentation/widgets/app_button.dart';
+import 'package:swe/_presentation/widgets/base/base_list_view.dart';
+import 'package:swe/_presentation/widgets/card/button_card.dart';
 import 'package:swe/_presentation/widgets/textformfield/app_text_form_field.dart';
 
 enum AddStoryStepType {
@@ -33,6 +37,21 @@ enum AddStoryStepType {
   }
 }
 
+enum TimeResolutionType {
+  exactDate(0),
+  exactDateWithTime(1),
+  dateRange(2),
+  decade(3),
+  year(4);
+
+  const TimeResolutionType(this.value);
+  final int value;
+
+  static TimeResolutionType fromValue(int value) {
+    return TimeResolutionType.values.firstWhere((el) => el.value == value);
+  }
+}
+
 @RoutePage()
 class AddStoryView extends StatefulWidget {
   const AddStoryView({super.key});
@@ -44,13 +63,17 @@ class AddStoryView extends StatefulWidget {
 class _AddStoryViewState extends State<AddStoryView>
     with FormPageViewMixin, SingleTickerProviderStateMixin {
   late StoryCubit cubit;
-
+  int index = 0;
   late TextEditingController titleController;
   late TextEditingController tagController;
   late TextEditingController textController;
   late QuillEditorController controller;
   late TextEditingController seasonController;
   late TextEditingController decadeController;
+  late TextEditingController timeResolutionController;
+  List<LatLng> selectedLocations = [];
+  Map<String, LatLng>? additionalMarkers = {};
+  List<LocationModel> selectedLocationsforMap = [];
 
   final customToolBarList = [
     ToolBarStyle.bold,
@@ -101,10 +124,17 @@ class _AddStoryViewState extends State<AddStoryView>
   late List<LocationModel> locations = [];
   String? htmlText;
   String? story;
+  bool exatDateSelected = false;
+  bool exactDateWithTimeSelected = false;
+  bool dateRangeSelected = false;
+  bool decadeSelected = false;
+  bool yearSelected = false;
 
   late TabController _tabController;
   int currnetIndex = 0;
   bool showBottomNav = true;
+  String? selectTimeResolutions;
+  bool firstLocation = true;
 
   List<String> season = <String>['Winter', 'Spring', 'Summer', 'Fall'];
   List<String> decade = <String>[
@@ -118,6 +148,13 @@ class _AddStoryViewState extends State<AddStoryView>
     '2010s',
     '2020s',
   ];
+  List<String> timeResolutions = <String>[
+    'Exact Date',
+    'Exact Date with Time',
+    'Date Range',
+    'Decade',
+    'Year',
+  ];
 
   @override
   void initState() {
@@ -130,6 +167,7 @@ class _AddStoryViewState extends State<AddStoryView>
     tagController = TextEditingController();
     textController = TextEditingController();
     controller = QuillEditorController();
+    timeResolutionController = TextEditingController();
     story = '';
 
     selectedStartDateTime = DateTime(
@@ -169,6 +207,8 @@ class _AddStoryViewState extends State<AddStoryView>
     decadeController.clear();
     seasonController.dispose();
     seasonController.clear();
+    timeResolutionController.clear();
+    timeResolutionController.dispose();
 
     super.dispose();
   }
@@ -201,11 +241,9 @@ class _AddStoryViewState extends State<AddStoryView>
         if (!formStoryKey.currentState!.validate()) return;
         nextPage();
       case AddStoryStepType.time:
-        showBottomNav = false;
         nextPage();
       case AddStoryStepType.location:
-
-      //onPressSubmit();
+        onPressSubmit();
     }
   }
 
@@ -267,17 +305,66 @@ class _AddStoryViewState extends State<AddStoryView>
 
   Widget storyLocationWidget() {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.5,
+      height: MediaQuery.of(context).size.height,
       child: MapLocationPicker(
+        locations: selectedLocationsforMap,
+        getSelectedLocations: () async {
+          setState(() {
+            selectedLocationsforMap = locations;
+          });
+        },
         apiKey: AppEnv.apiKey,
         currentLatLng: _currentPosition,
+        bottomCardMargin: const EdgeInsets.fromLTRB(
+          8,
+          0,
+          8,
+          100,
+        ),
+        hideMapTypeButton: true,
+        hideLocationButton: true,
         hideBackButton: true,
         bottomCardShape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        hideMoreOptions: true,
         hasLocationPermission: hasPermission,
         getLocation: () {
           getCurrentLocation();
+        },
+        additionalMarkers: additionalMarkers,
+        onTapMarkers: (position) {
+          setState(() {
+            index++;
+            additionalMarkers?['marker$index'] =
+                LatLng(position!.latitude, position.longitude);
+          });
+        },
+        deleteLocations: (index) {
+          setState(() {
+            locations.removeAt(index);
+            additionalMarkers
+                ?.removeWhere((key, value) => key == 'marker$index');
+          });
+        },
+        onDecodeAddress: (GeocodingResult? result) {
+          setState(() {
+            if (firstLocation) {
+              firstLocation = false;
+              return;
+            }
+
+            selectedLat = result!.geometry.location.lat;
+            selectedLng = result.geometry.location.lng;
+            selectedAddress = result.formattedAddress ?? '';
+            selectedLocation = LocationModel(
+              locationName: selectedAddress,
+              latitude: selectedLat,
+              longitude: selectedLng,
+            );
+            if (selectedLocation != null) {
+              locations.add(selectedLocation!);
+            }
+            selectedLocationsforMap = locations;
+          });
         },
         onNext: (GeocodingResult? decodedAddress) {
           setState(() {
@@ -294,7 +381,6 @@ class _AddStoryViewState extends State<AddStoryView>
               locations.add(selectedLocation!);
             }
           });
-          onPressSubmit();
         },
       ),
     );
@@ -335,70 +421,78 @@ class _AddStoryViewState extends State<AddStoryView>
 
   Widget storyInfoWidget() {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            AppTextFormField(
-              controller: titleController,
-              hintText: 'Add Title',
-            ),
-            BaseWidgets.lowerGap,
-            AppTextFormField(
-              controller: tagController,
-              hintText: 'Add Tag/s (Divide with coma!)',
-            ),
-            BaseWidgets.lowerGap,
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.5,
-              decoration: BoxDecoration(
-                border: Border.all(color: context.appBarColor),
-                borderRadius: BorderRadius.circular(12),
+      child: GestureDetector(
+        onTap: _focusNode.unfocus,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              AppTextFormField(
+                controller: titleController,
+                hintText: 'Add Title',
               ),
-              child: Column(
-                children: [
-                  ToolBar(
-                    toolBarColor: _toolbarColor,
-                    padding: const EdgeInsets.all(8),
-                    iconColor: _toolbarIconColor,
-                    activeIconColor: Colors.greenAccent.shade400,
-                    controller: controller,
-                    customButtons: const [],
-                    toolBarConfig: customToolBarList,
-                  ),
-                  Expanded(
-                    child: QuillHtmlEditor(
-                      text: story,
-                      hintText: 'Write your story',
+              BaseWidgets.lowerGap,
+              AppTextFormField(
+                controller: tagController,
+                hintText: 'Add Tag/s (Divide with coma!)',
+              ),
+              BaseWidgets.lowerGap,
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.5,
+                decoration: BoxDecoration(
+                  border: Border.all(color: context.appBarColor),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    ToolBar(
+                      toolBarColor: _toolbarColor,
+                      padding: const EdgeInsets.all(8),
+                      iconColor: _toolbarIconColor,
+                      activeIconColor: Colors.greenAccent.shade400,
                       controller: controller,
-                      minHeight: 500,
-                      textStyle: _editorTextStyle,
-                      hintTextStyle: _hintTextStyle,
-                      padding: const EdgeInsets.only(left: 10, top: 10),
-                      hintTextPadding: const EdgeInsets.only(left: 20),
-                      backgroundColor: _backgroundColor,
-                      onTextChanged: (text) {
-                        setState(() async {
-                          story = text;
-                          htmlText = await controller.getText();
-                        });
-                      },
-                      loadingBuilder: (context) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 1,
-                            color: Colors.red,
-                          ),
-                        );
-                      },
+                      customButtons: const [],
+                      toolBarConfig: customToolBarList,
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: QuillHtmlEditor(
+                        autoFocus: true,
+                        text: story,
+                        hintText: 'Write your story',
+                        controller: controller,
+                        minHeight: 500,
+                        textStyle: _editorTextStyle,
+                        hintTextStyle: _hintTextStyle,
+                        padding: const EdgeInsets.only(left: 10, top: 10),
+                        hintTextPadding: const EdgeInsets.only(left: 20),
+                        backgroundColor: _backgroundColor,
+                        onTextChanged: (text) {
+                          setState(() async {
+                            story = text;
+                            htmlText = await controller.getText();
+                          });
+                        },
+                        onFocusChanged: (focus) {
+                          debugPrint('has focus $focus');
+                          setState(_focusNode.unfocus);
+                        },
+                        loadingBuilder: (context) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 1,
+                              color: Colors.red,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            BaseWidgets.dynamicGap(500),
-          ],
+              BaseWidgets.dynamicGap(500),
+            ],
+          ),
         ),
       ),
     );
@@ -410,226 +504,218 @@ class _AddStoryViewState extends State<AddStoryView>
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            DropdownMenu<String>(
-              controller: seasonController,
-              hintText: 'Choose Season',
-              width: MediaQuery.of(context).size.width * 0.92,
-              inputDecorationTheme: InputDecorationTheme(
-                border: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red.shade900),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              menuStyle: MenuStyle(
-                side: MaterialStateProperty.all(
-                  const BorderSide(
-                    color: Colors.blue,
-                  ),
-                ),
-              ),
-              onSelected: (String? value) {
-                setState(() {
-                  selectedSeason = value;
-                });
-              },
-              dropdownMenuEntries:
-                  season.map<DropdownMenuEntry<String>>((String value) {
-                return DropdownMenuEntry<String>(
-                  value: value,
-                  label: value,
-                );
-              }).toList(),
+            dropDownMenu(
+              selectTimeResolutions,
+              timeResolutions,
+              'Select Time Resolutions',
+              timeResolutionController,
+              timeResolutions: true,
             ),
             BaseWidgets.lowerGap,
-            DropdownMenu<String>(
-              controller: decadeController,
-              hintText: 'Choose Decade',
-              width: MediaQuery.of(context).size.width * 0.92,
-              inputDecorationTheme: InputDecorationTheme(
-                border: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red.shade900),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+            if (exatDateSelected)
+              AppButton(
+                border: Border.all(color: context.appBarColor),
+                backgroundColor: Colors.white,
+                labelStyle: const TextStyle(color: Colors.black),
+                label: formattedStartDate ?? 'Choose Date',
+                onPressed: () async {
+                  final dateTime = await dateTimePicker(
+                    formattedStartDate,
+                    selectedStartDateTime,
+                    OmniDateTimePickerType.date,
+                  );
+                  setState(() {
+                    selectedStartDateTime = dateTime!;
+                    formattedStartDate =
+                        DateFormat.yMd().format(selectedStartDateTime);
+                  });
+                },
               ),
-              menuStyle: MenuStyle(
-                side: MaterialStateProperty.all(
-                  const BorderSide(
-                    color: Colors.blue,
-                  ),
-                ),
+            BaseWidgets.lowerGap,
+            if (exactDateWithTimeSelected)
+              AppButton(
+                border: Border.all(color: context.appBarColor),
+                backgroundColor: Colors.white,
+                labelStyle: const TextStyle(color: Colors.black),
+                label: formattedStartDate ?? 'Choose Date and Time',
+                onPressed: () async {
+                  final dateTime = await dateTimePicker(
+                    formattedStartDate,
+                    selectedStartDateTime,
+                    OmniDateTimePickerType.dateAndTime,
+                  );
+                  setState(() {
+                    selectedStartDateTime = dateTime!;
+                    formattedStartDate =
+                        DateFormat.yMd().add_jm().format(selectedStartDateTime);
+                  });
+                },
               ),
-              onSelected: (String? value) {
-                setState(() {
-                  selectedDecade = value;
-                });
-              },
-              dropdownMenuEntries:
-                  decade.map<DropdownMenuEntry<String>>((String value) {
-                return DropdownMenuEntry<String>(
-                  value: value,
-                  label: value,
-                );
-              }).toList(),
-            ),
             BaseWidgets.lowerGap,
-            const Divider(
-              color: Colors.black,
-            ),
+            if (decadeSelected)
+              dropDownMenu(
+                selectedSeason,
+                season,
+                'Choose Season',
+                seasonController,
+              ),
             BaseWidgets.lowerGap,
-            SizedBox(
-              height: 200,
-              child: Column(
+            if (decadeSelected)
+              dropDownMenu(
+                selectedDecade,
+                decade,
+                'Choose Decade',
+                decadeController,
+              ),
+            BaseWidgets.lowerGap,
+            if (dateRangeSelected)
+              Column(
                 children: [
-                  buildTabs(context),
+                  AppButton(
+                    labelStyle: const TextStyle(color: Colors.black),
+                    border: Border.all(color: context.appBarColor),
+                    backgroundColor: Colors.white,
+                    label: formattedStartDate ?? 'Choose Start Date and Time',
+                    onPressed: () async {
+                      final dateTime = await dateTimePicker(
+                        formattedStartDate,
+                        selectedStartDateTime,
+                        OmniDateTimePickerType.date,
+                      );
+                      setState(() {
+                        selectedStartDateTime = dateTime!;
+                        formattedStartDate = DateFormat.yMd()
+                            .add_jm()
+                            .format(selectedStartDateTime);
+                      });
+                    },
+                  ),
                   BaseWidgets.lowerGap,
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        Column(
-                          children: [
-                            AppButton(
-                              border: Border.all(color: context.appBarColor),
-                              backgroundColor: Colors.white,
-                              labelStyle: const TextStyle(color: Colors.black),
-                              label:
-                                  formattedStartDate ?? 'Choose Date and Time',
-                              onPressed: () async {
-                                final dateTime = await dateTimePicker(
-                                  formattedStartDate,
-                                  selectedStartDateTime,
-                                );
-                                setState(() {
-                                  selectedStartDateTime = dateTime!;
-                                  formattedStartDate = DateFormat.yMd()
-                                      .add_jm()
-                                      .format(selectedStartDateTime);
-                                });
-                              },
-                            ),
-                            BaseWidgets.dynamicGap(60),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            AppButton(
-                              labelStyle: const TextStyle(color: Colors.black),
-                              border: Border.all(color: context.appBarColor),
-                              backgroundColor: Colors.white,
-                              label: formattedStartDate ??
-                                  'Choose Start Date and Time',
-                              onPressed: () async {
-                                final dateTime = await dateTimePicker(
-                                  formattedStartDate,
-                                  selectedStartDateTime,
-                                );
-                                setState(() {
-                                  selectedStartDateTime = dateTime!;
-                                  formattedStartDate = DateFormat.yMd()
-                                      .add_jm()
-                                      .format(selectedStartDateTime);
-                                });
-                              },
-                            ),
-                            BaseWidgets.lowerGap,
-                            AppButton(
-                              labelStyle: const TextStyle(color: Colors.black),
-                              border: Border.all(color: context.appBarColor),
-                              backgroundColor: Colors.white,
-                              label: formattedEndDate ??
-                                  'Choose End Date and Time',
-                              onPressed: () async {
-                                final dateTime = await dateTimePicker(
-                                  formattedEndDate,
-                                  selectedEndDateTime,
-                                );
-                                setState(() {
-                                  selectedEndDateTime = dateTime ??
-                                      DateTime(
-                                        0,
-                                        0,
-                                        0,
-                                      );
-                                  formattedEndDate = DateFormat.yMd()
-                                      .add_jm()
-                                      .format(selectedEndDateTime);
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                  AppButton(
+                    labelStyle: const TextStyle(color: Colors.black),
+                    border: Border.all(color: context.appBarColor),
+                    backgroundColor: Colors.white,
+                    label: formattedEndDate ?? 'Choose End Date and Time',
+                    onPressed: () async {
+                      final dateTime = await dateTimePicker(
+                        formattedEndDate,
+                        selectedEndDateTime,
+                        OmniDateTimePickerType.date,
+                      );
+                      setState(() {
+                        selectedEndDateTime = dateTime ??
+                            DateTime(
+                              0,
+                              0,
+                              0,
+                            );
+                        formattedEndDate = DateFormat.yMd()
+                            .add_jm()
+                            .format(selectedEndDateTime);
+                      });
+                    },
                   ),
                 ],
               ),
-            ),
           ],
         ),
       ),
     );
   }
 
-  Container buildTabs(BuildContext context) {
-    return Container(
-      width: context.width,
-      decoration: BoxDecoration(
-        color: context.appBarColor,
-        border: Border.all(color: Colors.blue),
-        borderRadius: BorderRadius.circular(12),
+  Widget dropDownMenu(
+    String? selectedItem,
+    List<String> menu,
+    String title,
+    TextEditingController controller, {
+    bool timeResolutions = false,
+  }) {
+    return DropdownMenu<String>(
+      controller: controller,
+      hintText: title,
+      width: MediaQuery.of(context).size.width * 0.92,
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.blue),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.blue),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.blue),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red.shade900),
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
-      child: TabBar(
-        controller: _tabController,
-        indicatorColor: context.colors.inversePrimary,
-        tabs: [
-          Tab(
-            child: Text(
-              'Exact Date',
-              style: TextStyle(
-                color: Colors.white.withOpacity(currnetIndex == 0 ? 1 : 0.6),
-              ),
-            ),
+      menuStyle: MenuStyle(
+        side: MaterialStateProperty.all(
+          const BorderSide(
+            color: Colors.blue,
           ),
-          Tab(
-            child: Text(
-              'Date Range',
-              style: TextStyle(
-                color: Colors.white.withOpacity(currnetIndex == 1 ? 1 : 0.6),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
+      onSelected: (String? value) {
+        setState(() {
+          selectedItem = value;
+          if (timeResolutions) {
+            final value = TimeResolutionType.fromValue(
+              menu.indexOf(
+                selectedItem!,
+              ),
+            );
+            switch (value) {
+              case TimeResolutionType.exactDate:
+                exatDateSelected = true;
+                exactDateWithTimeSelected = false;
+                dateRangeSelected = false;
+                decadeSelected = false;
+                yearSelected = false;
+              case TimeResolutionType.exactDateWithTime:
+                exatDateSelected = false;
+                exactDateWithTimeSelected = true;
+                dateRangeSelected = false;
+                decadeSelected = false;
+                yearSelected = false;
+              case TimeResolutionType.dateRange:
+                exatDateSelected = false;
+                exactDateWithTimeSelected = false;
+                dateRangeSelected = true;
+                decadeSelected = false;
+                yearSelected = false;
+              case TimeResolutionType.decade:
+                exatDateSelected = false;
+                exactDateWithTimeSelected = false;
+                dateRangeSelected = false;
+                decadeSelected = true;
+                yearSelected = false;
+              case TimeResolutionType.year:
+                exatDateSelected = false;
+                exactDateWithTimeSelected = false;
+                dateRangeSelected = false;
+                decadeSelected = false;
+                yearSelected = true;
+            }
+          }
+        });
+      },
+      dropdownMenuEntries: menu.map<DropdownMenuEntry<String>>((String value) {
+        return DropdownMenuEntry<String>(
+          value: value,
+          label: value,
+        );
+      }).toList(),
     );
   }
 
   Future<DateTime?> dateTimePicker(
     String? formattedStartDate,
     DateTime selectedDateTime,
+    OmniDateTimePickerType type,
   ) {
     return showOmniDateTimePicker(
       context: context,
@@ -645,6 +731,7 @@ class _AddStoryViewState extends State<AddStoryView>
         maxWidth: 350,
         maxHeight: 650,
       ),
+      type: type,
       transitionBuilder: (context, anim1, anim2, child) {
         return FadeTransition(
           opacity: anim1.drive(
@@ -688,8 +775,8 @@ class _AddStoryViewState extends State<AddStoryView>
               label: 'Continue',
               onPressed: onPressed,
             ),
-            BaseWidgets.lowerGap,
-            numberOfSection(),
+            //BaseWidgets.lowerGap,
+            //numberOfSection(),
           ],
         ),
       ),

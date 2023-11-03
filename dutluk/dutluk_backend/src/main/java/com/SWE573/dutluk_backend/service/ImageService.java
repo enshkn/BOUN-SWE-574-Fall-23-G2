@@ -23,7 +23,7 @@ public class ImageService {
     @Value("${IMGUR_CLIENT_ID}")
     String imgurClientId;
 
-    public String parseAndSaveImages(String textWithBase64) {
+    public String parseAndSaveImages(String textWithBase64) throws IOException {
         String regex = "data:image/[^;]*;base64,([^\\\"]+)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(textWithBase64);
@@ -40,7 +40,7 @@ public class ImageService {
         return updatedText.toString();
     }
 
-    private String uploadImageToImgur(byte[] imageBytes, String imgurClientId) {
+    private String uploadImageToImgur(byte[] imageBytes, String imgurClientId) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -68,16 +68,11 @@ public class ImageService {
         return imgurUrl;
     }
 
-    private String extractImgurImageUrl(String response) {
+    private String extractImgurImageUrl(String response) throws IOException{
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            JsonNode rootNode = objectMapper.readTree(response);
-            JsonNode dataNode = rootNode.get("data");
-            String imgUrl = dataNode.get("link").asText();
-            return imgUrl;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
+        JsonNode rootNode = objectMapper.readTree(response);
+        JsonNode dataNode = rootNode.get("data");
+        String imgUrl = dataNode.get("link").asText();
+        return imgUrl;
     }
 }
