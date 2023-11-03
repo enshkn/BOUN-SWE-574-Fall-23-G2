@@ -14,7 +14,7 @@ import 'package:swe/_presentation/widgets/card/button_card.dart';
 class StoryCard extends StatelessWidget {
   final StoryModel storyModel;
   final void Function(StoryModel)? onTap;
-  final VoidCallback? onFavouriteTap;
+  final void Function()? onFavouriteTap;
   final VoidCallback? onDeleteTap;
   final bool isFavorite;
   final bool isFavoriteLoading;
@@ -164,11 +164,9 @@ class StoryCard extends StatelessWidget {
   }
 
   Widget buildFavourite() {
-    if (onFavouriteTap == null) return const SizedBox();
-
     return Positioned(
       bottom: 8,
-      right: 8,
+      right: 0,
       child: SizedBox(
         width: 50,
         height: 30,
@@ -180,7 +178,9 @@ class StoryCard extends StatelessWidget {
               else
                 ButtonCard(
                   minScale: 0.8,
-                  onPressed: () => onFavouriteTap?.call(),
+                  onPressed: () async {
+                    onFavouriteTap?.call();
+                  },
                   child: Icon(
                     Icons.favorite,
                     color: isFavorite ? Colors.red : Colors.grey,
@@ -190,7 +190,6 @@ class StoryCard extends StatelessWidget {
               const SizedBox(
                 width: 4,
               ),
-              Text(storyModel.likes?.length.toString() ?? '0'),
             ],
           ),
         ),

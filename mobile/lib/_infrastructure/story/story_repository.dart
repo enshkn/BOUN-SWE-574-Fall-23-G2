@@ -9,6 +9,7 @@ import 'package:swe/_domain/network/network_paths.dart';
 import 'package:swe/_domain/story/i_story_repository.dart';
 import 'package:swe/_domain/story/model/addStory_model.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
+import 'package:swe/_presentation/widgets/wrapper/favorite_type.dart';
 
 @LazySingleton(as: IStoryRepository)
 @immutable
@@ -112,6 +113,30 @@ class StoryRepository implements IStoryRepository {
       case 1:
         final status = response.success ?? false;
         if (!status) return left(AppFailure(message: response.message));
+        return right(true);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<bool> addFavorite({
+    required int itemId,
+  }) async {
+    final response = await manager.fetch<NoResultResponse, NoResultResponse>(
+      NetworkPaths.likeStory,
+      type: HttpTypes.post,
+      parserModel: NoResultResponse(),
+      data: {
+        'likedEntityId': itemId,
+      },
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(true);
       default:
         return left(response.errorType);

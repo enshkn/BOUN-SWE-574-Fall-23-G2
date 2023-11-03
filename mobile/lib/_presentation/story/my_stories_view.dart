@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:swe/_application/story/story_cubit.dart';
 import 'package:swe/_application/story/story_state.dart';
+import 'package:swe/_common/style/text_styles.dart';
 import 'package:swe/_core/widgets/base_loader.dart';
 import 'package:swe/_core/widgets/base_scroll_view.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
@@ -98,7 +99,7 @@ class _MyStoriesViewState extends State<MyStoriesView> {
                           child: StoryCard(
                             myStories: true,
                             storyModel: item,
-                            onFavouriteTap: () {},
+                            showFavouriteButton: false,
                             onDeleteTap: () async {
                               await cubit.deleteStory(item.id);
                               setState(() {

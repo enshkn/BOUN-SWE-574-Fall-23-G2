@@ -94,6 +94,7 @@ abstract class _$AppRouter extends RootStackRouter {
         child: StoryDetailsView(
           model: args.model,
           key: args.key,
+          leadBackHome: args.leadBackHome,
         ),
       );
     },
@@ -274,12 +275,14 @@ class StoryDetailsRoute extends PageRouteInfo<StoryDetailsRouteArgs> {
   StoryDetailsRoute({
     required StoryModel model,
     Key? key,
+    bool leadBackHome = false,
     List<PageRouteInfo>? children,
   }) : super(
           StoryDetailsRoute.name,
           args: StoryDetailsRouteArgs(
             model: model,
             key: key,
+            leadBackHome: leadBackHome,
           ),
           initialChildren: children,
         );
@@ -294,14 +297,17 @@ class StoryDetailsRouteArgs {
   const StoryDetailsRouteArgs({
     required this.model,
     this.key,
+    this.leadBackHome = false,
   });
 
   final StoryModel model;
 
   final Key? key;
 
+  final bool leadBackHome;
+
   @override
   String toString() {
-    return 'StoryDetailsRouteArgs{model: $model, key: $key}';
+    return 'StoryDetailsRouteArgs{model: $model, key: $key, leadBackHome: $leadBackHome}';
   }
 }
