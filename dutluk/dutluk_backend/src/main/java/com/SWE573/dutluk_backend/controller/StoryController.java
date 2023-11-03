@@ -146,4 +146,10 @@ public class StoryController {
         return ResponseEntity.ok(storyService.editStory(storyEditRequest,tokenizedUser,storyId));
 
     }
+
+    @GetMapping("/liked")
+    public ResponseEntity<?> likedStories(HttpServletRequest request){
+        User tokenizedUser = userService.validateTokenizedUser(request);
+        return ResponseEntity.ok(storyService.likedStories(tokenizedUser));
+    }
 }

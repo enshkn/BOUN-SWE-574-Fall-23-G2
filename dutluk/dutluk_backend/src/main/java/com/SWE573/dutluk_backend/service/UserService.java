@@ -125,6 +125,10 @@ public class UserService{
         return userRepository.save(toBeFollowedUser);
     }
 
+    public User editUser(User user){
+        return userRepository.save(user);
+    }
+
     public User updateUserPhoto(User foundUser, byte[] uploadedPhoto) {
         foundUser.setProfilePhoto(uploadedPhoto);
         return userRepository.save(foundUser);

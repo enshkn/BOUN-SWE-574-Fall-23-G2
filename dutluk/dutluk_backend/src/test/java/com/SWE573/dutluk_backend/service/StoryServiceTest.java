@@ -232,27 +232,38 @@ class StoryServiceTest {
         Story story = Story.builder()
                 .title("Test Story")
                 .text("text")
-                .likes(new HashSet<>(Arrays.asList(1L, 2L)))
+                .likes(new HashSet<>())
                 .build();
         story.setId(1L);
 
+        User user = User.builder()
+                .email("test4@email.com")
+                .username("TestUser")
+                .password("password")
+                .likedStories(new HashSet<>())
+                .build();
+
+
         when(storyRepository.findById(1L)).thenReturn(Optional.of(story));
-        when(storyRepository.save(any(Story.class))).thenReturn(story);
+        when(storyRepository.save(any(Story.class))).thenAnswer(invocation -> invocation.getArguments()[0]); // Return the same story
+        when(userService.findByUserId(user.getId())).thenReturn(user);
 
 
-        Story likedStory = storyService.likeStory(1L, 3L);
+        Story likedStory = storyService.likeStory(1L, user.getId());
 
 
         verify(storyRepository, times(1)).findById(1L);
         verify(storyRepository, times(1)).save(any(Story.class));
+        verify(userService, times(1)).findByUserId(user.getId());
 
 
         assertNotNull(likedStory);
-        assertEquals(3, likedStory.getLikes().size());
-        assertTrue(likedStory.getLikes().contains(1L));
-        assertTrue(likedStory.getLikes().contains(2L));
-        assertTrue(likedStory.getLikes().contains(3L));
+        assertEquals(1, likedStory.getLikes().size());
+        assertTrue(likedStory.getLikes().contains(user.getId()));
+        assertTrue(user.getLikedStories().contains(story.getId()));
     }
+
+
 
     @Test
     void testSearchStoriesWithLocation() {

@@ -57,7 +57,15 @@ public class User extends BaseEntity{
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
+    @Column(name = "story_likes")
+    private Set<Long> likedStories = new HashSet<>();
 
+    public Set<Long> getLikedStories() {
+        if(likedStories == null){
+            likedStories = new HashSet<>();
+        }
+        return likedStories;
+    }
 
     @JsonIgnoreProperties({"followers", "email" , "password" , "biography" , "stories","following"})
     @ManyToMany(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
