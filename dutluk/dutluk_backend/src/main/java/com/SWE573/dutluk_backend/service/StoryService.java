@@ -26,6 +26,9 @@ public class StoryService {
     CommentService commentService;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     ImageService imageService;
 
 
@@ -94,14 +97,20 @@ public class StoryService {
 
     public Story likeStory(Long storyId,Long userId){
         Story story = getStoryByStoryId(storyId);
+        User user = userService.findByUserId(userId);
         Set<Long> likesList = story.getLikes();
-        if(!likesList.contains(userId)){
-            likesList.add(userId);
+        Set<Long> likedList = user.getLikedStories();
+        if(!likesList.contains(user.getId())){
+            likesList.add(user.getId());
+            likedList.add(storyId);
         }
         else{
-            likesList.remove(userId);
+            likesList.remove(user.getId());
+            likedList.remove(storyId);
         }
         story.setLikes(likesList);
+        user.setLikedStories(likedList);
+        userService.editUser(user);
         return storyRepository.save(story);
     }
     public List<Story> searchStoriesWithLocation(String query, int radius, Double latitude, Double longitude) {
@@ -189,5 +198,17 @@ public class StoryService {
             return storyRepository.save(enteredStory);
         }
         return null;
+    }
+
+    public List<Story> likedStories(User foundUser) {
+        List<Long> likeList = new ArrayList<>(foundUser.getLikedStories());
+        List<Story> storyList = new ArrayList<>();
+        for (Long storyId : likeList) {
+            Story story = getStoryByStoryId(storyId);
+            if (story != null) {
+                storyList.add(story);
+            }
+        }
+        return storyList;
     }
 }
