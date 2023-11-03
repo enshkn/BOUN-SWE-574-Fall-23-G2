@@ -56,6 +56,7 @@ class StoryRepository implements IStoryRepository {
       NetworkPaths.getFallowedStories,
       type: HttpTypes.get,
       parserModel: StoryModel(),
+      cachePolicy: CachePolicy.noCache,
     );
 
     switch (response.statusCode) {
@@ -89,6 +90,7 @@ class StoryRepository implements IStoryRepository {
       NetworkPaths.myStories,
       type: HttpTypes.get,
       parserModel: StoryModel(),
+      cachePolicy: CachePolicy.noCache,
     );
 
     switch (response.statusCode) {

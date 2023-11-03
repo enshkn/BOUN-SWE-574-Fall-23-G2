@@ -22,6 +22,7 @@ class MyStoriesView extends StatefulWidget {
 
 class _MyStoriesViewState extends State<MyStoriesView> {
   final FocusNode _focusNode = FocusNode();
+  List<StoryModel> myStories = [];
   @override
   Widget build(BuildContext context) {
     return BaseView<StoryCubit, StoryState>(
@@ -31,6 +32,7 @@ class _MyStoriesViewState extends State<MyStoriesView> {
         await cubit.getMyStories();
       },
       builder: (context, StoryCubit cubit, StoryState state) {
+        myStories = state.myStories;
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -99,7 +101,9 @@ class _MyStoriesViewState extends State<MyStoriesView> {
                             onFavouriteTap: () {},
                             onDeleteTap: () async {
                               await cubit.deleteStory(item.id);
-                              //await cubit.getMyStories();
+                              setState(() {
+                                cubit.getMyStories();
+                              });
                             },
                           ),
                         ),
