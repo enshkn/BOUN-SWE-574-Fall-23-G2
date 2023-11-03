@@ -42,10 +42,11 @@ dependencies:
   omni_datetime_picker: ^1.0.9
   google_maps_flutter: ^2.3.1
   location: ^5.0.3
-  map_location_picker: ^1.2.8+3
   html_editor_enhanced: ^2.5.1
   quill_html_editor: ^2.2.6
- 
+  google_map_location_picker:
+    git:
+      url: https://github.com/amineglr/google_map_location_picker.git
  
   
 

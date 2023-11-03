@@ -58,7 +58,7 @@ class AuthRepository implements IAuthRepository {
           tokenModel?.copyWith(accessToken: user.token) ??
               TokenModel(accessToken: user.token),
         );
-        manager.removeAuthHeader();
+        manager.addAuthorizationHeader(user.token!);
         manager.addCookieTokenHeader(user.token!);
 
         return right(user);

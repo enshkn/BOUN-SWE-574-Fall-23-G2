@@ -16,6 +16,7 @@ class AppTextFormField extends TextFormField {
     super.maxLines,
     super.readOnly,
   }) : super(
+          textInputAction: TextInputAction.next,
           decoration: InputDecoration(
             isDense: true,
             fillColor: readOnly ? Colors.grey.shade100 : Colors.white,
