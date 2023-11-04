@@ -46,6 +46,9 @@ class _AppViewState extends State<AppView> {
           lazyLoad: false,
           routes: const [
             HomeTabRoute(),
+            RecommendedTabRoute(),
+            NearbyTabRoute(),
+            TimelineTabRoute(),
             ProfileTabRoute(),
           ],
           duration: const Duration(milliseconds: 400),
@@ -117,6 +120,45 @@ class _AppViewState extends State<AppView> {
                         : const Color(0xFF071F05).withOpacity(0.5),
                   ),
                   size: 30,
+                ),
+                _buidNavigationItem(
+                  state,
+                  context,
+                  bottomTab: BottomTabs.recommended,
+                  label: 'Recommended',
+                  icon: Icon(
+                    FontAwesomeIcons.inbox,
+                    size: 20,
+                    color: state.bottomTab == BottomTabs.recommended
+                        ? context.appBarColor
+                        : const Color(0xFF071F05).withOpacity(0.5),
+                  ),
+                ),
+                _buidNavigationItem(
+                  state,
+                  context,
+                  bottomTab: BottomTabs.nearby,
+                  label: 'Nearby',
+                  icon: Icon(
+                    FontAwesomeIcons.locationPin,
+                    size: 20,
+                    color: state.bottomTab == BottomTabs.nearby
+                        ? context.appBarColor
+                        : const Color(0xFF071F05).withOpacity(0.5),
+                  ),
+                ),
+                _buidNavigationItem(
+                  state,
+                  context,
+                  bottomTab: BottomTabs.timeline,
+                  label: 'Timeline',
+                  icon: Icon(
+                    FontAwesomeIcons.timeline,
+                    size: 20,
+                    color: state.bottomTab == BottomTabs.timeline
+                        ? context.appBarColor
+                        : const Color(0xFF071F05).withOpacity(0.5),
+                  ),
                 ),
                 _buidNavigationItem(
                   state,
