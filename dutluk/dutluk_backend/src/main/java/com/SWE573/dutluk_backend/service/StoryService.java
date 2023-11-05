@@ -127,6 +127,16 @@ public class StoryService {
                 minLatitude, maxLatitude, minLongitude, maxLongitude);
     }
 
+    public List<Story> searchStoriesWithLocationOnly(int radius, Double latitude, Double longitude) {
+        double minLatitude, maxLatitude, minLongitude, maxLongitude;
+        minLatitude = latitude - (radius / 111.0);
+        maxLatitude = latitude + (radius / 111.0);
+        minLongitude = longitude - (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
+        maxLongitude = longitude + (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
+        return storyRepository.findByLocations_LatitudeBetweenAndLocations_LongitudeBetween(
+                minLatitude, maxLatitude, minLongitude, maxLongitude);
+    }
+
     public Set<Story> searchStoriesWithQuery(String query) {
         Set<Story> storySet = new HashSet<>();
         storySet.addAll(storyRepository.findByTitleContainingIgnoreCase(query));

@@ -92,15 +92,21 @@ public class StoryMobileController {
             @RequestParam(required = false) String season) throws ParseException {
         Set<Story> storySet = new HashSet<>();
         if(query != null){
-            if(latitude != null && longitude != null && (radius != null || radius != 0)){
-                storySet.addAll(storyService.searchStoriesWithLocation(query,radius,latitude,longitude));
-            }else if(!query.equalsIgnoreCase("")){
+            if(!query.equalsIgnoreCase("")){
                 storySet.addAll(storyService.searchStoriesWithQuery(query));
+            }
+        }
+        if(latitude != null && longitude != null && (radius != null)){
+            if (query == null ){
+                storySet.addAll(storyService.searchStoriesWithLocationOnly(radius,latitude,longitude));
+            }
+            else{
+                storySet.addAll(storyService.searchStoriesWithLocation(query,radius,latitude,longitude));
             }
         }
         if(startTimeStamp != null){
             if(endTimeStamp != null){
-                storySet.addAll(storyService.searchStoriesWithMultipleDate(startTimeStamp, endTimeStamp));
+                storySet.addAll(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
             }
             else{
                 storySet.addAll(storyService.searchStoriesWithSingleDate(startTimeStamp));
