@@ -289,7 +289,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                       );
 
                                       for (var i = 0;
-                                          i <= widget.model.locations!.length;
+                                          i < widget.model.locations!.length;
                                           i++) {
                                         additionalMarkers['marker$i'] = LatLng(
                                           widget.model.locations![i].latitude!,
