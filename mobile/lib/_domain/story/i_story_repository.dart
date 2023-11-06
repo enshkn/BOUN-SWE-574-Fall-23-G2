@@ -12,4 +12,5 @@ abstract interface class IStoryRepository {
   EitherFuture<bool> addFavorite({
     required int itemId,
   });
+  EitherFuture<List<StoryModel>> getLikedStories();
 }
