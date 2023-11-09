@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:google_map_location_picker/map_location_picker.dart';
@@ -14,11 +13,11 @@ import 'package:swe/_core/extensions/string_extensions.dart';
 import 'package:swe/_core/widgets/base_scroll_view.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_domain/auth/model/user.dart';
+import 'package:swe/_domain/story/model/location_model.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/_core/base_consumer.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
 import 'package:swe/_presentation/_route/router.dart';
-import 'package:swe/_presentation/widgets/appBar/customAppBar.dart';
 import 'package:swe/_presentation/widgets/base/base_list_view.dart';
 import 'package:swe/_presentation/widgets/card/button_card.dart';
 import 'package:swe/_presentation/widgets/icon_with_label.dart';
@@ -41,13 +40,117 @@ class StoryDetailsView extends StatefulWidget {
 class _StoryDetailsViewState extends State<StoryDetailsView> {
   late final ExpansionTileController controller;
   late final ExpansionTileController controller2;
+  late final ExpansionTileController controller3;
+  late final ExpansionTileController controller4;
+  late final ExpansionTileController controller5;
+  late final ExpansionTileController controller6;
+
   late final StoryCubit cubit;
   bool addFavoriteTriggered = false;
   Map<String, LatLng> additionalMarkers = {};
+  Map<String, List<LatLng>>? additionalPolylines = {};
+  Map<String, List<LatLng>>? additionalPolygones = {};
+  Map<String, LatLng>? additionalCircles = {};
+  final circleLocations = <LocationModel>[];
+  final polylineLocations = <LocationModel>[];
+  final polygonLocations = <LocationModel>[];
+  final pointLocations = <LocationModel>[];
+
+  final List<List<LatLng>> polylineLatLng = [[]];
+  final List<List<LatLng>> polygonLatLng = [[]];
+  final List<LatLng> circleLatLng = [];
+  final pointLatLng = <LatLng>[];
+  int polygoneCount = 0;
+  int polylineCount = 0;
+  int circleCount = 0;
+  int pointCount = 0;
+  List<int> radiusList = [];
+
   @override
   void initState() {
     controller = ExpansionTileController();
     controller2 = ExpansionTileController();
+    controller3 = ExpansionTileController();
+    controller4 = ExpansionTileController();
+    controller5 = ExpansionTileController();
+    controller6 = ExpansionTileController();
+
+    final storyLocations = widget.model.locations;
+
+    for (var i = 0; i < storyLocations!.length; i++) {
+      if (storyLocations[i].isCircle != null &&
+          storyLocations[i].circleRadius != null) {
+        radiusList.add(storyLocations[i].circleRadius!);
+      }
+    }
+
+    for (var i = 0; i < storyLocations.length; i++) {
+      if (storyLocations[i].isPolygon != null) {
+        polygonLocations.add(storyLocations[i]);
+        polygoneCount = storyLocations[i].isPolygon!;
+      } else if (storyLocations[i].isPolyline != null) {
+        polylineLocations.add(storyLocations[i]);
+        polylineCount = storyLocations[i].isPolyline!;
+      } else if (storyLocations[i].isCircle != null) {
+        circleLocations.add(storyLocations[i]);
+        circleCount = storyLocations[i].isCircle!;
+      } else {
+        pointLocations.add(storyLocations[i]);
+      }
+    }
+
+    for (var i = 0; i < pointLocations.length; i++) {
+      additionalMarkers['$i'] = LatLng(
+        pointLocations[i].latitude!,
+        pointLocations[i].longitude!,
+      );
+    }
+    for (var k = 0; k <= polygoneCount; k++) {
+      if (k != 0) {
+        final list = <LatLng>[];
+        polygonLatLng.add(list);
+      }
+      for (var j = 0; j < polygonLocations.length; j++) {
+        if (polygonLocations[j].isPolygon == k) {
+          polygonLatLng[k].add(
+            LatLng(
+              polygonLocations[j].latitude!,
+              polygonLocations[j].longitude!,
+            ),
+          );
+          additionalPolygones?['$k'] = polygonLatLng[k];
+        }
+      }
+    }
+    for (var k = 0; k <= polylineCount; k++) {
+      if (k != 0) {
+        final list = <LatLng>[];
+        polylineLatLng.add(list);
+      }
+      for (var j = 0; j < polylineLocations.length; j++) {
+        if (polylineLocations[j].isPolygon == k) {
+          polylineLatLng[k].add(
+            LatLng(
+              polylineLocations[j].latitude!,
+              polylineLocations[j].longitude!,
+            ),
+          );
+          additionalPolylines?['$k'] = polylineLatLng[k];
+        }
+      }
+    }
+
+    for (var k = 0; k < circleCount; k++) {
+      for (var j = 0; j < circleLocations.length; j++) {
+        circleLatLng.add(
+          LatLng(
+            circleLocations[j].latitude!,
+            circleLocations[j].longitude!,
+          ),
+        );
+        additionalCircles?['$j'] = circleLatLng[j];
+      }
+    }
 
     super.initState();
   }
@@ -260,63 +363,273 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                     initiallyExpanded: true,
                     children: <Widget>[
                       BaseWidgets.lowerGap,
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12),
-                        child: SizedBox(
-                          height: widget.model.locations!.length * 60,
-                          child: BaseListView(
-                            physics: const NeverScrollableScrollPhysics(),
-                            items: widget.model.locations!,
-                            itemBuilder: (item) {
-                              return Row(
-                                children: [
-                                  SizedBox(
-                                    width: 300,
-                                    child: Text(
-                                      item.locationName!.toLocation(),
-                                      style: const TextStyles.body().copyWith(
-                                        letterSpacing: 0.016,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      final storyLocation = LatLng(
-                                        item.latitude!,
-                                        item.longitude!,
-                                      );
-
-                                      for (var i = 0;
-                                          i < widget.model.locations!.length;
-                                          i++) {
-                                        additionalMarkers['marker$i'] = LatLng(
-                                          widget.model.locations![i].latitude!,
-                                          widget.model.locations![i].longitude!,
-                                        );
-                                      }
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => MapView(
-                                            storyLocation: storyLocation,
-                                            additionalMarkers:
-                                                additionalMarkers,
+                      if (polylineLocations.isNotEmpty)
+                        ExpansionTile(
+                          title: const Text('Polyline Locations'),
+                          controller: controller3,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: SizedBox(
+                                height: polylineLocations.length * 60,
+                                child: Expanded(
+                                  child: BaseListView(
+                                    items: polylineLocations,
+                                    itemBuilder: (item) {
+                                      return Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 300,
+                                            child: Text(
+                                              item.locationName!.toLocation(),
+                                              style: const TextStyles.body()
+                                                  .copyWith(
+                                                letterSpacing: 0.016,
+                                              ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
-                                        ),
+                                          IconButton(
+                                            onPressed: () {
+                                              final storyLocation = LatLng(
+                                                item.latitude!,
+                                                item.longitude!,
+                                              );
+
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => MapView(
+                                                    storyLocation:
+                                                        storyLocation,
+                                                    additionalMarkers:
+                                                        additionalMarkers,
+                                                    additionalPolygons:
+                                                        additionalPolygones,
+                                                    additionalPolylines:
+                                                        additionalPolylines,
+                                                    additionalCircles:
+                                                        additionalCircles,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            icon: const Icon(
+                                              Icons.location_on,
+                                            ),
+                                          ),
+                                        ],
                                       );
                                     },
-                                    icon: const Icon(
-                                      Icons.location_on,
-                                    ),
                                   ),
-                                ],
-                              );
-                            },
-                          ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
+                      if (polygonLocations.isNotEmpty) BaseWidgets.lowerGap,
+                      if (polygonLocations.isNotEmpty)
+                        ExpansionTile(
+                          title: const Text('Polygon Locations'),
+                          controller: controller4,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: SizedBox(
+                                height: polygonLocations.length * 60,
+                                child: Expanded(
+                                  child: BaseListView(
+                                    items: polygonLocations,
+                                    itemBuilder: (item) {
+                                      return Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 300,
+                                            child: Text(
+                                              item.locationName!.toLocation(),
+                                              style: const TextStyles.body()
+                                                  .copyWith(
+                                                letterSpacing: 0.016,
+                                              ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () {
+                                              final storyLocation = LatLng(
+                                                item.latitude!,
+                                                item.longitude!,
+                                              );
+
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => MapView(
+                                                    storyLocation:
+                                                        storyLocation,
+                                                    additionalMarkers:
+                                                        additionalMarkers,
+                                                    additionalPolygons:
+                                                        additionalPolygones,
+                                                    additionalPolylines:
+                                                        additionalPolylines,
+                                                    additionalCircles:
+                                                        additionalCircles,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            icon: const Icon(
+                                              Icons.location_on,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (circleLocations.isNotEmpty) BaseWidgets.lowerGap,
+                      if (circleLocations.isNotEmpty)
+                        ExpansionTile(
+                          title: const Text('Circle Locations'),
+                          controller: controller5,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: SizedBox(
+                                height: circleLocations.length * 60,
+                                child: Expanded(
+                                  child: BaseListView(
+                                    items: circleLocations,
+                                    itemBuilder: (item) {
+                                      return Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 300,
+                                            child: Text(
+                                              item.locationName!.toLocation(),
+                                              style: const TextStyles.body()
+                                                  .copyWith(
+                                                letterSpacing: 0.016,
+                                              ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () {
+                                              final storyLocation = LatLng(
+                                                item.latitude!,
+                                                item.longitude!,
+                                              );
+
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => MapView(
+                                                    storyLocation:
+                                                        storyLocation,
+                                                    additionalMarkers:
+                                                        additionalMarkers,
+                                                    additionalPolygons:
+                                                        additionalPolygones,
+                                                    additionalPolylines:
+                                                        additionalPolylines,
+                                                    additionalCircles:
+                                                        additionalCircles,
+                                                    radiusList:
+                                                        radiusList.isEmpty
+                                                            ? null
+                                                            : radiusList,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            icon: const Icon(
+                                              Icons.location_on,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (pointLocations.isNotEmpty) BaseWidgets.lowerGap,
+                      if (pointLocations.isNotEmpty)
+                        ExpansionTile(
+                          title: const Text('Point Locations'),
+                          controller: controller6,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: SizedBox(
+                                height: pointLocations.length * 60,
+                                child: Expanded(
+                                  child: BaseListView(
+                                    items: pointLocations,
+                                    itemBuilder: (item) {
+                                      return Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 300,
+                                            child: Text(
+                                              item.locationName!.toLocation(),
+                                              style: const TextStyles.body()
+                                                  .copyWith(
+                                                letterSpacing: 0.016,
+                                              ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () {
+                                              final storyLocation = LatLng(
+                                                item.latitude!,
+                                                item.longitude!,
+                                              );
+
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => MapView(
+                                                    storyLocation:
+                                                        storyLocation,
+                                                    additionalMarkers:
+                                                        additionalMarkers,
+                                                    additionalPolygons:
+                                                        additionalPolygones,
+                                                    additionalPolylines:
+                                                        additionalPolylines,
+                                                    additionalCircles:
+                                                        additionalCircles,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            icon: const Icon(
+                                              Icons.location_on,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                     ],
                   ),
                 ),
@@ -388,12 +701,21 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
 }
 
 class MapView extends StatefulWidget {
-  final LatLng storyLocation;
+  final LatLng? storyLocation;
   final Map<String, LatLng>? additionalMarkers;
+  final Map<String, List<LatLng>>? additionalPolygons;
+  final Map<String, List<LatLng>>? additionalPolylines;
+  final Map<String, LatLng>? additionalCircles;
+  final List<int>? radiusList;
+
   const MapView({
-    required this.storyLocation,
+    this.storyLocation,
     super.key,
     this.additionalMarkers,
+    this.additionalPolygons,
+    this.additionalPolylines,
+    this.additionalCircles,
+    this.radiusList,
   });
 
   @override
@@ -407,11 +729,16 @@ class _MapViewState extends State<MapView> {
       body: MapLocationPicker(
         apiKey: AppEnv.apiKey,
         currentLatLng: widget.storyLocation,
-        hideBottomCard: true,
         hideLocationButton: true,
         hideMapTypeButton: true,
         hideMoreOptions: true,
         additionalMarkers: widget.additionalMarkers,
+        additionalPolygons: widget.additionalPolygons,
+        additionalPolylines: widget.additionalPolylines,
+        additionalCircles: widget.additionalCircles,
+        hideAreasList: true,
+        hideLocationList: true,
+        radiusList: widget.radiusList,
       ),
     );
   }
