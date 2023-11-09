@@ -28,14 +28,14 @@ public class Location extends BaseEntity{
     @JoinColumn(name = "story_id", nullable = false)
     private Story story;
 
-    private Integer isCircle;
+    private Integer isCircle = 0;
 
-    private Integer isPolyline;
+    private Integer isPolyline = 0;
 
-    private Integer isPolygon;
+    private Integer isPolygon = 0;
 
-    private Integer isPoint;
+    private Integer isPoint = 0;
 
-    private Integer circleRadius;
+    private Integer circleRadius = 0;
 
 }
