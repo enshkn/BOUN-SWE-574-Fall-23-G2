@@ -221,4 +221,11 @@ public class StoryService {
         }
         return storyList;
     }
+
+    public List<Story> findRecentStories() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -7);
+        Date date = calendar.getTime();
+        return storyRepository.findByCreatedAtAfterOrderByCreatedAtDesc(date);
+    }
 }

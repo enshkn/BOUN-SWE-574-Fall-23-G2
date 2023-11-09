@@ -157,4 +157,9 @@ public class StoryController {
         User tokenizedUser = userService.validateTokenizedUser(request);
         return ResponseEntity.ok(storyService.likedStories(tokenizedUser));
     }
+
+    @GetMapping("/recent")
+    public ResponseEntity<?> findRecentStories(HttpServletRequest request){
+        return ResponseEntity.ok(storyService.findRecentStories());
+    }
 }
