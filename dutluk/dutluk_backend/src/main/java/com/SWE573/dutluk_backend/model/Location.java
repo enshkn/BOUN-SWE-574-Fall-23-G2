@@ -36,4 +36,6 @@ public class Location extends BaseEntity{
 
     private Integer isPoint;
 
+    private Integer circleRadius;
+
 }
