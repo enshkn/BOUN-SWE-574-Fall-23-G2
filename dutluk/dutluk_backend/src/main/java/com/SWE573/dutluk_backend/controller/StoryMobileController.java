@@ -175,4 +175,11 @@ public class StoryMobileController {
         successfulResponse.setCount(storyService.likedStories(tokenizedUser).size());
         return ResponseEntity.ok(successfulResponse);
     }
+
+    @GetMapping("/recent")
+    public ResponseEntity<?> findRecentStories(HttpServletRequest request){
+        successfulResponse.setEntity(storyService.findRecentStories());
+        successfulResponse.setCount(storyService.findRecentStories().size());
+        return ResponseEntity.ok(successfulResponse);
+    }
 }
