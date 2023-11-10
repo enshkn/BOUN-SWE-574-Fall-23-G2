@@ -29,6 +29,18 @@ final class StoryCubit extends BaseCubit<StoryState> {
     );
   }
 
+  Future<void> getRecentStory() async {
+    setLoading(true);
+    final result = await _storyRepository.getRecentStories();
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (recentStories) {
+        safeEmit(state.copyWith(recentStories: recentStories));
+      },
+    );
+  }
+
   Future<void> getActivityFeeed() async {
     setLoading(true);
     final result = await _storyRepository.getActivityFeed();

@@ -13,4 +13,5 @@ abstract interface class IStoryRepository {
     required int itemId,
   });
   EitherFuture<List<StoryModel>> getLikedStories();
+  EitherFuture<List<StoryModel>> getRecentStories();
 }
