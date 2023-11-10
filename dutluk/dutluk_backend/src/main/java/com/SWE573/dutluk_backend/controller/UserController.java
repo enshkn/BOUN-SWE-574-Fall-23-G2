@@ -32,8 +32,8 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Value("${REACT_APP_BACKEND_URL}")
-    private String REACT_APP_BACKEND_URL;
+    @Value("${FRONTEND_URL}")
+    private String FRONTEND_URL;
 
 
 
@@ -60,7 +60,7 @@ public class UserController {
                                          HttpServletResponse response) throws AccountNotFoundException {
         User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
         String token = userService.generateUserToken(foundUser);
-        if(REACT_APP_BACKEND_URL.contains("8080")){
+        if(!FRONTEND_URL.contains("https")){
             Cookie cookie = new Cookie("Bearer", token);
             cookie.setPath("/api");
             cookie.setSecure(false);
