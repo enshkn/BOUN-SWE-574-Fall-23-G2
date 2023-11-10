@@ -97,4 +97,16 @@ final class StoryCubit extends BaseCubit<StoryState> {
       },
     );
   }
+
+  Future<void> getLikedStories() async {
+    setLoading(true);
+    final result = await _storyRepository.getLikedStories();
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (likedStories) {
+        safeEmit(state.copyWith(likedStories: likedStories));
+      },
+    );
+  }
 }

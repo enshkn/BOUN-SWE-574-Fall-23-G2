@@ -884,7 +884,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: d97ed5623ec6bec632226751b21d7c1630b37ae9
+      resolved-ref: "01a45637e8cd69707f3fb946b101c31d1071da66"
       url: "https://github.com/amineglr/google_map_location_picker.git"
     source: git
     version: "1.2.8+4"

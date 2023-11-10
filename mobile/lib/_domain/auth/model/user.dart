@@ -1,5 +1,6 @@
 import 'package:busenet/busenet.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:swe/_domain/story/model/story_model.dart';
 
 part 'user.freezed.dart';
 part 'user.g.dart';
@@ -16,6 +17,7 @@ class User extends BaseEntity<User> with _$User {
     List<User>? followers,
     List<User>? following,
     String? profilePhoto,
+    List<int>? likedStories,
   }) = _User;
   const User._();
   factory User.initial() => const User();
