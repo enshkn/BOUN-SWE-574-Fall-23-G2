@@ -63,6 +63,7 @@ public class UserController {
         if(REACT_APP_BACKEND_URL.contains("8080")){
             Cookie cookie = new Cookie("Bearer", token);
             cookie.setPath("/api");
+            cookie.setSecure(false);
             response.addCookie(cookie);
         }
         else{
