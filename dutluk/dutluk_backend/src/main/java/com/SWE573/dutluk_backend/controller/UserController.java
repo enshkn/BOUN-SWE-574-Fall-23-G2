@@ -60,11 +60,16 @@ public class UserController {
                                          HttpServletResponse response) throws AccountNotFoundException {
         User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
         String token = userService.generateUserToken(foundUser);
-        Cookie cookie = new Cookie("Bearer", token);
-        cookie.setPath("/api");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        response.addCookie(cookie);
+        if(REACT_APP_BACKEND_URL.contains("8080")){
+            Cookie cookie = new Cookie("Bearer", token);
+            cookie.setPath("/api");
+            response.addCookie(cookie);
+        }
+        else{
+            response.setHeader("Set-Cookie", "Bearer="+token+"; Path=/api; SameSite=None; Secure");
+            //cookie.setPath("/api");
+            //response.addCookie(cookie);
+        }
         foundUser.setProfilePhoto(null);
         foundUser.setToken(token);
         return ResponseEntity.ok(foundUser);
