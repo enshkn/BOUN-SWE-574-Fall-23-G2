@@ -8,6 +8,8 @@ import 'package:swe/_domain/network/model/app_failure.dart';
 import 'package:swe/_domain/network/network_paths.dart';
 import 'package:swe/_domain/story/i_story_repository.dart';
 import 'package:swe/_domain/story/model/addStory_model.dart';
+import 'package:swe/_domain/story/model/comment_model.dart';
+import 'package:swe/_domain/story/model/postComment_model.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/widgets/wrapper/favorite_type.dart';
 
@@ -166,11 +168,44 @@ class StoryRepository implements IStoryRepository {
       NetworkPaths.getRecent,
       type: HttpTypes.get,
       parserModel: StoryModel(),
+      cachePolicy: CachePolicy.noCache,
     );
 
     switch (response.statusCode) {
       case 1:
         return right(response.entity as List<StoryModel>);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<CommentModel> postComment(PostCommentModel model) async {
+    final response = await manager.fetch<CommentModel, CommentModel>(
+      NetworkPaths.postComments,
+      type: HttpTypes.post,
+      parserModel: const CommentModel(),
+      data: model.toJson(),
+    );
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as CommentModel);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<StoryModel> getStoryDetail(int storyId) async {
+    final response = await manager.fetch<StoryModel, StoryModel>(
+      '/api/mobile/story/$storyId',
+      type: HttpTypes.get,
+      parserModel: StoryModel(),
+      cachePolicy: CachePolicy.noCache,
+    );
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as StoryModel);
       default:
         return left(response.errorType);
     }
