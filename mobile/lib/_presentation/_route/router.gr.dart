@@ -45,6 +45,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const HomeView(),
       );
     },
+    LikedStoiresRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const LikedStoiresView(),
+      );
+    },
     LoginRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -55,6 +61,18 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const MyStoriesView(),
+      );
+    },
+    NearbyTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const NearbyTabView(),
+      );
+    },
+    NearbyRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const NearbyView(),
       );
     },
     OnboardingRoute.name: (routeData) {
@@ -73,6 +91,18 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const ProfileView(),
+      );
+    },
+    RecommendedTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const RecommendedTabView(),
+      );
+    },
+    RecommendedRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const RecommendedView(),
       );
     },
     RegisterRoute.name: (routeData) {
@@ -94,7 +124,20 @@ abstract class _$AppRouter extends RootStackRouter {
         child: StoryDetailsView(
           model: args.model,
           key: args.key,
+          leadBackHome: args.leadBackHome,
         ),
+      );
+    },
+    TimelineTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const TimelineTabView(),
+      );
+    },
+    TimelineRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const TimelineView(),
       );
     },
   };
@@ -171,6 +214,20 @@ class HomeRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [LikedStoiresView]
+class LikedStoiresRoute extends PageRouteInfo<void> {
+  const LikedStoiresRoute({List<PageRouteInfo>? children})
+      : super(
+          LikedStoiresRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'LikedStoiresRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [LoginView]
 class LoginRoute extends PageRouteInfo<void> {
   const LoginRoute({List<PageRouteInfo>? children})
@@ -194,6 +251,34 @@ class MyStoriesRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'MyStoriesRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [NearbyTabView]
+class NearbyTabRoute extends PageRouteInfo<void> {
+  const NearbyTabRoute({List<PageRouteInfo>? children})
+      : super(
+          NearbyTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'NearbyTabRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [NearbyView]
+class NearbyRoute extends PageRouteInfo<void> {
+  const NearbyRoute({List<PageRouteInfo>? children})
+      : super(
+          NearbyRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'NearbyRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
@@ -241,6 +326,34 @@ class ProfileRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [RecommendedTabView]
+class RecommendedTabRoute extends PageRouteInfo<void> {
+  const RecommendedTabRoute({List<PageRouteInfo>? children})
+      : super(
+          RecommendedTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'RecommendedTabRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [RecommendedView]
+class RecommendedRoute extends PageRouteInfo<void> {
+  const RecommendedRoute({List<PageRouteInfo>? children})
+      : super(
+          RecommendedRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'RecommendedRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [RegisterView]
 class RegisterRoute extends PageRouteInfo<void> {
   const RegisterRoute({List<PageRouteInfo>? children})
@@ -274,12 +387,14 @@ class StoryDetailsRoute extends PageRouteInfo<StoryDetailsRouteArgs> {
   StoryDetailsRoute({
     required StoryModel model,
     Key? key,
+    bool leadBackHome = false,
     List<PageRouteInfo>? children,
   }) : super(
           StoryDetailsRoute.name,
           args: StoryDetailsRouteArgs(
             model: model,
             key: key,
+            leadBackHome: leadBackHome,
           ),
           initialChildren: children,
         );
@@ -294,14 +409,45 @@ class StoryDetailsRouteArgs {
   const StoryDetailsRouteArgs({
     required this.model,
     this.key,
+    this.leadBackHome = false,
   });
 
   final StoryModel model;
 
   final Key? key;
 
+  final bool leadBackHome;
+
   @override
   String toString() {
-    return 'StoryDetailsRouteArgs{model: $model, key: $key}';
+    return 'StoryDetailsRouteArgs{model: $model, key: $key, leadBackHome: $leadBackHome}';
   }
+}
+
+/// generated route for
+/// [TimelineTabView]
+class TimelineTabRoute extends PageRouteInfo<void> {
+  const TimelineTabRoute({List<PageRouteInfo>? children})
+      : super(
+          TimelineTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'TimelineTabRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [TimelineView]
+class TimelineRoute extends PageRouteInfo<void> {
+  const TimelineRoute({List<PageRouteInfo>? children})
+      : super(
+          TimelineRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'TimelineRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }

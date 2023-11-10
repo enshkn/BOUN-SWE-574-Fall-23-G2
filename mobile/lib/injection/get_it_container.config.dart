@@ -14,6 +14,7 @@ import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 import 'package:swe/_application/app/app_cubit.dart' as _i3;
 import 'package:swe/_application/auth/auth_cubit.dart' as _i23;
+import 'package:swe/_application/favorite/favorite_cubit.dart' as _i24;
 import 'package:swe/_application/profile/profile_cubit.dart' as _i20;
 import 'package:swe/_application/services/connectivity/connectivity_cubit.dart'
     as _i4;
@@ -33,7 +34,7 @@ import 'package:swe/_infrastructure/cache/config_cache_service.dart' as _i9;
 import 'package:swe/_infrastructure/cache/token_cache_service.dart' as _i7;
 import 'package:swe/_infrastructure/profile/profile_repository.dart' as _i17;
 import 'package:swe/_infrastructure/story/story_repository.dart' as _i19;
-import 'package:swe/injection/injection_module.dart' as _i24;
+import 'package:swe/injection/injection_module.dart' as _i25;
 
 extension GetItInjectableX on _i1.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -85,8 +86,10 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i22.StoryCubit(gh<_i18.IStoryRepository>()));
     gh.factory<_i23.AuthCubit>(
         () => _i23.AuthCubit(gh<_i14.IAuthRepository>()));
+    gh.factory<_i24.FavoriteCubit>(
+        () => _i24.FavoriteCubit(gh<_i18.IStoryRepository>()));
     return this;
   }
 }
 
-class _$InjectionModule extends _i24.InjectionModule {}
+class _$InjectionModule extends _i25.InjectionModule {}

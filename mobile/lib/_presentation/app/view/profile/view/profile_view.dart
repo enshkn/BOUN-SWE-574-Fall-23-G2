@@ -31,7 +31,7 @@ class _ProfileViewState extends State<ProfileView> {
           backgroundColor: Colors.white,
           appBar: AppBar(
             title: const Text(
-              'StoryTeller',
+              'DutlukApp',
               style: TextStyle(color: Colors.black),
             ),
             backgroundColor: Colors.white,
@@ -95,7 +95,9 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               const Divider(),
               ButtonCard(
-                onPressed: () {},
+                onPressed: () {
+                  context.router.push(const LikedStoiresRoute());
+                },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,

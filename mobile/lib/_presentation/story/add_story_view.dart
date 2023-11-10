@@ -20,8 +20,6 @@ import 'package:swe/_domain/story/model/location_model.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
 import 'package:swe/_presentation/widgets/appBar/customAppBar.dart';
 import 'package:swe/_presentation/widgets/app_button.dart';
-import 'package:swe/_presentation/widgets/base/base_list_view.dart';
-import 'package:swe/_presentation/widgets/card/button_card.dart';
 import 'package:swe/_presentation/widgets/textformfield/app_text_form_field.dart';
 
 enum AddStoryStepType {
@@ -65,6 +63,8 @@ class _AddStoryViewState extends State<AddStoryView>
   late StoryCubit cubit;
   int index = 0;
   late TextEditingController titleController;
+  late TextEditingController radiusController;
+
   late TextEditingController tagController;
   late TextEditingController textController;
   late QuillEditorController controller;
@@ -73,7 +73,21 @@ class _AddStoryViewState extends State<AddStoryView>
   late TextEditingController timeResolutionController;
   List<LatLng> selectedLocations = [];
   Map<String, LatLng>? additionalMarkers = {};
+  Map<String, List<LatLng>>? additionalPolylines = {};
+  Map<String, List<LatLng>>? additionalPolygones = {};
+  Map<String, LatLng>? additionalCircles = {};
+
   List<LocationModel> selectedLocationsforMap = [];
+  List<int> radiusList = [];
+
+  bool _isPolyline = false;
+  bool _isPolygon = false;
+  bool _isCircle = false;
+  bool _isPoint = true;
+  int polygoneindex = -1;
+  int polylineindex = -1;
+  int circleindex = -1;
+  bool showRadiusSelection = false;
 
   final customToolBarList = [
     ToolBarStyle.bold,
@@ -136,6 +150,10 @@ class _AddStoryViewState extends State<AddStoryView>
   String? selectTimeResolutions;
   bool firstLocation = true;
 
+  List<List<LatLng>> polygonList = [[]];
+  List<List<LatLng>> polylineList = [[]];
+  List<LatLng> circleList = [];
+
   List<String> season = <String>['Winter', 'Spring', 'Summer', 'Fall'];
   List<String> decade = <String>[
     '1940s',
@@ -164,22 +182,17 @@ class _AddStoryViewState extends State<AddStoryView>
     seasonController = TextEditingController();
     decadeController = TextEditingController();
     titleController = TextEditingController();
+    radiusController = TextEditingController();
     tagController = TextEditingController();
     textController = TextEditingController();
     controller = QuillEditorController();
     timeResolutionController = TextEditingController();
     story = '';
 
-    selectedStartDateTime = DateTime(
-      0,
-      0,
-      0,
-    );
-    selectedEndDateTime = DateTime(
-      0,
-      0,
-      0,
-    );
+    selectedStartDateTime = DateTime(0);
+
+    selectedEndDateTime = DateTime(0);
+
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(tabListener);
   }
@@ -197,6 +210,9 @@ class _AddStoryViewState extends State<AddStoryView>
   @override
   void dispose() {
     titleController.clear();
+    titleController.dispose();
+    radiusController.clear();
+    radiusController.dispose();
     controller.clear();
     controller.dispose();
     tagController.clear();
@@ -306,82 +322,246 @@ class _AddStoryViewState extends State<AddStoryView>
   Widget storyLocationWidget() {
     return SizedBox(
       height: MediaQuery.of(context).size.height,
-      child: MapLocationPicker(
-        locations: selectedLocationsforMap,
-        getSelectedLocations: () async {
-          setState(() {
-            selectedLocationsforMap = locations;
-          });
-        },
-        apiKey: AppEnv.apiKey,
-        currentLatLng: _currentPosition,
-        bottomCardMargin: const EdgeInsets.fromLTRB(
-          8,
-          0,
-          8,
-          100,
-        ),
-        hideMapTypeButton: true,
-        hideLocationButton: true,
-        hideBackButton: true,
-        bottomCardShape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        hasLocationPermission: hasPermission,
-        getLocation: () {
-          getCurrentLocation();
-        },
-        additionalMarkers: additionalMarkers,
-        onTapMarkers: (position) {
-          setState(() {
-            index++;
-            additionalMarkers?['marker$index'] =
-                LatLng(position!.latitude, position.longitude);
-          });
-        },
-        deleteLocations: (index) {
-          setState(() {
-            locations.removeAt(index);
-            additionalMarkers
-                ?.removeWhere((key, value) => key == 'marker$index');
-          });
-        },
-        onDecodeAddress: (GeocodingResult? result) {
-          setState(() {
-            if (firstLocation) {
-              firstLocation = false;
-              return;
-            }
+      child: Stack(
+        children: [
+          MapLocationPicker(
+            radiusList: radiusList,
+            locations: selectedLocationsforMap,
+            getSelectedLocations: () async {
+              setState(() {
+                selectedLocationsforMap = locations;
+              });
+            },
+            apiKey: AppEnv.apiKey,
+            currentLatLng: _currentPosition,
+            bottomCardMargin: const EdgeInsets.fromLTRB(
+              8,
+              0,
+              8,
+              100,
+            ),
+            hideMapTypeButton: true,
+            hideLocationButton: true,
+            hideBackButton: true,
+            bottomCardShape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            hasLocationPermission: hasPermission,
+            getLocation: () {
+              getCurrentLocation();
+            },
+            additionalMarkers: additionalMarkers,
+            additionalCircles: additionalCircles,
+            additionalPolygons: additionalPolygones,
+            additionalPolylines: additionalPolylines,
+            isCircle: _isCircle,
+            isPolygon: _isPolygon,
+            isPolyline: _isPolyline,
+            isPoint: _isPoint,
+            polygonButtonPressed: () {
+              polygoneindex++;
+              setState(() {
+                if (polygoneindex != 0) {
+                  final addlist = <LatLng>[];
+                  polygonList.add(addlist);
+                }
+                _isPolygon = true;
+                _isPolyline = false;
+                _isCircle = false;
+                _isPoint = false;
+              });
+            },
+            polylineButtonPressed: () {
+              polylineindex++;
+              setState(() {
+                if (polylineindex != 0) {
+                  final addlist = <LatLng>[];
+                  polylineList.add(addlist);
+                }
+                _isPolygon = false;
+                _isPolyline = true;
+                _isCircle = false;
+                _isPoint = false;
+              });
+            },
+            circleButtonPressed: () {
+              circleindex++;
+              showRadiusSelection = true;
+              setState(() {
+                _isPolygon = false;
+                _isPolyline = false;
+                _isCircle = true;
+                _isPoint = false;
+              });
+            },
+            pointButtonPressed: () {
+              setState(() {
+                _isPolygon = false;
+                _isPolyline = false;
+                _isCircle = false;
+                _isPoint = true;
+              });
+            },
+            onTapPolygones: (points) {
+              setState(() {
+                polygonList[polygoneindex].add(points!);
+                additionalPolygones?['$polygoneindex'] =
+                    polygonList[polygoneindex];
+              });
+            },
+            onTapPolylines: (points) {
+              setState(() {
+                polylineList[polylineindex].add(points!);
+                additionalPolylines?['$polylineindex'] =
+                    polylineList[polylineindex];
+              });
+            },
+            onTapCircles: (point) {
+              additionalCircles?['$circleindex'] =
+                  LatLng(point!.latitude, point.longitude);
+            },
+            onTapMarkers: (position) {
+              setState(() {
+                _isPolygon = false;
+                _isPolyline = false;
+                _isCircle = false;
+                _isPoint = true;
+                index++;
+                additionalMarkers?['$index'] =
+                    LatLng(position!.latitude, position.longitude);
+              });
+            },
+            deleteLocations: (index) {
+              setState(() {
+                if (locations[index].isCircle != null) {
+                  additionalCircles
+                      ?.removeWhere((key, value) => key == '$index');
+                } else if (locations[index].isPolygon != null) {
+                  polygonList[locations[index].isPolygon!].removeWhere(
+                    (element) =>
+                        element.latitude == locations[index].latitude! &&
+                        element.longitude == locations[index].longitude!,
+                  );
+                } else if (locations[index].isPolyline != null) {
+                  polylineList[locations[index].isPolyline!].removeWhere(
+                    (element) =>
+                        element.latitude == locations[index].latitude! &&
+                        element.longitude == locations[index].longitude!,
+                  );
+                } else {
+                  additionalMarkers
+                      ?.removeWhere((key, value) => key == '$index');
+                }
+                locations.removeAt(index);
+              });
+            },
+            onDecodeAddress: (GeocodingResult? result, LatLng? location) {
+              setState(() {
+                if (firstLocation) {
+                  firstLocation = false;
+                  return;
+                }
+                selectedLat = location!.latitude;
+                selectedLng = location.longitude;
+                selectedAddress = result!.formattedAddress ?? '';
 
-            selectedLat = result!.geometry.location.lat;
-            selectedLng = result.geometry.location.lng;
-            selectedAddress = result.formattedAddress ?? '';
-            selectedLocation = LocationModel(
-              locationName: selectedAddress,
-              latitude: selectedLat,
-              longitude: selectedLng,
-            );
-            if (selectedLocation != null) {
-              locations.add(selectedLocation!);
-            }
-            selectedLocationsforMap = locations;
-          });
-        },
-        onNext: (GeocodingResult? decodedAddress) {
-          setState(() {
-            selectedLat = decodedAddress!.geometry.location.lat;
-            selectedLng = decodedAddress.geometry.location.lng;
-            selectedAddress = decodedAddress.formattedAddress ?? '';
+                if (_isPoint) {
+                  selectedLocation = LocationModel(
+                    locationName: selectedAddress,
+                    latitude: selectedLat,
+                    longitude: selectedLng,
+                    isPoint: 1,
+                  );
+                  if (selectedLocation != null) {
+                    locations.add(selectedLocation!);
+                  }
+                } else if (_isCircle) {
+                  selectedLocation = LocationModel(
+                    locationName: selectedAddress,
+                    latitude: selectedLat,
+                    longitude: selectedLng,
+                    isCircle: circleindex,
+                    circleRadius: int.parse(radiusController.text),
+                  );
+                  if (selectedLocation != null) {
+                    locations.add(selectedLocation!);
+                  }
+                } else if (_isPolygon) {
+                  selectedLocation = LocationModel(
+                    locationName: selectedAddress,
+                    latitude: selectedLat,
+                    longitude: selectedLng,
+                    isPolygon: polygoneindex,
+                  );
+                  if (selectedLocation != null) {
+                    locations.add(selectedLocation!);
+                  }
+                } else if (_isPolyline) {
+                  selectedLocation = LocationModel(
+                    locationName: selectedAddress,
+                    latitude: selectedLat,
+                    longitude: selectedLng,
+                    isPolyline: polylineindex,
+                  );
+                  if (selectedLocation != null) {
+                    locations.add(selectedLocation!);
+                  }
+                }
 
-            selectedLocation = LocationModel(
-              locationName: selectedAddress,
-              latitude: selectedLat,
-              longitude: selectedLng,
-            );
-            if (selectedLocation != null) {
-              locations.add(selectedLocation!);
-            }
-          });
-        },
+                selectedLocationsforMap = locations;
+              });
+            },
+            onNext: (GeocodingResult? decodedAddress) {
+              setState(() {
+                selectedLat = decodedAddress!.geometry.location.lat;
+                selectedLng = decodedAddress.geometry.location.lng;
+                selectedAddress = decodedAddress.formattedAddress ?? '';
+
+                selectedLocation = LocationModel(
+                  locationName: selectedAddress,
+                  latitude: selectedLat,
+                  longitude: selectedLng,
+                );
+                if (selectedLocation != null) {
+                  locations.add(selectedLocation!);
+                }
+              });
+            },
+          ),
+          if (showRadiusSelection)
+            Positioned(
+              top: 70,
+              left: 10,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  border: Border.all(
+                    color: Colors.blue,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      child: AppTextFormField(
+                        controller: radiusController,
+                        hintText: 'Write radius as meters',
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          showRadiusSelection = false;
+                          radiusList.add(int.parse(radiusController.text));
+                        });
+                      },
+                      icon: const Icon(Icons.send),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -814,18 +994,32 @@ class _AddStoryViewState extends State<AddStoryView>
 
   Future<void> onPressSubmit() async {
     final tagsList = tagController.text.split(',');
-    final parsedStartTime = selectedStartDateTime.toString();
-    final startTime = parsedStartTime.split(':00.000');
-    final parsedEndTime = selectedEndDateTime.toString();
-    final endTime = parsedEndTime.split(':00.000');
+
+    var starttimecheck = false;
+    var startTime = <String>[];
+
+    if (selectedStartDateTime != DateTime(0)) {
+      final parsedStartTime = selectedStartDateTime.toString();
+      startTime = parsedStartTime.split(':00.000');
+      starttimecheck = true;
+    }
+
+    var endtimecheck = false;
+    var endTime = <String>[];
+    if (selectedEndDateTime != DateTime(0)) {
+      final parsedEndTime = selectedEndDateTime.toString();
+      endTime = parsedEndTime.split(':00.000');
+      endtimecheck = true;
+    }
+
     final model = AddStoryModel(
       text: htmlText,
       title: titleController.text,
       labels: tagsList,
       season: selectedSeason,
       decade: selectedDecade,
-      startTimeStamp: startTime[0],
-      endTimeStamp: endTime[0],
+      startTimeStamp: !starttimecheck ? null : startTime[0],
+      endTimeStamp: !endtimecheck ? null : endTime[0],
       locations: locations,
     );
     await cubit.addStory(model).then((value) {

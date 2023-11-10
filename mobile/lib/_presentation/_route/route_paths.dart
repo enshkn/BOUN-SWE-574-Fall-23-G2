@@ -10,9 +10,13 @@ class RoutePaths {
   static const APP = '/app';
   static const HOME = 'home';
   static const PROFILE = 'profile';
+  static const RECOMMENDED = 'recommended';
+  static const NEARBY = 'nearby';
+  static const TIMELINE = 'timeline';
 
   //Story
   static const STORYDETAILS = 'story-details';
   static const ADDSTORY = '/add-story';
   static const MYSTORIES = 'my-stories';
+  static const LIKEDSTORIES = 'liked-stories';
 }

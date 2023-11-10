@@ -1,7 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
+import 'package:swe/_presentation/app/view/nearby/view/nearby.dart';
+import 'package:swe/_presentation/app/view/recommended/view/recommended_view.dart';
+import 'package:swe/_presentation/app/view/timeline/view/timeline_view.dart';
 import 'package:swe/_presentation/story/add_story_view.dart';
+import 'package:swe/_presentation/story/liked_stories_view.dart';
 import 'package:swe/_presentation/story/my_stories_view.dart';
 import 'package:swe/_presentation/story/story_details_view.dart';
 import '../app/view/app_view.dart';
@@ -43,6 +47,39 @@ class AppRouter extends _$AppRouter {
           ],
         ),
         AutoRoute(
+          path: RoutePaths.RECOMMENDED,
+          page: RecommendedTabRoute.page,
+          children: [
+            AutoRoute(path: '', page: RecommendedRoute.page),
+            AutoRoute(
+              path: RoutePaths.STORYDETAILS,
+              page: StoryDetailsRoute.page,
+            ),
+          ],
+        ),
+        AutoRoute(
+          path: RoutePaths.NEARBY,
+          page: NearbyTabRoute.page,
+          children: [
+            AutoRoute(path: '', page: NearbyRoute.page),
+            AutoRoute(
+              path: RoutePaths.STORYDETAILS,
+              page: StoryDetailsRoute.page,
+            ),
+          ],
+        ),
+        AutoRoute(
+          path: RoutePaths.TIMELINE,
+          page: TimelineTabRoute.page,
+          children: [
+            AutoRoute(path: '', page: TimelineRoute.page),
+            AutoRoute(
+              path: RoutePaths.STORYDETAILS,
+              page: StoryDetailsRoute.page,
+            ),
+          ],
+        ),
+        AutoRoute(
           path: RoutePaths.PROFILE,
           page: ProfileTabRoute.page,
           children: [
@@ -50,6 +87,10 @@ class AppRouter extends _$AppRouter {
             AutoRoute(
               path: RoutePaths.MYSTORIES,
               page: MyStoriesRoute.page,
+            ),
+            AutoRoute(
+              path: RoutePaths.LIKEDSTORIES,
+              page: LikedStoiresRoute.page,
             ),
             AutoRoute(
               path: RoutePaths.STORYDETAILS,
@@ -75,6 +116,36 @@ class HomeTabView extends StatelessWidget {
 @RoutePage()
 class ProfileTabView extends StatelessWidget {
   const ProfileTabView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const AutoRouter();
+  }
+}
+
+@RoutePage()
+class RecommendedTabView extends StatelessWidget {
+  const RecommendedTabView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const AutoRouter();
+  }
+}
+
+@RoutePage()
+class NearbyTabView extends StatelessWidget {
+  const NearbyTabView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const AutoRouter();
+  }
+}
+
+@RoutePage()
+class TimelineTabView extends StatelessWidget {
+  const TimelineTabView({super.key});
 
   @override
   Widget build(BuildContext context) {
