@@ -14,7 +14,7 @@ import Recommended from "./components/Recommended";
 import AllStories from "./components/AllStories";
 import FollowedUserStories from "./components/FollowedUserStories";
 import StorySearch from "./components/StorySearch";
-import TimelineSearch from "./components/StorySearch"; //StorySearch should be changed when the TimelineSearch.js component page is ready!
+import TimelineSearch from "./components/TimelineSearch"; //StorySearch should be changed when the TimelineSearch.js component page is ready!
 import axios from "axios";
 
 function App() {
