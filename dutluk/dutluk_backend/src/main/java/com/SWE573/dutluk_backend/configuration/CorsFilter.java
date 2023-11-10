@@ -23,11 +23,9 @@ public class CorsFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        String serverName = request.getServerName();
-        Integer serverPortInt = request.getServerPort();
-
-        logger.info("Server Name: {}", serverName+":"+serverPortInt);
-
+        String serverName = request.getRemoteAddr();
+        Integer serverPort = request.getRemotePort();
+        logger.info("Server Name: {}", serverName+":"+serverPort);
         chain.doFilter(request, response);
     }
 }
