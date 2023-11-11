@@ -1,1 +1,7 @@
-# this module will work with backend server as a separate server for recommendation.
+from fastapi import FastAPI, Request
+from pydantic import BaseModel
+
+app = FastAPI()
+class Text(BaseModel):
+    text: str
+
