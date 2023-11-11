@@ -1,2 +1,1 @@
-def test():
-    pass
+# this module will work with backend server as a separate server for recommendation.
