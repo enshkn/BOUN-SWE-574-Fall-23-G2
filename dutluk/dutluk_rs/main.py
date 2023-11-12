@@ -20,7 +20,7 @@ word2vec_model = gensim.models.KeyedVectors.load_word2vec_format(
 async def vectorize(data: Text):
     # Extract the text from the JSON object
     text = data.text
-    # Tokenize the text
+    # Tokenize the text, NLP pre process techniques are implemented with simple process function.
     tokenized_text = simple_preprocess(text)
     # Initialize an empty array to store the vectors
     vectors = []
