@@ -46,8 +46,8 @@ async def vectorize(data: Text):
     avg_vector = np.mean(vectors, axis=0)
     return {"vectorized": avg_vector.tolist()}
 
-@app.post("/text_similarity")
-async def similarity(data: TextSimilarity):
+@app.post("/text-similarity")
+async def textSimilarity(data: TextSimilarity):
     story_1 = data.text_1
     story_2 = data.text_2
 
@@ -58,14 +58,28 @@ async def similarity(data: TextSimilarity):
 
     # If no vectors found for either text, return 0 similarity
     if not vectors_1 or not vectors_2:
-        return {"similarity": 0.0}
+        return {"similarity": float(0.0)}
 
     # Calculate cosine similarity between the average vectors
     avg_vector_1 = np.mean(vectors_1, axis=0)
     avg_vector_2 = np.mean(vectors_2, axis=0)
     similarity_score = cosine_similarity([avg_vector_1], [avg_vector_2])[0][0]
 
-    return {"similarity": similarity_score}
+    return {"similarity": float(similarity_score)}
+
+@app.post("/vector-similarity")
+async def vectorSimilarity(data: VectorSimilarity):
+    vector_1 = list(data.vector_1)
+    vector_2 = list(data.vector_2)
+
+    if not vector_1 or not vector_2:
+        return {"similarity": float(0.0)}
+
+    avg_vector_1 = np.mean(vector_1, axis=0)
+    avg_vector_2 = np.mean(vector_2, axis=0)
+    similarity_score = cosine_similarity([avg_vector_1], [avg_vector_2])[0][0]
+
+    return {"similarity": float(similarity_score)}
 
 
 
