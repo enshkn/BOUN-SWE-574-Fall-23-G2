@@ -1,1 +1,0 @@
-git reset --soft HEAD^ : will delete last commit
