@@ -15,6 +15,14 @@ app = FastAPI()
 class Text(BaseModel):
     text: str
 
+class TextSimilarity(BaseModel):
+    text_1: str
+    text_2: str
+
+class VectorSimilarity(BaseModel):
+    vector_1: list
+    vector_2: list
+
 model_path = "rs-word-embedding-model.gz"
 word2vec_model = gensim.models.KeyedVectors.load_word2vec_format(
     model_path, binary=True
@@ -39,7 +47,25 @@ async def vectorize(data: Text):
     return {"vectorized": avg_vector.tolist()}
 
 @app.post("/text_similarity")
-async def similarity(data_1: Text, data_2: Text):
-    story_1 = data_1.text
-    story_2 = data_2.text
+async def similarity(data: TextSimilarity):
+    story_1 = data.text_1
+    story_2 = data.text_2
+
+    tokenized_story_1 = simple_preprocess(story_1)
+    vectors_1 = [word2vec_model[token] for token in tokenized_story_1 if token in word2vec_model]
+    tokenized_story_2 = simple_preprocess(story_2)
+    vectors_2 = [word2vec_model[token] for token in tokenized_story_2 if token in word2vec_model]
+
+    # If no vectors found for either text, return 0 similarity
+    if not vectors_1 or not vectors_2:
+        return {"similarity": 0.0}
+
+    # Calculate cosine similarity between the average vectors
+    avg_vector_1 = np.mean(vectors_1, axis=0)
+    avg_vector_2 = np.mean(vectors_2, axis=0)
+    similarity_score = cosine_similarity([avg_vector_1], [avg_vector_2])[0][0]
+
+    return {"similarity": similarity_score}
+
+
 
