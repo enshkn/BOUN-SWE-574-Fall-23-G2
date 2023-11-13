@@ -68,16 +68,21 @@ async def textSimilarity(data: TextSimilarity):
     return {"similarity": float(similarity_score)}
 
 @app.post("/vector-similarity")
-async def vectorSimilarity(data: VectorSimilarity):
-    vector_1 = list(data.vector_1)
-    vector_2 = list(data.vector_2)
+async def vector_similarity(data: VectorSimilarity):
+    vector_1 = np.array(data.vector_1)
+    vector_2 = np.array(data.vector_2)
 
-    if not vector_1 or not vector_2:
+    if not vector_1.any() or not vector_2.any():
         return {"similarity": float(0.0)}
 
     avg_vector_1 = np.mean(vector_1, axis=0)
     avg_vector_2 = np.mean(vector_2, axis=0)
-    similarity_score = cosine_similarity([avg_vector_1], [avg_vector_2])[0][0]
+
+    # Reshape the arrays to make them 2D
+    avg_vector_1 = avg_vector_1.reshape(1, -1)
+    avg_vector_2 = avg_vector_2.reshape(1, -1)
+
+    similarity_score = cosine_similarity(avg_vector_1, avg_vector_2)[0][0]
 
     return {"similarity": float(similarity_score)}
 
