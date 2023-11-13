@@ -7,6 +7,7 @@ import "quill-emoji/dist/quill-emoji.css";
 import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import { format, getYear } from "date-fns";
+import { useNavigate } from "react-router-dom"; // Import useHistory
 import "./css/AddStory.css";
 
 const AddStoryForm = () => {
@@ -33,6 +34,8 @@ const AddStoryForm = () => {
   const handleEditorChange = (value) => {
     setText(value);
   };
+
+  const navigate = useNavigate(); // Create history object
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -82,7 +85,8 @@ const AddStoryForm = () => {
         }
       );
       console.log(response);
-      window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/user/my-profile`;
+      // navigate to home page
+      navigate('/'); 
     } catch (error) {
       console.log(error);
     }
