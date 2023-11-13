@@ -7,6 +7,8 @@ import gensim
 from gensim.models import Word2Vec
 from gensim.utils import simple_preprocess
 
+from sklearn.metrics.pairwise import cosine_similarity
+
 
 
 app = FastAPI()
@@ -35,3 +37,9 @@ async def vectorize(data: Text):
         return {"vectorized": []}
     avg_vector = np.mean(vectors, axis=0)
     return {"vectorized": avg_vector.tolist()}
+
+@app.post("/text_similarity")
+async def similarity(data_1: Text, data_2: Text):
+    story_1 = data_1.text
+    story_2 = data_2.text
+
