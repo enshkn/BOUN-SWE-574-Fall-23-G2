@@ -8,6 +8,7 @@ import Profile from "./components/Profile";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import AddStoryForm from "./components/AddStory";
+import EditStoryForm from "./components/EditStory";
 import MyStories from "./components/MyStories";
 import StoryDetails from "./components/StoryDetails";
 import Recommended from "./components/Recommended";
@@ -120,6 +121,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/story/add-story" element={<AddStoryForm />} />
+        <Route path="/story/edit/:id" element={<EditStoryForm />} />
         <Route path="/story/my-stories" element={<MyStories />} />
         <Route path="/story/followings" element={<FollowedUserStories />} />
         <Route path="/story/all-stories" element={<AllStories />} />
