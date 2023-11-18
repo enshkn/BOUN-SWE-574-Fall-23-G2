@@ -11,7 +11,7 @@ import { format, getYear } from "date-fns";
 import "./css/EditStory.css";
 
 const EditStoryForm = () => {
-  const { id } = useParams();  // Move this line inside the component
+  const { id } = useParams();
 
   const fetchStoryData = useCallback(async () => {
     try {
@@ -23,7 +23,6 @@ const EditStoryForm = () => {
       );
       const existingStory = response.data;
 
-      // Pre-fill form fields with existing data
       setTitle(existingStory.title);
       setLabels(existingStory.labels.join(","));
       setText(existingStory.text);
@@ -40,7 +39,6 @@ const EditStoryForm = () => {
   }, [id]);
 
   useEffect(() => {
-    // Fetch existing story data when the component mounts
     fetchStoryData();
   }, [id, fetchStoryData]);
 
