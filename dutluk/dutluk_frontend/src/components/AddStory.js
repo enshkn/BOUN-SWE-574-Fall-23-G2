@@ -53,12 +53,12 @@ const AddStoryForm = () => {
 
     if (decade) {
       formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
-      formattedEndTimeStamp = format(endTimeStamp, "yyyy-MM-dd HH:mm");
-    } else {
-      formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
       formattedEndTimeStamp = endTimeStamp
         ? format(endTimeStamp, "yyyy-MM-dd HH:mm")
         : null;
+    } else {
+      formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
+      formattedEndTimeStamp = null;
     }
 
     const story = {
