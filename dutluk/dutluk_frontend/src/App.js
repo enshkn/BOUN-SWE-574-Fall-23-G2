@@ -8,11 +8,14 @@ import Profile from "./components/Profile";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import AddStoryForm from "./components/AddStory";
+import EditStoryForm from "./components/EditStory";
 import MyStories from "./components/MyStories";
 import StoryDetails from "./components/StoryDetails";
+import Recommended from "./components/Recommended";
 import AllStories from "./components/AllStories";
 import FollowedUserStories from "./components/FollowedUserStories";
 import StorySearch from "./components/StorySearch";
+import TimelineSearch from "./components/TimelineSearch";
 import axios from "axios";
 
 function App() {
@@ -81,11 +84,17 @@ function App() {
             <Link to="/story/my-stories" className="nav-link">
               My Stories
             </Link>
+            <Link to="/story/recommended-stories" className="nav-link">
+              Recommended Stories
+            </Link>
             <Link to="/story/all-stories" className="nav-link">
               All Stories
             </Link>
             <Link to="/story/search" className="nav-link">
               Search
+            </Link>
+            <Link to="/story/timeline-search" className="nav-link">
+              Timeline Search
             </Link>
           </>
         ) : (
@@ -112,12 +121,15 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/story/add-story" element={<AddStoryForm />} />
+        <Route path="/story/edit/:id" element={<EditStoryForm />} />
         <Route path="/story/my-stories" element={<MyStories />} />
         <Route path="/story/followings" element={<FollowedUserStories />} />
         <Route path="/story/all-stories" element={<AllStories />} />
         <Route path="/story/:id" element={<StoryDetails />} />
         <Route path="/user/:id" element={<Profile />} />
         <Route path="/story/search" element={<StorySearch />} />
+        <Route path="/story/timeline-search" element={<TimelineSearch />} />
+        <Route path="/story/recommended-stories" element={<Recommended />} />
       </Routes>
     </Router>
   );

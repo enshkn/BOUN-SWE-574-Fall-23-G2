@@ -1,16 +1,49 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
 import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import { format, getYear } from "date-fns";
-import { useNavigate } from "react-router-dom"; // Import useHistory
-import "./css/AddStory.css";
+import "./css/EditStory.css";
 
-const AddStoryForm = () => {
+const EditStoryForm = () => {
+  const { id } = useParams();  // Move this line inside the component
+
+  const fetchStoryData = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/story/${id}`,
+        {
+          withCredentials: true,
+        }
+      );
+      const existingStory = response.data;
+
+      // Pre-fill form fields with existing data
+      setTitle(existingStory.title);
+      setLabels(existingStory.labels.join(","));
+      setText(existingStory.text);
+      setLocations(existingStory.locations);
+      setStartTimeStamp(new Date(existingStory.startTimeStamp));
+      setEndTimeStamp(
+        existingStory.endTimeStamp ? new Date(existingStory.endTimeStamp) : null
+      );
+      setSeason(existingStory.season);
+      setDecade(existingStory.decade);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    // Fetch existing story data when the component mounts
+    fetchStoryData();
+  }, [id, fetchStoryData]);
+
   const [title, setTitle] = useState("");
   const [labels, setLabels] = useState("");
   const [text, setText] = useState("");
@@ -35,33 +68,32 @@ const AddStoryForm = () => {
     setText(value);
   };
 
-  const navigate = useNavigate(); // Create history object
-
-  const handleSubmit = async (event) => {
+  const handleEditSubmit = async (event) => {
     event.preventDefault();
     const currentDateTime = new Date();
+  
     if (startTimeStamp && startTimeStamp > currentDateTime) {
       return;
     }
-
+  
     if (endTimeStamp && endTimeStamp > currentDateTime) {
       return;
     }
-
+  
     let formattedStartTimeStamp = null;
     let formattedEndTimeStamp = null;
-
+  
     if (decade) {
+      formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
+      formattedEndTimeStamp = format(endTimeStamp, "yyyy-MM-dd HH:mm");
+    } else {
       formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
       formattedEndTimeStamp = endTimeStamp
         ? format(endTimeStamp, "yyyy-MM-dd HH:mm")
         : null;
-    } else {
-      formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
-      formattedEndTimeStamp = null;
     }
-
-    const story = {
+  
+    const editedStory = {
       title,
       labels: labels.split(","),
       text,
@@ -75,21 +107,22 @@ const AddStoryForm = () => {
       season,
       decade,
     };
-
+  
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/story/add`,
-        story,
+        `${process.env.REACT_APP_BACKEND_URL}/api/story/edit/${id}`,
+        editedStory,
         {
           withCredentials: true,
         }
       );
       console.log(response);
-      navigate('/'); 
+      window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/user/my-profile`;
     } catch (error) {
       console.log(error);
     }
   };
+  
 
   const mapContainerStyle = {
     width: "80%",
@@ -162,7 +195,7 @@ const AddStoryForm = () => {
   };
 
   return (
-    <form className="add-story-form" onSubmit={handleSubmit}>
+    <form className="edit-story-form" onSubmit={handleEditSubmit}>
       <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
@@ -184,11 +217,11 @@ const AddStoryForm = () => {
       <br />
       <br />
       {geocodedLocations.length > 0 && (
-        <div className="add-story-locations">
-          <label className="add-story-label">Locations:</label>
-          <ul className="add-story-location-list">
+        <div className="edit-story-locations">
+          <label className="edit-story-label">Locations:</label>
+          <ul className="edit-story-location-list">
             {geocodedLocations.map((location, index) => (
-              <li key={index} className="add-story-location-item">
+              <li key={index} className="edit-story-location-item">
                 {location}
               </li>
             ))}
@@ -196,17 +229,17 @@ const AddStoryForm = () => {
         </div>
       )}
       <br />
-      <label className="add-story-label">
+      <label className="edit-story-label">
         Title:
         <input
           type="text"
-          className="add-story-input"
+          className="edit-story-input"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
       </label>
       <br />
-      <label className="add-story-label">
+      <label className="edit-story-label">
         Labels:(comma separated)
         <input
           type="text"
@@ -216,40 +249,40 @@ const AddStoryForm = () => {
         />
       </label>
       <br />
-      <label className="add-story-label">
+      <label className="edit-story-label">
         Text:
         <ReactQuill
           value={text}
           onChange={handleEditorChange}
           modules={modules}
           formats={formats}
-          className="add-story-editor"
+          className="edit-story-editor"
         />
       </label>
-      <label className="add-story-label">
+      <label className="edit-story-label">
         Start Date and Time:
         <DatePicker
           value={startTimeStamp}
           onChange={handleStartDateChange}
-          className="add-story-datepicker"
+          className="edit-story-datepicker"
         />
       </label>
       <br />
-      <label className="add-story-label">
+      <label className="edit-story-label">
         End Date and Time:
         <DatePicker
           value={endTimeStamp}
           onChange={handleEndDateChange}
-          className="add-story-datepicker"
+          className="edit-story-datepicker"
         />
       </label>
       <br />
-      <label className="add-story-label">
+      <label className="edit-story-label">
         Season:
         <select
           value={season}
           onChange={(e) => setSeason(e.target.value)}
-          className="add-story-select"
+          className="edit-story-select"
         >
           <option value="">Select Season</option>
           <option value="Spring">Spring</option>
@@ -259,12 +292,12 @@ const AddStoryForm = () => {
         </select>
       </label>
       <br />
-      <label className="add-story-label">
+      <label className="edit-story-label">
         Decade:
         <select
           value={decade}
           onChange={handleDecadeChange}
-          className="add-story-select"
+          className="edit-story-select"
         >
           <option value="">Select Decade</option>
           <option value="1940s">1940s</option>
@@ -279,11 +312,11 @@ const AddStoryForm = () => {
         </select>
       </label>
       <br />
-      <button type="submit" className="add-story-button">
-        Add Story
+      <button type="submit" className="edit-story-button">
+        Edit Story
       </button>
     </form>
   );
 };
 
-export default AddStoryForm;
+export default EditStoryForm;
