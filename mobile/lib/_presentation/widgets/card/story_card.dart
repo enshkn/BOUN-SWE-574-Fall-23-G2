@@ -176,16 +176,10 @@ class StoryCard extends StatelessWidget {
               if (isFavoriteLoading)
                 const CircularProgressIndicator.adaptive()
               else
-                ButtonCard(
-                  minScale: 0.8,
-                  onPressed: () async {
-                    onFavouriteTap?.call();
-                  },
-                  child: Icon(
-                    Icons.favorite,
-                    color: isFavorite ? Colors.red : Colors.grey,
-                    size: 32,
-                  ),
+                Icon(
+                  Icons.favorite,
+                  color: isFavorite ? Colors.red : Colors.grey,
+                  size: 32,
                 ),
               const SizedBox(
                 width: 4,

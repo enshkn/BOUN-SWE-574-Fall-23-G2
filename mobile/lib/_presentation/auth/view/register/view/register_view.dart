@@ -22,6 +22,7 @@ class RegisterView extends StatefulWidget {
 class _RegisterViewState extends State<RegisterView>
     with UserInfoTextFormFieldMixin {
   final _formKey = GlobalKey<FormState>();
+  bool isVisible = false;
   @override
   Widget build(BuildContext context) {
     return BaseView<AuthCubit, AuthState>(
@@ -73,8 +74,12 @@ class _RegisterViewState extends State<RegisterView>
                         ),
                         BaseWidgets.lowerGap,
                         AppTextFormField.password(
+                          isVisibile: isVisible,
                           controller: passwordController,
                           hintText: 'Enter your password',
+                          onVisibilityChanged: () {
+                            isVisible = !isVisible;
+                          },
                         ),
                         BaseWidgets.lowerGap,
                         Padding(
