@@ -53,6 +53,24 @@ function MyStories() {
       });
   };
 
+  const handleEdit = (storyId) => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/story/edit/${storyId}`,
+        {
+          withCredentials: true,
+        }
+      )
+      .then(() => {
+        setMyStories((prevStories) =>
+          prevStories.filter((story) => story.id !== storyId)
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <div className="all-stories">
       <h1>My Stories</h1>
@@ -92,11 +110,19 @@ function MyStories() {
             ))}
           </ul>
           <button
+            className="edit-button"
+            onClick={() => handleEdit(story.id)}
+          >
+            Edit Story
+          </button>
+          <br></br><br></br>
+          <button
             className="delete-button"
             onClick={() => handleDelete(story.id)}
           >
             Delete
           </button>
+          
         </div>
       ))}
     </div>
