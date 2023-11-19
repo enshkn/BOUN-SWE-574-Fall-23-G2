@@ -43,3 +43,8 @@
 .locations-list li {
   margin-bottom: 5px;
 }
+
+.all-stories img {
+  width: 400px;
+  height: auto; /* maintains aspect ratio */
+}

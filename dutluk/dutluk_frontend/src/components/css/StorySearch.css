@@ -51,3 +51,8 @@
   height: 400px;
   margin-bottom: 20px;
 }
+
+.all-stories img {
+  width: 400px;
+  height: auto; /* maintains aspect ratio */
+}
