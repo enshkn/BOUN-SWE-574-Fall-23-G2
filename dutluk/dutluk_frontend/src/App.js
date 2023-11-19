@@ -16,6 +16,7 @@ import AllStories from "./components/AllStories";
 import FollowedUserStories from "./components/FollowedUserStories";
 import StorySearch from "./components/StorySearch";
 import TimelineSearch from "./components/TimelineSearch";
+import LabelSearch from "./components/LabelSearch";
 import axios from "axios";
 
 function App() {
@@ -130,6 +131,7 @@ function App() {
         <Route path="/story/search" element={<StorySearch />} />
         <Route path="/story/timeline-search" element={<TimelineSearch />} />
         <Route path="/story/recommended-stories" element={<Recommended />} />
+        <Route path="/story/search/label/:label" element={<LabelSearch />} />
       </Routes>
     </Router>
   );
