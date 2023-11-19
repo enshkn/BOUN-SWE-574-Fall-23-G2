@@ -116,8 +116,14 @@ function StoryDetails() {
         <b>Likes:</b> {story.likes ? story.likes.length : 0}
       </p>
       <button onClick={handleLikeStory}>Like!</button>
-      <p>
-        <b>Labels:</b> {story.labels.join(", ")}
+      <p className="story-details">
+        <b>Labels:</b>{" "}
+        {story.labels.map((label, index) => (
+          <span key={index}>
+            <a href={"/story/search/label/"+label}>{label}</a>
+            {index < story.labels.length - 1 && ", "}
+          </span>
+        ))}
       </p>
       <b>Written by:</b>
       <a href={"/user/" + story.user.id}>{story.user.username}</a>

@@ -161,6 +161,17 @@ const AddStoryForm = () => {
     setEndTimeStamp(date);
   };
 
+  const handleRemoveLocation = (index) => {
+    const updatedLocations = [...locations];
+    const updatedGeocodedLocations = [...geocodedLocations];
+
+    updatedLocations.splice(index, 1); // Remove the location at the specified index
+    updatedGeocodedLocations.splice(index, 1); // Remove the corresponding geocoded location
+
+    setLocations(updatedLocations);
+    setGeocodedLocations(updatedGeocodedLocations);
+  };
+
   return (
     <form className="add-story-form" onSubmit={handleSubmit}>
       <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
@@ -190,6 +201,13 @@ const AddStoryForm = () => {
             {geocodedLocations.map((location, index) => (
               <li key={index} className="add-story-location-item">
                 {location}
+                <button
+                  type="button"
+                  className="remove-location-button"
+                  onClick={() => handleRemoveLocation(index)}
+                >
+                  Remove
+                </button>
               </li>
             ))}
           </ul>
