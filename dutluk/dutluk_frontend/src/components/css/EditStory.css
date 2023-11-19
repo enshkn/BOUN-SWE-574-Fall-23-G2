@@ -65,3 +65,8 @@
 .edit-story-button:hover {
   background-color: #45a049;
 }
+
+.all-stories img {
+  width: 400px;
+  height: auto; /* maintains aspect ratio */
+}
