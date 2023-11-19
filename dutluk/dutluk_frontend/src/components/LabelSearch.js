@@ -1,9 +1,11 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import "./css/AllStories.css";
 
-function RecommendedStories() {
-  const [recommendedStories, setRecommendedStories] = useState([]);
+const LabelSearch = () => {
+  const { label } = useParams();
+  const [labeledStories, setLabeledStories] = useState([]);
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -20,22 +22,23 @@ function RecommendedStories() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/feed`, {
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/search/label?label=${label}`, {
         withCredentials: true,
       })
       .then((response) => {
-        setRecommendedStories(response.data);
+        setLabeledStories(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [label]);
 
   return (
     <div className="all-stories">
-      <h1>Story Feed</h1>
-      {recommendedStories.map((story) => (
-        <div key={story.id} className="story">
+      <h1>Stories with Label: "{label}"</h1>
+      {labeledStories.length > 0 ? (
+        labeledStories.map((story) => (
+          <div key={story.id} className="story">
           <h2 className="story-title">
             <a href={"/story/" + story.id}>{story.title}</a>
           </h2>
@@ -75,10 +78,13 @@ function RecommendedStories() {
               <li key={location.id}>{location.locationName}</li>
             ))}
           </ul>
-        </div>
-      ))}
+          </div>
+        ))
+      ) : (
+        <p>No stories found with the label "{label}"</p>
+      )}
     </div>
   );
-}
+};
 
-export default RecommendedStories;
+export default LabelSearch;

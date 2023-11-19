@@ -53,6 +53,24 @@ function MyStories() {
       });
   };
 
+  const handleEdit = (storyId) => {
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/story/edit/${storyId}`,
+        {
+          withCredentials: true,
+        }
+      )
+      .then(() => {
+        setMyStories((prevStories) =>
+          prevStories.filter((story) => story.id !== storyId)
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <div className="all-stories">
       <h1>My Stories</h1>
@@ -65,7 +83,13 @@ function MyStories() {
             <b>Likes:</b> {story.likes ? story.likes.length : 0}
           </p>
           <p className="story-details">
-            <b>Labels:</b> {story.labels.join(", ")}
+            <b>Labels:</b>{" "}
+            {story.labels.map((label, index) => (
+              <span key={index}>
+                <a href={"/story/search/label/"+label}>{label}</a>
+                {index < story.labels.length - 1 && ", "}
+              </span>
+            ))}
           </p>
           <p className="story-details">
             <b>Written by:</b>{" "}
@@ -92,11 +116,19 @@ function MyStories() {
             ))}
           </ul>
           <button
+            className="edit-button"
+            onClick={() => handleEdit(story.id)}
+          >
+            Edit Story
+          </button>
+          <br></br><br></br>
+          <button
             className="delete-button"
             onClick={() => handleDelete(story.id)}
           >
             Delete
           </button>
+          
         </div>
       ))}
     </div>
