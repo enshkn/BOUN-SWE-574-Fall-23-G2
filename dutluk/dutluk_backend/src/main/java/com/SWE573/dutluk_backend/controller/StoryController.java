@@ -17,10 +17,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/story")
@@ -114,6 +111,12 @@ public class StoryController {
             return ResponseEntity.ok(nullSet);
         }
         return ResponseEntity.ok(Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+    }
+
+    @GetMapping("/search/label")
+    public ResponseEntity<?> searchStoriesByLabel(@RequestParam(required = false) String label){
+        List<Story> labelResults = storyService.searchStoriesWithLabel(label);
+        return ResponseEntity.ok(labelResults);
     }
 
     @GetMapping("/nearby")
