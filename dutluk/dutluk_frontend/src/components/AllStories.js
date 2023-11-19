@@ -43,7 +43,13 @@ function AllStories() {
             <b>Likes:</b> {story.likes ? story.likes.length : 0}
           </p>
           <p className="story-details">
-            <b>Labels:</b> {story.labels.join(", ")}
+            <b>Labels:</b>{" "}
+            {story.labels.map((label, index) => (
+              <span key={index}>
+                <a href={"/story/search/label/"+label}>{label}</a>
+                {index < story.labels.length - 1 && ", "}
+              </span>
+            ))}
           </p>
           <p className="story-details">
             <b>Written by:</b>{" "}
