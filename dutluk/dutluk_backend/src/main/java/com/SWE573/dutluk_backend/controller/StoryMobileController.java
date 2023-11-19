@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/mobile/story")
@@ -125,6 +122,13 @@ public class StoryMobileController {
         }
         successfulResponse.setEntity(Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
         successfulResponse.setCount(storySet.size());
+        return ResponseEntity.ok(successfulResponse);
+    }
+    @GetMapping("/search/label")
+    public ResponseEntity<?> searchStoriesByLabel(@RequestParam(required = false) String label){
+        List<Story> labelResults = storyService.searchStoriesWithLabel(label);
+        successfulResponse.setEntity(labelResults);
+        successfulResponse.setCount(labelResults.size());
         return ResponseEntity.ok(successfulResponse);
     }
     @GetMapping("/nearby")

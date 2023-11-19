@@ -140,8 +140,12 @@ public class StoryService {
     public Set<Story> searchStoriesWithQuery(String query) {
         Set<Story> storySet = new HashSet<>();
         storySet.addAll(storyRepository.findByTitleContainingIgnoreCase(query));
-        storySet.addAll(storyRepository.findByLabelsContainingIgnoreCase(query));
+        storySet.addAll(searchStoriesWithLabel(query));
         return storySet;
+    }
+
+    public List<Story> searchStoriesWithLabel(String label){
+        return storyRepository.findByLabelsContainingIgnoreCase(label);
     }
 
     public List<Story> searchStoriesWithDecade(String decade){
