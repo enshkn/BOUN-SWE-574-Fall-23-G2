@@ -52,6 +52,7 @@ public class UserMobileController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginMobile(@RequestBody LoginRequest loginRequest,
+                                         @RequestHeader(value = "User-Agent", defaultValue = "") String userAgent,
                                          HttpServletResponse response) throws AccountNotFoundException {
         User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
         String token = userService.generateUserToken(foundUser);
@@ -60,6 +61,7 @@ public class UserMobileController {
         response.addCookie(cookie);
         foundUser.setProfilePhoto(null);
         foundUser.setToken(token);
+        System.out.println(userAgent);
         successfulResponse.setEntity(foundUser);
         return ResponseEntity.ok(successfulResponse);
     }
