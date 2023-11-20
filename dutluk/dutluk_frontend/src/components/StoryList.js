@@ -54,6 +54,7 @@ const StoryList = ({ story, children }) => {
                     <li key={location.id}>{location.locationName}</li>
                 ))}
             </ul>
+         {children}
         </div>
     );
 };
