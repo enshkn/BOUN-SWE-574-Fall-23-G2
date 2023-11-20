@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Marker, StandaloneSearchBox } from "@react-google-maps/api";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
@@ -20,6 +20,27 @@ const AddStoryForm = () => {
   const [endTimeStamp, setEndTimeStamp] = useState(null);
   const [season, setSeason] = useState("");
   const [decade, setDecade] = useState("");
+  const [searchBox, setSearchBox] = useState(null);
+
+  const onSearchBoxLoad = (ref) => {
+    setSearchBox(ref);
+  };
+
+  const onPlacesChanged = () => {
+    const places = searchBox.getPlaces();
+    const place = places[0];
+    if (!place.geometry) return;
+
+    const newLocation = {
+      latitude: place.geometry.location.lat(),
+      longitude: place.geometry.location.lng(),
+      name: place.formatted_address,
+    };
+
+    setLocations([...locations, newLocation]);
+    setGeocodedLocations([...geocodedLocations, place.formatted_address]);
+  };
+
 
   useEffect(() => {
     if (startTimeStamp) {
@@ -85,7 +106,7 @@ const AddStoryForm = () => {
         }
       );
       console.log(response);
-      navigate('/'); 
+      navigate('/');
     } catch (error) {
       console.log(error);
     }
@@ -174,7 +195,11 @@ const AddStoryForm = () => {
 
   return (
     <form className="add-story-form" onSubmit={handleSubmit}>
-      <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+      <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+        libraries={["places"]}>
+        <StandaloneSearchBox onLoad={onSearchBoxLoad} onPlacesChanged={onPlacesChanged}>
+          <input type="text" placeholder="Search" style={{ width: "80%", height: "40px" }} />
+        </StandaloneSearchBox>
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           center={center}
