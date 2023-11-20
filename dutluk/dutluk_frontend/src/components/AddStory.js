@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { GoogleMap, LoadScript, Marker, StandaloneSearchBox } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Marker, Polygon, Polyline, StandaloneSearchBox } from "@react-google-maps/api";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
@@ -21,9 +21,19 @@ const AddStoryForm = () => {
   const [season, setSeason] = useState("");
   const [decade, setDecade] = useState("");
   const [searchBox, setSearchBox] = useState(null);
+  const [polygons, setPolygons] = useState([]); // For regions
+  const [polylines, setPolylines] = useState([]); // For polylines
 
   const onSearchBoxLoad = (ref) => {
     setSearchBox(ref);
+  };
+
+  const handleAddPolygon = (polygon) => {
+    setPolygons([...polygons, polygon]);
+  };
+
+  const handleAddPolyline = (polyline) => {
+    setPolylines([...polylines, polyline]);
   };
 
   const onPlacesChanged = () => {
@@ -104,6 +114,10 @@ const AddStoryForm = () => {
         locationName: location.name,
         latitude: location.latitude,
         longitude: location.longitude,
+      })),
+      polygons: polygons.map((polygon) => ({
+      })),
+      polylines: polylines.map((polyline) => ({
       })),
       startTimeStamp: formattedStartTimeStamp,
       endTimeStamp: formattedEndTimeStamp,
@@ -229,8 +243,21 @@ const AddStoryForm = () => {
               }}
             />
           ))}
+          {polygons.map((polygon, index) => (
+            <Polygon
+              key={index}
+              paths={polygon.paths}
+            />
+          ))}
+          {polylines.map((polyline, index) => (
+            <Polyline
+              key={index}
+              path={polyline.path}
+            />
+          ))}
         </GoogleMap>
       </LoadScript>
+      
       <br />
       <br />
       {geocodedLocations.length > 0 && (
