@@ -19,7 +19,7 @@ public class IntegrationService {
     public static ResponseEntity<?> mobileCheck (String userAgent,Object entity){
         if(userAgent.contains("Dart")){
             successfulResponse.setEntity(entity);
-            if(entity instanceof List || entity instanceof Set){
+            if(entity instanceof Collection<?>){
                 successfulResponse.setCount(((Collection<?>) entity).size());
             }
             return ResponseEntity.ok(successfulResponse);

@@ -99,7 +99,7 @@ public class UserController {
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequest updateRequest, HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
         User updatedUser =userService.updateUser(user,updateRequest);
-        return ResponseEntity.ok(IntegrationService.mobileCheck(request.getHeader("User-Agent"),updatedUser));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),updatedUser);
     }
 
     @PostMapping(value= "/photo", consumes = "multipart/form-data")
@@ -110,7 +110,7 @@ public class UserController {
         try {
             byte[] uploadedPhoto = file.getBytes();
             User foundUser = userService.validateTokenizedUser(request);
-            return ResponseEntity.ok(IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser));
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -120,20 +120,20 @@ public class UserController {
 
     @GetMapping("/all")
     public ResponseEntity<?> findAllUsers(HttpServletRequest request){
-        return ResponseEntity.ok(IntegrationService.mobileCheck(request.getHeader("User-Agent"),userService.findAll()));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),userService.findAll());
     }
 
     @PostMapping("/follow")
     public ResponseEntity<?> followUser(@RequestBody FollowRequest followRequest, HttpServletRequest request){
         User foundUser = userService.validateTokenizedUser(request);
         User followingUser = userService.followUser(foundUser, followRequest.getUserId());
-        return ResponseEntity.ok(IntegrationService.mobileCheck(request.getHeader("User-Agent"),followingUser));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),followingUser);
     }
 
     @GetMapping("/profile")
     public ResponseEntity<?> showUserProfile(HttpServletRequest request){
-        User validatedUser = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(IntegrationService.mobileCheck(request.getHeader("User-Agent"),validatedUser));
+        User foundUser = userService.validateTokenizedUser(request);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
     }
 
 
