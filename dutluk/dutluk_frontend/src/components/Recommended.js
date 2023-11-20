@@ -33,7 +33,7 @@ function RecommendedStories() {
 
   return (
     <div className="all-stories">
-      <h1>Story Feed</h1>
+      <h1>Recommended Strories</h1>
       {recommendedStories.map((story) => (
         <div key={story.id} className="story">
           <h2 className="story-title">
