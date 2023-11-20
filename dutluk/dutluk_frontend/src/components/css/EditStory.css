@@ -1,4 +1,4 @@
-/* EditStoryForm.css */
+@import "Base.css";
 
 .edit-story-form {
   display: flex;
@@ -66,7 +66,3 @@
   background-color: #45a049;
 }
 
-.all-stories img {
-  width: 400px;
-  height: auto; /* maintains aspect ratio */
-}
