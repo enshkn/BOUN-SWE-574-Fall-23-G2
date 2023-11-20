@@ -126,7 +126,7 @@ class StoryCard extends StatelessWidget {
             maxLines: 2,
           ),
           BaseWidgets.lowerGap,
-          if (storyModel.locations != null)
+          if (storyModel.locations != null && storyModel.locations!.isNotEmpty)
             Text(
               storyModel.locations![0].locationName!.toLocation() ?? '',
               style: const TextStyles.body().copyWith(

@@ -8,6 +8,7 @@ import 'package:swe/_application/session/session_cubit.dart';
 import 'package:swe/_common/enums/bottom_tabs.dart';
 import 'package:swe/_core/utility/record_utils.dart';
 import 'package:swe/_domain/auth/i_auth_repository.dart';
+import 'package:swe/_domain/auth/model/profile_update_model.dart';
 import 'package:swe/_domain/profile/i_profile_repository.dart';
 import 'package:swe/_presentation/_route/router.dart';
 
@@ -32,6 +33,19 @@ final class ProfileCubit extends BaseCubit<ProfileState> {
     setLoading(false);
     result.fold(
       (failure) => showNotification(failure?.message ?? '', isError: true),
+      (data) {
+        safeEmit(state.copyWith(user: data));
+      },
+    );
+  }
+
+  Future<void> updateProfile(ProfileUpdateModel model) async {
+    setLoading(true);
+    final result = await _profileRepository.updateUserInfo(model);
+    setLoading(false);
+    result.fold(
+      (failure) =>
+          showNotification(failure?.message ?? 'Not Updated', isError: true),
       (data) {
         safeEmit(state.copyWith(user: data));
       },
