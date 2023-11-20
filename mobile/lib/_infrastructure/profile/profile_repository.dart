@@ -21,6 +21,7 @@ class ProfileRepository implements IProfileRepository {
       NetworkPaths.profile,
       type: HttpTypes.get,
       parserModel: const User(),
+      cachePolicy: CachePolicy.noCache,
     );
 
     switch (response.statusCode) {
@@ -38,6 +39,7 @@ class ProfileRepository implements IProfileRepository {
       type: HttpTypes.post,
       parserModel: const User(),
       data: model.toJson(),
+      cachePolicy: CachePolicy.noCache,
     );
 
     switch (response.statusCode) {

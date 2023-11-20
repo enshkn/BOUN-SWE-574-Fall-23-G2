@@ -39,15 +39,22 @@ final class ProfileCubit extends BaseCubit<ProfileState> {
     );
   }
 
-  Future<void> updateProfile(ProfileUpdateModel model) async {
+  Future<bool> updateProfile(ProfileUpdateModel model) async {
     setLoading(true);
     final result = await _profileRepository.updateUserInfo(model);
+
     setLoading(false);
-    result.fold(
-      (failure) =>
-          showNotification(failure?.message ?? 'Not Updated', isError: true),
+    return result.fold(
+      (failure) {
+        showNotification(failure?.message ?? '', isError: true);
+        return false;
+      },
       (data) {
-        safeEmit(state.copyWith(user: data));
+        showNotification('Profile Updated.');
+        final sessionCubit = context.read<SessionCubit>();
+        sessionCubit.updateUser(data);
+        //safeEmit(state.copyWith(user: data));
+        return true;
       },
     );
   }
