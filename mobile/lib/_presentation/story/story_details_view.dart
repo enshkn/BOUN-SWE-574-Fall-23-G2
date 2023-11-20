@@ -327,13 +327,20 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           ),
                         ),
                       ),
-                    IconWithLabel(
-                      spacing: 8,
-                      icon: const Icon(
-                        Icons.star,
-                        color: Colors.yellow,
+                    GestureDetector(
+                      onTap: () {
+                        context.router.push(
+                          OtherProfileRoute(profile: widget.model.user!),
+                        );
+                      },
+                      child: IconWithLabel(
+                        spacing: 8,
+                        icon: const Icon(
+                          Icons.star,
+                          color: Colors.yellow,
+                        ),
+                        label: widget.model.user!.username!,
                       ),
-                      label: widget.model.user!.username!,
                     ),
                   ],
                 ),
@@ -372,8 +379,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.start,
                       ),
-                    BaseWidgets.lowerGap,
-                    if (widget.model.decade != null)
+                    if (widget.model.decade != '') BaseWidgets.lowerGap,
+                    if (widget.model.decade != '')
                       Text(
                         'Decade: ${widget.model.decade!}',
                         style: const TextStyles.body().copyWith(
@@ -383,8 +390,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.start,
                       ),
-                    BaseWidgets.lowerGap,
-                    if (widget.model.season != null)
+                    if (widget.model.season != '') BaseWidgets.lowerGap,
+                    if (widget.model.season != '')
                       Text(
                         'Season: ${widget.model.season!}',
                         style: const TextStyles.body().copyWith(

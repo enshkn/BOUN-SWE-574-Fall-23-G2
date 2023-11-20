@@ -8,6 +8,7 @@ import 'package:swe/_application/session/session_cubit.dart';
 import 'package:swe/_common/enums/bottom_tabs.dart';
 import 'package:swe/_core/utility/record_utils.dart';
 import 'package:swe/_domain/auth/i_auth_repository.dart';
+import 'package:swe/_domain/auth/model/follow_user_model.dart';
 import 'package:swe/_domain/auth/model/profile_update_model.dart';
 import 'package:swe/_domain/profile/i_profile_repository.dart';
 import 'package:swe/_presentation/_route/router.dart';
@@ -54,6 +55,25 @@ final class ProfileCubit extends BaseCubit<ProfileState> {
         final sessionCubit = context.read<SessionCubit>();
         sessionCubit.updateUser(data);
         //safeEmit(state.copyWith(user: data));
+        return true;
+      },
+    );
+  }
+
+  Future<bool> followUser(FollowUserModel model) async {
+    setLoading(true);
+    final result = await _profileRepository.followUser(model);
+
+    setLoading(false);
+    return result.fold(
+      (failure) {
+        showNotification(failure?.message ?? '', isError: true);
+        return false;
+      },
+      (data) {
+        showNotification('User follow success');
+        final sessionCubit = context.read<SessionCubit>();
+        sessionCubit.updateUser(data);
         return true;
       },
     );

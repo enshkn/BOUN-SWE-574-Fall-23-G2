@@ -11,6 +11,7 @@ class RoutePaths {
   static const HOME = 'home';
   static const PROFILE = 'profile';
   static const PROFILEDETAIL = 'profile-detail';
+  static const OTHERPROFILE = 'other-profile';
 
   static const RECOMMENDED = 'recommended';
   static const NEARBY = 'nearby';
