@@ -6,6 +6,7 @@ import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.request.CommentRequest;
 import com.SWE573.dutluk_backend.request.LikeRequest;
 import com.SWE573.dutluk_backend.service.CommentService;
+import com.SWE573.dutluk_backend.service.IntegrationService;
 import com.SWE573.dutluk_backend.service.StoryService;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,12 +38,12 @@ public class CommentController {
     public ResponseEntity<?> addComment(@RequestBody CommentRequest commentRequest, HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
         Story story = storyService.getStoryByStoryId(commentRequest.getStoryId());
-        return ResponseEntity.ok(commentService.createComment(commentRequest,user,story));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),commentService.createComment(commentRequest,user,story));
     }
     @PostMapping("/like")
     public ResponseEntity<?> likeComment(@RequestBody LikeRequest likeRequest, HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),commentService.likeComment(likeRequest.getLikedEntityId(),tokenizedUser.getId()));
 
-        return ResponseEntity.ok(commentService.likeComment(likeRequest.getLikedEntityId(),tokenizedUser.getId()));
     }
 }

@@ -43,9 +43,7 @@ public class UserController {
 
 
     @GetMapping("/test")
-    public String helloWorld(){
-        return "<h1>Hello world!</h1>";
-    }
+    public String helloWorld(){ return "<h1>Hello world!</h1>";}
 
 
 
@@ -62,7 +60,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
-                                         @RequestHeader(value = "User-Agent", defaultValue = "") String userAgent,
+                                   HttpServletRequest request,
                                          HttpServletResponse response) throws AccountNotFoundException {
         User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
         String token = userService.generateUserToken(foundUser);
@@ -71,30 +69,30 @@ public class UserController {
         response.addCookie(cookie);
         foundUser.setProfilePhoto(null);
         foundUser.setToken(token);
-        return IntegrationService.mobileCheck(userAgent,foundUser);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
     }
 
 
     @GetMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
+    public ResponseEntity<?> logout(HttpServletRequest request,HttpServletResponse response) {
         Cookie cookie = new Cookie("Bearer", null);
         cookie.setPath("/api");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        return ResponseEntity.ok("Logged out");
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),"Logged out");
     }
 
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest,@RequestHeader(value = "User-Agent", defaultValue = "") String userAgent) {
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest,HttpServletRequest request) {
         User newUser = User.builder()
                 .email(registerRequest.getEmail())
                 .username(registerRequest.getUsername())
                 .password(registerRequest.getPassword())
                 .build();
         User registeredUser = userService.addUser(newUser);
-        return IntegrationService.mobileCheck(userAgent,registeredUser);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),registeredUser);
     }
 
     @PostMapping("/update")
