@@ -93,6 +93,7 @@ class AuthRepository implements IAuthRepository {
     if (tokenModel == null || tokenModel.accessToken.isNullOrEmpty) {
       return left(AppFailure(message: 'Token bulunamadı'));
     }
+
     final prefs = await SharedPreferences.getInstance();
     final username = prefs.getString('username');
     final password = prefs.getString('password');
@@ -115,6 +116,10 @@ class AuthRepository implements IAuthRepository {
         final user =
             (response.entity as User).copyWith(token: tokenModel.accessToken);
         manager.addCookieTokenHeader(tokenModel.accessToken!);
+        await _cacheManager.setData(
+          tokenModel.copyWith(accessToken: user.token),
+        );
+        manager.addAuthorizationHeader(user.token!);
         return right(user);
       default:
         return left(response.errorType);
@@ -124,5 +129,6 @@ class AuthRepository implements IAuthRepository {
   @override
   Future<void> logout() async {
     await _cacheManager.clearAll();
+    manager.removeCookieTokenHeader();
   }
 }

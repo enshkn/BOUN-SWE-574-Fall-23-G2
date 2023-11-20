@@ -10,6 +10,8 @@ class RoutePaths {
   static const APP = '/app';
   static const HOME = 'home';
   static const PROFILE = 'profile';
+  static const PROFILEDETAIL = 'profile-detail';
+
   static const RECOMMENDED = 'recommended';
   static const NEARBY = 'nearby';
   static const TIMELINE = 'timeline';
