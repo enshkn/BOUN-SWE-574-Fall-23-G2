@@ -39,6 +39,20 @@ const AddStoryForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    // Text validation
+    if (!text || text.trim() === '' || text === '<p><br></p>') { // Check for empty or only whitespace
+      alert("Story body cannot be empty.");
+      return; // Prevent form submission if story body is empty
+    }
+    if (!startTimeStamp && !decade && !season) {
+      alert("Please select at least one: Start Date, Decade, or Season");
+      return; // Prevent form submission if no date is picked
+    }
+    // Location validation
+    if (locations.length === 0) {
+      alert("Please pick at least one location.");
+      return; // Prevent form submission if no location is set
+    }
     const currentDateTime = new Date();
     if (startTimeStamp && startTimeStamp > currentDateTime) {
       return;
@@ -221,6 +235,7 @@ const AddStoryForm = () => {
           className="add-story-input"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          required={true}
         />
       </label>
       <br />
@@ -231,6 +246,7 @@ const AddStoryForm = () => {
           className="add-story-input"
           value={labels}
           onChange={(e) => setLabels(e.target.value)}
+          required={true}
         />
       </label>
       <br />
