@@ -9,6 +9,7 @@ import com.SWE573.dutluk_backend.request.RegisterRequest;
 import com.SWE573.dutluk_backend.request.UserUpdateRequest;
 import com.SWE573.dutluk_backend.response.Response;
 import com.SWE573.dutluk_backend.response.SuccessfulResponse;
+import com.SWE573.dutluk_backend.service.IntegrationService;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,7 +38,7 @@ public class UserController {
     @Value("${FRONTEND_URL}")
     private String FRONTEND_URL;
 
-    private Response successfulResponse = new SuccessfulResponse();
+
 
 
 
@@ -52,7 +53,7 @@ public class UserController {
     public ResponseEntity<?> getUserById(@PathVariable Long id,HttpServletRequest request) throws AccountNotFoundException {
         User user = userService.findByUserId(id);
         if(user != null){
-            return ResponseEntity.ok(user);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),user);
         }
         else{
             throw new AccountNotFoundException();
@@ -60,7 +61,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginMobile(@RequestBody LoginRequest loginRequest,
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
                                          @RequestHeader(value = "User-Agent", defaultValue = "") String userAgent,
                                          HttpServletResponse response) throws AccountNotFoundException {
         User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
@@ -70,9 +71,7 @@ public class UserController {
         response.addCookie(cookie);
         foundUser.setProfilePhoto(null);
         foundUser.setToken(token);
-        System.out.println(userAgent);
-        successfulResponse.setEntity(foundUser);
-        return ResponseEntity.ok(successfulResponse);
+        return IntegrationService.mobileCheck(userAgent,foundUser);
     }
 
 
@@ -88,20 +87,21 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest,@RequestHeader(value = "User-Agent", defaultValue = "") String userAgent) {
         User newUser = User.builder()
                 .email(registerRequest.getEmail())
                 .username(registerRequest.getUsername())
                 .password(registerRequest.getPassword())
                 .build();
         User registeredUser = userService.addUser(newUser);
-        return ResponseEntity.ok(registeredUser);
+        return IntegrationService.mobileCheck(userAgent,registeredUser);
     }
 
     @PostMapping("/update")
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequest updateRequest, HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(userService.updateUser(user,updateRequest));
+        User updatedUser =userService.updateUser(user,updateRequest);
+        return ResponseEntity.ok(IntegrationService.mobileCheck(request.getHeader("User-Agent"),updatedUser));
     }
 
     @PostMapping(value= "/photo", consumes = "multipart/form-data")
@@ -112,7 +112,7 @@ public class UserController {
         try {
             byte[] uploadedPhoto = file.getBytes();
             User foundUser = userService.validateTokenizedUser(request);
-            return ResponseEntity.ok(userService.updateUserPhoto(foundUser,uploadedPhoto));
+            return ResponseEntity.ok(IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser));
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -121,19 +121,21 @@ public class UserController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<?> findAllUsers(){
-        return ResponseEntity.ok(userService.findAll());
+    public ResponseEntity<?> findAllUsers(HttpServletRequest request){
+        return ResponseEntity.ok(IntegrationService.mobileCheck(request.getHeader("User-Agent"),userService.findAll()));
     }
 
     @PostMapping("/follow")
     public ResponseEntity<?> followUser(@RequestBody FollowRequest followRequest, HttpServletRequest request){
         User foundUser = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(userService.followUser(foundUser, followRequest.getUserId()));
+        User followingUser = userService.followUser(foundUser, followRequest.getUserId());
+        return ResponseEntity.ok(IntegrationService.mobileCheck(request.getHeader("User-Agent"),followingUser));
     }
 
     @GetMapping("/profile")
     public ResponseEntity<?> showUserProfile(HttpServletRequest request){
-        return ResponseEntity.ok(userService.validateTokenizedUser(request));
+        User validatedUser = userService.validateTokenizedUser(request);
+        return ResponseEntity.ok(IntegrationService.mobileCheck(request.getHeader("User-Agent"),validatedUser));
     }
 
 
