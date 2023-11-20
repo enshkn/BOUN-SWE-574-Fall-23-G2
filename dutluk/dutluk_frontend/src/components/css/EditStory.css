@@ -1,4 +1,4 @@
-/* EditStoryForm.css */
+@import "Base.css";
 
 .edit-story-form {
   display: flex;
@@ -65,3 +65,4 @@
 .edit-story-button:hover {
   background-color: #45a049;
 }
+
