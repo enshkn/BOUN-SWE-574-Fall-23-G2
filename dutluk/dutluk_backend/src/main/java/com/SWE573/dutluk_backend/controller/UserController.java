@@ -7,6 +7,8 @@ import com.SWE573.dutluk_backend.request.FollowRequest;
 import com.SWE573.dutluk_backend.request.LoginRequest;
 import com.SWE573.dutluk_backend.request.RegisterRequest;
 import com.SWE573.dutluk_backend.request.UserUpdateRequest;
+import com.SWE573.dutluk_backend.response.Response;
+import com.SWE573.dutluk_backend.response.SuccessfulResponse;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +37,8 @@ public class UserController {
     @Value("${FRONTEND_URL}")
     private String FRONTEND_URL;
 
+    private Response successfulResponse = new SuccessfulResponse();
+
 
 
     @GetMapping("/test")
@@ -56,24 +60,19 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
+    public ResponseEntity<?> loginMobile(@RequestBody LoginRequest loginRequest,
+                                         @RequestHeader(value = "User-Agent", defaultValue = "") String userAgent,
                                          HttpServletResponse response) throws AccountNotFoundException {
         User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
         String token = userService.generateUserToken(foundUser);
-        if(!FRONTEND_URL.contains("https")){
-            Cookie cookie = new Cookie("Bearer", token);
-            cookie.setPath("/api");
-            cookie.setSecure(false);
-            response.addCookie(cookie);
-        }
-        else{
-            response.setHeader("Set-Cookie", "Bearer="+token+"; Path=/api; SameSite=None; Secure");
-            //cookie.setPath("/api");
-            //response.addCookie(cookie);
-        }
+        Cookie cookie = new Cookie("Bearer", token);
+        cookie.setPath("/api");
+        response.addCookie(cookie);
         foundUser.setProfilePhoto(null);
         foundUser.setToken(token);
-        return ResponseEntity.ok(foundUser);
+        System.out.println(userAgent);
+        successfulResponse.setEntity(foundUser);
+        return ResponseEntity.ok(successfulResponse);
     }
 
 
