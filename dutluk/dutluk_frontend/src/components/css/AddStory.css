@@ -1,4 +1,4 @@
-/* AddStoryForm.css */
+@import "Base.css";
 
 .add-story-form {
   display: flex;
