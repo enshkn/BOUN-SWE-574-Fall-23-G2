@@ -77,7 +77,7 @@ const AddStoryForm = () => {
       return; // Prevent form submission if no date is picked
     }
     // Location validation
-    if (locations.length === 0) {
+    if (markers.length === 0 && circles.length === 0 && polygons.length === 0 && polylines.length === 0) {
       alert("Please pick at least one location.");
       return; // Prevent form submission if no location is set
     }
