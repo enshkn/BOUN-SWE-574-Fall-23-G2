@@ -414,10 +414,9 @@ const AddStoryForm = () => {
               Marker: {index + 1} - {location.name}
               <button
                 type="button"
-                className="remove-location-button"
+                class="btn btn-danger m-2"
                 onClick={() => { handleRemoveShape(index, 'marker') }}
-              >
-                Remove
+              > Remove
               </button>
             </li>
           ))}
@@ -427,10 +426,9 @@ const AddStoryForm = () => {
               Circle {index + 1} - {circle.name} (Radius:{circle.radius}m)
               <button
                 type="button"
-                className="remove-location-button"
+                class="btn btn-danger m-1"
                 onClick={() => handleRemoveShape(index, 'circle')}
-              >
-                Remove
+              > Remove
               </button>
             </li>
           ))}
@@ -440,10 +438,9 @@ const AddStoryForm = () => {
               Polygon {index + 1} - {polygon.paths[0].name} - Nodes:{polygon.paths.length}
               <button
                 type="button"
-                className="remove-location-button"
+                class="btn btn-danger m-1"
                 onClick={() => handleRemoveShape(index, 'polygon')}
-              >
-                Remove
+              > Remove
               </button>
             </li>
           ))}
@@ -454,7 +451,7 @@ const AddStoryForm = () => {
               Polyline {index + 1} - {polyline.path[0].name} - Nodes:{polyline.path.length}
               <button
                 type="button"
-                className="remove-location-button"
+                class="btn btn-danger m-1"
                 onClick={() => handleRemoveShape(index, 'polyline')}
               >
                 Remove
