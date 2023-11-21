@@ -195,12 +195,13 @@ const AddStoryForm = () => {
           name: locationName,
         };
 
-        setMarkers([...markers, newMarker]);
+        setLocations([...locations, newMarker]);
+        setGeocodedLocations([...geocodedLocations, locationName]);
       } catch (error) {
         console.error("Error in reverse geocoding:", error);
         alert("Failed to fetch location name. Marker added with default name.");
-        setMarkers([...markers, { latitude: clickedLat, longitude: clickedLng, name: "Unknown Location" }]);
-      }
+        setLocations([...locations, { latitude: clickedLat, longitude: clickedLng, name: "Unknown Location" }]);
+        setGeocodedLocations([...geocodedLocations, "Unknown Location"]);      }
     } else {
       // For polygons and polylines, add temporary points
       setTempPoints([...tempPoints, { lat: clickedLat, lng: clickedLng }]);
@@ -282,6 +283,7 @@ const AddStoryForm = () => {
               path={polyline.path}
             />
           ))}
+          {/* Render temporary polygon or polyline */}
           {tempPoints.length > 0 && (
             currentShape === 'polygon' ? (
               <Polygon
@@ -308,7 +310,6 @@ const AddStoryForm = () => {
             ) : null
           )}
         </GoogleMap>
-        {/* Render temporary polygon or polyline */}
 
       </LoadScript>
 
