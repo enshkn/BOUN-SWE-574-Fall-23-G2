@@ -114,42 +114,42 @@ const AddStoryForm = () => {
           latitude: point.latitude,
           longitude: point.longitude,
           circleRadius: null,
-          isCircle: null, 
-          isPolyline: null, 
-          isPolygon: null, 
+          isCircle: null,
+          isPolyline: null,
+          isPolygon: null,
           isPoint: locationIndex, // Index for standalone point markers
         })),
-        ...circles.map((circle,circleIndex) => ({
+        ...circles.map((circle, circleIndex) => ({
           locationName: circle.center.name,
           latitude: circle.center.lat,
           longitude: circle.center.lng,
           circleRadius: circle.radius,
-          isCircle: circleIndex, 
-          isPolyline: null, 
-          isPolygon: null, 
+          isCircle: circleIndex,
+          isPolyline: null,
+          isPolygon: null,
           isPoint: null,
         })),
-        ...polygons.flatMap((polygon, polygonIndex) => 
+        ...polygons.flatMap((polygon, polygonIndex) =>
           polygon.paths.map(point => ({
             locationName: point.name,
             latitude: point.lat,
             longitude: point.lng,
             circleRadius: null,
-            isCircle: null, 
-            isPolyline: null, 
-            isPolygon: polygonIndex, 
+            isCircle: null,
+            isPolyline: null,
+            isPolygon: polygonIndex,
             isPoint: null,
           }))
         ),
-        ...polylines.flatMap((polyline, polylineIndex) => 
+        ...polylines.flatMap((polyline, polylineIndex) =>
           polyline.path.map(point => ({
             locationName: point.name,
             latitude: point.lat,
             longitude: point.lng,
             circleRadius: null,
-            isCircle: null, 
-            isPolyline: polylineIndex, 
-            isPolygon: null, 
+            isCircle: null,
+            isPolyline: polylineIndex,
+            isPolygon: null,
             isPoint: null,
           }))
         )
@@ -219,24 +219,24 @@ const AddStoryForm = () => {
       );
       locationName = response.data.results[0]?.formatted_address || "Unknown Location";
       console.log(response.data.results);
-      } catch (error) {
-        console.error("Error in reverse geocoding:", error);
-        alert("Failed to fetch location name");
-        locationName = "Unknown Location"
-      }
+    } catch (error) {
+      console.error("Error in reverse geocoding:", error);
+      alert("Failed to fetch location name");
+      locationName = "Unknown Location"
+    }
 
     if (currentShape === 'marker') {
 
-        const newMarker = {
-          latitude: clickedLat,
-          longitude: clickedLng,
-          name: locationName,
-          id: markers.length, // Unique identifier based on the current length of the array
-        };
-        setLocations([...locations, newMarker]);
-        setGeocodedLocations([...geocodedLocations, locationName]);
+      const newMarker = {
+        latitude: clickedLat,
+        longitude: clickedLng,
+        name: locationName,
+        id: markers.length, // Unique identifier based on the current length of the array
+      };
+      setLocations([...locations, newMarker]);
+      setGeocodedLocations([...geocodedLocations, locationName]);
 
-    } else if (currentShape === 'circle'){
+    } else if (currentShape === 'circle') {
       const newCircle = {
         center: { lat: clickedLat, lng: clickedLng, name: locationName },
         radius: circleRadius,
@@ -245,7 +245,7 @@ const AddStoryForm = () => {
       setCircles([...circles, newCircle]);
     }
 
-     else {
+    else {
       // For polygons and polylines, add temporary points
       setTempPoints([...tempPoints, { lat: clickedLat, lng: clickedLng, name: locationName }]);
     }
@@ -254,7 +254,7 @@ const AddStoryForm = () => {
   const finishShape = () => {
     if (currentShape === 'polygon' && tempPoints.length > 2) {
       // Get location name of the last point
-      
+
       const newPolygon = {
         id: polygons.length, // Unique identifier based on the current length of the array
         paths: tempPoints,
@@ -317,11 +317,11 @@ const AddStoryForm = () => {
                   }}
                 />
               ))}
-              {circles.map((circle, index)=> (
+              {circles.map((circle, index) => (
                 <Circle
-                key={index}
-                center={circle.center}
-                radius={circle.radius}
+                  key={index}
+                  center={circle.center}
+                  radius={circle.radius}
                 />
               ))}
               {polygons.map((polygon, index) => (
@@ -368,21 +368,30 @@ const AddStoryForm = () => {
             </StandaloneSearchBox>
           </LoadScript>
         </div>
-        <div className="map-controls d-flex flex-column align-items-left-b "
-          style={{ minWidth: '50px', height: 'auto', marginLeft: '5px' }}> {/* Added margin here */}
-          <button type="button" className="btn btn-primary mb-2" onClick={() => setCurrentShape('marker')}>
-          <i class="bi bi-geo-alt-fill"></i> {/* Marker Icon */}
+        <div className="map-controls d-flex flex-column align-items-left-b"
+          style={{ width: 'auto', height: 'auto', marginLeft: '5px' }}> {/* Added margin here */}
+          <button type="button" className="btn btn-primary mb-2" style={{ width: "50px" }} onClick={() => setCurrentShape('marker')}>
+            <i class="bi bi-geo-alt-fill"></i> {/* Marker Icon */}
           </button>
-          <button type="button" className="btn btn-primary mb-2" onClick={() => setCurrentShape('circle')}>
-          <i class="bi bi-circle"></i> {/* Circle Icon */}
-          </button>
-          <button type="button" className="btn btn-primary mb-2" onClick={() => setCurrentShape('polygon')}>
+          <div class="d-flex align-items-center mb-2">
+            <button type="button" className="btn btn-primary " style={{ width: "50px" }} onClick={() => setCurrentShape('circle')}>
+              <i class="bi bi-circle"></i> {/* Circle Icon */}
+            </button>
+            <input type="number" className="form-control"
+              style={{ width: "150px", marginLeft: "5px" }}
+              onChange={(e) => setCircleRadius(Number(e.target.value))}
+              placeholder="Radius (m)"
+            >
+            </input>
+          </div>
+
+          <button type="button" className="btn btn-primary mb-2" style={{ width: "50px" }} onClick={() => setCurrentShape('polygon')}>
             <i className="bi bi-hexagon"></i> {/* Polygon Icon */}
           </button>
-          <button type="button" className="btn btn-primary mb-2" onClick={() => setCurrentShape('polyline')}>
+          <button type="button" className="btn btn-primary mb-2" style={{ width: "50px" }} onClick={() => setCurrentShape('polyline')}>
             <i className="bi bi-arrow-right"></i> {/* Polyline Icon */}
           </button>
-          <button type="button" className="btn btn-primary mb-2" onClick={finishShape} disabled={tempPoints.length < 2}>
+          <button type="button" className="btn btn-primary mb-2" style={{ width: "50px" }} onClick={finishShape} disabled={tempPoints.length < 2}>
             <i className="bi bi-check-lg"></i> {/* Finish Icon */}
           </button>
         </div>
