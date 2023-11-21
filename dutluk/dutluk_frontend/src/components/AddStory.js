@@ -238,8 +238,8 @@ const AddStoryForm = () => {
       setPolygons([...polygons, newPolygon]);
     } else if (currentShape === 'polyline' && tempPoints.length > 1) {
       const newPolyline = {
-        id: polygons.length, // Unique identifier based on the current length of the array
-        paths: tempPoints
+        id: polylines.length, // Unique identifier based on the current length of the array
+        path: tempPoints.map(p => ({ lat: p.lat, lng: p.lng, name: p.name })),
       };
       setPolylines([...polylines, newPolyline]);
     }
