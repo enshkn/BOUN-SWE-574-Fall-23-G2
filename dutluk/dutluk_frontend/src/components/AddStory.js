@@ -14,20 +14,21 @@ const AddStoryForm = () => {
   const [title, setTitle] = useState("");
   const [labels, setLabels] = useState("");
   const [text, setText] = useState("");
-  const [locations, setLocations] = useState([]);
   const [geocodedLocations, setGeocodedLocations] = useState([]);
   const [startTimeStamp, setStartTimeStamp] = useState(null);
   const [endTimeStamp, setEndTimeStamp] = useState(null);
   const [season, setSeason] = useState("");
   const [decade, setDecade] = useState("");
   const [searchBox, setSearchBox] = useState(null);
-  const [polygons, setPolygons] = useState([]); // For regions
-  const [polylines, setPolylines] = useState([]); // For polylines
   const [currentShape, setCurrentShape] = useState(null);
-  const [markers, setMarkers] = useState([]);
   const [tempPoints, setTempPoints] = useState([]);
+  const [circleRadius, setCircleRadius] = useState(5000);
+
+  const [locations, setLocations] = useState([]);
   const [circles, setCircles] = useState([]);
-  const [circleRadius, setCircleRadius] = useState(5000); // Default radius value
+  const [polygons, setPolygons] = useState([]); 
+  const [polylines, setPolylines] = useState([]); 
+
 
   const onSearchBoxLoad = (ref) => {
     setSearchBox(ref);
@@ -77,7 +78,7 @@ const AddStoryForm = () => {
       return; // Prevent form submission if no date is picked
     }
     // Location validation
-    if (markers.length === 0 && circles.length === 0 && polygons.length === 0 && polylines.length === 0) {
+    if (locations.length === 0 && circles.length === 0 && polygons.length === 0 && polylines.length === 0) {
       alert("Please pick at least one location.");
       return; // Prevent form submission if no location is set
     }
@@ -117,7 +118,7 @@ const AddStoryForm = () => {
           isCircle: null,
           isPolyline: null,
           isPolygon: null,
-          isPoint: locationIndex, // Index for standalone point markers
+          isPoint: locationIndex, // Index for standalone points
         })),
         ...circles.map((circle, circleIndex) => ({
           locationName: circle.center.name,
@@ -231,7 +232,7 @@ const AddStoryForm = () => {
         latitude: clickedLat,
         longitude: clickedLng,
         name: locationName,
-        id: markers.length, // Unique identifier based on the current length of the array
+        id: locations.length, // Unique identifier based on the current length of the array
       };
       setLocations([...locations, newMarker]);
       setGeocodedLocations([...geocodedLocations, locationName]);
