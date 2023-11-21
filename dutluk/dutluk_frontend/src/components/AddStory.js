@@ -145,8 +145,8 @@ const AddStoryForm = () => {
   };
 
   const mapContainerStyle = {
-    width: "80%",
-    height: "400px",
+    width: "100%",
+    height: "100%",
   };
 
   const center = {
@@ -201,7 +201,8 @@ const AddStoryForm = () => {
         console.error("Error in reverse geocoding:", error);
         alert("Failed to fetch location name. Marker added with default name.");
         setLocations([...locations, { latitude: clickedLat, longitude: clickedLng, name: "Unknown Location" }]);
-        setGeocodedLocations([...geocodedLocations, "Unknown Location"]);      }
+        setGeocodedLocations([...geocodedLocations, "Unknown Location"]);
+      }
     } else {
       // For polygons and polylines, add temporary points
       setTempPoints([...tempPoints, { lat: clickedLat, lng: clickedLng }]);
@@ -245,73 +246,85 @@ const AddStoryForm = () => {
 
   return (
     <form className="add-story-form" onSubmit={handleSubmit}>
-      <div className="map-controls">
-        <button type="button" onClick={() => setCurrentShape('marker')}>Add Marker</button>
-        <button type="button" onClick={() => setCurrentShape('polygon')}>Start Polygon</button>
-        <button type="button" onClick={() => setCurrentShape('polyline')}>Start Polyline</button>
-        <button type="button" onClick={finishShape} disabled={tempPoints.length < 2}>Finish Shape</button>
+      <div className="d-flex">
+        <div style={{ flexGrow: 3, minWidth: 800, minHeight: 600 }}> {/* Allow map container to grow and take available space */}
+          <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+            libraries={["places"]}>
+            <GoogleMap
+              mapContainerStyle={mapContainerStyle}
+              center={center}
+              zoom={10}
+              onClick={handleMapClick}
+            >
+              {locations.map((location, index) => (
+                <Marker
+                  key={index}
+                  position={{
+                    lat: location.latitude,
+                    lng: location.longitude,
+                  }}
+                />
+              ))}
+              {polygons.map((polygon, index) => (
+                <Polygon
+                  key={index}
+                  paths={polygon.paths}
+                />
+              ))}
+              {polylines.map((polyline, index) => (
+                <Polyline
+                  key={index}
+                  path={polyline.path}
+                />
+              ))}
+              {/* Render temporary polygon or polyline */}
+              {tempPoints.length > 0 && (
+                currentShape === 'polygon' ? (
+                  <Polygon
+                    paths={[...tempPoints, tempPoints[0]]} // Close the polygon for visualization
+                    options={{
+                      fillColor: "lightblue",
+                      fillOpacity: 0.5,
+                      strokeColor: "blue",
+                      strokeOpacity: 1,
+                      strokeWeight: 2,
+                    }}
+                  />
+                ) : currentShape === 'polyline' ? (
+                  <Polyline
+                    path={tempPoints}
+                    options={{
+                      fillColor: "lightblue",
+                      fillOpacity: 0.5,
+                      strokeColor: "blue",
+                      strokeOpacity: 1,
+                      strokeWeight: 2,
+                    }}
+                  />
+                ) : null
+              )}
+            </GoogleMap>
+            <StandaloneSearchBox onLoad={onSearchBoxLoad} onPlacesChanged={onPlacesChanged}>
+              <input type="text" placeholder="Search" style={{ width: "100%", height: "40px" }} />
+            </StandaloneSearchBox>
+          </LoadScript>
+        </div>
+        <div className="map-controls d-flex flex-column align-items-left-b "
+          style={{ minWidth: '50px', height: 'auto', marginLeft: '5px' }}> {/* Added margin here */}
+          <button type="button" className="btn btn-primary mb-2" onClick={() => setCurrentShape('marker')}>
+          <i class="bi bi-geo-alt-fill"></i> {/* Marker Icon */}
+          </button>
+          <button type="button" className="btn btn-primary mb-2" onClick={() => setCurrentShape('polygon')}>
+            <i className="bi bi-hexagon"></i> {/* Polygon Icon */}
+          </button>
+          <button type="button" className="btn btn-primary mb-2" onClick={() => setCurrentShape('polyline')}>
+            <i className="bi bi-arrow-right"></i> {/* Polyline Icon */}
+          </button>
+          <button type="button" className="btn btn-primary mb-2" onClick={finishShape} disabled={tempPoints.length < 2}>
+            <i className="bi bi-check-lg"></i> {/* Finish Icon */}
+          </button>
+        </div>
       </div>
-      <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-        libraries={["places"]}>
-        <StandaloneSearchBox onLoad={onSearchBoxLoad} onPlacesChanged={onPlacesChanged}>
-          <input type="text" placeholder="Search" style={{ width: "80%", height: "40px" }} />
-        </StandaloneSearchBox>
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          center={center}
-          zoom={10}
-          onClick={handleMapClick}
-        >
-          {locations.map((location, index) => (
-            <Marker
-              key={index}
-              position={{
-                lat: location.latitude,
-                lng: location.longitude,
-              }}
-            />
-          ))}
-          {polygons.map((polygon, index) => (
-            <Polygon
-              key={index}
-              paths={polygon.paths}
-            />
-          ))}
-          {polylines.map((polyline, index) => (
-            <Polyline
-              key={index}
-              path={polyline.path}
-            />
-          ))}
-          {/* Render temporary polygon or polyline */}
-          {tempPoints.length > 0 && (
-            currentShape === 'polygon' ? (
-              <Polygon
-                paths={[...tempPoints, tempPoints[0]]} // Close the polygon for visualization
-                options={{
-                  fillColor: "lightblue",
-                  fillOpacity: 0.5,
-                  strokeColor: "blue",
-                  strokeOpacity: 1,
-                  strokeWeight: 2,
-                }}
-              />
-            ) : currentShape === 'polyline' ? (
-              <Polyline
-                path={tempPoints}
-                options={{
-                  fillColor: "lightblue",
-                  fillOpacity: 0.5,
-                  strokeColor: "blue",
-                  strokeOpacity: 1,
-                  strokeWeight: 2,
-                }}
-              />
-            ) : null
-          )}
-        </GoogleMap>
-
-      </LoadScript>
 
       <br />
       <br />
