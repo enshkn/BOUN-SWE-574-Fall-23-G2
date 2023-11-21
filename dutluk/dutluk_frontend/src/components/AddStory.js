@@ -23,7 +23,7 @@ const AddStoryForm = () => {
   const [tempPoints, setTempPoints] = useState([]);
   const [circleRadius, setCircleRadius] = useState(5000);
 
-  const [locations, setLocations] = useState([]);
+  const [markers, setMarkers] = useState([]);
   const [circles, setCircles] = useState([]);
   const [polygons, setPolygons] = useState([]);
   const [polylines, setPolylines] = useState([]);
@@ -39,20 +39,19 @@ const AddStoryForm = () => {
     const place = places[0];
     if (!place.geometry) return;
 
-    const newLocation = {
+    const newMarker = {
       latitude: place.geometry.location.lat(),
       longitude: place.geometry.location.lng(),
       name: place.formatted_address,
     };
 
-    setLocations([...locations, newLocation]);
-    // setGeocodedLocations([...geocodedLocations, place.formatted_address]);
+    setMarkers([...markers, newMarker]);
   };
 
 
   const handleRemoveShape = (index, type) => {
     if (type === 'marker') {
-      setLocations(locations.filter((_, i) => i !== index));
+      setMarkers(markers.filter((_, i) => i !== index));
     }
     else if (type === 'polygon') {
       setPolygons(polygons.filter((_, i) => i !== index));
@@ -82,7 +81,7 @@ const AddStoryForm = () => {
       return; // Prevent form submission if no date is picked
     }
     // Location validation
-    if (locations.length === 0 && circles.length === 0 && polygons.length === 0 && polylines.length === 0) {
+    if (markers.length === 0 && circles.length === 0 && polygons.length === 0 && polylines.length === 0) {
       alert("Please pick at least one location.");
       return; // Prevent form submission if no location is set
     }
@@ -114,7 +113,7 @@ const AddStoryForm = () => {
       labels: labels.split(","),
       text,
       locations: [
-        ...locations.map((point, locationIndex) => ({
+        ...markers.map((point, markerIndex) => ({
           locationName: point.name,
           latitude: point.latitude,
           longitude: point.longitude,
@@ -122,7 +121,7 @@ const AddStoryForm = () => {
           isCircle: null,
           isPolyline: null,
           isPolygon: null,
-          isPoint: locationIndex, // Index for standalone points
+          isPoint: markerIndex, // Index for standalone points
         })),
         ...circles.map((circle, circleIndex) => ({
           locationName: circle.center.name,
@@ -236,9 +235,9 @@ const AddStoryForm = () => {
         latitude: clickedLat,
         longitude: clickedLng,
         name: locationName,
-        id: locations.length, // Unique identifier based on the current length of the array
+        id: markers.length, // Unique identifier based on the current length of the array
       };
-      setLocations([...locations, newMarker]);
+      setMarkers([...markers, newMarker]);
 
     } else if (currentShape === 'circle') {
       const newCircle = {
@@ -314,12 +313,12 @@ const AddStoryForm = () => {
               zoom={10}
               onClick={handleMapClick}
             >
-              {locations.map((location, index) => (
+              {markers.map((marker, index) => (
                 <Marker
                   key={index}
                   position={{
-                    lat: location.latitude,
-                    lng: location.longitude,
+                    lat: marker.latitude,
+                    lng: marker.longitude,
                   }}
                 />
               ))}
@@ -409,9 +408,9 @@ const AddStoryForm = () => {
         <label className="add-story-label">Locations:</label>
         <ul className="add-story-location-list">
           {/* Display marker locations */}
-          {locations.map((location, index) => (
+          {markers.map((marker, index) => (
             <li key={`marker-${index}`} className="add-story-location-item">
-              Marker: {index + 1} - {location.name}
+              Marker: {index + 1} - {marker.name}
               <button
                 type="button"
                 class="btn btn-danger m-2"
