@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { GoogleMap, LoadScript, Marker, Polygon, Polyline, StandaloneSearchBox } from "@react-google-maps/api";
+import { Circle, GoogleMap, LoadScript, Marker, Polygon, Polyline, StandaloneSearchBox } from "@react-google-maps/api";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
@@ -26,6 +26,8 @@ const AddStoryForm = () => {
   const [currentShape, setCurrentShape] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [tempPoints, setTempPoints] = useState([]);
+  const [circles, setCircles] = useState([]);
+  const [circleRadius, setCircleRadius] = useState(5000); // Default radius value
 
   const onSearchBoxLoad = (ref) => {
     setSearchBox(ref);
@@ -111,16 +113,28 @@ const AddStoryForm = () => {
           locationName: point.name,
           latitude: point.latitude,
           longitude: point.longitude,
+          circleRadius: null,
           isCircle: null, 
           isPolyline: null, 
           isPolygon: null, 
           isPoint: locationIndex, // Index for standalone point markers
+        })),
+        ...circles.map((circle,circleIndex) => ({
+          locationName: circle.center.name,
+          latitude: circle.center.lat,
+          longitude: circle.center.lng,
+          circleRadius: circle.radius,
+          isCircle: circleIndex, 
+          isPolyline: null, 
+          isPolygon: null, 
+          isPoint: null,
         })),
         ...polygons.flatMap((polygon, polygonIndex) => 
           polygon.paths.map(point => ({
             locationName: point.name,
             latitude: point.lat,
             longitude: point.lng,
+            circleRadius: null,
             isCircle: null, 
             isPolyline: null, 
             isPolygon: polygonIndex, 
@@ -132,6 +146,7 @@ const AddStoryForm = () => {
             locationName: point.name,
             latitude: point.lat,
             longitude: point.lng,
+            circleRadius: null,
             isCircle: null, 
             isPolyline: polylineIndex, 
             isPolygon: null, 
@@ -221,7 +236,16 @@ const AddStoryForm = () => {
         setLocations([...locations, newMarker]);
         setGeocodedLocations([...geocodedLocations, locationName]);
 
-    } else {
+    } else if (currentShape === 'circle'){
+      const newCircle = {
+        center: { lat: clickedLat, lng: clickedLng, name: locationName },
+        radius: circleRadius,
+        id: circles.length // Unique identifier based on the current length of the array
+      };
+      setCircles([...circles, newCircle]);
+    }
+
+     else {
       // For polygons and polylines, add temporary points
       setTempPoints([...tempPoints, { lat: clickedLat, lng: clickedLng, name: locationName }]);
     }
@@ -293,6 +317,13 @@ const AddStoryForm = () => {
                   }}
                 />
               ))}
+              {circles.map((circle, index)=> (
+                <Circle
+                key={index}
+                center={circle.center}
+                radius={circle.radius}
+                />
+              ))}
               {polygons.map((polygon, index) => (
                 <Polygon
                   key={index}
@@ -341,6 +372,9 @@ const AddStoryForm = () => {
           style={{ minWidth: '50px', height: 'auto', marginLeft: '5px' }}> {/* Added margin here */}
           <button type="button" className="btn btn-primary mb-2" onClick={() => setCurrentShape('marker')}>
           <i class="bi bi-geo-alt-fill"></i> {/* Marker Icon */}
+          </button>
+          <button type="button" className="btn btn-primary mb-2" onClick={() => setCurrentShape('circle')}>
+          <i class="bi bi-circle"></i> {/* Circle Icon */}
           </button>
           <button type="button" className="btn btn-primary mb-2" onClick={() => setCurrentShape('polygon')}>
             <i className="bi bi-hexagon"></i> {/* Polygon Icon */}
@@ -468,4 +502,7 @@ const AddStoryForm = () => {
   );
 };
 
+
+
 export default AddStoryForm;
+
