@@ -415,7 +415,7 @@ const AddStoryForm = () => {
               <button
                 type="button"
                 className="remove-location-button"
-                onClick={() => handleRemoveShape(index, 'marker')}
+                onClick={() => { handleRemoveShape(index, 'marker') }}
               >
                 Remove
               </button>
@@ -424,7 +424,7 @@ const AddStoryForm = () => {
           {/* Display circles */}
           {circles.map((circle, index) => (
             <li key={`circle-${index}`} className="add-story-location-item">
-              Circle {index + 1} - {circle.name} (Radius: {circle.radius}m)
+              Circle {index + 1} - {circle.name} (Radius:{circle.radius}m)
               <button
                 type="button"
                 className="remove-location-button"
@@ -437,7 +437,7 @@ const AddStoryForm = () => {
           {/* Display polygons */}
           {polygons.map((polygon, index) => (
             <li key={`polygon-${index}`} className="add-story-location-item">
-              Polygon {index + 1} - {polygon.paths[0].name} - Nodes: {polygon.paths.length}
+              Polygon {index + 1} - {polygon.paths[0].name} - Nodes:{polygon.paths.length}
               <button
                 type="button"
                 className="remove-location-button"
