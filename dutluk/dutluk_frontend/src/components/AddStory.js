@@ -32,12 +32,20 @@ const AddStoryForm = () => {
   };
 
 
-  const handleAddPolygon = (polygon) => {
-    setPolygons([...polygons, polygon]);
+  const handleAddPolygon = (newPoints) => {
+    const newPolygon = {
+      id: polygons.length, // Unique identifier based on the current length of the array
+      paths: newPoints
+    };
+    setPolygons([...polygons, newPolygon]);
   };
-
-  const handleAddPolyline = (polyline) => {
-    setPolylines([...polylines, polyline]);
+  
+  const handleAddPolyline = (newPoints) => {
+    const newPolyline = {
+      id: polylines.length, // Unique identifier based on the current length of the array
+      path: newPoints
+    };
+    setPolylines([...polylines, newPolyline]);
   };
 
   const onPlacesChanged = () => {
@@ -110,19 +118,42 @@ const AddStoryForm = () => {
       formattedEndTimeStamp = null;
     }
 
+    // Create story object to be sent to backend
     const story = {
       title,
       labels: labels.split(","),
       text,
-      locations: locations.map((location) => ({
-        locationName: location.name,
-        latitude: location.latitude,
-        longitude: location.longitude,
-      })),
-      polygons: polygons.map((polygon) => ({
-      })),
-      polylines: polylines.map((polyline) => ({
-      })),
+      locations: [
+        ...locations.map((location, locationIndex) => ({
+          locationName: location.name,
+          latitude: location.latitude,
+          longitude: location.longitude,
+          isCircle: null, 
+          isPolyline: null, 
+          isPolygon: null, 
+          isPoint: locationIndex, // Index for standalone point markers
+        })),
+        ...polygons.flatMap((polygon, polygonIndex) => 
+          polygon.paths.map(point => ({
+            latitude: point.lat,
+            longitude: point.lng,
+            isCircle: null, 
+            isPolyline: null, 
+            isPolygon: polygonIndex, 
+            isPoint: null,
+          }))
+        ),
+        ...polylines.flatMap((polyline, polylineIndex) => 
+          polyline.path.map(point => ({
+            latitude: point.lat,
+            longitude: point.lng,
+            isCircle: null, 
+            isPolyline: polylineIndex, 
+            isPolygon: null, 
+            isPoint: null,
+          }))
+        )
+      ],
       startTimeStamp: formattedStartTimeStamp,
       endTimeStamp: formattedEndTimeStamp,
       season,
@@ -193,6 +224,7 @@ const AddStoryForm = () => {
           latitude: clickedLat,
           longitude: clickedLng,
           name: locationName,
+          id: markers.length, // Unique identifier based on the current length of the array
         };
 
         setLocations([...locations, newMarker]);
@@ -211,9 +243,17 @@ const AddStoryForm = () => {
 
   const finishShape = () => {
     if (currentShape === 'polygon' && tempPoints.length > 2) {
-      setPolygons([...polygons, { paths: tempPoints }]);
+      const newPolygon = {
+        id: polygons.length, // Unique identifier based on the current length of the array
+        paths: tempPoints
+      };
+      setPolygons([...polygons, newPolygon]);
     } else if (currentShape === 'polyline' && tempPoints.length > 1) {
-      setPolylines([...polylines, { path: tempPoints }]);
+      const newPolyline = {
+        id: polygons.length, // Unique identifier based on the current length of the array
+        paths: tempPoints
+      };
+      setPolylines([...polylines, newPolyline]);
     }
     setTempPoints([]); // Reset temporary points
   };
