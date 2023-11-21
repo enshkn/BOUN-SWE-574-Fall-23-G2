@@ -31,23 +31,6 @@ const AddStoryForm = () => {
     setSearchBox(ref);
   };
 
-
-  const handleAddPolygon = (newPoints) => {
-    const newPolygon = {
-      id: polygons.length, // Unique identifier based on the current length of the array
-      paths: newPoints
-    };
-    setPolygons([...polygons, newPolygon]);
-  };
-  
-  const handleAddPolyline = (newPoints) => {
-    const newPolyline = {
-      id: polylines.length, // Unique identifier based on the current length of the array
-      path: newPoints
-    };
-    setPolylines([...polylines, newPolyline]);
-  };
-
   const onPlacesChanged = () => {
     const places = searchBox.getPlaces();
     const place = places[0];
