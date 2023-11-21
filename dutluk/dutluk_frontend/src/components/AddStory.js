@@ -23,10 +23,14 @@ const AddStoryForm = () => {
   const [searchBox, setSearchBox] = useState(null);
   const [polygons, setPolygons] = useState([]); // For regions
   const [polylines, setPolylines] = useState([]); // For polylines
+  const [currentShape, setCurrentShape] = useState(null);
+  const [markers, setMarkers] = useState([]);
+  const [tempPoints, setTempPoints] = useState([]);
 
   const onSearchBoxLoad = (ref) => {
     setSearchBox(ref);
   };
+
 
   const handleAddPolygon = (polygon) => {
     setPolygons([...polygons, polygon]);
@@ -177,22 +181,39 @@ const AddStoryForm = () => {
     const clickedLat = event.latLng.lat();
     const clickedLng = event.latLng.lng();
 
-    try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${clickedLat},${clickedLng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
-      );
-      const locationName = response.data.results[0]?.formatted_address || "";
-      console.log(response.data.results);
-      const newLocation = {
-        latitude: clickedLat,
-        longitude: clickedLng,
-        name: locationName,
-      };
-      setLocations([...locations, newLocation]);
-      setGeocodedLocations([...geocodedLocations, locationName]);
-    } catch (error) {
-      console.log("Error:", error);
+    if (currentShape === 'marker') {
+      try {
+        const response = await axios.get(
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${clickedLat},${clickedLng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+        );
+        const locationName = response.data.results[0]?.formatted_address || "Unknown Location";
+        console.log(response.data.results);
+
+        const newMarker = {
+          latitude: clickedLat,
+          longitude: clickedLng,
+          name: locationName,
+        };
+
+        setMarkers([...markers, newMarker]);
+      } catch (error) {
+        console.error("Error in reverse geocoding:", error);
+        alert("Failed to fetch location name. Marker added with default name.");
+        setMarkers([...markers, { latitude: clickedLat, longitude: clickedLng, name: "Unknown Location" }]);
+      }
+    } else {
+      // For polygons and polylines, add temporary points
+      setTempPoints([...tempPoints, { lat: clickedLat, lng: clickedLng }]);
     }
+  };
+
+  const finishShape = () => {
+    if (currentShape === 'polygon' && tempPoints.length > 2) {
+      setPolygons([...polygons, { paths: tempPoints }]);
+    } else if (currentShape === 'polyline' && tempPoints.length > 1) {
+      setPolylines([...polylines, { path: tempPoints }]);
+    }
+    setTempPoints([]); // Reset temporary points
   };
 
   const handleStartDateChange = (date) => {
@@ -223,6 +244,12 @@ const AddStoryForm = () => {
 
   return (
     <form className="add-story-form" onSubmit={handleSubmit}>
+      <div className="map-controls">
+        <button type="button" onClick={() => setCurrentShape('marker')}>Add Marker</button>
+        <button type="button" onClick={() => setCurrentShape('polygon')}>Start Polygon</button>
+        <button type="button" onClick={() => setCurrentShape('polyline')}>Start Polyline</button>
+        <button type="button" onClick={finishShape} disabled={tempPoints.length < 2}>Finish Shape</button>
+      </div>
       <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
         libraries={["places"]}>
         <StandaloneSearchBox onLoad={onSearchBoxLoad} onPlacesChanged={onPlacesChanged}>
@@ -255,9 +282,36 @@ const AddStoryForm = () => {
               path={polyline.path}
             />
           ))}
+          {tempPoints.length > 0 && (
+            currentShape === 'polygon' ? (
+              <Polygon
+                paths={[...tempPoints, tempPoints[0]]} // Close the polygon for visualization
+                options={{
+                  fillColor: "lightblue",
+                  fillOpacity: 0.5,
+                  strokeColor: "blue",
+                  strokeOpacity: 1,
+                  strokeWeight: 2,
+                }}
+              />
+            ) : currentShape === 'polyline' ? (
+              <Polyline
+                path={tempPoints}
+                options={{
+                  fillColor: "lightblue",
+                  fillOpacity: 0.5,
+                  strokeColor: "blue",
+                  strokeOpacity: 1,
+                  strokeWeight: 2,
+                }}
+              />
+            ) : null
+          )}
         </GoogleMap>
+        {/* Render temporary polygon or polyline */}
+
       </LoadScript>
-      
+
       <br />
       <br />
       {geocodedLocations.length > 0 && (
