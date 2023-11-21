@@ -1,11 +1,13 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./css/AllStories.css";
 import StoryList from "./StoryList";
 
 function MyStories() {
   const [myStories, setMyStories] = useState([]);
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const navigate = useNavigate();
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -55,21 +57,7 @@ function MyStories() {
   };
 
   const handleEdit = (storyId) => {
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_URL}/api/story/edit/${storyId}`,
-        {
-          withCredentials: true,
-        }
-      )
-      .then(() => {
-        setMyStories((prevStories) =>
-          prevStories.filter((story) => story.id !== storyId)
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    navigate(`/story/edit/${storyId}`);
   };
 
   return (
