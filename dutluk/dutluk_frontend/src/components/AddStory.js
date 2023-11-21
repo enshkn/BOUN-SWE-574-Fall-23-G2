@@ -14,7 +14,6 @@ const AddStoryForm = () => {
   const [title, setTitle] = useState("");
   const [labels, setLabels] = useState("");
   const [text, setText] = useState("");
-  const [geocodedLocations, setGeocodedLocations] = useState([]);
   const [startTimeStamp, setStartTimeStamp] = useState(null);
   const [endTimeStamp, setEndTimeStamp] = useState(null);
   const [season, setSeason] = useState("");
@@ -26,14 +25,15 @@ const AddStoryForm = () => {
 
   const [locations, setLocations] = useState([]);
   const [circles, setCircles] = useState([]);
-  const [polygons, setPolygons] = useState([]); 
-  const [polylines, setPolylines] = useState([]); 
+  const [polygons, setPolygons] = useState([]);
+  const [polylines, setPolylines] = useState([]);
 
 
   const onSearchBoxLoad = (ref) => {
     setSearchBox(ref);
   };
 
+  // Location related event handlers
   const onPlacesChanged = () => {
     const places = searchBox.getPlaces();
     const place = places[0];
@@ -46,19 +46,23 @@ const AddStoryForm = () => {
     };
 
     setLocations([...locations, newLocation]);
-    setGeocodedLocations([...geocodedLocations, place.formatted_address]);
+    // setGeocodedLocations([...geocodedLocations, place.formatted_address]);
   };
 
 
-  useEffect(() => {
-    if (startTimeStamp) {
-      const startYear = getYear(startTimeStamp);
-      const startDecade = startYear - (startYear % 10);
-      setDecade(`${startDecade}s`);
-    } else {
-      setDecade("");
+  const handleRemoveShape = (index, type) => {
+    if (type === 'marker') {
+      setLocations(locations.filter((_, i) => i !== index));
     }
-  }, [startTimeStamp]);
+    else if (type === 'polygon') {
+      setPolygons(polygons.filter((_, i) => i !== index));
+    } else if (type === 'polyline') {
+      setPolylines(polylines.filter((_, i) => i !== index));
+    } else if (type === 'circle') {
+      setCircles(circles.filter((_, i) => i !== index));
+    }
+  };
+
 
   const handleEditorChange = (value) => {
     setText(value);
@@ -235,12 +239,12 @@ const AddStoryForm = () => {
         id: locations.length, // Unique identifier based on the current length of the array
       };
       setLocations([...locations, newMarker]);
-      setGeocodedLocations([...geocodedLocations, locationName]);
 
     } else if (currentShape === 'circle') {
       const newCircle = {
         center: { lat: clickedLat, lng: clickedLng, name: locationName },
         radius: circleRadius,
+        name: locationName,
         id: circles.length // Unique identifier based on the current length of the array
       };
       setCircles([...circles, newCircle]);
@@ -271,6 +275,8 @@ const AddStoryForm = () => {
     setTempPoints([]); // Reset temporary points
   };
 
+
+  // TimeResolution Handlers
   const handleStartDateChange = (date) => {
     setStartTimeStamp(date);
     const startYear = getYear(date);
@@ -286,16 +292,15 @@ const AddStoryForm = () => {
     setEndTimeStamp(date);
   };
 
-  const handleRemoveLocation = (index) => {
-    const updatedLocations = [...locations];
-    const updatedGeocodedLocations = [...geocodedLocations];
-
-    updatedLocations.splice(index, 1); // Remove the location at the specified index
-    updatedGeocodedLocations.splice(index, 1); // Remove the corresponding geocoded location
-
-    setLocations(updatedLocations);
-    setGeocodedLocations(updatedGeocodedLocations);
-  };
+  useEffect(() => {
+    if (startTimeStamp) {
+      const startYear = getYear(startTimeStamp);
+      const startDecade = startYear - (startYear % 10);
+      setDecade(`${startDecade}s`);
+    } else {
+      setDecade("");
+    }
+  }, [startTimeStamp]);
 
   return (
     <form className="add-story-form" onSubmit={handleSubmit}>
@@ -400,25 +405,64 @@ const AddStoryForm = () => {
 
       <br />
       <br />
-      {geocodedLocations.length > 0 && (
-        <div className="add-story-locations">
-          <label className="add-story-label">Locations:</label>
-          <ul className="add-story-location-list">
-            {geocodedLocations.map((location, index) => (
-              <li key={index} className="add-story-location-item">
-                {location}
-                <button
-                  type="button"
-                  className="remove-location-button"
-                  onClick={() => handleRemoveLocation(index)}
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className="add-story-locations">
+        <label className="add-story-label">Locations:</label>
+        <ul className="add-story-location-list">
+          {/* Display marker locations */}
+          {locations.map((location, index) => (
+            <li key={`marker-${index}`} className="add-story-location-item">
+              Marker: {index + 1} - {location.name}
+              <button
+                type="button"
+                className="remove-location-button"
+                onClick={() => handleRemoveShape(index, 'marker')}
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+          {/* Display circles */}
+          {circles.map((circle, index) => (
+            <li key={`circle-${index}`} className="add-story-location-item">
+              Circle {index + 1} - {circle.name} (Radius: {circle.radius}m)
+              <button
+                type="button"
+                className="remove-location-button"
+                onClick={() => handleRemoveShape(index, 'circle')}
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+          {/* Display polygons */}
+          {polygons.map((polygon, index) => (
+            <li key={`polygon-${index}`} className="add-story-location-item">
+              Polygon {index + 1} - {polygon.paths[0].name} - Nodes: {polygon.paths.length}
+              <button
+                type="button"
+                className="remove-location-button"
+                onClick={() => handleRemoveShape(index, 'polygon')}
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+
+          {/* Display polylines */}
+          {polylines.map((polyline, index) => (
+            <li key={`polyline-${index}`} className="add-story-location-item">
+              Polyline {index + 1} - {polyline.path[0].name} - Nodes:{polyline.path.length}
+              <button
+                type="button"
+                className="remove-location-button"
+                onClick={() => handleRemoveShape(index, 'polyline')}
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
       <br />
       <label className="add-story-label">
         Title:
