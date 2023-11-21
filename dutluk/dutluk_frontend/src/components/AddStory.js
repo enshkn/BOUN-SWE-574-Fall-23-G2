@@ -107,10 +107,10 @@ const AddStoryForm = () => {
       labels: labels.split(","),
       text,
       locations: [
-        ...locations.map((location, locationIndex) => ({
-          locationName: location.name,
-          latitude: location.latitude,
-          longitude: location.longitude,
+        ...locations.map((point, locationIndex) => ({
+          locationName: point.name,
+          latitude: point.latitude,
+          longitude: point.longitude,
           isCircle: null, 
           isPolyline: null, 
           isPolygon: null, 
@@ -118,6 +118,7 @@ const AddStoryForm = () => {
         })),
         ...polygons.flatMap((polygon, polygonIndex) => 
           polygon.paths.map(point => ({
+            locationName: point.name,
             latitude: point.lat,
             longitude: point.lng,
             isCircle: null, 
@@ -128,6 +129,7 @@ const AddStoryForm = () => {
         ),
         ...polylines.flatMap((polyline, polylineIndex) => 
           polyline.path.map(point => ({
+            locationName: point.name,
             latitude: point.lat,
             longitude: point.lng,
             isCircle: null, 
@@ -194,14 +196,21 @@ const AddStoryForm = () => {
   const handleMapClick = async (event) => {
     const clickedLat = event.latLng.lat();
     const clickedLng = event.latLng.lng();
+    let locationName = "";
+
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${clickedLat},${clickedLng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+      );
+      locationName = response.data.results[0]?.formatted_address || "Unknown Location";
+      console.log(response.data.results);
+      } catch (error) {
+        console.error("Error in reverse geocoding:", error);
+        alert("Failed to fetch location name");
+        locationName = "Unknown Location"
+      }
 
     if (currentShape === 'marker') {
-      try {
-        const response = await axios.get(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${clickedLat},${clickedLng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
-        );
-        const locationName = response.data.results[0]?.formatted_address || "Unknown Location";
-        console.log(response.data.results);
 
         const newMarker = {
           latitude: clickedLat,
@@ -209,26 +218,22 @@ const AddStoryForm = () => {
           name: locationName,
           id: markers.length, // Unique identifier based on the current length of the array
         };
-
         setLocations([...locations, newMarker]);
         setGeocodedLocations([...geocodedLocations, locationName]);
-      } catch (error) {
-        console.error("Error in reverse geocoding:", error);
-        alert("Failed to fetch location name. Marker added with default name.");
-        setLocations([...locations, { latitude: clickedLat, longitude: clickedLng, name: "Unknown Location" }]);
-        setGeocodedLocations([...geocodedLocations, "Unknown Location"]);
-      }
+
     } else {
       // For polygons and polylines, add temporary points
-      setTempPoints([...tempPoints, { lat: clickedLat, lng: clickedLng }]);
+      setTempPoints([...tempPoints, { lat: clickedLat, lng: clickedLng, name: locationName }]);
     }
   };
 
   const finishShape = () => {
     if (currentShape === 'polygon' && tempPoints.length > 2) {
+      // Get location name of the last point
+      
       const newPolygon = {
         id: polygons.length, // Unique identifier based on the current length of the array
-        paths: tempPoints
+        paths: tempPoints,
       };
       setPolygons([...polygons, newPolygon]);
     } else if (currentShape === 'polyline' && tempPoints.length > 1) {
