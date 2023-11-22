@@ -1,5 +1,12 @@
 public class Recommendation {
-    // Diğer alanlar ve fonksiyonlar buraya eklenecek
+    // call this function when a story is created
+    public void storyCreated(Story story) {
+    // when a story is created by an user grap the story body, tags, title into a string variable then assign it a variable with name "textToSend"
+    // create a JSON object with key "text"  then assign the variable textToSend into it.
+    // send JSON object to RE server (async)
+    // grap the return vectorized version of the story and assign a variable with name vectorizedStory
+    // assign vectorizedStory to the attribute of Story with name vectorized
+    };
 
     // call this function when a user liked a story
     public void storyLiked(Story story, User user) {
