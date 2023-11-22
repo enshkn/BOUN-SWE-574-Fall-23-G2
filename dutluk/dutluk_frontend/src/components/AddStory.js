@@ -27,6 +27,10 @@ const AddStoryForm = () => {
   const [circles, setCircles] = useState([]);
   const [polygons, setPolygons] = useState([]);
   const [polylines, setPolylines] = useState([]);
+  const [timeResolution, setTimeResolution] = useState("");
+ 
+
+
 
 
   const onSearchBoxLoad = (ref) => {
@@ -86,26 +90,33 @@ const AddStoryForm = () => {
       return; // Prevent form submission if no location is set
     }
     const currentDateTime = new Date();
-    if (startTimeStamp && startTimeStamp > currentDateTime) {
-      return;
-    }
-
-    if (endTimeStamp && endTimeStamp > currentDateTime) {
-      return;
-    }
-
     let formattedStartTimeStamp = null;
     let formattedEndTimeStamp = null;
 
-    if (decade) {
-      formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
-      formattedEndTimeStamp = endTimeStamp
-        ? format(endTimeStamp, "yyyy-MM-dd HH:mm")
-        : null;
-    } else {
-      formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
-      formattedEndTimeStamp = null;
+    if(startTimeStamp !== null){
+      if (startTimeStamp && startTimeStamp > currentDateTime) {
+        return;
+      }
+
+      if(endTimeStamp !== null){
+        if (endTimeStamp && endTimeStamp > currentDateTime) {
+          return;
+        }
+
+        if (decade) {
+          formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
+          formattedEndTimeStamp = endTimeStamp
+            ? format(endTimeStamp, "yyyy-MM-dd HH:mm")
+            : null;
+        } else {
+          formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
+          formattedEndTimeStamp = null;
+        }
+      }
     }
+    
+
+   
 
     // Create story object to be sent to backend
     const story = {
@@ -283,13 +294,15 @@ const AddStoryForm = () => {
     setDecade(`${startDecade}s`);
   };
 
-  const handleDecadeChange = (decade) => {
-    setDecade(decade);
+  const handleDecadeChange = (e) => {
+    setDecade(e.target.value);
   };
+  
 
   const handleEndDateChange = (date) => {
     setEndTimeStamp(date);
   };
+  
 
   useEffect(() => {
     if (startTimeStamp) {
@@ -492,59 +505,126 @@ const AddStoryForm = () => {
           className="add-story-editor"
         />
       </label>
+      
+        
+        
       <label className="add-story-label">
-        Start Date and Time:
-        <DatePicker
-          value={startTimeStamp}
-          onChange={handleStartDateChange}
-          className="add-story-datepicker"
-        />
-      </label>
-      <br />
-      <label className="add-story-label">
-        End Date and Time:
-        <DatePicker
-          value={endTimeStamp}
-          onChange={handleEndDateChange}
-          className="add-story-datepicker"
-        />
-      </label>
-      <br />
-      <label className="add-story-label">
-        Season:
-        <select
-          value={season}
-          onChange={(e) => setSeason(e.target.value)}
-          className="add-story-select"
-        >
-          <option value="">Select Season</option>
-          <option value="Spring">Spring</option>
-          <option value="Summer">Summer</option>
-          <option value="Fall">Fall</option>
-          <option value="Winter">Winter</option>
-        </select>
-      </label>
-      <br />
-      <label className="add-story-label">
-        Decade:
-        <select
-          value={decade}
-          onChange={handleDecadeChange}
-          className="add-story-select"
-        >
-          <option value="">Select Decade</option>
-          <option value="1940s">1940s</option>
-          <option value="1950s">1950s</option>
-          <option value="1960s">1960s</option>
-          <option value="1970s">1970s</option>
-          <option value="1980s">1980s</option>
-          <option value="1990s">1990s</option>
-          <option value="2000s">2000s</option>
-          <option value="2010s">2010s</option>
-          <option value="2020s">2020s</option>
-        </select>
-      </label>
-      <br />
+
+
+Time Resolution:
+<select
+  value={timeResolution}
+  onChange={(e) => setTimeResolution(e.target.value)}
+  className="add-story-select add-story-time-resolution-select"
+>
+  <option value="">Select Time Resolution</option>
+  <option value="exactDate">Exact Date</option>
+  <option value="season">Season</option>
+  <option value="decade">Decade</option>
+  <option value="seasonAndDecade">Season and Decade</option>
+</select>
+</label>
+<br />
+
+{timeResolution === "exactDate" && (
+<>
+  <label className="add-story-label">
+    Start Date and Time:
+    <DatePicker
+      value={startTimeStamp}
+      onChange={handleStartDateChange}
+      className="add-story-datepicker"
+    />
+  </label>
+  <br />
+  <label className="add-story-label">
+    End Date and Time (optional):
+    <DatePicker
+      value={endTimeStamp}
+      onChange={handleEndDateChange}
+      className="add-story-datepicker"
+    />
+  </label>
+</>
+ )}
+{timeResolution === "season" && (
+<label className="add-story-label">
+  Season:
+  <select
+    value={season}
+    onChange={(e) => setSeason(e.target.value)}
+    className="add-story-select"
+  >
+    <option value="">Select Season</option>
+    <option value="Spring">Spring</option>
+    <option value="Summer">Summer</option>
+    <option value="Fall">Fall</option>
+    <option value="Winter">Winter</option>
+  </select>
+</label>
+)}
+{timeResolution === "decade" && (
+<label className="add-story-label">
+  Decade:
+  <select
+    value={decade}
+    onChange={handleDecadeChange}
+    className="add-story-select"
+  >
+    <option value="">Select Decade</option>
+    <option value="1940s">1940s</option>
+    <option value="1950s">1950s</option>
+    <option value="1960s">1960s</option>
+    <option value="1970s">1970s</option>
+    <option value="1980s">1980s</option>
+    <option value="1990s">1990s</option>
+    <option value="2000s">2000s</option>
+    <option value="2010s">2010s</option>
+    <option value="2020s">2020s</option>
+  </select>
+</label>
+)}
+{timeResolution === "seasonAndDecade" && (
+  <>
+    <label className="add-story-label">
+      Season:
+      <select
+        value={season}
+        onChange={(e) => setSeason(e.target.value)}
+        className="add-story-select"
+      >
+        <option value="">Select Season</option>
+        <option value="Spring">Spring</option>
+        <option value="Summer">Summer</option>
+        <option value="Fall">Fall</option>
+        <option value="Winter">Winter</option>
+      </select>
+    </label>
+    <br />
+    <label className="add-story-label">
+      Decade:
+      <select
+        value={decade}
+        onChange={(e) => setDecade(e.target.value)}
+        className="add-story-select"
+      >
+        <option value="">Select Decade</option>
+        <option value="1940s">1940s</option>
+        <option value="1950s">1950s</option>
+        <option value="1960s">1960s</option>
+        <option value="1970s">1970s</option>
+        <option value="1980s">1980s</option>
+        <option value="1990s">1990s</option>
+        <option value="2000s">2000s</option>
+        <option value="2010s">2010s</option>
+        <option value="2020s">2020s</option>
+      </select>
+    </label>
+  </>
+)}
+
+
+
       <button type="submit" className="add-story-button">
         Add Story
       </button>
