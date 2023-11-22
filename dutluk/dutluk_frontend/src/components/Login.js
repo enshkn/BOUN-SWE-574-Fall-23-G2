@@ -3,11 +3,11 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./css/Login.css";
 
-function LoginComponent() {
+function LoginComponent({ onLogin }) {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -21,7 +21,8 @@ function LoginComponent() {
       .then((response) => {
         const cookieValue = response.headers["bearer"];
         localStorage.setItem("authToken", cookieValue);
-        Navigate("/story/all-stories")
+        onLogin(); // Call the onLogin prop to update the login status
+        navigate("/story/all-stories");
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
