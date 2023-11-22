@@ -22,6 +22,7 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> with UserInfoTextFormFieldMixin {
   final _formKey = GlobalKey<FormState>();
+  bool isVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +67,14 @@ class _LoginViewState extends State<LoginView> with UserInfoTextFormFieldMixin {
                         ),
                         BaseWidgets.lowerGap,
                         AppTextFormField.password(
+                          isVisibile: isVisible,
                           controller: passwordController,
                           hintText: 'Enter your password',
+                          onVisibilityChanged: () {
+                            setState(() {
+                              isVisible = !isVisible;
+                            });
+                          },
                         ),
                         BaseWidgets.lowerGap,
                         Padding(

@@ -4,6 +4,7 @@ import com.SWE573.dutluk_backend.model.Story;
 import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -31,4 +32,6 @@ public interface StoryRepository extends CrudRepository<Story,Long> {
     List<Story> findByStartTimeStamp(Date startTimeStamp);
 
     List<Story> findByCreatedAtAfterOrderByCreatedAtDesc(Date sevenDaysAgo);
+
+    List<Story> findByEndTimeStampBetween(Date startDecadeDate, Date endDecadeDate);
 }

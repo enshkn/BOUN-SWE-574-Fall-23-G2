@@ -69,6 +69,10 @@ class AppNetworkManager {
     _networkManager.addHeader({'Cookie': 'Bearer=$token'});
   }
 
+  void removeCookieTokenHeader() {
+    _networkManager.removeHeader('Cookie');
+  }
+
   void addAuthorizationHeader(String token) {
     _networkManager.removeAuthorizationHeader();
     _networkManager.addAuthorizationHeader(token);

@@ -47,7 +47,7 @@ class _ProfileViewState extends State<ProfileView> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      cubit.getProfileInfo();
+                      context.router.push(const ProfileDetailsRoute());
                     },
                   ),
                 ),

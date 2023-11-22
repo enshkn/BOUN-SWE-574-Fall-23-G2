@@ -5,6 +5,7 @@ import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.request.LikeRequest;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
+import com.SWE573.dutluk_backend.service.IntegrationService;
 import com.SWE573.dutluk_backend.service.StoryService;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,10 +18,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/story")
@@ -33,33 +31,34 @@ public class StoryController {
 
     @GetMapping("/all")
     public ResponseEntity<?> findAllStories(HttpServletRequest request){
-        return ResponseEntity.ok(storyService.findAllByOrderByIdDesc());
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findAllByOrderByIdDesc());
     }
 
     //MOCK UNTIL ACTIVITY FEED LOGIC IS ESTABLISHED
     @GetMapping("/feed")
     public ResponseEntity<?> findFeedStories(HttpServletRequest request){
-        return ResponseEntity.ok(storyService.findAllByOrderByIdDesc());
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findAllByOrderByIdDesc());
     }
 
     @PostMapping("/add")
     @CrossOrigin
     public ResponseEntity<?> addStory(@RequestBody StoryCreateRequest storyCreateRequest,HttpServletRequest request) throws ParseException, IOException {
         User user = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(storyService.createStory(user,storyCreateRequest));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.createStory(user,storyCreateRequest));
     }
 
     @GetMapping("/fromUser")
     public ResponseEntity<?> findAllStoriesfromUser(HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(storyService.findByUserIdOrderByIdDesc(user.getId()));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findByUserIdOrderByIdDesc(user.getId()));
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getStoryById(@PathVariable Long id,HttpServletRequest request){
         Story foundStory = storyService.getStoryByStoryId(id);
         if (foundStory!=null) {
-            return ResponseEntity.ok(foundStory);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundStory);
         }
         return ResponseEntity.notFound().build();
     }
@@ -67,7 +66,7 @@ public class StoryController {
     @GetMapping("/following")
     public ResponseEntity<?> findAllStoriesfromFollowings(HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(storyService.findFollowingStories(tokenizedUser));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findFollowingStories(tokenizedUser));
     }
 
     @GetMapping("/search")
@@ -79,7 +78,8 @@ public class StoryController {
             @RequestParam(required = false) String startTimeStamp,
             @RequestParam(required = false) String endTimeStamp,
             @RequestParam(required = false) String decade,
-            @RequestParam(required = false) String season) throws ParseException {
+            @RequestParam(required = false) String season,
+            HttpServletRequest request) throws ParseException {
         Set<Story> storySet = new HashSet<>();
         if(query != null){
             if(!query.equalsIgnoreCase("")){
@@ -113,14 +113,22 @@ public class StoryController {
             nullSet.add("No story found!");
             return ResponseEntity.ok(nullSet);
         }
-        return ResponseEntity.ok(Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+    }
+
+    @GetMapping("/search/label")
+    public ResponseEntity<?> searchStoriesByLabel(@RequestParam(required = false) String label,
+                                                  HttpServletRequest request){
+        List<Story> labelResults = storyService.searchStoriesWithLabel(label);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),labelResults);
     }
 
     @GetMapping("/nearby")
     public ResponseEntity<?> nearbyStories(
             @RequestParam(required = false) Integer radius,
             @RequestParam(required = false) Double latitude,
-            @RequestParam(required = false) Double longitude) throws ParseException {
+            @RequestParam(required = false) Double longitude,
+            HttpServletRequest request) throws ParseException {
         Set<Story> storySet = new HashSet<>();
         String query = null;
         if(latitude != null && longitude != null && (radius != null || radius != 0)){
@@ -131,35 +139,39 @@ public class StoryController {
             nullSet.add("No story found!");
             return ResponseEntity.ok(nullSet);
         }
-        return ResponseEntity.ok(Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
     }
     @PostMapping("/like/")
     public ResponseEntity<?> likeStory(@RequestBody LikeRequest likeRequest, HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(storyService.likeStory(likeRequest.getLikedEntityId(),tokenizedUser.getId()));
+        Story likedStory = storyService.likeStory(likeRequest.getLikedEntityId(),tokenizedUser.getId());
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),likedStory);
     }
     @GetMapping("/delete/{storyId}")
     public ResponseEntity<?> deleteStory(@PathVariable Long storyId, HttpServletRequest request) {
         User tokenizedUser = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(storyService.deleteByStoryId(storyService.getStoryByStoryId(storyId)));
+        String deletedStory = storyService.deleteByStoryId(storyService.getStoryByStoryId(storyId));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),deletedStory);
 
     }
 
     @PostMapping("/edit/{storyId}")
     public ResponseEntity<?> editStory(@PathVariable Long storyId, @RequestBody StoryEditRequest storyEditRequest, HttpServletRequest request) throws ParseException, IOException {
         User tokenizedUser = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(storyService.editStory(storyEditRequest,tokenizedUser,storyId));
+        Story editedStory = storyService.editStory(storyEditRequest,tokenizedUser,storyId);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),editedStory);
 
     }
 
     @GetMapping("/liked")
     public ResponseEntity<?> likedStories(HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
-        return ResponseEntity.ok(storyService.likedStories(tokenizedUser));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.likedStories(tokenizedUser));
+
     }
 
     @GetMapping("/recent")
     public ResponseEntity<?> findRecentStories(HttpServletRequest request){
-        return ResponseEntity.ok(storyService.findRecentStories());
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findRecentStories());
     }
 }

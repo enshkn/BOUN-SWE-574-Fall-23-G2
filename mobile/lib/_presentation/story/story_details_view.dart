@@ -10,16 +10,20 @@ import 'package:swe/_common/style/text_styles.dart';
 import 'package:swe/_core/env/env.dart';
 import 'package:swe/_core/extensions/context_extensions.dart';
 import 'package:swe/_core/extensions/string_extensions.dart';
+import 'package:swe/_core/widgets/base_loader.dart';
 import 'package:swe/_core/widgets/base_scroll_view.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_domain/auth/model/user.dart';
+import 'package:swe/_domain/story/model/comment_model.dart';
 import 'package:swe/_domain/story/model/location_model.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/_core/base_consumer.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
 import 'package:swe/_presentation/_route/router.dart';
+import 'package:swe/_presentation/widgets/appBar/customAppBar.dart';
 import 'package:swe/_presentation/widgets/base/base_list_view.dart';
 import 'package:swe/_presentation/widgets/card/button_card.dart';
+import 'package:swe/_presentation/widgets/card/comment_card.dart';
 import 'package:swe/_presentation/widgets/icon_with_label.dart';
 import 'package:swe/_presentation/widgets/wrapper/favorite_wrapper.dart';
 
@@ -44,6 +48,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
   late final ExpansionTileController controller4;
   late final ExpansionTileController controller5;
   late final ExpansionTileController controller6;
+  final FocusNode _focusnode = FocusNode();
 
   late final StoryCubit cubit;
   bool addFavoriteTriggered = false;
@@ -158,7 +163,6 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
   @override
   Widget build(BuildContext context) {
     final text = widget.model.text;
-
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
       appBar: AppBar(
@@ -189,9 +193,11 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
           return BaseView<StoryCubit, StoryState>(
             onCubitReady: (cubit) async {
               this.cubit = cubit;
+              await cubit.getStoryDetail(widget.model.id);
             },
             builder: (context, cubit, state) {
-              return SafeArea(
+              return BaseLoader(
+                isLoading: state.isLoading,
                 child: BaseScrollView(
                   children: [
                     buildContent(
@@ -199,6 +205,48 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                       text,
                       user!,
                     ),
+                    BaseWidgets.lowerGap,
+                    if (state.storyModel != null &&
+                        state.storyModel!.comments != null)
+                      GestureDetector(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            'Show Comments',
+                            style: const TextStyles.body()
+                                .copyWith(color: context.appBarColor),
+                          ),
+                        ),
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CommentsView(
+                                storyId: widget.model.id,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    BaseWidgets.lowerGap,
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                      child: CommentCard(
+                        user: user,
+                        storyId: widget.model.id,
+                        onTapSend: (comment) {
+                          setState(() {
+                            cubit.addComment(comment);
+                            _focusnode.unfocus();
+
+                            context.replaceRoute(
+                              StoryDetailsRoute(model: widget.model),
+                            );
+                          });
+                        },
+                      ),
+                    ),
+                    BaseWidgets.normalGap,
                   ],
                 ),
               );
@@ -279,13 +327,20 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           ),
                         ),
                       ),
-                    IconWithLabel(
-                      spacing: 8,
-                      icon: const Icon(
-                        Icons.star,
-                        color: Colors.yellow,
+                    GestureDetector(
+                      onTap: () {
+                        context.router.push(
+                          OtherProfileRoute(profile: widget.model.user!),
+                        );
+                      },
+                      child: IconWithLabel(
+                        spacing: 8,
+                        icon: const Icon(
+                          Icons.star,
+                          color: Colors.yellow,
+                        ),
+                        label: widget.model.user!.username!,
                       ),
-                      label: widget.model.user!.username!,
                     ),
                   ],
                 ),
@@ -324,8 +379,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.start,
                       ),
-                    BaseWidgets.lowerGap,
-                    if (widget.model.decade != null)
+                    if (widget.model.decade != '') BaseWidgets.lowerGap,
+                    if (widget.model.decade != '')
                       Text(
                         'Decade: ${widget.model.decade!}',
                         style: const TextStyles.body().copyWith(
@@ -335,8 +390,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.start,
                       ),
-                    BaseWidgets.lowerGap,
-                    if (widget.model.season != null)
+                    if (widget.model.season != '') BaseWidgets.lowerGap,
+                    if (widget.model.season != '')
                       Text(
                         'Season: ${widget.model.season!}',
                         style: const TextStyles.body().copyWith(
@@ -696,6 +751,71 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
       backgroundColor: Colors.blue,
       elevation: 4,
       padding: const EdgeInsets.all(8),
+    );
+  }
+}
+
+class CommentsView extends StatefulWidget {
+  final int storyId;
+  const CommentsView({
+    required this.storyId,
+    super.key,
+  });
+
+  @override
+  State<CommentsView> createState() => _CommentsViewState();
+}
+
+class _CommentsViewState extends State<CommentsView> {
+  @override
+  Widget build(BuildContext context) {
+    return BaseView<StoryCubit, StoryState>(
+      onCubitReady: (cubit) async {
+        await cubit.getStoryDetail(widget.storyId);
+      },
+      builder: (context, cubit, state) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: CustomAppBar(
+            context,
+            title: 'Comments',
+          ),
+          body: BaseScrollView(
+            children: [
+              BaseWidgets.lowerGap,
+              if (state.storyModel == null ||
+                  state.storyModel!.comments == null ||
+                  state.storyModel!.comments!.isEmpty)
+                const Center(
+                  child: Text(
+                    'No comment yet',
+                    style: TextStyles.title(),
+                  ),
+                )
+              else
+                SizedBox(
+                  child: BaseListView(
+                    shrinkWrap: true,
+                    items: state.storyModel!.comments!,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (item) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 8,
+                        ),
+                        child: CommentCard(
+                          user: item.user,
+                          content: item.text,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

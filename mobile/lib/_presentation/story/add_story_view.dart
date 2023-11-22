@@ -143,8 +143,6 @@ class _AddStoryViewState extends State<AddStoryView>
   bool dateRangeSelected = false;
   bool decadeSelected = false;
   bool yearSelected = false;
-
-  late TabController _tabController;
   int currnetIndex = 0;
   bool showBottomNav = true;
   String? selectTimeResolutions;
@@ -188,23 +186,8 @@ class _AddStoryViewState extends State<AddStoryView>
     controller = QuillEditorController();
     timeResolutionController = TextEditingController();
     story = '';
-
     selectedStartDateTime = DateTime(0);
-
     selectedEndDateTime = DateTime(0);
-
-    _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(tabListener);
-  }
-
-  void tabListener() {
-    _tabController.addListener(() {
-      if (currnetIndex != _tabController.index) {
-        setState(() {
-          currnetIndex = _tabController.index;
-        });
-      }
-    });
   }
 
   @override
@@ -217,8 +200,6 @@ class _AddStoryViewState extends State<AddStoryView>
     controller.dispose();
     tagController.clear();
     textController.clear();
-    _tabController.removeListener(tabListener);
-    _tabController.dispose();
     decadeController.dispose();
     decadeController.clear();
     seasonController.dispose();

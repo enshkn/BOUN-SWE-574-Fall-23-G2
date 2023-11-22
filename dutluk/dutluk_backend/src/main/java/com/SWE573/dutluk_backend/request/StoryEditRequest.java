@@ -19,10 +19,10 @@ public class StoryEditRequest {
 
     private ArrayList<Location> locations = new ArrayList<>();
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTC+3")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Europe/Istanbul")
     private Date startTimeStamp;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTC+3")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Europe/Istanbul")
     private Date endTimeStamp;
 
     private String season;

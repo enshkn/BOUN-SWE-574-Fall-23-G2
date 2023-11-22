@@ -140,12 +140,27 @@ public class StoryService {
     public Set<Story> searchStoriesWithQuery(String query) {
         Set<Story> storySet = new HashSet<>();
         storySet.addAll(storyRepository.findByTitleContainingIgnoreCase(query));
-        storySet.addAll(storyRepository.findByLabelsContainingIgnoreCase(query));
+        storySet.addAll(searchStoriesWithLabel(query));
         return storySet;
     }
 
+    public List<Story> searchStoriesWithLabel(String label){
+        return storyRepository.findByLabelsContainingIgnoreCase(label);
+    }
+
     public List<Story> searchStoriesWithDecade(String decade){
-        return storyRepository.findByDecadeContainingIgnoreCase(decade);
+        Set<Story> results = new HashSet<>();
+        results.addAll(storyRepository.findByDecadeContainingIgnoreCase(decade));
+        try {
+            Date startDecadeDate = convertToStartDate(decade);
+            Date endDecadeDate = convertToEndDate(decade);
+            results.addAll(storyRepository.findByStartTimeStampBetween(startDecadeDate,endDecadeDate));
+            results.addAll(storyRepository.findByEndTimeStampBetween(startDecadeDate,endDecadeDate));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        return results.stream().toList();
     }
 
     public List<Story> searchStoriesWithSeason(String season){
@@ -227,5 +242,36 @@ public class StoryService {
         calendar.add(Calendar.DAY_OF_MONTH, -7);
         Date date = calendar.getTime();
         return storyRepository.findByCreatedAtAfterOrderByCreatedAtDesc(date);
+    }
+
+    private static Date convertToStartDate(String decadeString) throws ParseException {
+
+        int decade = Integer.parseInt(decadeString.substring(0, 4));
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, decade);
+        calendar.set(Calendar.MONTH, Calendar.JANUARY);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTime();
+    }
+
+    private static Date convertToEndDate(String decadeString) throws ParseException {
+
+        int decade = Integer.parseInt(decadeString.substring(0, 4));
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, decade);
+        calendar.set(Calendar.MONTH, Calendar.DECEMBER);
+        calendar.set(Calendar.DAY_OF_MONTH, 31);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.add(Calendar.YEAR,9);
+
+        return calendar.getTime();
     }
 }

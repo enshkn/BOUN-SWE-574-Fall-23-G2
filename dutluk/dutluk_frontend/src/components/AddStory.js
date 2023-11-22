@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Marker, StandaloneSearchBox } from "@react-google-maps/api";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
 import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import { format, getYear } from "date-fns";
+import { useNavigate } from "react-router-dom"; // Import useHistory
 import "./css/AddStory.css";
 
 const AddStoryForm = () => {
@@ -19,6 +20,27 @@ const AddStoryForm = () => {
   const [endTimeStamp, setEndTimeStamp] = useState(null);
   const [season, setSeason] = useState("");
   const [decade, setDecade] = useState("");
+  const [searchBox, setSearchBox] = useState(null);
+
+  const onSearchBoxLoad = (ref) => {
+    setSearchBox(ref);
+  };
+
+  const onPlacesChanged = () => {
+    const places = searchBox.getPlaces();
+    const place = places[0];
+    if (!place.geometry) return;
+
+    const newLocation = {
+      latitude: place.geometry.location.lat(),
+      longitude: place.geometry.location.lng(),
+      name: place.formatted_address,
+    };
+
+    setLocations([...locations, newLocation]);
+    setGeocodedLocations([...geocodedLocations, place.formatted_address]);
+  };
+
 
   useEffect(() => {
     if (startTimeStamp) {
@@ -34,8 +56,24 @@ const AddStoryForm = () => {
     setText(value);
   };
 
+  const navigate = useNavigate(); // Create history object
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    // Text validation
+    if (!text || text.trim() === '' || text === '<p><br></p>') { // Check for empty or only whitespace
+      alert("Story body cannot be empty.");
+      return; // Prevent form submission if story body is empty
+    }
+    if (!startTimeStamp && !decade && !season) {
+      alert("Please select at least one: Start Date, Decade, or Season");
+      return; // Prevent form submission if no date is picked
+    }
+    // Location validation
+    if (locations.length === 0) {
+      alert("Please pick at least one location.");
+      return; // Prevent form submission if no location is set
+    }
     const currentDateTime = new Date();
     if (startTimeStamp && startTimeStamp > currentDateTime) {
       return;
@@ -50,12 +88,12 @@ const AddStoryForm = () => {
 
     if (decade) {
       formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
-      formattedEndTimeStamp = format(endTimeStamp, "yyyy-MM-dd HH:mm");
-    } else {
-      formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
       formattedEndTimeStamp = endTimeStamp
         ? format(endTimeStamp, "yyyy-MM-dd HH:mm")
         : null;
+    } else {
+      formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
+      formattedEndTimeStamp = null;
     }
 
     const story = {
@@ -82,7 +120,7 @@ const AddStoryForm = () => {
         }
       );
       console.log(response);
-      window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/user/my-profile`;
+      navigate('/');
     } catch (error) {
       console.log(error);
     }
@@ -158,9 +196,24 @@ const AddStoryForm = () => {
     setEndTimeStamp(date);
   };
 
+  const handleRemoveLocation = (index) => {
+    const updatedLocations = [...locations];
+    const updatedGeocodedLocations = [...geocodedLocations];
+
+    updatedLocations.splice(index, 1); // Remove the location at the specified index
+    updatedGeocodedLocations.splice(index, 1); // Remove the corresponding geocoded location
+
+    setLocations(updatedLocations);
+    setGeocodedLocations(updatedGeocodedLocations);
+  };
+
   return (
     <form className="add-story-form" onSubmit={handleSubmit}>
-      <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+      <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+        libraries={["places"]}>
+        <StandaloneSearchBox onLoad={onSearchBoxLoad} onPlacesChanged={onPlacesChanged}>
+          <input type="text" placeholder="Search" style={{ width: "80%", height: "40px" }} />
+        </StandaloneSearchBox>
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           center={center}
@@ -187,6 +240,13 @@ const AddStoryForm = () => {
             {geocodedLocations.map((location, index) => (
               <li key={index} className="add-story-location-item">
                 {location}
+                <button
+                  type="button"
+                  className="remove-location-button"
+                  onClick={() => handleRemoveLocation(index)}
+                >
+                  Remove
+                </button>
               </li>
             ))}
           </ul>
@@ -200,6 +260,7 @@ const AddStoryForm = () => {
           className="add-story-input"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          required={true}
         />
       </label>
       <br />
@@ -210,6 +271,7 @@ const AddStoryForm = () => {
           className="add-story-input"
           value={labels}
           onChange={(e) => setLabels(e.target.value)}
+          required={true}
         />
       </label>
       <br />

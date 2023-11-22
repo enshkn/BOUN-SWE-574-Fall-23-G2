@@ -1,3 +1,5 @@
+@import "Base.css";
+
 .all-stories {
   padding: 20px;
 }
@@ -43,3 +45,4 @@
 .locations-list li {
   margin-bottom: 5px;
 }
+
