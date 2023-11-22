@@ -120,64 +120,18 @@ class _HomeViewState extends State<HomeView>
                       child: TabBarView(
                         controller: _tabController,
                         children: [
-                          BaseScrollView(
-                            children: [
-                              BaseWidgets.lowerGap,
-                              SizedBox(
-                                child: BaseListView<StoryModel>(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  items: state.recentStories,
-                                  shrinkWrap: true,
-                                  itemBuilder: (item) {
-                                    return FavoriteWrapper(
-                                      initialState:
-                                          item.likes!.contains(user!.id),
-                                      builder: (
-                                        context,
-                                        addFavorite,
-                                        isfavorite,
-                                        isLoading,
-                                      ) {
-                                        return Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 8,
-                                          ),
-                                          height: 450,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              context.router.push(
-                                                StoryDetailsRoute(
-                                                  model: item,
-                                                  leadBackHome: true,
-                                                ),
-                                              );
-                                            },
-                                            child: StoryCard(
-                                              storyModel: item,
-                                              isFavorite: isfavorite,
-                                              isFavoriteLoading: isLoading,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                              BaseWidgets.normalGap,
-                            ],
-                          ),
-                          BaseScrollView(
-                            children: [
-                              BaseWidgets.lowerGap,
-                              if (state.fallowedStories != null &&
-                                  state.fallowedStories!.isNotEmpty)
+                          RefreshIndicator(
+                            onRefresh: () async {
+                              await cubit.getFallowedStories();
+                            },
+                            child: BaseScrollView(
+                              children: [
+                                BaseWidgets.lowerGap,
                                 SizedBox(
                                   child: BaseListView<StoryModel>(
                                     physics:
                                         const NeverScrollableScrollPhysics(),
-                                    items: state.fallowedStories!,
+                                    items: state.recentStories,
                                     shrinkWrap: true,
                                     itemBuilder: (item) {
                                       return FavoriteWrapper(
@@ -216,8 +170,66 @@ class _HomeViewState extends State<HomeView>
                                     },
                                   ),
                                 ),
-                              BaseWidgets.normalGap,
-                            ],
+                                BaseWidgets.normalGap,
+                              ],
+                            ),
+                          ),
+                          RefreshIndicator(
+                            onRefresh: () async {
+                              await cubit.getFallowedStories();
+                            },
+                            child: BaseScrollView(
+                              children: [
+                                BaseWidgets.lowerGap,
+                                if (state.fallowedStories != null &&
+                                    state.fallowedStories!.isNotEmpty)
+                                  SizedBox(
+                                    child: BaseListView<StoryModel>(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      items: state.fallowedStories!,
+                                      shrinkWrap: true,
+                                      itemBuilder: (item) {
+                                        return FavoriteWrapper(
+                                          initialState:
+                                              item.likes!.contains(user!.id),
+                                          builder: (
+                                            context,
+                                            addFavorite,
+                                            isfavorite,
+                                            isLoading,
+                                          ) {
+                                            return Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 20,
+                                                vertical: 8,
+                                              ),
+                                              height: 450,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  context.router.push(
+                                                    StoryDetailsRoute(
+                                                      model: item,
+                                                      leadBackHome: true,
+                                                    ),
+                                                  );
+                                                },
+                                                child: StoryCard(
+                                                  storyModel: item,
+                                                  isFavorite: isfavorite,
+                                                  isFavoriteLoading: isLoading,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                BaseWidgets.normalGap,
+                              ],
+                            ),
                           ),
                         ],
                       ),

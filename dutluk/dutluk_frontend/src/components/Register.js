@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Import useHistory
 import "./css/Register.css";
 
 const RegisterComponent = () => {
@@ -8,6 +9,7 @@ const RegisterComponent = () => {
   const [password, setPassword] = useState("");
   const [retypePassword, setRetypePassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +32,7 @@ const RegisterComponent = () => {
       );
       console.log(response.data);
       alert("Registered successfully!");
-      window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/login`;
+      navigate("/login")
     } catch (error) {
       console.error(error);
       alert("Error occurred during registration!");

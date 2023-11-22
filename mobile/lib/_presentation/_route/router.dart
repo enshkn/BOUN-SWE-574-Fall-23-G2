@@ -1,7 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:swe/_domain/auth/model/user.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/app/view/nearby/view/nearby.dart';
+import 'package:swe/_presentation/app/view/profile/view/other_profile_view.dart';
+import 'package:swe/_presentation/app/view/profile/view/profile_detail_view.dart';
 import 'package:swe/_presentation/app/view/recommended/view/recommended_view.dart';
 import 'package:swe/_presentation/app/view/timeline/view/timeline_view.dart';
 import 'package:swe/_presentation/story/add_story_view.dart';
@@ -44,6 +47,10 @@ class AppRouter extends _$AppRouter {
               path: RoutePaths.STORYDETAILS,
               page: StoryDetailsRoute.page,
             ),
+            AutoRoute(
+              path: RoutePaths.OTHERPROFILE,
+              page: OtherProfileRoute.page,
+            ),
           ],
         ),
         AutoRoute(
@@ -54,6 +61,10 @@ class AppRouter extends _$AppRouter {
             AutoRoute(
               path: RoutePaths.STORYDETAILS,
               page: StoryDetailsRoute.page,
+            ),
+            AutoRoute(
+              path: RoutePaths.OTHERPROFILE,
+              page: OtherProfileRoute.page,
             ),
           ],
         ),
@@ -66,6 +77,10 @@ class AppRouter extends _$AppRouter {
               path: RoutePaths.STORYDETAILS,
               page: StoryDetailsRoute.page,
             ),
+            AutoRoute(
+              path: RoutePaths.OTHERPROFILE,
+              page: OtherProfileRoute.page,
+            ),
           ],
         ),
         AutoRoute(
@@ -77,6 +92,10 @@ class AppRouter extends _$AppRouter {
               path: RoutePaths.STORYDETAILS,
               page: StoryDetailsRoute.page,
             ),
+            AutoRoute(
+              path: RoutePaths.OTHERPROFILE,
+              page: OtherProfileRoute.page,
+            ),
           ],
         ),
         AutoRoute(
@@ -84,6 +103,10 @@ class AppRouter extends _$AppRouter {
           page: ProfileTabRoute.page,
           children: [
             AutoRoute(path: '', page: ProfileRoute.page),
+            AutoRoute(
+              path: RoutePaths.PROFILEDETAIL,
+              page: ProfileDetailsRoute.page,
+            ),
             AutoRoute(
               path: RoutePaths.MYSTORIES,
               page: MyStoriesRoute.page,

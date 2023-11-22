@@ -3,6 +3,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:swe/_core/classes/typedefs.dart';
 import 'package:swe/_core/utility/record_utils.dart';
+import 'package:swe/_domain/auth/model/follow_user_model.dart';
+import 'package:swe/_domain/auth/model/profile_update_model.dart';
 import 'package:swe/_domain/auth/model/user.dart';
 import 'package:swe/_domain/network/app_network_manager.dart';
 import 'package:swe/_domain/network/network_paths.dart';
@@ -20,6 +22,43 @@ class ProfileRepository implements IProfileRepository {
       NetworkPaths.profile,
       type: HttpTypes.get,
       parserModel: const User(),
+      cachePolicy: CachePolicy.noCache,
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as User);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<User> updateUserInfo(ProfileUpdateModel model) async {
+    final response = await manager.fetch<User, User>(
+      NetworkPaths.profileUpdate,
+      type: HttpTypes.post,
+      parserModel: const User(),
+      data: model.toJson(),
+      cachePolicy: CachePolicy.noCache,
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as User);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<User> followUser(FollowUserModel model) async {
+    final response = await manager.fetch<User, User>(
+      NetworkPaths.followUser,
+      type: HttpTypes.post,
+      parserModel: const User(),
+      cachePolicy: CachePolicy.noCache,
+      data: model.toJson(),
     );
 
     switch (response.statusCode) {

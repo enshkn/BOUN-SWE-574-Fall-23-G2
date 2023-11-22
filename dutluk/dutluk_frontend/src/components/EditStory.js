@@ -8,10 +8,11 @@ import "quill-emoji/dist/quill-emoji.css";
 import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import { format, getYear } from "date-fns";
+import { useNavigate } from "react-router-dom"; // Import useHistory
 import "./css/EditStory.css";
 
 const EditStoryForm = () => {
-  const { id } = useParams();  // Move this line inside the component
+  const { id } = useParams();
 
   const fetchStoryData = useCallback(async () => {
     try {
@@ -23,7 +24,6 @@ const EditStoryForm = () => {
       );
       const existingStory = response.data;
 
-      // Pre-fill form fields with existing data
       setTitle(existingStory.title);
       setLabels(existingStory.labels.join(","));
       setText(existingStory.text);
@@ -40,7 +40,6 @@ const EditStoryForm = () => {
   }, [id]);
 
   useEffect(() => {
-    // Fetch existing story data when the component mounts
     fetchStoryData();
   }, [id, fetchStoryData]);
 
@@ -63,6 +62,8 @@ const EditStoryForm = () => {
       setDecade("");
     }
   }, [startTimeStamp]);
+
+  const navigate = useNavigate();
 
   const handleEditorChange = (value) => {
     setText(value);
@@ -117,7 +118,7 @@ const EditStoryForm = () => {
         }
       );
       console.log(response);
-      window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/user/my-profile`;
+      navigate("/user/my-profile")
     } catch (error) {
       console.log(error);
     }
