@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Space, message } from 'antd';
 import "./css/Profile.css";
 
 function Profile() {
@@ -10,6 +11,7 @@ function Profile() {
   const [isFollowing, setIsFollowing] = useState();
   const [followButtonName, setFollowButtonName] = useState();
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     axios
@@ -30,7 +32,8 @@ function Profile() {
         }
       })
       .catch((error) => {
-        setError(error);
+        console.log(error);
+        messageApi.open({ type: "error", content: "Error occured while loading your profile!"});
       });
   }, [id]);
 
@@ -43,7 +46,8 @@ function Profile() {
         setUser(response.data);
       })
       .catch((error) => {
-        setError(error);
+        console.log(error);
+        messageApi.open({ type: "error", content: "Error occured while loading the profile!"});
       });
   }, [id, BACKEND_URL]);
 
@@ -60,7 +64,8 @@ function Profile() {
           setIsFollowing(false);
         })
         .catch((error) => {
-          setError(error);
+          console.log(error);
+          messageApi.open({ type: "error", content: "Error occured while trying to unfollow this user!"});
         });
     } else {
       axios
@@ -74,17 +79,23 @@ function Profile() {
           setIsFollowing(true);
         })
         .catch((error) => {
-          setError(error);
+          console.log(error);
+          messageApi.open({ type: "error", content: "Error occured while trying to follow this user!"});
         });
     }
   };
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  } else if (!user) {
+  if (!user) {
     return <div>Loading...</div>;
   } else {
     return (
+      <Space
+      direction="vertical"
+      style={{
+        width: '50%',
+      }}
+      >
+      {contextHolder}
       <div className="profile-container">
         <div className="profile-photo-container">
           <label htmlFor="photo" className="profile-photo-label">
@@ -102,6 +113,7 @@ function Profile() {
           {followButtonName}
         </button>
       </div>
+      </Space>
     );
   }
 }

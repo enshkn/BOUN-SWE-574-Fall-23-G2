@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Space, message } from 'antd';
 import "./css/Login.css";
 
 function LoginComponent() {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const Navigate = useNavigate();
+
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -21,18 +23,26 @@ function LoginComponent() {
       .then((response) => {
         const cookieValue = response.headers["bearer"];
         localStorage.setItem("authToken", cookieValue);
+        messageApi.open({ type: "success", content: "You logged in successfuly!"});
         Navigate("/story/all-stories")
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
-          setError("Invalid username or password.");
+          messageApi.open({ type: "error", content: "Invalid username or password."});
         } else {
-          setError("An error occurred while logging in.");
+          messageApi.open({ type: "error", content: "An error occurred while logging in."});
         }
       });
   };
 
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '50%',
+    }}
+    >
+    {contextHolder}
     <form className="login-form" onSubmit={handleLogin}>
       <h2 className="login-heading">Log In</h2>
       <div className="login-input-group">
@@ -62,8 +72,8 @@ function LoginComponent() {
       <button type="submit" className="login-button">
         Log in
       </button>
-      {error && <div className="login-error">{error}</div>}
     </form>
+    </Space>
   );
 }
 

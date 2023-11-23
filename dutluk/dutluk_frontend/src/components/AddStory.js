@@ -7,7 +7,8 @@ import "quill-emoji/dist/quill-emoji.css";
 import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import { format, getYear } from "date-fns";
-import { useNavigate } from "react-router-dom"; // Import useHistory
+import { useNavigate } from "react-router-dom";
+import { Space, message } from 'antd';
 import "./css/AddStory.css";
 
 const AddStoryForm = () => {
@@ -21,6 +22,22 @@ const AddStoryForm = () => {
   const [season, setSeason] = useState("");
   const [decade, setDecade] = useState("");
   const [searchBox, setSearchBox] = useState(null);
+<<<<<<< Updated upstream
+=======
+  const [currentShape, setCurrentShape] = useState(null);
+  const [tempPoints, setTempPoints] = useState([]);
+  const [circleRadius, setCircleRadius] = useState(5000);
+
+  const [markers, setMarkers] = useState([]);
+  const [circles, setCircles] = useState([]);
+  const [polygons, setPolygons] = useState([]);
+  const [polylines, setPolylines] = useState([]);
+  const [timeResolution, setTimeResolution] = useState("");
+
+  const [messageApi, contextHolder] = message.useMessage();
+
+
+>>>>>>> Stashed changes
 
   const onSearchBoxLoad = (ref) => {
     setSearchBox(ref);
@@ -62,16 +79,21 @@ const AddStoryForm = () => {
     event.preventDefault();
     // Text validation
     if (!text || text.trim() === '' || text === '<p><br></p>') { // Check for empty or only whitespace
-      alert("Story body cannot be empty.");
+      messageApi.open({ type: "error", content: "Story body cannot be empty. Please try again."});
       return; // Prevent form submission if story body is empty
     }
     if (!startTimeStamp && !decade && !season) {
-      alert("Please select at least one: Start Date, Decade, or Season");
+      messageApi.open({ type: "error", content: "Please select at least one: Start Date, Decade, or Season"});
       return; // Prevent form submission if no date is picked
     }
     // Location validation
+<<<<<<< Updated upstream
     if (locations.length === 0) {
       alert("Please pick at least one location.");
+=======
+    if (markers.length === 0 && circles.length === 0 && polygons.length === 0 && polylines.length === 0) {
+      messageApi.open({ type: "error", content: "Please pick at least one location."});
+>>>>>>> Stashed changes
       return; // Prevent form submission if no location is set
     }
     const currentDateTime = new Date();
@@ -96,6 +118,11 @@ const AddStoryForm = () => {
       formattedEndTimeStamp = null;
     }
 
+<<<<<<< Updated upstream
+=======
+   
+
+>>>>>>> Stashed changes
     const story = {
       title,
       labels: labels.split(","),
@@ -120,9 +147,11 @@ const AddStoryForm = () => {
         }
       );
       console.log(response);
+      await messageApi.open({ type: "success", content: "Story added successfully!"});
       navigate('/');
     } catch (error) {
       console.log(error);
+      messageApi.open({ type: "error", content: "Failed to add story. Please try again."});
     }
   };
 
@@ -169,7 +198,19 @@ const AddStoryForm = () => {
       );
       const locationName = response.data.results[0]?.formatted_address || "";
       console.log(response.data.results);
+<<<<<<< Updated upstream
       const newLocation = {
+=======
+    } catch (error) {
+      console.error("Error in reverse geocoding:", error);
+      messageApi.open({ type: "warning", content: "Failed to fetch location name, it will be saved as unknown!"});
+      locationName = "Unknown Location"
+    }
+
+    if (currentShape === 'marker') {
+
+      const newMarker = {
+>>>>>>> Stashed changes
         latitude: clickedLat,
         longitude: clickedLng,
         name: locationName,
@@ -208,6 +249,13 @@ const AddStoryForm = () => {
   };
 
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '50%',
+    }}
+    >
+    {contextHolder}
     <form className="add-story-form" onSubmit={handleSubmit}>
       <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
         libraries={["places"]}>
@@ -342,6 +390,7 @@ const AddStoryForm = () => {
         Add Story
       </button>
     </form>
+    </Space>
   );
 };
 

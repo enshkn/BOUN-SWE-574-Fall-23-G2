@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Space, message } from 'antd';
 import parse from "html-react-parser";
 import { useParams } from "react-router-dom";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
@@ -23,6 +24,7 @@ function StoryDetails() {
   const { id } = useParams();
   const [story, setStory] = useState(null);
   const [commentText, setCommentText] = useState("");
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     axios
@@ -34,6 +36,7 @@ function StoryDetails() {
       })
       .catch((error) => {
         console.log(error);
+        messageApi.open({ type: "error", content: "Error occured while loading the story!"});
       });
   }, [id]);
 
@@ -58,8 +61,10 @@ function StoryDetails() {
       updatedStory.comments.push(response.data);
       setStory(updatedStory);
       setCommentText("");
+      messageApi.open({ type: "success", content: "Your comment is posted!"});
     } catch (error) {
       console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while posting your comment!"});
     }
   };
 
@@ -73,8 +78,10 @@ function StoryDetails() {
         }
       );
       setStory(response.data);
+      messageApi.open({ type: "success", content: "You liked this story!"});
     } catch (error) {
       console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while liking this story!"});
     }
   };
   const handleLikeComment = async (commentId) => {
@@ -95,16 +102,26 @@ function StoryDetails() {
       });
       updatedStory.comments = updatedComments;
       setStory(updatedStory);
+      messageApi.open({ type: "success", content: "You liked the comment!"});
     } catch (error) {
       console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while liking the comment!"});
     }
   };
 
   if (!story) {
+    messageApi.open({ type: "error", content: "Story Not Found!"});
     return <div>Story Not Found!</div>;
   }
 
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '50%',
+    }}
+    >
+    {contextHolder}
     <div className="all-stories">
       <h1>Title: {story.title}</h1>
       <p>
@@ -199,6 +216,7 @@ function StoryDetails() {
         <button type="submit">Submit</button>
       </form>
     </div>
+    </Space>
   );
 }
 
