@@ -22,8 +22,7 @@ const AddStoryForm = () => {
   const [season, setSeason] = useState("");
   const [decade, setDecade] = useState("");
   const [searchBox, setSearchBox] = useState(null);
-<<<<<<< Updated upstream
-=======
+
   const [currentShape, setCurrentShape] = useState(null);
   const [tempPoints, setTempPoints] = useState([]);
   const [circleRadius, setCircleRadius] = useState(5000);
@@ -35,10 +34,6 @@ const AddStoryForm = () => {
   const [timeResolution, setTimeResolution] = useState("");
 
   const [messageApi, contextHolder] = message.useMessage();
-
-
->>>>>>> Stashed changes
-
   const onSearchBoxLoad = (ref) => {
     setSearchBox(ref);
   };
@@ -87,13 +82,8 @@ const AddStoryForm = () => {
       return; // Prevent form submission if no date is picked
     }
     // Location validation
-<<<<<<< Updated upstream
-    if (locations.length === 0) {
-      alert("Please pick at least one location.");
-=======
     if (markers.length === 0 && circles.length === 0 && polygons.length === 0 && polylines.length === 0) {
       messageApi.open({ type: "error", content: "Please pick at least one location."});
->>>>>>> Stashed changes
       return; // Prevent form submission if no location is set
     }
     const currentDateTime = new Date();
@@ -118,11 +108,6 @@ const AddStoryForm = () => {
       formattedEndTimeStamp = null;
     }
 
-<<<<<<< Updated upstream
-=======
-   
-
->>>>>>> Stashed changes
     const story = {
       title,
       labels: labels.split(","),
@@ -191,6 +176,7 @@ const AddStoryForm = () => {
   const handleMapClick = async (event) => {
     const clickedLat = event.latLng.lat();
     const clickedLng = event.latLng.lng();
+    let locationName = "";
 
     try {
       const response = await axios.get(
@@ -198,10 +184,7 @@ const AddStoryForm = () => {
       );
       const locationName = response.data.results[0]?.formatted_address || "";
       console.log(response.data.results);
-<<<<<<< Updated upstream
-      const newLocation = {
-=======
-    } catch (error) {
+    }  catch (error) {
       console.error("Error in reverse geocoding:", error);
       messageApi.open({ type: "warning", content: "Failed to fetch location name, it will be saved as unknown!"});
       locationName = "Unknown Location"
@@ -210,15 +193,26 @@ const AddStoryForm = () => {
     if (currentShape === 'marker') {
 
       const newMarker = {
->>>>>>> Stashed changes
         latitude: clickedLat,
         longitude: clickedLng,
         name: locationName,
+        id: markers.length, // Unique identifier based on the current length of the array
       };
-      setLocations([...locations, newLocation]);
-      setGeocodedLocations([...geocodedLocations, locationName]);
-    } catch (error) {
-      console.log("Error:", error);
+      setMarkers([...markers, newMarker]);
+
+    } else if (currentShape === 'circle') {
+      const newCircle = {
+        center: { lat: clickedLat, lng: clickedLng, name: locationName },
+        radius: circleRadius,
+        name: locationName,
+        id: circles.length // Unique identifier based on the current length of the array
+      };
+      setCircles([...circles, newCircle]);
+    }
+
+    else {
+      // For polygons and polylines, add temporary points
+      setTempPoints([...tempPoints, { lat: clickedLat, lng: clickedLng, name: locationName }]);
     }
   };
 
