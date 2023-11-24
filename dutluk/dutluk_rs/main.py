@@ -8,6 +8,7 @@ from gensim.models import Word2Vec
 from gensim.utils import simple_preprocess
 
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.decomposition import PCA
 
 
 
@@ -44,6 +45,36 @@ async def vectorize(data: Text):
     if not vectors:
         return {"vectorized": []}
     avg_vector = np.mean(vectors, axis=0)
+    return {"vectorized": avg_vector.tolist()}
+
+@app.post("/vectorize-pca")
+async def vectorizePca(data: Text):
+    # Extract the text from the JSON object
+    text = data.text
+    # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
+    tokenized_text = simple_preprocess(text)
+    # Initialize an empty array to store the vectors
+    vectors = []
+    # For each token in the tokenized text, get its vector
+    for token in tokenized_text:
+        if token in word2vec_model:
+            vectors.append(word2vec_model[token])
+    # If no vectors found, return an empty list
+    if not vectors:
+        return {"vectorized": []}
+
+    # Convert the list of vectors to a NumPy array
+    vectors_array = np.array(vectors)
+
+    # Use PCA to reduce the dimensionality of the vectors
+    pca = PCA(
+        n_components=10
+    )  # Replace your_desired_dimension with the desired number of dimensions
+    reduced_vectors = pca.fit_transform(vectors_array)
+
+    # Calculate the average vector of the reduced vectors
+    avg_vector = np.mean(reduced_vectors, axis=0)
+
     return {"vectorized": avg_vector.tolist()}
 
 @app.post("/text-similarity")
