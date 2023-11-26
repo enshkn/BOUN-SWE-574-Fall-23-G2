@@ -1,10 +1,12 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { Space, message } from 'antd';
 import "./css/AllStories.css";
 import StoryList from "./StoryList";
 
 function FollowedUserStories() {
   const [followedUserStories, setFollowedUserStories] = useState([]);
+  const [messageApi, contextHolder] = message.useMessage();
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -29,16 +31,25 @@ function FollowedUserStories() {
       })
       .catch((error) => {
         console.log(error);
+        messageApi.open({ type: "error", content: "Error occured while loading stories from followings!"});
       });
-  }, []);
+  }, [messageApi]);
 
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '100%',
+    }}
+    >
+    {contextHolder}
     <div className="all-stories">
       <h1>Story Feed</h1>
       {followedUserStories.map((story) => (
         StoryList(story = { story })
       ))}
     </div>
+    </Space>
   );
 }
 

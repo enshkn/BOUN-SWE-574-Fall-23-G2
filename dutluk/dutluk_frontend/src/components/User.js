@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { Space, message } from 'antd';
 import axios from "axios";
 import "./css/User.css";
 
 function UserComponent({ userId }) {
   const [user, setUser] = useState(null);
-  const [error, setError] = useState("");
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [biography, setBiography] = useState("");
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     const cookieValue = document.cookie.replace(
@@ -24,8 +25,10 @@ function UserComponent({ userId }) {
         }
       )
       .then((response) => setUser(response.data))
-      .catch((error) => setError(error.response.data.message));
-  }, []);
+      .catch((error) => 
+      console.log(error.response.data.message));
+      messageApi.open({ type: "error", content: "Error occured while loading profile!"});
+  }, [messageApi]);
 
   const handleFileChange = (event) => {
     setPhotoFile(event.target.files[0]);
@@ -49,7 +52,9 @@ function UserComponent({ userId }) {
         setUser({ ...user, biography: response.data.biography });
         setBiography("");
       })
-      .catch((error) => console.log(error));
+      .catch((error) => 
+      console.log(error));
+      messageApi.open({ type: "error", content: "Error occured while updating your profile!"});
   };
 
   const handleSubmit = (event) => {
@@ -74,18 +79,23 @@ function UserComponent({ userId }) {
         setPhotoFile(user.profilePhoto);
         setPhotoPreview(user.profilePhoto);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => 
+      console.log(error));
+      messageApi.open({ type: "error", content: "Error occured while uploading photo!"});
   };
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   if (!user) {
     return <div>Loading...</div>;
   }
 
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '100%',
+    }}
+    >
+    {contextHolder}
     <div className="user-component">
       <h2>Username: {user.username}</h2>
       <p>Biography: {user.biography}</p>
@@ -114,6 +124,7 @@ function UserComponent({ userId }) {
         </form>
       </div>
     </div>
+    </Space>
   );
 }
 

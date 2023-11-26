@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useHistory
+import { Space, message } from 'antd';
 import "./css/Register.css";
 
 const RegisterComponent = () => {
@@ -10,12 +11,14 @@ const RegisterComponent = () => {
   const [retypePassword, setRetypePassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== retypePassword) {
       setPasswordError("Passwords do not match");
+      messageApi.open({ type: "error", content: "Passwords do not match"});
       return;
     }
 
@@ -31,11 +34,11 @@ const RegisterComponent = () => {
         data
       );
       console.log(response.data);
-      alert("Registered successfully!");
+      await messageApi.open({ type: "success", content: "Registered successfully!"});
       navigate("/login")
     } catch (error) {
       console.error(error);
-      alert("Error occurred during registration!");
+      messageApi.open({ type: "error", content: "Error occurred during registration!"});
     }
   };
 
@@ -45,6 +48,13 @@ const RegisterComponent = () => {
   };
 
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '100%',
+    }}
+    >
+    {contextHolder}
     <div>
       <form className="register-form" onSubmit={handleSubmit}>
         <h2 className="register-heading">Register</h2>
@@ -94,6 +104,7 @@ const RegisterComponent = () => {
         </button>
       </form>
     </div>
+    </Space>
   );
 };
 

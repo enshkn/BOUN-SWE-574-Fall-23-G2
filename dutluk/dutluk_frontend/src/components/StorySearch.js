@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { Space, message } from 'antd';
 import "./css/StorySearch.css";
 
 const StorySearch = () => {
@@ -11,6 +12,7 @@ const StorySearch = () => {
   const [searchDate, setSearchDate] = useState({ type: null, value: null });
   const [searchSeason, setSearchSeason] = useState(null);
   const [searchDecade, setSearchDecade] = useState(null);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSearch = useCallback(async () => {
     if (searchQuery && searchQuery.length < 4) {
@@ -62,8 +64,10 @@ const StorySearch = () => {
       setSearchResults(response.data);
     } catch (error) {
       console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while searching stories!"});
     }
   }, [
+    messageApi,
     searchQuery,
     radius,
     selectedLocation,
@@ -98,6 +102,13 @@ const StorySearch = () => {
   };
 
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '100%',
+    }}
+    >
+    {contextHolder}
     <div className="story-search">
       <h2>Story Search</h2>
       <div className="search-form">
@@ -276,6 +287,7 @@ const StorySearch = () => {
         )}
       </div>
     </div>
+    </Space>
   );
 };
 

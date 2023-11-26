@@ -8,11 +8,13 @@ import "quill-emoji/dist/quill-emoji.css";
 import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import { format, getYear } from "date-fns";
-import { useNavigate } from "react-router-dom"; // Import useHistory
+import { useNavigate } from "react-router-dom";
+import { Space, message } from 'antd';
 import "./css/EditStory.css";
 
 const EditStoryForm = () => {
   const { id } = useParams();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const fetchStoryData = useCallback(async () => {
     try {
@@ -36,8 +38,9 @@ const EditStoryForm = () => {
       setDecade(existingStory.decade);
     } catch (error) {
       console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while fetching the story data!"});
     }
-  }, [id]);
+  }, [id, messageApi]);
 
   useEffect(() => {
     fetchStoryData();
@@ -121,6 +124,7 @@ const EditStoryForm = () => {
       navigate("/user/my-profile")
     } catch (error) {
       console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while trying to edit the story!"});
     }
   };
   
@@ -177,6 +181,7 @@ const EditStoryForm = () => {
       setGeocodedLocations([...geocodedLocations, locationName]);
     } catch (error) {
       console.log("Error:", error);
+      messageApi.open({ type: "error", content: "Error occured while getting map coordinates!"});
     }
   };
 
@@ -196,6 +201,13 @@ const EditStoryForm = () => {
   };
 
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '100%',
+    }}
+    >
+    {contextHolder}
     <form className="edit-story-form" onSubmit={handleEditSubmit}>
       <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
         <GoogleMap
@@ -317,6 +329,7 @@ const EditStoryForm = () => {
         Edit Story
       </button>
     </form>
+    </Space>
   );
 };
 

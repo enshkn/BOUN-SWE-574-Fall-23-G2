@@ -1,11 +1,13 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { Space, message } from 'antd';
 import { useParams } from "react-router-dom";
 import "./css/AllStories.css";
 
 const LabelSearch = () => {
   const { label } = useParams();
   const [labeledStories, setLabeledStories] = useState([]);
+  const [messageApi, contextHolder] = message.useMessage();
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -30,10 +32,18 @@ const LabelSearch = () => {
       })
       .catch((error) => {
         console.log(error);
+        messageApi.open({ type: "error", content: "Error occured while loading stories from label!"});
       });
-  }, [label]);
+  }, [label, messageApi]);
 
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '100%',
+    }}
+    >
+    {contextHolder}
     <div className="all-stories">
       <h1>Stories with Label: "{label}"</h1>
       {labeledStories.length > 0 ? (
@@ -92,6 +102,7 @@ const LabelSearch = () => {
         <p>No stories found with the label "{label}"</p>
       )}
     </div>
+    </Space>
   );
 };
 
