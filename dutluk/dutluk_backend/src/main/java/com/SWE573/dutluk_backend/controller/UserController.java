@@ -7,8 +7,6 @@ import com.SWE573.dutluk_backend.request.FollowRequest;
 import com.SWE573.dutluk_backend.request.LoginRequest;
 import com.SWE573.dutluk_backend.request.RegisterRequest;
 import com.SWE573.dutluk_backend.request.UserUpdateRequest;
-import com.SWE573.dutluk_backend.response.Response;
-import com.SWE573.dutluk_backend.response.SuccessfulResponse;
 import com.SWE573.dutluk_backend.service.IntegrationService;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.Cookie;

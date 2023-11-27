@@ -53,7 +53,7 @@ public class UserService{
         return jwtUtil.validateToken(token,user);
     }
 
-    public boolean validateTokenByRequest(HttpServletRequest request) {
+    public Boolean validateTokenByRequest(HttpServletRequest request) {
         try{
             String token = getTokenFromEndpoint(request);
             User user = findByUserToken(token);
