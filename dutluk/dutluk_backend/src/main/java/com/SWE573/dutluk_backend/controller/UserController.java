@@ -67,7 +67,6 @@ public class UserController {
         Cookie cookie = new Cookie("Bearer", token);
         cookie.setPath("/api");
         response.addCookie(cookie);
-        foundUser.setProfilePhoto(null);
         foundUser.setToken(token);
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
     }
