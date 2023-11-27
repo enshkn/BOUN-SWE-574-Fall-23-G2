@@ -10,6 +10,7 @@ abstract interface class IStoryRepository {
   EitherFuture<List<StoryModel>> getActivityFeed();
   EitherFuture<List<StoryModel>> getFallowedStories();
   EitherFuture<List<StoryModel>> getNearbyStories(GetNearbyStoriesModel model);
+  EitherFuture<List<StoryModel>> getRecommendedStories();
 
   EitherFuture<List<StoryModel>> myStories();
   EitherFuture<bool> deleteStory(int storyId);
