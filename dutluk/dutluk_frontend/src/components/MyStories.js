@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Space, message } from 'antd';
 import "./css/AllStories.css";
 import StoryList from "./StoryList";
 
@@ -8,19 +9,7 @@ function MyStories() {
   const [myStories, setMyStories] = useState([]);
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
-
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-
-    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
-
-    return formattedDate;
-  }
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     axios
@@ -35,8 +24,9 @@ function MyStories() {
       })
       .catch((error) => {
         console.log(error);
+        messageApi.open({ type: "error", content: "Error occured while loading your stories"});
       });
-  }, [BACKEND_URL]);
+  }, [BACKEND_URL, messageApi]);
 
   const handleDelete = (storyId) => {
     axios
@@ -53,6 +43,7 @@ function MyStories() {
       })
       .catch((error) => {
         console.log(error);
+        messageApi.open({ type: "error", content: "Error occured while deleting the story!"});
       });
   };
 
@@ -61,6 +52,13 @@ function MyStories() {
   };
 
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '100%',
+    }}
+    >
+    {contextHolder}
     <div className="all-stories">
       <h1>My Stories</h1>
       {myStories.map((story) => (
@@ -81,6 +79,7 @@ function MyStories() {
         </StoryList>
       ))}
     </div>
+    </Space>
   );
 }
 

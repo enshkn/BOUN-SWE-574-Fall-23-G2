@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { Space, message } from 'antd';
 import "./css/StorySearch.css";
 import { Timeline } from 'antd';
 
@@ -11,6 +12,7 @@ const TimelineSearch = () => {
   const [searchDate, setSearchDate] = useState({ type: null, value: null });
   const [searchSeason, setSearchSeason] = useState(null);
   const [searchDecade, setSearchDecade] = useState(null);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSearch = useCallback(async () => {
     try {
@@ -57,6 +59,7 @@ const TimelineSearch = () => {
       setSearchResults(response.data);
     } catch (error) {
       console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while searching stories!"});
     }
   }, [
     radius,
@@ -64,6 +67,7 @@ const TimelineSearch = () => {
     searchDate,
     searchSeason,
     searchDecade,
+    messageApi,
   ]);
 
   const handleMapClick = (event) => {
@@ -92,6 +96,13 @@ const TimelineSearch = () => {
   };
 
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '100%',
+    }}
+    >
+    {contextHolder}
     <div className="story-search">
       <h2>Timeline Search</h2>
       <div className="search-form">
@@ -270,6 +281,7 @@ const TimelineSearch = () => {
         )}
       </div>
     </div>
+    </Space>
   );
 };
 

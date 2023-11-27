@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { Space, message } from 'antd';
 import axios from "axios";
+import blankPhotoPreview from "../profile_pic.png";
 import "./css/User.css";
 
 function UserComponent({ userId }) {
   const [user, setUser] = useState(null);
-  const [error, setError] = useState("");
   const [photoFile, setPhotoFile] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(blankPhotoPreview);
   const [biography, setBiography] = useState("");
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     const cookieValue = document.cookie.replace(
@@ -24,8 +26,10 @@ function UserComponent({ userId }) {
         }
       )
       .then((response) => setUser(response.data))
-      .catch((error) => setError(error.response.data.message));
-  }, []);
+      .catch((error) => 
+      console.log(error.response.data.message));
+      messageApi.open({ type: "error", content: "Error occured while loading profile!"});
+  }, [messageApi]);
 
   const handleFileChange = (event) => {
     setPhotoFile(event.target.files[0]);
@@ -49,7 +53,9 @@ function UserComponent({ userId }) {
         setUser({ ...user, biography: response.data.biography });
         setBiography("");
       })
-      .catch((error) => console.log(error));
+      .catch((error) => 
+      console.log(error));
+      messageApi.open({ type: "error", content: "Error occured while updating your profile!"});
   };
 
   const handleSubmit = (event) => {
@@ -74,46 +80,56 @@ function UserComponent({ userId }) {
         setPhotoFile(user.profilePhoto);
         setPhotoPreview(user.profilePhoto);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => 
+      console.log(error));
+      messageApi.open({ type: "error", content: "Error occured while uploading photo!"});
   };
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   if (!user) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="user-component">
-      <h2>Username: {user.username}</h2>
-      <p>Biography: {user.biography}</p>
-      <div>
-        <label htmlFor="photo">Photo:</label>
-        <img
-          className="user-photo"
-          src={photoPreview || `data:image/jpeg;base64,${user.profilePhoto}`}
-          alt={user.username}
-        />
-        <form onSubmit={handleSubmit}>
-          <input type="file" name="photo" onChange={handleFileChange} />
-          <button type="submit">Save Photo</button>
-        </form>
+    <Space
+      direction="vertical"
+      style={{
+        width: "100%",
+      }}
+    >
+      {contextHolder}
+      <div className="user-component">
+        <h2>Username: {user.username}</h2>
+        <p>Biography: {user.biography}</p>
+        <div>
+          <label htmlFor="photo">Photo:</label>
+          <p>
+            {
+              <img
+                className="profile-photo"
+                src={user.profilePhoto || photoPreview}
+                alt={photoPreview}
+              />
+            }
+          </p>
+          <form onSubmit={handleSubmit}>
+            <input type="file" name="photo" onChange={handleFileChange} />
+            <button type="submit">Save Photo</button>
+          </form>
+        </div>
+        <div>
+          <form onSubmit={handleBiographySubmit}>
+            <label htmlFor="biography">Biography:</label>
+            <input
+              type="text"
+              name="biography"
+              value={biography}
+              onChange={handleBiographyChange}
+            />
+            <button type="submit">Edit Biography</button>
+          </form>
+        </div>
       </div>
-      <div>
-        <form onSubmit={handleBiographySubmit}>
-          <label htmlFor="biography">Biography:</label>
-          <input
-            type="text"
-            name="biography"
-            value={biography}
-            onChange={handleBiographyChange}
-          />
-          <button type="submit">Edit Biography</button>
-        </form>
-      </div>
-    </div>
+    </Space>
   );
 }
 
