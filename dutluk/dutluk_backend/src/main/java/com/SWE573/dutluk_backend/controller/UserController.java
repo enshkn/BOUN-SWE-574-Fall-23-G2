@@ -75,10 +75,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request,HttpServletResponse response) {
-        Cookie cookie = new Cookie("Bearer", null);
-        cookie.setPath("/api");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        response = userService.logout(response);
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),"Logged out");
     }
 
@@ -134,6 +131,11 @@ public class UserController {
     public ResponseEntity<?> showUserProfile(HttpServletRequest request){
         User foundUser = userService.validateTokenizedUser(request);
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
+    }
+
+    @GetMapping("/isTokenValid")
+    public ResponseEntity<?> showTokenValidation(HttpServletRequest request){
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),userService.validateTokenByRequest(request));
     }
 
 

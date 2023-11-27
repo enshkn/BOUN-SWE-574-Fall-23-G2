@@ -4,8 +4,14 @@ import com.SWE573.dutluk_backend.configuration.JwtUtil;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.UserRepository;
 import com.SWE573.dutluk_backend.request.UserUpdateRequest;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,10 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.io.IOException;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService{
@@ -39,8 +42,27 @@ public class UserService{
     }
     public User validateTokenizedUser(HttpServletRequest request){
         String token = getTokenFromEndpoint(request);
-        return findByUserToken(token);
+        User user = findByUserToken(token);
+        if (user != null && validateToken(token, user)) {
+            return user;
+        } else {
+            return null;
+        }
     }
+    public boolean validateToken(String token,User user){
+        return jwtUtil.validateToken(token,user);
+    }
+
+    public boolean validateTokenByRequest(HttpServletRequest request) {
+        try{
+            String token = getTokenFromEndpoint(request);
+            User user = findByUserToken(token);
+            return jwtUtil.validateToken(token,user);
+        }catch (Exception e){
+            return false;
+        }
+    }
+
 
     public List<User> findAll(){
         return userRepository.findAll();
@@ -85,14 +107,14 @@ public class UserService{
 
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
-            throw new IllegalArgumentException("Cookies cannot be null");
+            return "Cookies cannot be null";
         }
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("Bearer")) {
                 return cookie.getValue();
             }
         }
-        throw new IllegalArgumentException("Bearer value cannot be null");
+        return "Bearer value cannot be null";
     }
 
 
@@ -138,6 +160,15 @@ public class UserService{
         String uploadedPhoto = imageService.parseAndSaveImages(uploadedFile);
         foundUser.setProfilePhoto(uploadedPhoto);
         return userRepository.save(foundUser);
+    }
+
+
+    public HttpServletResponse logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("Bearer", null);
+        cookie.setPath("/api");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return response;
     }
 }
 
