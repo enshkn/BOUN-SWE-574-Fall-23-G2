@@ -9,6 +9,7 @@ import 'package:swe/_domain/network/network_paths.dart';
 import 'package:swe/_domain/story/i_story_repository.dart';
 import 'package:swe/_domain/story/model/addStory_model.dart';
 import 'package:swe/_domain/story/model/comment_model.dart';
+import 'package:swe/_domain/story/model/getNearbyStories_model.dart';
 import 'package:swe/_domain/story/model/postComment_model.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/widgets/wrapper/favorite_type.dart';
@@ -206,6 +207,29 @@ class StoryRepository implements IStoryRepository {
     switch (response.statusCode) {
       case 1:
         return right(response.entity as StoryModel);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<List<StoryModel>> getNearbyStories(
+    GetNearbyStoriesModel model,
+  ) async {
+    final response = await manager.fetch<StoryModel, List<StoryModel>>(
+      NetworkPaths.nearby,
+      type: HttpTypes.get,
+      parserModel: StoryModel(),
+      queryParameters: {
+        'radius': model.radius,
+        'latitude': model.latitude,
+        'longitude': model.longitude,
+      },
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as List<StoryModel>);
       default:
         return left(response.errorType);
     }

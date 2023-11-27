@@ -18,6 +18,7 @@ class NetworkPaths {
   static const String myStories = '/api/story/fromUser';
   static const String deleteStory = '/api/story/delete';
   static const String getStoryDetail = '/api/story';
+  static const String nearby = '/api/story/nearby';
 
   static const String likeStory = '/api/story/like';
   static const String getLikedStories = '/api/story/liked';
