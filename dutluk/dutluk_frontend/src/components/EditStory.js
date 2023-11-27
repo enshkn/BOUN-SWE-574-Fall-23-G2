@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
 import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import { format, getYear } from "date-fns";
-import { useNavigate } from "react-router-dom";
 import { Space, message } from 'antd';
 import "./css/EditStory.css";
 
 const EditStoryForm = () => {
   const { id } = useParams();
   const [messageApi, contextHolder] = message.useMessage();
+  const Navigate = useNavigate();
 
   const fetchStoryData = useCallback(async () => {
     try {
@@ -65,8 +65,6 @@ const EditStoryForm = () => {
       setDecade("");
     }
   }, [startTimeStamp]);
-
-  const navigate = useNavigate();
 
   const handleEditorChange = (value) => {
     setText(value);
@@ -121,7 +119,7 @@ const EditStoryForm = () => {
         }
       );
       console.log(response);
-      navigate("/user/my-profile")
+      Navigate(`/story/${id}`);
     } catch (error) {
       console.log(error);
       messageApi.open({ type: "error", content: "Error occured while trying to edit the story!"});

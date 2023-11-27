@@ -43,7 +43,7 @@ const StoryList = ({ story, children }) => {
             )}
 
             <p className="story-details">
-                <b>Published at:</b> {formatDate(story.createdAt)}
+                <b>Published at:</b> {story.createdAt}
             </p>
 
             <p className="story-details">
@@ -58,7 +58,7 @@ const StoryList = ({ story, children }) => {
         </div>
     );
 };
-function formatDate(dateString) {
+/*function formatDate(dateString) {
     const date = new Date(dateString);
     const day = date.getDate();
     const month = date.getMonth() + 1;
@@ -69,6 +69,6 @@ function formatDate(dateString) {
     const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
 
     return formattedDate;
-  }
+  }*/
   
 export default StoryList;

@@ -7,7 +7,7 @@ import "quill-emoji/dist/quill-emoji.css";
 import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import { format, getYear } from "date-fns";
-import { useNavigate } from "react-router-dom"; // Import useHistory
+import { useNavigate } from "react-router-dom";
 import { Space, message } from 'antd';
 import "./css/AddStory.css";
 
@@ -73,7 +73,7 @@ const AddStoryForm = () => {
     setText(value);
   };
 
-  const navigate = useNavigate(); // Create history object
+  const Navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -187,7 +187,8 @@ const AddStoryForm = () => {
       );
       console.log(response);
       await messageApi.open({ type: "success", content: "Story added successfully!"});
-      navigate('/');
+      const newStoryId = response.data.id;
+      Navigate(`/story/${newStoryId}`);
     } catch (error) {
       console.log(error);
       messageApi.open({ type: "error", content: "Failed to add story. Please try again."});
