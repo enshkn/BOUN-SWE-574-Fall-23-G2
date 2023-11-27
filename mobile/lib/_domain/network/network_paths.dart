@@ -9,6 +9,7 @@ class NetworkPaths {
   static const String checkUser = '/api/user/checkUser';
   static const String profileUpdate = '/api/user/update';
   static const String followUser = '/api/user/follow';
+  static const String checkToken = '/api/user/isTokenValid';
 
   //Story
   static const String getAllStory = '/api/story/all';

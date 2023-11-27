@@ -52,14 +52,6 @@ class _CommentCardState extends State<CommentCard> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
         ),
         padding: const EdgeInsets.symmetric(
           vertical: 4,

@@ -122,47 +122,48 @@ class _NearbyViewState extends State<NearbyView> {
                         onShowAllButtonPressed: () {},
                       ),
                     ),
-                  SizedBox(
-                    child: BaseListView<StoryModel>(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      items: state.nearbyStories,
-                      itemBuilder: (item) {
-                        return FavoriteWrapper(
-                          initialState: item.likes!.contains(user!.id),
-                          builder: (
-                            context,
-                            addFavorite,
-                            isfavorite,
-                            isLoading,
-                          ) {
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 8,
-                              ),
-                              height: 450,
-                              child: GestureDetector(
-                                onTap: () {
-                                  context.router.push(
-                                    StoryDetailsRoute(
-                                      model: item,
-                                      leadBackHome: true,
-                                    ),
-                                  );
-                                },
-                                child: StoryCard(
-                                  storyModel: item,
-                                  isFavorite: isfavorite,
-                                  isFavoriteLoading: isLoading,
+                  if (user != null)
+                    SizedBox(
+                      child: BaseListView<StoryModel>(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        items: state.nearbyStories,
+                        itemBuilder: (item) {
+                          return FavoriteWrapper(
+                            initialState: item.likes!.contains(user.id),
+                            builder: (
+                              context,
+                              addFavorite,
+                              isfavorite,
+                              isLoading,
+                            ) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 8,
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      },
+                                height: 450,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    context.router.push(
+                                      StoryDetailsRoute(
+                                        model: item,
+                                        leadBackHome: true,
+                                      ),
+                                    );
+                                  },
+                                  child: StoryCard(
+                                    storyModel: item,
+                                    isFavorite: isfavorite,
+                                    isFavoriteLoading: isLoading,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
-                  ),
                 ],
               ),
             );

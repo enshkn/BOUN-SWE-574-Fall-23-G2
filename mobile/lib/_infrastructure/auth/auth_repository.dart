@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:busenet/busenet.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swe/_application/session/session_cubit.dart';
 import 'package:swe/_core/extensions/string_extensions.dart';
 import 'package:swe/_domain/auth/model/register_model.dart';
 import 'package:swe/_domain/network/app_network_manager.dart';
@@ -127,8 +130,45 @@ class AuthRepository implements IAuthRepository {
   }
 
   @override
-  Future<void> logout() async {
-    await _cacheManager.clearAll();
-    manager.removeCookieTokenHeader();
+  EitherFuture<bool> logout() async {
+    final response = await manager.fetch<NoResultResponse, NoResultResponse>(
+      NetworkPaths.logout,
+      type: HttpTypes.get,
+      parserModel: NoResultResponse(),
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        await _cacheManager.clearAll();
+        manager.removeCookieTokenHeader();
+        return right(true);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<bool> checkToken() async {
+    final tokenModel = _cacheManager.getData();
+    if (tokenModel!.accessToken != null) {
+      manager.addAuthorizationHeader(tokenModel.accessToken!);
+      manager.addCookieTokenHeader(tokenModel.accessToken!);
+    }
+    final response = await manager.fetchPrimitive<bool, bool>(
+      NetworkPaths.checkToken,
+      type: HttpTypes.get,
+    );
+    switch (response.statusCode) {
+      case 1:
+        final status = response.entity as bool;
+        if (status == true) {
+          return right(true);
+        } else {
+          return right(false);
+        }
+
+      default:
+        return left(response.errorType);
+    }
   }
 }
