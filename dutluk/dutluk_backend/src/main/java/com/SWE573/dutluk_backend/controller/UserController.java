@@ -103,14 +103,14 @@ public class UserController {
     }
 
     @PostMapping(value= "/photo", consumes = "multipart/form-data")
-    public ResponseEntity<?> uploadPhoto(@RequestParam("photo") MultipartFile file,HttpServletRequest request) throws Exception{
+    public ResponseEntity<?> uploadPhoto(@RequestParam("photo") MultipartFile file, HttpServletRequest request) throws Exception{
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("Please select a file to upload!");
         }
         try {
-            byte[] uploadedPhoto = file.getBytes();
             User foundUser = userService.validateTokenizedUser(request);
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
+            User updatedUser = userService.updateUserPhoto(foundUser,file);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),updatedUser);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
