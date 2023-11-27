@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Space, message } from 'antd';
+import photoPreview from "../profile_pic.png";
 import "./css/Profile.css";
 
 function Profile() {
@@ -89,29 +90,33 @@ function Profile() {
   } else {
     return (
       <Space
-      direction="vertical"
-      style={{
-        width: '100%',
-      }}
+        direction="vertical"
+        style={{
+          width: "100%",
+        }}
       >
-      {contextHolder}
-      <div className="profile-container">
-        <div className="profile-photo-container">
-          <label htmlFor="photo" className="profile-photo-label">
-            Photo:
-          </label>
-          <img
-            className="profile-photo"
-            src={`data:image/jpeg;base64,${user.profilePhoto}`}
-            alt={user.username}
-          />
+        {contextHolder}
+        <div className="profile-container">
+          <div className="profile-photo-container">
+            <label htmlFor="photo" className="profile-photo-label">
+              Photo:
+              <p>
+                {
+                  <img
+                    className="profile-photo"
+                    src={user.profilePhoto || photoPreview}
+                    alt={user.username}
+                  />
+                }
+              </p>
+            </label>
+          </div>
+          <h1 className="profile-username">Username: {user.username}</h1>
+          <p className="profile-biography">Biography: {user.biography}</p>
+          <button className="follow-button" onClick={handleFollowClick}>
+            {followButtonName}
+          </button>
         </div>
-        <h1 className="profile-username">Username: {user.username}</h1>
-        <p className="profile-biography">Biography: {user.biography}</p>
-        <button className="follow-button" onClick={handleFollowClick}>
-          {followButtonName}
-        </button>
-      </div>
       </Space>
     );
   }
