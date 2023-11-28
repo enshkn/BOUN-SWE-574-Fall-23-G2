@@ -1,7 +1,7 @@
 import pinecone
 from fastapi import FastAPI
 from classes import Story, UserInteraction
-from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising, update_story_vector, update_user_vector, user_like_unlike_parser
+from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising, update_story_vector, update_user_vector, user_like_unlike_parser, story_user_vectors_fetcher
 import numpy as np
 import gensim
 from gensim.models import Word2Vec
@@ -53,11 +53,11 @@ async def vectorize_edit(data: Story):
 @app.post("/story-liked")
 async def story_liked(data: UserInteraction):
     """ userweight güncellenip öyle gelsin"""
+    # parse the user and story attributes
     vector_type, story_id, user_id, user_weight = user_like_unlike_parser(data=data)
-    story_response = index.fetch([story_id])
-    story_vector = story_response['vectors'][story_id]['values']
-    user_response = index.fetch([user_id])
-    user_vector = user_response['vectors'][user_id]['values']
+    # fetch story and user vectors
+    story_vector, user_vector = story_user_vectors_fetcher(pinecone_index=index, story_id=story_id, user_id=user_id)
+    #
     np_story_vector = np.array(story_vector)
     np_user_vector = np.array(user_vector)
     updated_user_vector = ((np_user_vector * (user_weight - 1)) + np_story_vector) / user_weight
@@ -68,10 +68,7 @@ async def story_liked(data: UserInteraction):
 @app.post("/story-unliked")
 async def story_unliked(data: UserInteraction):
     """ userweight güncellenip öyle gelsin"""
-    vector_type = data.type
-    story_id = data.storyId
-    user_id = data.userId
-    user_weight = data.userWeight
+    vector_type, story_id, user_id, user_weight = user_like_unlike_parser(data=data)
     story_response = index.fetch([story_id])
     story_vector = story_response['vectors'][story_id]['values']
     user_response = index.fetch([user_id])

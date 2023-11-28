@@ -67,6 +67,7 @@ def update_story_vector(final_text_vector, pinecone_index, vector_ids, vector_ty
     )
     return update_response
 
+
 def update_user_vector(final_user_vector, pinecone_index, vector_ids, vector_type):
     update_response = pinecone_index.update(
         id=vector_ids,
@@ -75,9 +76,20 @@ def update_user_vector(final_user_vector, pinecone_index, vector_ids, vector_typ
     )
     return update_response
 
+
 def user_like_unlike_parser(data: UserInteraction):
     vector_type = data.type
     story_id = data.storyId
     user_id = data.userId
     user_weight = data.userWeight
     return vector_type, story_id, user_id, user_weight
+
+
+def story_user_vectors_fetcher(pinecone_index, story_id, user_id):
+    story_response = pinecone_index.fetch([story_id])
+    user_response = pinecone_index.fetch([user_id])
+    user_vector = user_response['vectors'][user_id]['values']
+    story_vector = story_response['vectors'][story_id]['values']
+    return story_vector, user_vector
+
+
