@@ -74,7 +74,6 @@ class StoryServiceTest {
                 .endTimeStamp(date)
                 .season("Summer")
                 .user(foundUser)
-                .createdAt(new Date())
                 .decade("2010s")
                 .likes(new HashSet<>())
                 .locations(locations)
