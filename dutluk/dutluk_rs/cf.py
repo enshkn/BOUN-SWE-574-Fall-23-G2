@@ -1,5 +1,5 @@
 import pinecone
-from classes import Story
+from classes import Story, UserInteraction
 from gensim.utils import simple_preprocess
 import numpy as np
 
@@ -74,3 +74,10 @@ def update_user_vector(final_user_vector, pinecone_index, vector_ids, vector_typ
         set_metadata={"id": vector_ids, "type": vector_type}
     )
     return update_response
+
+def user_like_unlike_parser(data: UserInteraction):
+    vector_type = data.type
+    story_id = data.storyId
+    user_id = data.userId
+    user_weight = data.userWeight
+    return vector_type, story_id, user_id, user_weight
