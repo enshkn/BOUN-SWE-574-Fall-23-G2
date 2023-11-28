@@ -52,6 +52,7 @@ async def vectorize_edit(data: Story):
 
 @app.post("/story-liked")
 async def story_liked(data: UserInteraction):
+    """ userweight güncellenip öyle gelsin"""
     vector_type = data.type
     story_id = data.storyId
     user_id = data.userId
@@ -62,7 +63,25 @@ async def story_liked(data: UserInteraction):
     user_vector = user_response['vectors'][user_id]['values']
     np_story_vector = np.array(story_vector)
     np_user_vector = np.array(user_vector)
-    updated_user_vector = ((np_user_vector * user_weight) + (np_story_vector * 1)) / (user_weight + 1)
+    updated_user_vector = ((np_user_vector * (user_weight - 1)) + np_story_vector) / user_weight
+    response = update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index, vector_ids=user_id, vector_type=vector_type)
+
+    return {"return": response}
+
+@app.post("/story-unliked")
+async def story_unliked(data: UserInteraction):
+    """ userweight güncellenip öyle gelsin"""
+    vector_type = data.type
+    story_id = data.storyId
+    user_id = data.userId
+    user_weight = data.userWeight
+    story_response = index.fetch([story_id])
+    story_vector = story_response['vectors'][story_id]['values']
+    user_response = index.fetch([user_id])
+    user_vector = user_response['vectors'][user_id]['values']
+    np_story_vector = np.array(story_vector)
+    np_user_vector = np.array(user_vector)
+    updated_user_vector = ((np_user_vector * (user_weight + 1)) - np_story_vector) / user_weight
     response = update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index, vector_ids=user_id, vector_type=vector_type)
 
     return {"return": response}
