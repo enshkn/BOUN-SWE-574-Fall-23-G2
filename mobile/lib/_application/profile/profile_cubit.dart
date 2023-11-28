@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -60,6 +62,24 @@ final class ProfileCubit extends BaseCubit<ProfileState> {
     );
   }
 
+  Future<bool> updateProfileImage(File model) async {
+    setLoading(true);
+    final result = await _profileRepository.profileImageUpdate(model);
+
+    setLoading(false);
+    return result.fold(
+      (failure) {
+        showNotification(failure?.message ?? '', isError: true);
+        return false;
+      },
+      (data) {
+        final sessionCubit = context.read<SessionCubit>();
+        sessionCubit.updateUser(data);
+        return true;
+      },
+    );
+  }
+
   Future<bool> followUser(FollowUserModel model) async {
     setLoading(true);
     final result = await _profileRepository.followUser(model);
@@ -75,6 +95,18 @@ final class ProfileCubit extends BaseCubit<ProfileState> {
         final sessionCubit = context.read<SessionCubit>();
         sessionCubit.updateUser(data);
         return true;
+      },
+    );
+  }
+
+  Future<void> getOtherUser(int id) async {
+    setLoading(true);
+    final result = await _profileRepository.otherProfile(id);
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (data) {
+        safeEmit(state.copyWith(otherProfile: data));
       },
     );
   }

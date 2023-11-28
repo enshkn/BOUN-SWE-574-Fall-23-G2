@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:swe/_application/profile/profile_cubit.dart';
 import 'package:swe/_application/profile/profile_state.dart';
 import 'package:swe/_application/session/session_cubit.dart';
 import 'package:swe/_application/session/session_state.dart';
-import 'package:swe/_core/widgets/base_loader.dart';
 import 'package:swe/_core/widgets/base_scroll_view.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_domain/auth/model/profile_update_model.dart';
@@ -26,6 +28,16 @@ class _ProfileDetailsViewState extends State<ProfileDetailsView> {
   TextEditingController bioController = TextEditingController();
   late ProfileCubit cubit;
   final FocusNode _focusNode = FocusNode();
+  final picker = ImagePicker();
+
+  File? _file;
+  Future<XFile?> _getImage() async {
+    final image = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _file = File(image!.path);
+    });
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +63,40 @@ class _ProfileDetailsViewState extends State<ProfileDetailsView> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   BaseWidgets.normalGap,
-                  const SizedBox(
-                    child: Center(
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundImage:
-                            AssetImage('assets/images/profilePic.jpg'),
+                  Center(
+                    child: SizedBox(
+                      child: Stack(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: user.profilePhoto != null
+                                ? CircleAvatar(
+                                    radius: 56,
+                                    backgroundImage: NetworkImage(
+                                      user.profilePhoto!,
+                                    ),
+                                  )
+                                : const CircleAvatar(
+                                    radius: 56,
+                                    backgroundImage: AssetImage(
+                                      'assets/images/profilePic.jpg',
+                                    ),
+                                  ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: IconButton(
+                              onPressed: () async {
+                                await _getImage();
+                                if (_file != null) {
+                                  await cubit.updateProfileImage(_file!);
+                                }
+                              },
+                              icon: const Icon(Icons.edit, size: 32),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
