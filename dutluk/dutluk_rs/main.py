@@ -1,7 +1,7 @@
 import pinecone
 from fastapi import FastAPI
 from classes import Story, UserInteraction
-from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising, update_story_vector
+from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising, update_story_vector, update_user_vector
 import numpy as np
 import gensim
 from gensim.models import Word2Vec
@@ -60,13 +60,12 @@ async def story_liked(data: UserInteraction):
     story_vector = story_response['vectors'][story_id]['values']
     user_response = index.fetch([user_id])
     user_vector = user_response['vectors'][user_id]['values']
-    print(type(story_vector))
-    print(type(user_vector))
-    print(story_vector)
-    print(user_vector)
-    print(user_weight)
-    print(vector_type)
-    return True
+    np_story_vector = np.array(story_vector)
+    np_user_vector = np.array(user_vector)
+    updated_user_vector = ((np_user_vector * user_weight) + (np_story_vector * 1)) / (user_weight + 1)
+    response = update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index, vector_ids=user_id, vector_type=vector_type)
+
+    return {"return": response}
 
 
 

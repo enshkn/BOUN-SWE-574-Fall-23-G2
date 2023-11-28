@@ -53,8 +53,8 @@ def weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector):
     weighted_text_vectors = text_weight * text_vector_np
     weighted_tag_vectors = tag_weight * tag_vector_np
     # merge two vectors with its weights
-    weighted_avg_text_vector = np.mean(weighted_text_vectors, axis=0)
-    weighted_avg_tag_vector = np.mean(weighted_tag_vectors, axis=0)
+    weighted_avg_text_vector = np.array(weighted_text_vectors)
+    weighted_avg_tag_vector = np.array(weighted_tag_vectors)
     weighted_avg_vector = weighted_avg_text_vector + weighted_avg_tag_vector
     return weighted_avg_vector
 
@@ -63,6 +63,14 @@ def update_story_vector(final_text_vector, pinecone_index, vector_ids, vector_ty
     update_response = pinecone_index.update(
         id=vector_ids,
         values=final_text_vector,
+        set_metadata={"id": vector_ids, "type": vector_type}
+    )
+    return update_response
+
+def update_user_vector(final_user_vector, pinecone_index, vector_ids, vector_type):
+    update_response = pinecone_index.update(
+        id=vector_ids,
+        values=final_user_vector,
         set_metadata={"id": vector_ids, "type": vector_type}
     )
     return update_response
