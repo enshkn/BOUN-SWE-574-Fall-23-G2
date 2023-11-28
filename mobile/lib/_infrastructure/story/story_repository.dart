@@ -108,7 +108,7 @@ class StoryRepository implements IStoryRepository {
   @override
   EitherFuture<bool> deleteStory(int storyId) async {
     final response = await manager.fetch<NoResultResponse, NoResultResponse>(
-      '/api/mobile/story/delete/$storyId',
+      '/api/story/delete/$storyId',
       type: HttpTypes.get,
       parserModel: NoResultResponse(),
     );
@@ -199,7 +199,7 @@ class StoryRepository implements IStoryRepository {
   @override
   EitherFuture<StoryModel> getStoryDetail(int storyId) async {
     final response = await manager.fetch<StoryModel, StoryModel>(
-      '/api/mobile/story/$storyId',
+      '/api/story/$storyId',
       type: HttpTypes.get,
       parserModel: StoryModel(),
       cachePolicy: CachePolicy.noCache,
