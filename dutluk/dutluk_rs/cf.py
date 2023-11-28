@@ -93,6 +93,11 @@ def story_user_vectors_fetcher(pinecone_index, story_id, user_id):
     story_vector = story_response['vectors'][story_id]['values']
     return story_vector, user_vector
 
+def single_vector_fetcher(pinecone_index, id):
+    response = pinecone_index.fetch([id])
+    vector = response['vectors'][id]['values']
+    return vector
+
 
 def list_to_nparray(story_vector, user_vector):
     np_story_vector = np.array(story_vector)

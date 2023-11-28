@@ -13,3 +13,8 @@ class UserInteraction(BaseModel):
     storyId: str
     userId: str
     userWeight: int
+
+class Recommend(BaseModel):
+    userId: str
+    excludedIds: list
+    vector_type: str
