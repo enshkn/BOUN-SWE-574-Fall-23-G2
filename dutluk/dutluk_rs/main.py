@@ -1,5 +1,6 @@
 import pinecone
 from fastapi import FastAPI
+from appconfig import app_initializer
 from classes import Story, UserInteraction
 from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising, update_story_vector, update_user_vector, user_like_unlike_parser, story_user_vectors_fetcher, list_to_nparray, like_story_operations, unlike_story_operations
 import numpy as np
@@ -9,12 +10,7 @@ from gensim.utils import simple_preprocess
 import os
 from dotenv import load_dotenv
 
-load_dotenv(".env")
-app = FastAPI()
-pinecone.init(os.getenv('PINECONE_API_KEY'), environment=os.getenv('ENVIRONMENT'))
-index = pinecone.Index(os.getenv('PROJECT_INDEX'))
-model_path = "rs-word-embedding-model.gz"
-word2vec_model = gensim.models.KeyedVectors.load_word2vec_format(model_path, binary=True)
+app, index, word2vec_model = app_initializer()
 
 
 @app.post("/vectorize")
@@ -28,6 +24,7 @@ async def vectorize(data: Story):
     tag_vectors = tokenizer(tokenized_tags, word2vec_model)
     # Vector operations with Numpy
     avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors, tag_vector=tag_vectors)
+
     # upsert to the vector db
     is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids, vector_type=vector_type)
     return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
@@ -43,9 +40,6 @@ async def vectorize_edit(data: Story):
     tag_vectors = tokenizer(tokenized_tags, word2vec_model)
     # Vector operations with Numpy
     avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors, tag_vector=tag_vectors)
-    print(type(avg_vector))
-    print(type(avg_vector.tolist()))
-    print(vector_type)
     # update the vector
     response = update_story_vector(final_text_vector=avg_vector.tolist(), pinecone_index=index, vector_ids=vector_ids, vector_type=vector_type)
     return response

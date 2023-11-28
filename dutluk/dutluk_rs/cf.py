@@ -46,15 +46,16 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
 
 
 def weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector):
-    # convert the lists into a vector
-    text_vector_np = np.array(text_vector)
-    tag_vector_np = np.array(tag_vector)
+    # convert the lists into a vector, this makes two vectors same shape
+    text_vector_np = np.mean(text_vector, axis=0)
+    tag_vector_np = np.mean(tag_vector, axis=0)
     # multiply the vectors with its weights
     weighted_text_vectors = text_weight * text_vector_np
     weighted_tag_vectors = tag_weight * tag_vector_np
-    # merge two vectors with its weights
+    # turn vectors to np array
     weighted_avg_text_vector = np.array(weighted_text_vectors)
     weighted_avg_tag_vector = np.array(weighted_tag_vectors)
+    # merge two vectors
     weighted_avg_vector = weighted_avg_text_vector + weighted_avg_tag_vector
     return weighted_avg_vector
 
