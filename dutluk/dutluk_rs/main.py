@@ -1,55 +1,66 @@
 import pinecone
-
 from fastapi import FastAPI, Request
-from pydantic import BaseModel
-
+from classes import Text, TextSimilarity, VectorSimilarity
 import numpy as np
-
 import gensim
 from gensim.models import Word2Vec
 from gensim.utils import simple_preprocess
-
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.decomposition import PCA
-
 import os
 from dotenv import load_dotenv
 
 load_dotenv(".env")
 app = FastAPI()
 pinecone.init(os.getenv('PINECONE_API_KEY'), environment=os.getenv('ENVIRONMENT'))
-class Text(BaseModel):
-    text: str
-
-class TextSimilarity(BaseModel):
-    text_1: str
-    text_2: str
-
-class VectorSimilarity(BaseModel):
-    vector_1: list
-    vector_2: list
-
+index = pinecone.Index(os.getenv('PROJECT_INDEX'))
 model_path = "rs-word-embedding-model.gz"
-word2vec_model = gensim.models.KeyedVectors.load_word2vec_format(
-    model_path, binary=True
-)
-
+word2vec_model = gensim.models.KeyedVectors.load_word2vec_format(model_path, binary=True)
 @app.post("/vectorize")
 async def vectorize(data: Text):
     # Extract the text from the JSON object
-    text = data.text
+    vector_text = data.text
+    vector_ids = data.ids
+    vector_tags = data.tags
+    vector_type = data.type
+
     # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
-    tokenized_text = simple_preprocess(text)
+    tokenized_text = simple_preprocess(vector_text)
+    tokenized_tags = simple_preprocess(vector_tags)
+
     # Initialize an empty array to store the vectors
-    vectors = []
+    text_vectors = []
+    tag_vectors = []
+
     # For each token in the tokenized text, get its vector
     for token in tokenized_text:
         if token in word2vec_model:
-            vectors.append(word2vec_model[token])
+            text_vectors.append(word2vec_model[token])
     # If no vectors found, return an empty list
-    if not vectors:
-        return {"vectorized": []}
-    avg_vector = np.mean(vectors, axis=0)
+    if not text_vectors:
+        return {"vectorized_text": []}
+    # For each token in the tokenized text, get its vector
+    for token in tokenized_tags:
+        if token in word2vec_model:
+            tag_vectors.append(word2vec_model[token])
+    # If no vectors found, return an empty list
+    if not tag_vectors:
+        return {"vectorized_tags": []}
+
+    avg_text_vector = np.mean(text_vectors, axis=0)
+    avg_tag_vector = np.mean(tag_vectors, axis=0)
+    avg_vector = np.mean([avg_text_vector, avg_tag_vector], axis=0)
+    # upsert to the vector db
+    pinecone_vector = avg_text_vector.tolist()
+    index.upsert(
+        vectors=[
+            {
+                "id": vector_ids,
+                "values": pinecone_vector,
+                "metadata": {"id": vector_ids, "type": vector_type},
+            }
+        ]
+    )
     return {"vectorized": avg_vector.tolist()}
 
 @app.post("/vectorize-pca")
@@ -81,7 +92,6 @@ async def vectorizePca(data: Text):
     avg_vector = np.mean(reduced_vectors, axis=0)
 
     return {"vectorized": avg_vector.tolist()}
-
 @app.post("/text-similarity")
 async def textSimilarity(data: TextSimilarity):
     story_1 = data.text_1
@@ -102,7 +112,6 @@ async def textSimilarity(data: TextSimilarity):
     similarity_score = cosine_similarity([avg_vector_1], [avg_vector_2])[0][0]
 
     return {"similarity": float(similarity_score)}
-
 @app.post("/vector-similarity")
 async def vector_similarity(data: VectorSimilarity):
     vector_1 = np.array(data.vector_1)
@@ -121,6 +130,3 @@ async def vector_similarity(data: VectorSimilarity):
     similarity_score = cosine_similarity(avg_vector_1, avg_vector_2)[0][0]
 
     return {"similarity": float(similarity_score)}
-
-
-
