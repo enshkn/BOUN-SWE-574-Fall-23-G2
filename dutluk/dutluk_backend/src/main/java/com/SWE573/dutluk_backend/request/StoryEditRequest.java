@@ -28,4 +28,8 @@ public class StoryEditRequest {
     private String season;
 
     private String decade;
+
+    private Integer startHourFlag;
+
+    private Integer endHourFlag;
 }

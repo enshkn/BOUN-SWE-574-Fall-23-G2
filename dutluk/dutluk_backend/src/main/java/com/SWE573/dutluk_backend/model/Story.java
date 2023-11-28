@@ -58,6 +58,10 @@ public class Story extends BaseEntity{
 
     private String decade;
 
+    private Integer startHourFlag;
+
+    private Integer endHourFlag;
+
 
 
 }

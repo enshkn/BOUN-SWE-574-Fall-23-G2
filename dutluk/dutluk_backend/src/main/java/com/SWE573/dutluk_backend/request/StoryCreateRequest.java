@@ -32,4 +32,8 @@ public class StoryCreateRequest {
     private String season;
 
     private String decade;
+
+    private Integer startHourFlag;
+
+    private Integer endHourFlag;
 }

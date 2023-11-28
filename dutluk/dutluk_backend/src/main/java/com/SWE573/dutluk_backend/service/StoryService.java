@@ -49,6 +49,8 @@ public class StoryService {
                 .startTimeStamp(storyCreateRequest.getStartTimeStamp())
                 .endTimeStamp(storyCreateRequest.getEndTimeStamp())
                 .season(storyCreateRequest.getSeason())
+                .startHourFlag(storyCreateRequest.getStartHourFlag())
+                .endHourFlag(storyCreateRequest.getEndHourFlag())
                 .user(foundUser)
                 .decade(storyCreateRequest.getDecade())
                 .likes(new HashSet<>())
@@ -190,19 +192,21 @@ public class StoryService {
         return dateFormat.parse(timeStamp);
     }
 
-    public Story enterStory(User foundUser, StoryEditRequest storyEditRequestRequest) throws ParseException, IOException {
+    public Story enterStory(User foundUser, StoryEditRequest storyEditRequest) throws ParseException, IOException {
         Story createdStory = Story.builder()
-                .title(storyEditRequestRequest.getTitle())
-                .labels(storyEditRequestRequest.getLabels())
-                .text(imageService.parseAndSaveImages(storyEditRequestRequest.getText()))
-                .startTimeStamp(storyEditRequestRequest.getStartTimeStamp())
-                .endTimeStamp(storyEditRequestRequest.getEndTimeStamp())
-                .season(storyEditRequestRequest.getSeason())
+                .title(storyEditRequest.getTitle())
+                .labels(storyEditRequest.getLabels())
+                .text(imageService.parseAndSaveImages(storyEditRequest.getText()))
+                .startTimeStamp(storyEditRequest.getStartTimeStamp())
+                .endTimeStamp(storyEditRequest.getEndTimeStamp())
+                .season(storyEditRequest.getSeason())
+                .startHourFlag(storyEditRequest.getStartHourFlag())
+                .endHourFlag(storyEditRequest.getEndHourFlag())
                 .user(foundUser)
-                .decade(storyEditRequestRequest.getDecade())
+                .decade(storyEditRequest.getDecade())
                 .likes(new HashSet<>())
                 .build();
-        ArrayList<Location> allLocations = storyEditRequestRequest.getLocations();
+        ArrayList<Location> allLocations = storyEditRequest.getLocations();
         for (Location location : allLocations) {
             location.setStory(createdStory);
         }
