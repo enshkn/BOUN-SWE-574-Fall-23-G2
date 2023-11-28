@@ -7,18 +7,6 @@ const LabelSearch = () => {
   const { label } = useParams();
   const [labeledStories, setLabeledStories] = useState([]);
 
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-
-    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
-
-    return formattedDate;
-  }
 
   useEffect(() => {
     axios
