@@ -1,7 +1,7 @@
 import pinecone
 from fastapi import FastAPI, Request
 from classes import Text, TextSimilarity, VectorSimilarity
-from cf import story_parser, text_processor, tokenizer
+from cf import story_parser, text_processor, tokenizer, upsert
 import numpy as np
 import gensim
 from gensim.models import Word2Vec
@@ -26,48 +26,15 @@ async def vectorize(data: Text):
     # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
     tokenized_text, tokenized_tags = text_processor(vector_text=vector_text, vector_tags=vector_tags)
     # Initialize an empty array to store the vectors
-    print(tokenized_text)
-    print(tokenized_tags)
-    print("before")
     text_vectors = tokenizer(tokenized_text, word2vec_model)
-    print("1st step")
     tag_vectors = tokenizer(tokenized_tags, word2vec_model)
-    print(tag_vectors)
-    print("2nd step")
-    print(text_vectors)
-    print("done")
-    # text_vectors = []
-    # tag_vectors = []
-    # # For each token in the tokenized text, get its vector
-    # for token in tokenized_text:
-    #     if token in word2vec_model:
-    #         text_vectors.append(word2vec_model[token])
-    # # If no vectors found, return an empty list
-    # if not text_vectors:
-    #     return {"vectorized_text": []}
-    # # For each token in the tokenized text, get its vector
-    # for token in tokenized_tags:
-    #     if token in word2vec_model:
-    #         tag_vectors.append(word2vec_model[token])
-    # # If no vectors found, return an empty list
-    # if not tag_vectors:
-    #     return {"vectorized_tags": []}
-
+    # Vector operations with Numpy
     avg_text_vector = np.mean(text_vectors, axis=0)
     avg_tag_vector = np.mean(tag_vectors, axis=0)
     avg_vector = np.mean([avg_text_vector, avg_tag_vector], axis=0)
     # upsert to the vector db
-    pinecone_vector = avg_text_vector.tolist()
-    index.upsert(
-        vectors=[
-            {
-                "id": vector_ids,
-                "values": pinecone_vector,
-                "metadata": {"id": vector_ids, "type": vector_type},
-            }
-        ]
-    )
-    return {"vectorized": avg_vector.tolist()}
+    is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids, vector_type=vector_type)
+    return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
 
 
 @app.post("/vectorize-pca")

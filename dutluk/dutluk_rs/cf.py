@@ -1,3 +1,4 @@
+import pinecone
 from classes import Text
 from gensim.utils import simple_preprocess
 
@@ -27,3 +28,17 @@ def tokenizer(tokenized, model):
     if not vectors:
         return {"vectorized_text": []}
     return vectors
+
+
+def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
+    pinecone_vector = final_text_vector.tolist()
+    pinecone_index.upsert(
+        vectors=[
+            {
+                "id": vector_ids,
+                "values": pinecone_vector,
+                "metadata": {"id": vector_ids, "type": vector_type},
+            }
+        ]
+    )
+    return True
