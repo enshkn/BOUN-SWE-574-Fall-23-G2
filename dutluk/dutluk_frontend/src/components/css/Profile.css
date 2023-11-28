@@ -33,7 +33,7 @@
 
 .follow-button {
   padding: 10px 20px;
-  background-color: #ff5500ca;
+  background-color: #2196F3;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -41,5 +41,5 @@
 }
 
 .follow-button:hover {
-  background-color: #ffa500;
+  background-color: #5aabee;
 }
