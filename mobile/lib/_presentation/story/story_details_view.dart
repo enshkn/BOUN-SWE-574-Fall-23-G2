@@ -802,7 +802,7 @@ class _CommentsViewState extends State<CommentsView> {
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                           vertical: 8,
-                          horizontal: 8,
+                          horizontal: 16,
                         ),
                         child: CommentCard(
                           user: item.user,

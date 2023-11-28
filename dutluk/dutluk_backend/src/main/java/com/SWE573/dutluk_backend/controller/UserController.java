@@ -7,8 +7,6 @@ import com.SWE573.dutluk_backend.request.FollowRequest;
 import com.SWE573.dutluk_backend.request.LoginRequest;
 import com.SWE573.dutluk_backend.request.RegisterRequest;
 import com.SWE573.dutluk_backend.request.UserUpdateRequest;
-import com.SWE573.dutluk_backend.response.Response;
-import com.SWE573.dutluk_backend.response.SuccessfulResponse;
 import com.SWE573.dutluk_backend.service.IntegrationService;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -67,7 +65,6 @@ public class UserController {
         Cookie cookie = new Cookie("Bearer", token);
         cookie.setPath("/api");
         response.addCookie(cookie);
-        foundUser.setProfilePhoto(null);
         foundUser.setToken(token);
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
     }
@@ -75,10 +72,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request,HttpServletResponse response) {
-        Cookie cookie = new Cookie("Bearer", null);
-        cookie.setPath("/api");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        response = userService.logout(response);
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),"Logged out");
     }
 
@@ -103,14 +97,14 @@ public class UserController {
     }
 
     @PostMapping(value= "/photo", consumes = "multipart/form-data")
-    public ResponseEntity<?> uploadPhoto(@RequestParam("photo") MultipartFile file,HttpServletRequest request) throws Exception{
+    public ResponseEntity<?> uploadPhoto(@RequestParam("photo") MultipartFile file, HttpServletRequest request) throws Exception{
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("Please select a file to upload!");
         }
         try {
-            byte[] uploadedPhoto = file.getBytes();
             User foundUser = userService.validateTokenizedUser(request);
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
+            User updatedUser = userService.updateUserPhoto(foundUser,file);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),updatedUser);
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -134,6 +128,11 @@ public class UserController {
     public ResponseEntity<?> showUserProfile(HttpServletRequest request){
         User foundUser = userService.validateTokenizedUser(request);
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
+    }
+
+    @GetMapping("/isTokenValid")
+    public ResponseEntity<?> showTokenValidation(HttpServletRequest request){
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),userService.validateTokenByRequest(request));
     }
 
 

@@ -9,7 +9,7 @@ environment:
 
 dependencies:
   auto_route: ^7.8.0
-  busenet: ^0.7.0+4
+  busenet: ^0.8.1
   cached_network_image: ^3.2.3
   connectivity_plus: ^5.0.1
   cupertino_icons: ^1.0.2
@@ -47,6 +47,7 @@ dependencies:
   google_map_location_picker:
     git:
       url: https://github.com/amineglr/google_map_location_picker.git
+  image_picker: ^0.8.3
  
   
 

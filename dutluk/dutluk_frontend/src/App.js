@@ -16,20 +16,18 @@ import AllStories from "./components/AllStories";
 import FollowedUserStories from "./components/FollowedUserStories";
 import StorySearch from "./components/StorySearch";
 import TimelineSearch from "./components/TimelineSearch";
-import LabelSearch from "./components/LabelSearch";
+import LabelSearch from "./components/LabelSearch"; // Add import for LabelSearch
 import axios from "axios";
+
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_URL}/api/user/profile`,
-        {
-          withCredentials: true,
-        }
-      )
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile`, {
+        withCredentials: true,
+      })
       .then((response) => {
         setLoggedIn(true);
       })
@@ -40,13 +38,9 @@ function App() {
 
   const handleLogout = () => {
     axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_URL}/api/user/logout`,
-        null,
-        {
-          withCredentials: true,
-        }
-      )
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/logout`, null, {
+        withCredentials: true,
+      })
       .then((response) => {
         document.cookie =
           "Bearer=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/api;";
@@ -97,6 +91,9 @@ function App() {
             <Link to="/story/timeline-search" className="nav-link">
               Timeline Search
             </Link>
+            <Link to="/story/search/label/:label" className="nav-link">
+              Label Search
+            </Link>
           </>
         ) : (
           <>
@@ -119,7 +116,10 @@ function App() {
           }
         />
         <Route path="/user/my-profile" element={<User />} />
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={<Login onLogin={() => setLoggedIn(true)} />}
+        />
         <Route path="/register" element={<Register />} />
         <Route path="/story/add-story" element={<AddStoryForm />} />
         <Route path="/story/edit/:id" element={<EditStoryForm />} />
@@ -130,8 +130,8 @@ function App() {
         <Route path="/user/:id" element={<Profile />} />
         <Route path="/story/search" element={<StorySearch />} />
         <Route path="/story/timeline-search" element={<TimelineSearch />} />
-        <Route path="/story/recommended-stories" element={<Recommended />} />
         <Route path="/story/search/label/:label" element={<LabelSearch />} />
+        <Route path="/story/recommended" element={<Recommended />} />
       </Routes>
     </Router>
   );

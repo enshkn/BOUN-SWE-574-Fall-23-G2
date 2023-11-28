@@ -5,6 +5,7 @@ import 'package:swe/_core/utility/record_utils.dart';
 import 'package:swe/_domain/story/i_story_repository.dart';
 import 'package:swe/_domain/story/model/addStory_model.dart';
 import 'package:swe/_domain/story/model/comment_model.dart';
+import 'package:swe/_domain/story/model/getNearbyStories_model.dart';
 import 'package:swe/_domain/story/model/postComment_model.dart';
 
 @injectable
@@ -75,6 +76,30 @@ final class StoryCubit extends BaseCubit<StoryState> {
       (failure) => showNotification(failure?.message ?? '', isError: true),
       (myStories) {
         safeEmit(state.copyWith(myStories: myStories));
+      },
+    );
+  }
+
+  Future<void> getNearbyStories(GetNearbyStoriesModel model) async {
+    setLoading(true);
+    final result = await _storyRepository.getNearbyStories(model);
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (nearbyStories) {
+        safeEmit(state.copyWith(nearbyStories: nearbyStories));
+      },
+    );
+  }
+
+  Future<void> getRecommendedStories() async {
+    setLoading(true);
+    final result = await _storyRepository.getRecommendedStories();
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (recommendedStories) {
+        safeEmit(state.copyWith(recommendedStories: recommendedStories));
       },
     );
   }

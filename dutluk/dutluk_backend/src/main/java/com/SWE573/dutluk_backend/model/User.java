@@ -42,7 +42,7 @@ public class User extends BaseEntity{
     private String password;
 
     @Lob
-    private byte[] profilePhoto;
+    private String profilePhoto;
 
     @Column
     private String biography;

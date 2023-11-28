@@ -14,6 +14,8 @@ class StoryState extends BaseState with _$StoryState {
     @Default([]) List<StoryModel> myStories,
     @Default([]) List<StoryModel> likedStories,
     @Default([]) List<StoryModel> recentStories,
+    @Default([]) List<StoryModel> nearbyStories,
+    @Default([]) List<StoryModel> recommendedStories,
     List<StoryModel>? fallowedStories,
   }) = _StoryState;
   factory StoryState.initial() => const StoryState();

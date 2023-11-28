@@ -12,6 +12,7 @@ import 'package:swe/_domain/auth/model/follow_user_model.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/_core/base_consumer.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
+import 'package:swe/_presentation/_route/router.dart';
 import 'package:swe/_presentation/widgets/appBar/customAppBar.dart';
 import 'package:swe/_presentation/widgets/app_button.dart';
 import 'package:swe/_presentation/widgets/base/base_list_view.dart';
@@ -58,6 +59,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
           onCubitReady: (cubit) async {
             this.cubit = cubit;
             cubit.setContext(context);
+            await cubit.getOtherUser(widget.profile.id!);
           },
           builder: (context, cubit, state) {
             return Scaffold(
@@ -111,11 +113,11 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                           controller: followerController,
                           title: const Text('Followers'),
                           children: [
-                            if (widget.profile.followers != null)
+                            if (state.otherProfile != null)
                               SizedBox(
                                 child: BaseListView<User>(
                                   physics: const NeverScrollableScrollPhysics(),
-                                  items: widget.profile.followers!,
+                                  items: state.otherProfile!.followers!,
                                   shrinkWrap: true,
                                   itemBuilder: (item) {
                                     return Padding(
@@ -125,12 +127,22 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           BaseWidgets.lowerGap,
-                                          Text(
-                                            widget.profile.followers != null
-                                                ? item.username.toString()
-                                                : '',
-                                            style: const TextStyles.body()
-                                                .copyWith(),
+                                          GestureDetector(
+                                            onTap: () {
+                                              context.router.push(
+                                                OtherProfileRoute(
+                                                  profile: item,
+                                                ),
+                                              );
+                                            },
+                                            child: Text(
+                                              state.otherProfile!.followers !=
+                                                      null
+                                                  ? item.username.toString()
+                                                  : '',
+                                              style: const TextStyles.body()
+                                                  .copyWith(),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -156,11 +168,11 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                           controller: followingController,
                           title: const Text('Following'),
                           children: [
-                            if (widget.profile.following != null)
+                            if (state.otherProfile != null)
                               SizedBox(
                                 child: BaseListView<User>(
                                   physics: const NeverScrollableScrollPhysics(),
-                                  items: widget.profile.following!,
+                                  items: state.otherProfile!.following!,
                                   shrinkWrap: true,
                                   itemBuilder: (item) {
                                     return Padding(
@@ -170,12 +182,22 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           BaseWidgets.lowerGap,
-                                          Text(
-                                            widget.profile.following != null
-                                                ? item.username.toString()
-                                                : '',
-                                            style: const TextStyles.body()
-                                                .copyWith(),
+                                          GestureDetector(
+                                            onTap: () {
+                                              context.router.push(
+                                                OtherProfileRoute(
+                                                  profile: item,
+                                                ),
+                                              );
+                                            },
+                                            child: Text(
+                                              state.otherProfile!.following !=
+                                                      null
+                                                  ? item.username.toString()
+                                                  : '',
+                                              style: const TextStyles.body()
+                                                  .copyWith(),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -201,26 +223,36 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                           controller: storyController,
                           title: const Text('Stories'),
                           children: [
-                            if (widget.profile.stories != null)
+                            if (state.otherProfile != null)
                               SizedBox(
                                 child: BaseListView<StoryModel>(
                                   physics: const NeverScrollableScrollPhysics(),
-                                  items: widget.profile.stories!,
+                                  items: state.otherProfile!.stories!,
                                   shrinkWrap: true,
                                   itemBuilder: (item) {
                                     return Padding(
-                                      padding: const EdgeInsets.only(left: 8),
+                                      padding: const EdgeInsets.only(left: 12),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           BaseWidgets.lowerGap,
-                                          Text(
-                                            widget.profile.following != null
-                                                ? item.title
-                                                : '',
-                                            style: const TextStyles.body()
-                                                .copyWith(),
+                                          GestureDetector(
+                                            onTap: () {
+                                              /*  context.router.push(
+                                                StoryDetailsRoute(
+                                                  model: item,
+                                                ),
+                                              ); */
+                                            },
+                                            child: Text(
+                                              state.otherProfile!.stories !=
+                                                      null
+                                                  ? item.title
+                                                  : '',
+                                              style: const TextStyles.body()
+                                                  .copyWith(),
+                                            ),
                                           ),
                                         ],
                                       ),

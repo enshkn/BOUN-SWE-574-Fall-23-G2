@@ -32,7 +32,7 @@ final class SplashCubit extends BaseCubit<SplashState> {
         Future.delayed(const Duration(seconds: 2), () {}),
       ],
     );
-    await checkUser();
+    await checkToken();
   }
 
   Future<void> initCacheManagers() async {
@@ -61,6 +61,26 @@ final class SplashCubit extends BaseCubit<SplashState> {
         final sessionCubit = context.read<SessionCubit>();
         sessionCubit.updateUser(user);
         context.router.replaceAll([const AppRoute()]);
+      },
+    );
+  }
+
+  Future<void> checkToken() async {
+    setLoading(true);
+
+    final result = await _authRepository.checkToken();
+    setLoading(false);
+
+    result.fold(
+      (failure) {
+        context.router.replaceAll([const LoginRoute()]);
+      },
+      (valid) {
+        if (valid == true) {
+          checkUser();
+        } else {
+          context.router.replaceAll([const LoginRoute()]);
+        }
       },
     );
   }
