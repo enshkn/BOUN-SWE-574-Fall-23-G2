@@ -1,3 +1,5 @@
+import pinecone
+
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 
@@ -10,9 +12,12 @@ from gensim.utils import simple_preprocess
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.decomposition import PCA
 
+import os
+from dotenv import load_dotenv
 
-
+load_dotenv(".env")
 app = FastAPI()
+pinecone.init(os.getenv('PINECONE_API_KEY'), environment=os.getenv('ENVIRONMENT'))
 class Text(BaseModel):
     text: str
 
