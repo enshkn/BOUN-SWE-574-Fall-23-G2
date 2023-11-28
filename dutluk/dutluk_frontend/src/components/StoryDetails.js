@@ -7,19 +7,6 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import "react-quill/dist/quill.snow.css";
 import "./css/AllStories.css";
 
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-  const hours = date.getHours();
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-
-  const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
-
-  return formattedDate;
-}
-
 function StoryDetails() {
   const { id } = useParams();
   const [story, setStory] = useState(null);
@@ -152,7 +139,7 @@ function StoryDetails() {
       </p>
       <p>
         <b>Published at: </b>
-        {formatDate(story.createdAt)}
+        {story.createdAt}
       </p>
       <p>
         <b>Season:</b>
