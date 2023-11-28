@@ -1,35 +1,42 @@
+import pinecone
 from fastapi import FastAPI, Request
-from pydantic import BaseModel
-
+from classes import Text, TextSimilarity, VectorSimilarity
+from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising
 import numpy as np
-
 import gensim
 from gensim.models import Word2Vec
 from gensim.utils import simple_preprocess
-
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.decomposition import PCA
+import os
+from dotenv import load_dotenv
 
-
-
+load_dotenv(".env")
 app = FastAPI()
-class Text(BaseModel):
-    text: str
-
-class TextSimilarity(BaseModel):
-    text_1: str
-    text_2: str
-
-class VectorSimilarity(BaseModel):
-    vector_1: list
-    vector_2: list
-
+pinecone.init(os.getenv('PINECONE_API_KEY'), environment=os.getenv('ENVIRONMENT'))
+index = pinecone.Index(os.getenv('PROJECT_INDEX'))
 model_path = "rs-word-embedding-model.gz"
-word2vec_model = gensim.models.KeyedVectors.load_word2vec_format(
-    model_path, binary=True
-)
+word2vec_model = gensim.models.KeyedVectors.load_word2vec_format(model_path, binary=True)
+
 
 @app.post("/vectorize")
 async def vectorize(data: Text):
+    # Extract the text from the JSON object
+    vector_text, vector_ids, vector_tags, vector_type = story_parser(data)
+    # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
+    tokenized_text, tokenized_tags = text_processor(vector_text=vector_text, vector_tags=vector_tags)
+    # Initialize an empty array to store the vectors
+    text_vectors = tokenizer(tokenized_text, word2vec_model)
+    tag_vectors = tokenizer(tokenized_tags, word2vec_model)
+    # Vector operations with Numpy
+    avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors, tag_vector=tag_vectors)
+    # upsert to the vector db
+    is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids, vector_type=vector_type)
+    return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
+
+
+@app.post("/vectorize-pca")
+async def vectorizePca(data: Text):
     # Extract the text from the JSON object
     text = data.text
     # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
@@ -43,8 +50,21 @@ async def vectorize(data: Text):
     # If no vectors found, return an empty list
     if not vectors:
         return {"vectorized": []}
-    avg_vector = np.mean(vectors, axis=0)
+
+    # Convert the list of vectors to a NumPy array
+    vectors_array = np.array(vectors)
+
+    # Use PCA to reduce the dimensionality of the vectors
+    pca = PCA(
+        n_components=10
+    )  # Replace your_desired_dimension with the desired number of dimensions
+    reduced_vectors = pca.fit_transform(vectors_array)
+
+    # Calculate the average vector of the reduced vectors
+    avg_vector = np.mean(reduced_vectors, axis=0)
+
     return {"vectorized": avg_vector.tolist()}
+
 
 @app.post("/text-similarity")
 async def textSimilarity(data: TextSimilarity):
@@ -67,6 +87,7 @@ async def textSimilarity(data: TextSimilarity):
 
     return {"similarity": float(similarity_score)}
 
+
 @app.post("/vector-similarity")
 async def vector_similarity(data: VectorSimilarity):
     vector_1 = np.array(data.vector_1)
@@ -85,6 +106,3 @@ async def vector_similarity(data: VectorSimilarity):
     similarity_score = cosine_similarity(avg_vector_1, avg_vector_2)[0][0]
 
     return {"similarity": float(similarity_score)}
-
-
-
