@@ -174,4 +174,10 @@ public class StoryController {
     public ResponseEntity<?> findRecentStories(HttpServletRequest request){
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findRecentStories());
     }
+
+    @GetMapping("/fromUserId/{userId}")
+    public ResponseEntity<?> findAllStoriesbyUserId(@PathVariable Long userId, HttpServletRequest request){
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findByUserIdOrderByIdDesc(userId));
+
+    }
 }
