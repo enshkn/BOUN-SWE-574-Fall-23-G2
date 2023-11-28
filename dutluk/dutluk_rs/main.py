@@ -56,15 +56,17 @@ async def story_liked(data: UserInteraction):
     story_id = data.storyId
     user_id = data.userId
     user_weight = data.userWeight
-
-    story_vector = index.fetch([story_id])
-    user_vector = index.fetch([user_id])
+    story_response = index.fetch([story_id])
+    story_vector = story_response['vectors'][story_id]['values']
+    user_response = index.fetch([user_id])
+    user_vector = user_response['vectors'][user_id]['values']
+    print(type(story_vector))
+    print(type(user_vector))
     print(story_vector)
     print(user_vector)
     print(user_weight)
     print(vector_type)
-
-    pass
+    return True
 
 
 

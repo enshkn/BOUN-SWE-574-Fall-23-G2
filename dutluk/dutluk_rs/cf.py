@@ -1,10 +1,10 @@
 import pinecone
-from classes import Text
+from classes import Story
 from gensim.utils import simple_preprocess
 import numpy as np
 
 
-def story_parser(data: Text):
+def story_parser(data: Story):
     vector_text = data.text
     vector_ids = data.ids
     vector_tags = data.tags
