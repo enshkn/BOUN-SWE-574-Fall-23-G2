@@ -1,13 +1,11 @@
 import pinecone
-from fastapi import FastAPI, Request
-from classes import Text, TextSimilarity, VectorSimilarity
+from fastapi import FastAPI
+from classes import Story, UserInteraction
 from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising, update_story_vector
 import numpy as np
 import gensim
 from gensim.models import Word2Vec
 from gensim.utils import simple_preprocess
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.decomposition import PCA
 import os
 from dotenv import load_dotenv
 
@@ -20,7 +18,7 @@ word2vec_model = gensim.models.KeyedVectors.load_word2vec_format(model_path, bin
 
 
 @app.post("/vectorize")
-async def vectorize(data: Text):
+async def vectorize(data: Story):
     # Extract the text from the JSON object
     vector_text, vector_ids, vector_tags, vector_type = story_parser(data)
     # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
@@ -36,7 +34,7 @@ async def vectorize(data: Text):
 
 
 @app.post("/vectorize-edit")
-async def vectorize_edit(data: Text):
+async def vectorize_edit(data: Story):
     # Extract the text from the JSON object
     vector_text, vector_ids, vector_tags, vector_type = story_parser(data)
     # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
@@ -51,6 +49,22 @@ async def vectorize_edit(data: Text):
     # update the vector
     response = update_story_vector(final_text_vector=avg_vector.tolist(), pinecone_index=index, vector_ids=vector_ids, vector_type=vector_type)
     return response
+
+@app.post("/story-liked")
+async def story_liked(data: UserInteraction):
+    vector_type = data.type
+    story_id = data.storyId
+    user_id = data.userId
+    user_weight = data.userWeight
+
+    story_vector = index.fetch([story_id])
+    user_vector = index.fetch([user_id])
+    print(story_vector)
+    print(user_vector)
+    print(user_weight)
+    print(vector_type)
+
+    pass
 
 
 

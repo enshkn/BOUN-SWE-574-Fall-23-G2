@@ -1,3 +1,7 @@
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.decomposition import PCA
+from classes import Text
+
 @app.post("/vectorize-pca")
 async def vectorizePca(data: Text):
     # Extract the text from the JSON object
