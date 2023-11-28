@@ -51,7 +51,6 @@ public class StoryService {
                 .season(storyCreateRequest.getSeason())
                 .user(foundUser)
                 .decade(storyCreateRequest.getDecade())
-                .createdAt(new Date())
                 .likes(new HashSet<>())
                 .build();
         ArrayList<Location> allLocations = storyCreateRequest.getLocations();
@@ -201,7 +200,6 @@ public class StoryService {
                 .season(storyEditRequestRequest.getSeason())
                 .user(foundUser)
                 .decade(storyEditRequestRequest.getDecade())
-                .createdAt(new Date())
                 .likes(new HashSet<>())
                 .build();
         ArrayList<Location> allLocations = storyEditRequestRequest.getLocations();
