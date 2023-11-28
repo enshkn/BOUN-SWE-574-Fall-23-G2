@@ -93,3 +93,15 @@ def story_user_vectors_fetcher(pinecone_index, story_id, user_id):
     return story_vector, user_vector
 
 
+def list_to_nparray(story_vector, user_vector):
+    np_story_vector = np.array(story_vector)
+    np_user_vector = np.array(user_vector)
+    return np_story_vector, np_user_vector
+
+def like_story_operations(np_user_vector,np_story_vector, user_weight):
+    updated_user_vector = ((np_user_vector * (user_weight - 1)) + np_story_vector) / user_weight
+    return updated_user_vector
+
+def unlike_story_operations(np_user_vector,np_story_vector, user_weight):
+    updated_user_vector = ((np_user_vector * (user_weight + 1)) - np_story_vector) / user_weight
+    return updated_user_vector
