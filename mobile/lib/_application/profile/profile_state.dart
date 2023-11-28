@@ -9,6 +9,7 @@ class ProfileState extends BaseState with _$ProfileState {
   const factory ProfileState({
     @Default(false) bool isLoading,
     User? user,
+    User? otherProfile,
   }) = _ProfileState;
   factory ProfileState.initial() => const ProfileState();
 }

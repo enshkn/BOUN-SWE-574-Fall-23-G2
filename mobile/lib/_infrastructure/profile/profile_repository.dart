@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:busenet/busenet.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -59,6 +61,49 @@ class ProfileRepository implements IProfileRepository {
       parserModel: const User(),
       cachePolicy: CachePolicy.noCache,
       data: model.toJson(),
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as User);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<User> otherProfile(int id) async {
+    final response = await manager.fetch<User, User>(
+      '/api/user/$id',
+      type: HttpTypes.get,
+      parserModel: const User(),
+      queryParameters: {
+        'id': id,
+      },
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as User);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<User> profileImageUpdate(File file) async {
+    final formData = FormData();
+
+    formData.files.addAll([
+      MapEntry('photo', await MultipartFile.fromFile(file.path)),
+    ]);
+
+    final response = await manager.fetch<User, User>(
+      NetworkPaths.profileUpdateImage,
+      type: HttpTypes.post,
+      contentType: Headers.multipartFormDataContentType,
+      parserModel: const User(),
+      data: formData,
     );
 
     switch (response.statusCode) {

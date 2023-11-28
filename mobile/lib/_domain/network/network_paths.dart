@@ -8,6 +8,8 @@ class NetworkPaths {
   static const String profile = '/api/user/profile';
   static const String checkUser = '/api/user/checkUser';
   static const String profileUpdate = '/api/user/update';
+  static const String profileUpdateImage = '/api/user/photo';
+
   static const String followUser = '/api/user/follow';
   static const String checkToken = '/api/user/isTokenValid';
 

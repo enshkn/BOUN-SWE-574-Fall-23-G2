@@ -71,13 +71,20 @@ class _CommentCardState extends State<CommentCard> {
       ),
       child: Row(
         children: [
-          const SizedBox(
-            child: Center(
-              child: CircleAvatar(
-                radius: 30,
-                backgroundImage: AssetImage('assets/images/profilePic.jpg'),
-              ),
-            ),
+          SizedBox(
+            child: widget.user!.profilePhoto != null
+                ? CircleAvatar(
+                    radius: 36,
+                    backgroundImage: NetworkImage(
+                      widget.user!.profilePhoto!,
+                    ),
+                  )
+                : const CircleAvatar(
+                    radius: 36,
+                    backgroundImage: AssetImage(
+                      'assets/images/profilePic.jpg',
+                    ),
+                  ),
           ),
           const SizedBox(
             width: 10,

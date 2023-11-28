@@ -150,9 +150,11 @@ class AuthRepository implements IAuthRepository {
   @override
   EitherFuture<bool> checkToken() async {
     final tokenModel = _cacheManager.getData();
-    if (tokenModel!.accessToken != null) {
-      manager.addAuthorizationHeader(tokenModel.accessToken!);
-      manager.addCookieTokenHeader(tokenModel.accessToken!);
+    if (tokenModel != null) {
+      if (tokenModel.accessToken != null) {
+        manager.addAuthorizationHeader(tokenModel.accessToken!);
+        manager.addCookieTokenHeader(tokenModel.accessToken!);
+      }
     }
     final response = await manager.fetchPrimitive<bool, bool>(
       NetworkPaths.checkToken,
