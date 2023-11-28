@@ -5,7 +5,7 @@ services:
     build:
       context: ./dutluk_backend
     container_name: dutluk-backend
-    image: dutluk-backend:latest
+    image: hdenizdogan/dutluk-backend:latest
     ports:
       - "8080:8080"
     env_file:
@@ -20,7 +20,7 @@ services:
     build:
       context: ./dutluk_frontend
     container_name: dutluk-frontend
-    image: dutluk-frontend:latest
+    image: hdenizdogan/dutluk-frontend:latest
     ports:
       - "3000:3000"
     env_file:
