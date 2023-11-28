@@ -1,14 +1,20 @@
 from pydantic import BaseModel
-class Text(BaseModel):
+
+
+class Story(BaseModel):
     text: str
     ids: str
     tags: str
     type: str
 
-class TextSimilarity(BaseModel):
-    text_1: str
-    text_2: str
 
-class VectorSimilarity(BaseModel):
-    vector_1: list
-    vector_2: list
+class UserInteraction(BaseModel):
+    type: str
+    storyId: str
+    userId: str
+    userWeight: int
+
+class Recommend(BaseModel):
+    userId: str
+    excludedIds: list
+    vector_type: str

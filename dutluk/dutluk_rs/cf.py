@@ -1,10 +1,10 @@
 import pinecone
-from classes import Text
+from classes import Story, UserInteraction
 from gensim.utils import simple_preprocess
 import numpy as np
 
 
-def story_parser(data: Text):
+def story_parser(data: Story):
     vector_text = data.text
     vector_ids = data.ids
     vector_tags = data.tags
@@ -46,14 +46,68 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
 
 
 def weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector):
-    # convert the lists into a vector
-    text_vector_np = np.array(text_vector)
-    tag_vector_np = np.array(tag_vector)
+    # convert the lists into a vector, this makes two vectors same shape
+    text_vector_np = np.mean(text_vector, axis=0)
+    tag_vector_np = np.mean(tag_vector, axis=0)
     # multiply the vectors with its weights
     weighted_text_vectors = text_weight * text_vector_np
     weighted_tag_vectors = tag_weight * tag_vector_np
-    # merge two vectors with its weights
-    weighted_avg_text_vector = np.mean(weighted_text_vectors, axis=0)
-    weighted_avg_tag_vector = np.mean(weighted_tag_vectors, axis=0)
+    # turn vectors to np array
+    weighted_avg_text_vector = np.array(weighted_text_vectors)
+    weighted_avg_tag_vector = np.array(weighted_tag_vectors)
+    # merge two vectors
     weighted_avg_vector = weighted_avg_text_vector + weighted_avg_tag_vector
     return weighted_avg_vector
+
+
+def update_story_vector(final_text_vector, pinecone_index, vector_ids, vector_type):
+    update_response = pinecone_index.update(
+        id=vector_ids,
+        values=final_text_vector,
+        set_metadata={"id": vector_ids, "type": vector_type}
+    )
+    return update_response
+
+
+def update_user_vector(final_user_vector, pinecone_index, vector_ids, vector_type):
+    update_response = pinecone_index.update(
+        id=vector_ids,
+        values=final_user_vector,
+        set_metadata={"id": vector_ids, "type": vector_type}
+    )
+    return update_response
+
+
+def user_like_unlike_parser(data: UserInteraction):
+    vector_type = data.type
+    story_id = data.storyId
+    user_id = data.userId
+    user_weight = data.userWeight
+    return vector_type, story_id, user_id, user_weight
+
+
+def story_user_vectors_fetcher(pinecone_index, story_id, user_id):
+    story_response = pinecone_index.fetch([story_id])
+    user_response = pinecone_index.fetch([user_id])
+    user_vector = user_response['vectors'][user_id]['values']
+    story_vector = story_response['vectors'][story_id]['values']
+    return story_vector, user_vector
+
+def single_vector_fetcher(pinecone_index, id):
+    response = pinecone_index.fetch([id])
+    vector = response['vectors'][id]['values']
+    return vector
+
+
+def list_to_nparray(story_vector, user_vector):
+    np_story_vector = np.array(story_vector)
+    np_user_vector = np.array(user_vector)
+    return np_story_vector, np_user_vector
+
+def like_story_operations(np_user_vector,np_story_vector, user_weight):
+    updated_user_vector = ((np_user_vector * (user_weight - 1)) + np_story_vector) / user_weight
+    return updated_user_vector
+
+def unlike_story_operations(np_user_vector,np_story_vector, user_weight):
+    updated_user_vector = ((np_user_vector * (user_weight + 1)) - np_story_vector) / user_weight
+    return updated_user_vector

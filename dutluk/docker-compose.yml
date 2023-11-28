@@ -54,3 +54,16 @@ services:
 volumes:
   backend-data:
   db-data:
+
+
+#sudo su -
+#apt-get update
+#apt-get install docker-compose
+#apt-get install git
+#git clone https://github.com/enshkn/BOUN-SWE-574-Fall-23-G2
+#cd BOUN-SWE-574-Fall-23-G2/
+#cd dutluk/
+#cd dutluk_frontend/
+#nano .env (paste the necessary env variables here)
+#cd ..
+#docker compose up --build -d 
