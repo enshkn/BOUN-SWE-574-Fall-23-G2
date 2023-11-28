@@ -1,6 +1,7 @@
 import pinecone
 from classes import Text
 from gensim.utils import simple_preprocess
+import numpy as np
 
 
 def story_parser(data: Text):
@@ -42,3 +43,17 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
         ]
     )
     return True
+
+
+def weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector):
+    # convert the lists into a vector
+    text_vector_np = np.array(text_vector)
+    tag_vector_np = np.array(tag_vector)
+    # multiply the vectors with its weights
+    weighted_text_vectors = text_weight * text_vector_np
+    weighted_tag_vectors = tag_weight * tag_vector_np
+    # merge two vectors with its weights
+    weighted_avg_text_vector = np.mean(weighted_text_vectors, axis=0)
+    weighted_avg_tag_vector = np.mean(weighted_tag_vectors, axis=0)
+    weighted_avg_vector = weighted_avg_text_vector + weighted_avg_tag_vector
+    return weighted_avg_vector

@@ -1,7 +1,7 @@
 import pinecone
 from fastapi import FastAPI, Request
 from classes import Text, TextSimilarity, VectorSimilarity
-from cf import story_parser, text_processor, tokenizer, upsert
+from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising
 import numpy as np
 import gensim
 from gensim.models import Word2Vec
@@ -29,9 +29,7 @@ async def vectorize(data: Text):
     text_vectors = tokenizer(tokenized_text, word2vec_model)
     tag_vectors = tokenizer(tokenized_tags, word2vec_model)
     # Vector operations with Numpy
-    avg_text_vector = np.mean(text_vectors, axis=0)
-    avg_tag_vector = np.mean(tag_vectors, axis=0)
-    avg_vector = np.mean([avg_text_vector, avg_tag_vector], axis=0)
+    avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors, tag_vector=tag_vectors)
     # upsert to the vector db
     is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids, vector_type=vector_type)
     return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
