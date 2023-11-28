@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -47,7 +48,15 @@ public class CommentService {
         return optionalComment.get();
     }
 
+    public List<Comment> getCommentsByStoryId(Long storyId) {
+        return commentRepository.findAllByStoryId(storyId);
+    }
+
     public void deleteComment(Comment comment){
         commentRepository.delete(comment);
+    }
+
+    public Comment getCommentById(Long commentId) {
+        return commentRepository.getCommentById(commentId);
     }
 }

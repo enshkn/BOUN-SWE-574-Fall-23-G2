@@ -1,6 +1,7 @@
 package com.SWE573.dutluk_backend.controller;
 
 
+import com.SWE573.dutluk_backend.model.Comment;
 import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.request.CommentRequest;
@@ -12,12 +13,9 @@ import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-
+import java.util.List;
 
 
 @RestController
@@ -40,10 +38,28 @@ public class CommentController {
         Story story = storyService.getStoryByStoryId(commentRequest.getStoryId());
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),commentService.createComment(commentRequest,user,story));
     }
+
+    @GetMapping("/{commentId}")
+    public ResponseEntity<?> getCommentsId(@PathVariable Long commentId,HttpServletRequest request){
+        Comment foundComment = commentService.getCommentById(commentId);
+        if (foundComment!=null) {
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundComment);
+        }
+        return ResponseEntity.notFound().build();
+    }
     @PostMapping("/like")
     public ResponseEntity<?> likeComment(@RequestBody LikeRequest likeRequest, HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),commentService.likeComment(likeRequest.getLikedEntityId(),tokenizedUser.getId()));
 
+    }
+
+    @GetMapping("/{storyId}")
+    public ResponseEntity<?> getCommentsByStoryId(@PathVariable Long storyId,HttpServletRequest request){
+        List<Comment> foundComments = commentService.getCommentsByStoryId(storyId);
+        if (foundComments!=null) {
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundComments);
+        }
+        return ResponseEntity.notFound().build();
     }
 }
