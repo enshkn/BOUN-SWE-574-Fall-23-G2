@@ -112,3 +112,29 @@ async def recommend_story(data: Recommend):
         # Return an HTTP 500 Internal Server Error with a custom error message
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
+@app.post("/recommend-user")
+async def recommend_user(data: Recommend):
+    try:
+        user_id = data.userId
+        excluded_ids = data.excludedIds
+        vector_type = data.vector_type
+        vector = single_vector_fetcher(pinecone_index=index, id=user_id)
+
+        response = index.query(
+            vector=vector,
+            top_k=100,
+            filter={"id": {"$nin": excluded_ids},
+                    "type": {"$eq": vector_type}},
+        )
+        ids = [match['id'] for match in response['matches']]
+        scores = [match['score'] for match in response['matches']]
+        print(ids)
+        # Add print statement after the Pinecone call
+        print("After Pinecone Query")
+
+        return {"ids": ids, "scores": scores}
+    except Exception as e:
+        # Log the exception for further debugging
+        print(f"An error occurred: {str(e)}")
+        # Return an HTTP 500 Internal Server Error with a custom error message
+        raise HTTPException(status_code=500, detail="Internal Server Error")
