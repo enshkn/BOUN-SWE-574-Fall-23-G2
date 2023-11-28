@@ -26,3 +26,4 @@ def tokenizer(tokenized, model):
     # If no vectors found, return an empty list
     if not vectors:
         return {"vectorized_text": []}
+    return vectors
