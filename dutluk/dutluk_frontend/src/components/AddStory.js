@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Circle, GoogleMap, LoadScript, Marker, Polygon, Polyline, StandaloneSearchBox } from "@react-google-maps/api";
 import ReactQuill from "react-quill";
@@ -8,12 +8,11 @@ import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import { format, getYear } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { Space, message } from 'antd';
+import { Space, message, Input, Tag, Tooltip} from 'antd';
 import "./css/AddStory.css";
 
 const AddStoryForm = () => {
   const [title, setTitle] = useState("");
-  const [labels, setLabels] = useState("");
   const [text, setText] = useState("");
   const [startTimeStamp, setStartTimeStamp] = useState(null);
   const [endTimeStamp, setEndTimeStamp] = useState(null);
@@ -32,8 +31,13 @@ const AddStoryForm = () => {
  
   const [messageApi, contextHolder] = message.useMessage();
 
-
-
+  const [tags, setTags] = useState([]);
+  const [inputVisible, setInputVisible] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [editInputIndex, setEditInputIndex] = useState(-1);
+  const [editInputValue, setEditInputValue] = useState('');
+  const inputRef = useRef(null);
+  const editInputRef = useRef(null);
 
   const onSearchBoxLoad = (ref) => {
     setSearchBox(ref);
@@ -123,7 +127,7 @@ const AddStoryForm = () => {
     // Create story object to be sent to backend
     const story = {
       title,
-      labels: labels.split(","),
+      labels: tags, 
       text,
       locations: [
         ...markers.map((point, markerIndex) => ({
@@ -319,6 +323,48 @@ const AddStoryForm = () => {
     }
   }, [startTimeStamp]);
 
+  useEffect(() => {
+    if (inputVisible) {
+      inputRef.current?.focus();
+    }
+  }, [inputVisible]);
+
+  useEffect(() => {
+    editInputRef.current?.focus();
+  }, [editInputValue]);
+
+  const handleClose = (removedTag) => {
+    const newTags = tags.filter((tag) => tag !== removedTag);
+    setTags(newTags);
+  };
+
+  const showInput = () => {
+    setInputVisible(true);
+  };
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleInputConfirm = () => {
+    if (inputValue && !tags.includes(inputValue)) {
+      setTags([...tags, inputValue]);
+    }
+    setInputVisible(false);
+    setInputValue('');
+  };
+
+  const handleEditInputChange = (e) => {
+    setEditInputValue(e.target.value);
+  };
+  const handleEditInputConfirm = () => {
+    const newTags = [...tags];
+    newTags[editInputIndex] = editInputValue;
+    setTags(newTags);
+    setEditInputIndex(-1);
+    setEditInputValue('');
+  };
+
   return (
     <Space
     direction="vertical"
@@ -496,16 +542,68 @@ const AddStoryForm = () => {
         />
       </label>
       <br />
-      <label className="add-story-label">
-        Labels:(comma separated)
-        <input
-          type="text"
-          className="add-story-input"
-          value={labels}
-          onChange={(e) => setLabels(e.target.value)}
-          required={true}
-        />
-      </label>
+      <div className="add-story-tags">
+        <label className="add-story-label">Tags:</label>
+        <div>
+          {tags.map((tag, index) => {
+            if (editInputIndex === index) {
+              return (
+                <Input
+                  ref={editInputRef}
+                  key={tag}
+                  size="middle"
+                  style={{ width: 78 }}
+                  value={editInputValue}
+                  onChange={handleEditInputChange}
+                  onBlur={handleEditInputConfirm}
+                  onPressEnter={handleEditInputConfirm}
+                />
+              );
+            }
+            const isLongTag = tag.length > 20;
+            const tagElem = (
+              <Tag
+                key={tag}
+                closable
+                onClose={() => handleClose(tag)}
+              >
+                <span
+                  onDoubleClick={(e) => {
+                    setEditInputIndex(index);
+                    setEditInputValue(tag);
+                    e.preventDefault();
+                  }}
+                >
+                  {isLongTag ? `${tag.slice(0, 20)}...` : tag}
+                </span>
+              </Tag>
+            );
+            return isLongTag ? (
+              <Tooltip title={tag} key={tag}>
+                {tagElem}
+              </Tooltip>
+            ) : (
+              tagElem
+            );
+          })}
+          {inputVisible ? (
+            <Input
+              ref={inputRef}
+              type="text"
+              size="middle"
+              style={{ width: 78 }}
+              value={inputValue}
+              onChange={handleInputChange}
+              onBlur={handleInputConfirm}
+              onPressEnter={handleInputConfirm}
+            />
+          ) : (
+            <Tag style={{ background: '#fff', borderStyle: 'dashed' }} onClick={showInput}>
+              + New Tag
+            </Tag>
+          )}
+        </div>
+      </div>
       <br />
       <label className="add-story-label">
         Text:
