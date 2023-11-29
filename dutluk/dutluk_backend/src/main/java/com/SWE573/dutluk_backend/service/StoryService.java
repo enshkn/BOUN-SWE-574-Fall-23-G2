@@ -276,4 +276,23 @@ public class StoryService {
 
         return calendar.getTime();
     }
+
+    public Story saveStory(Long storyId,Long userId){
+        Story story = getStoryByStoryId(storyId);
+        User user = userService.findByUserId(userId);
+        Set<Long> storySavedByList = story.getSavedBy();
+        Set<Long> savedList = user.getSavedStories();
+        if(!storySavedByList.contains(user.getId())){
+            storySavedByList.add(user.getId());
+            savedList.add(storyId);
+        }
+        else{
+            storySavedByList.remove(user.getId());
+            savedList.remove(storyId);
+        }
+        story.setSavedBy(storySavedByList);
+        user.setSavedStories(savedList);
+        userService.editUser(user);
+        return storyRepository.save(story);
+    }
 }

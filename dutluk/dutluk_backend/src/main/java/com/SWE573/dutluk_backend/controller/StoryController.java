@@ -3,6 +3,7 @@ package com.SWE573.dutluk_backend.controller;
 import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.request.LikeRequest;
+import com.SWE573.dutluk_backend.request.SaveRequest;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
 import com.SWE573.dutluk_backend.service.IntegrationService;
@@ -173,5 +174,18 @@ public class StoryController {
     @GetMapping("/recent")
     public ResponseEntity<?> findRecentStories(HttpServletRequest request){
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findRecentStories());
+    }
+
+    @GetMapping("/fromUserId/{userId}")
+    public ResponseEntity<?> findAllStoriesbyUserId(@PathVariable Long userId, HttpServletRequest request){
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findByUserIdOrderByIdDesc(userId));
+
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<?> saveStory(@RequestBody SaveRequest saveRequest, HttpServletRequest request){
+        User tokenizedUser = userService.validateTokenizedUser(request);
+        Story savedStory = storyService.saveStory(saveRequest.getSavedEntityId(),tokenizedUser.getId());
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),savedStory);
     }
 }
