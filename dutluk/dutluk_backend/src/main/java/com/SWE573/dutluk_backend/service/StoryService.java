@@ -228,7 +228,7 @@ public class StoryService {
     }
 
     public List<Story> likedStories(User foundUser) {
-        List<Long> likeList = new ArrayList<>(foundUser.getSavedStories());
+        List<Long> likeList = new ArrayList<>(foundUser.getLikedStories());
         List<Story> storyList = new ArrayList<>();
         for (Long storyId : likeList) {
             Story story = getStoryByStoryId(storyId);
@@ -322,8 +322,8 @@ public class StoryService {
     }
 
     public List<Story> sortStoriesByDescending(List<Story> storyList){
-        if(storyList == null){
-            return null;
+        if(storyList.isEmpty()){
+            return storyList;
         }
         storyList.sort(Comparator.comparingLong(Story::getId).reversed());
         return storyList;

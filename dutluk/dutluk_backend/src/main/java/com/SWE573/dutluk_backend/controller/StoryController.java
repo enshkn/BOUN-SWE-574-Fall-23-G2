@@ -140,7 +140,7 @@ public class StoryController {
             nullSet.add("No story found!");
             return ResponseEntity.ok(nullSet);
         }
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyService.sortStoriesByDescending(storySet.stream().toList()), "No stories with this search is found!"));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
     }
     @PostMapping("/like/")
     public ResponseEntity<?> likeStory(@RequestBody LikeRequest likeRequest, HttpServletRequest request){
