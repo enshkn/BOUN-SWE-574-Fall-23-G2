@@ -3,7 +3,7 @@ from appconfig import app_initializer
 from classes import Story, UserInteraction, Recommend
 from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising, update_story_vector, \
     update_user_vector, user_like_unlike_parser, story_user_vectors_fetcher, list_to_nparray, like_story_operations, \
-    unlike_story_operations, single_vector_fetcher
+    unlike_story_operations, single_vector_fetcher, recommendation_parser, story_recommender
 
 app, index, word2vec_model = app_initializer()
 
@@ -81,30 +81,12 @@ async def story_unliked(data: UserInteraction):
 @app.post("/recommend-story")
 async def recommend_story(data: Recommend):
     try:
-        user_id = data.userId
-        excluded_ids = data.excludedIds
-        vector_type = data.vector_type
-        print("Debugging Pinecone Calls:")
-        print("Excluded IDs:", excluded_ids)
-        print("Vector Type:", vector_type)
+        # parse the JSON
+        user_id, excluded_ids, vector_type = recommendation_parser(data)
+        # fetch the user vector with its id
         vector = single_vector_fetcher(pinecone_index=index, id=user_id)
-        print(vector)
-        print(type(vector))
-
-        response = index.query(
-            vector=vector,
-            top_k=100,
-            filter={"id": {"$nin": excluded_ids},
-                    "type": {"$eq": vector_type}
-                    },
-        )
-        print(response)
-        ids = [match['id'] for match in response['matches']]
-        scores = [match['score'] for match in response['matches']]
-        print(ids)
-        # Add print statement after the Pinecone call
-        print("After Pinecone Query")
-
+        # parse ids of the recommended story and scores
+        ids, scores = story_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids, vector_type=vector_type)
         return {"ids": ids, "scores": scores}
     except Exception as e:
         # Log the exception for further debugging
@@ -119,7 +101,6 @@ async def recommend_user(data: Recommend):
         excluded_ids = data.excludedIds
         vector_type = data.vector_type
         vector = single_vector_fetcher(pinecone_index=index, id=user_id)
-
         response = index.query(
             vector=vector,
             top_k=100,
@@ -128,7 +109,6 @@ async def recommend_user(data: Recommend):
         )
         ids = [match['id'] for match in response['matches']]
         scores = [match['score'] for match in response['matches']]
-        print(ids)
         # Add print statement after the Pinecone call
         print("After Pinecone Query")
 

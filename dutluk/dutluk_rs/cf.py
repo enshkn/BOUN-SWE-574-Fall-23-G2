@@ -93,6 +93,7 @@ def story_user_vectors_fetcher(pinecone_index, story_id, user_id):
     story_vector = story_response['vectors'][story_id]['values']
     return story_vector, user_vector
 
+
 def single_vector_fetcher(pinecone_index, id):
     response = pinecone_index.fetch([id])
     vector = response['vectors'][id]['values']
@@ -104,10 +105,32 @@ def list_to_nparray(story_vector, user_vector):
     np_user_vector = np.array(user_vector)
     return np_story_vector, np_user_vector
 
-def like_story_operations(np_user_vector,np_story_vector, user_weight):
+
+def like_story_operations(np_user_vector, np_story_vector, user_weight):
     updated_user_vector = ((np_user_vector * (user_weight - 1)) + np_story_vector) / user_weight
     return updated_user_vector
 
-def unlike_story_operations(np_user_vector,np_story_vector, user_weight):
+
+def unlike_story_operations(np_user_vector, np_story_vector, user_weight):
     updated_user_vector = ((np_user_vector * (user_weight + 1)) - np_story_vector) / user_weight
     return updated_user_vector
+
+
+def recommendation_parser(data: UserInteraction):
+    user_id = data.userId
+    excluded_ids = data.excludedIds
+    vector_type = data.vector_type
+    return user_id, excluded_ids, vector_type
+
+
+def story_recommender(pinecone_index, user_vector, excluded_ids, vector_type):
+    response = pinecone_index.query(
+        vector=user_vector,
+        top_k=100,
+        filter={"id": {"$nin": excluded_ids},
+                "type": {"$eq": vector_type}
+                },
+    )
+    ids = [match['id'] for match in response['matches']]
+    scores = [match['score'] for match in response['matches']]
+    return ids, scores
