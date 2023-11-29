@@ -50,6 +50,18 @@ services:
       - ./dutluk_frontend/.env
     volumes:
       - db-data:/var/lib/postgresql/data
+      
+   
+  recengine:
+    build:
+      context: ./dutluk_rs
+    container_name: rec-engine
+    image: hdenizdogan/rec-engine:latest
+    env_file:
+      - ./dutluk_frontend/.env
+    ports:
+      - "8000:8000"
+    restart: always
 
 volumes:
   backend-data:
