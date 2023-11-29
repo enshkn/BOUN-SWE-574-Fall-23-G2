@@ -228,7 +228,7 @@ public class StoryService {
     }
 
     public List<Story> likedStories(User foundUser) {
-        List<Long> likeList = new ArrayList<>(sortIdsByDescending(foundUser.getSavedStories().stream().toList()));
+        List<Long> likeList = new ArrayList<>(foundUser.getLikedStories());
         List<Story> storyList = new ArrayList<>();
         for (Long storyId : likeList) {
             Story story = getStoryByStoryId(storyId);
@@ -297,7 +297,7 @@ public class StoryService {
     }
 
     public List<Story> savedStories(User foundUser) {
-        List<Long> saveList = new ArrayList<>(sortIdsByDescending(foundUser.getSavedStories().stream().toList()));
+        List<Long> saveList = new ArrayList<>(foundUser.getSavedStories().stream().toList());
         List<Story> storyList = new ArrayList<>();
         for (Long storyId : saveList) {
             Story story = getStoryByStoryId(storyId);
@@ -309,7 +309,7 @@ public class StoryService {
     }
 
     public List<Story> recommendedStories(User foundUser) {
-        List<Long> recommendationList = new ArrayList<>(sortIdsByDescending(foundUser.getRecommendedStories().stream().toList()));
+        List<Long> recommendationList = new ArrayList<>(foundUser.getRecommendedStories());
 
         List<Story> storyList = new ArrayList<>();
         for (Long storyId : recommendationList) {
@@ -318,16 +318,14 @@ public class StoryService {
                 storyList.add(story);
             }
         }
-        return storyList;
+        return sortStoriesByDescending(storyList);
     }
 
     public List<Story> sortStoriesByDescending(List<Story> storyList){
+        if(storyList.isEmpty()){
+            return storyList;
+        }
         storyList.sort(Comparator.comparingLong(Story::getId).reversed());
         return storyList;
-    }
-
-    public List<Long> sortIdsByDescending(List<Long> storyIdList){
-        Collections.sort(storyIdList, Collections.reverseOrder());
-        return storyIdList.stream().toList();
     }
 }

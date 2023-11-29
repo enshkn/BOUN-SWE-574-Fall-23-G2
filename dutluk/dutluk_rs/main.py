@@ -44,7 +44,7 @@ async def vectorize_edit(data: Story):
 
 @app.post("/story-liked")
 async def story_liked(data: UserInteraction):
-    """ userweight güncellenip öyle gelsin"""
+    """ user weight should be updated  then received"""
     # parse the user and story attributes
     vector_type, story_id, user_id, user_weight = user_like_unlike_parser(data=data)
     # fetch story and user vectors
@@ -62,7 +62,7 @@ async def story_liked(data: UserInteraction):
 
 @app.post("/story-unliked")
 async def story_unliked(data: UserInteraction):
-    """ userweight güncellenip öyle gelsin"""
+    """ user weight should be updated  then received"""
     # parse the user and story attributes
     vector_type, story_id, user_id, user_weight = user_like_unlike_parser(data=data)
     # fetch story and user vectors
@@ -83,8 +83,8 @@ async def recommend_story(data: Recommend):
     try:
         # parse the JSON
         user_id, excluded_ids, vector_type = recommendation_parser(data)
-        # fetch the user vector with its id
-        vector = single_vector_fetcher(pinecone_index=index, id=user_id)
+        # fetch the user vector with its vector_id
+        vector = single_vector_fetcher(pinecone_index=index, vector_id=user_id)
         # parse ids of the recommended story and scores
         ids, scores = story_and_user_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
                                                  vector_type=vector_type)
@@ -101,8 +101,8 @@ async def recommend_user(data: Recommend):
     try:
         # parse the JSON
         user_id, excluded_ids, vector_type = recommendation_parser(data)
-        # fetch the user vector with its id
-        vector = single_vector_fetcher(pinecone_index=index, id=user_id)
+        # fetch the user vector with its vector_id
+        vector = single_vector_fetcher(pinecone_index=index, vector_id=user_id)
         # parse ids of the recommended story and scores
         ids, scores = story_and_user_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
                                                  vector_type=vector_type)
