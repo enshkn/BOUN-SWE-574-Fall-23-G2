@@ -334,7 +334,7 @@ class StoryServiceTest {
         when(storyRepository.findByLabelsContainingIgnoreCase(query)).thenReturn(Collections.singletonList(story2));
 
 
-        Set<Story> searchResults = storyService.searchStoriesWithQuery(query);
+        List<Story> searchResults = storyService.searchStoriesWithQuery(query);
 
 
         verify(storyRepository, times(1)).findByTitleContainingIgnoreCase(query);

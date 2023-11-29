@@ -31,7 +31,7 @@ public interface StoryRepository extends CrudRepository<Story,Long> {
 
     List<Story> findByStartTimeStamp(Date startTimeStamp);
 
-    List<Story> findByCreatedAtAfterOrderByCreatedAtDesc(Date sevenDaysAgo);
-
     List<Story> findByEndTimeStampBetween(Date startDecadeDate, Date endDecadeDate);
+
+    List<Story> findByCreatedAtAfterOrderByIdDesc(Date date);
 }
