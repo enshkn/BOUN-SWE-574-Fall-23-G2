@@ -123,13 +123,14 @@ class StoryRepository implements IStoryRepository {
   }
 
   @override
-  EitherFuture<bool> addFavorite({
+  EitherFuture<StoryModel> addFavorite({
     required int itemId,
   }) async {
-    final response = await manager.fetch<NoResultResponse, NoResultResponse>(
+    final response = await manager.fetch<StoryModel, StoryModel>(
       NetworkPaths.likeStory,
       type: HttpTypes.post,
-      parserModel: NoResultResponse(),
+      cachePolicy: CachePolicy.noCache,
+      parserModel: StoryModel(),
       data: {
         'likedEntityId': itemId,
       },
@@ -137,10 +138,7 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
-        final status = response.success ?? false;
-        if (!status) return left(AppFailure(message: response.message));
-
-        return right(true);
+        return right(response.entity as StoryModel);
       default:
         return left(response.errorType);
     }

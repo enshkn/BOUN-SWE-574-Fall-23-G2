@@ -136,6 +136,7 @@ class _HomeViewState extends State<HomeView>
                                       shrinkWrap: true,
                                       itemBuilder: (item) {
                                         return FavoriteWrapper(
+                                          storyId: item.id,
                                           initialState:
                                               item.likes!.contains(user.id),
                                           builder: (
@@ -143,6 +144,7 @@ class _HomeViewState extends State<HomeView>
                                             addFavorite,
                                             isfavorite,
                                             isLoading,
+                                            likeCount,
                                           ) {
                                             return Container(
                                               padding:
@@ -156,14 +158,19 @@ class _HomeViewState extends State<HomeView>
                                                   context.router.push(
                                                     StoryDetailsRoute(
                                                       model: item,
-                                                      leadBackHome: true,
                                                     ),
                                                   );
                                                 },
                                                 child: StoryCard(
                                                   storyModel: item,
+                                                  likeCount: likeCount,
                                                   isFavorite: isfavorite,
                                                   isFavoriteLoading: isLoading,
+                                                  onFavouriteTap: () async {
+                                                    await addFavorite(
+                                                      storyId: item.id,
+                                                    );
+                                                  },
                                                 ),
                                               ),
                                             );
@@ -193,6 +200,7 @@ class _HomeViewState extends State<HomeView>
                                         shrinkWrap: true,
                                         itemBuilder: (item) {
                                           return FavoriteWrapper(
+                                            storyId: item.id,
                                             initialState:
                                                 item.likes!.contains(user.id),
                                             builder: (
@@ -200,6 +208,7 @@ class _HomeViewState extends State<HomeView>
                                               addFavorite,
                                               isfavorite,
                                               isLoading,
+                                              likeCount,
                                             ) {
                                               return Container(
                                                 padding:
@@ -213,15 +222,20 @@ class _HomeViewState extends State<HomeView>
                                                     context.router.push(
                                                       StoryDetailsRoute(
                                                         model: item,
-                                                        leadBackHome: true,
                                                       ),
                                                     );
                                                   },
                                                   child: StoryCard(
                                                     storyModel: item,
+                                                    likeCount: likeCount,
                                                     isFavorite: isfavorite,
                                                     isFavoriteLoading:
                                                         isLoading,
+                                                    onFavouriteTap: () async {
+                                                      await addFavorite(
+                                                        storyId: item.id,
+                                                      );
+                                                    },
                                                   ),
                                                 ),
                                               );

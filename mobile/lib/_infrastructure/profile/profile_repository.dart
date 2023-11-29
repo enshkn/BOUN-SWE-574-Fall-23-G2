@@ -76,6 +76,7 @@ class ProfileRepository implements IProfileRepository {
     final response = await manager.fetch<User, User>(
       '/api/user/$id',
       type: HttpTypes.get,
+      cachePolicy: CachePolicy.noCache,
       parserModel: const User(),
       queryParameters: {
         'id': id,

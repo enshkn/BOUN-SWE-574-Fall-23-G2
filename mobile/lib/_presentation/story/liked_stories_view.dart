@@ -23,6 +23,7 @@ class LikedStoiresView extends StatefulWidget {
 class _LikedStoiresViewState extends State<LikedStoiresView> {
   @override
   List<StoryModel> likedStories = [];
+  @override
   Widget build(BuildContext context) {
     return BaseView<StoryCubit, StoryState>(
       onCubitReady: (cubit) async {

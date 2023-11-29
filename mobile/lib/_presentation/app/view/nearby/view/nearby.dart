@@ -73,6 +73,7 @@ class _NearbyViewState extends State<NearbyView> {
           },
           builder: (context, cubit, state) {
             return Scaffold(
+              backgroundColor: Colors.white,
               appBar: AppBar(
                 leading: SizedBox(
                   child: Center(
@@ -130,12 +131,14 @@ class _NearbyViewState extends State<NearbyView> {
                         items: state.nearbyStories,
                         itemBuilder: (item) {
                           return FavoriteWrapper(
+                            storyId: item.id,
                             initialState: item.likes!.contains(user.id),
                             builder: (
                               context,
                               addFavorite,
                               isfavorite,
                               isLoading,
+                              likeCount,
                             ) {
                               return Container(
                                 padding: const EdgeInsets.symmetric(
@@ -148,14 +151,19 @@ class _NearbyViewState extends State<NearbyView> {
                                     context.router.push(
                                       StoryDetailsRoute(
                                         model: item,
-                                        leadBackHome: true,
                                       ),
                                     );
                                   },
                                   child: StoryCard(
+                                    likeCount: likeCount,
                                     storyModel: item,
                                     isFavorite: isfavorite,
                                     isFavoriteLoading: isLoading,
+                                    onFavouriteTap: () async {
+                                      await addFavorite(
+                                        storyId: item.id,
+                                      );
+                                    },
                                   ),
                                 ),
                               );

@@ -39,6 +39,7 @@ class _RecommendedViewState extends State<RecommendedView> {
           },
           builder: (context, cubit, state) {
             return Scaffold(
+              backgroundColor: Colors.white,
               appBar: AppBar(
                 leading: SizedBox(
                   child: Center(
@@ -96,12 +97,14 @@ class _RecommendedViewState extends State<RecommendedView> {
                         items: state.recommendedStories,
                         itemBuilder: (item) {
                           return FavoriteWrapper(
+                            storyId: item.id,
                             initialState: item.likes!.contains(user.id),
                             builder: (
                               context,
                               addFavorite,
                               isfavorite,
                               isLoading,
+                              likeCount,
                             ) {
                               return Container(
                                 padding: const EdgeInsets.symmetric(
@@ -114,14 +117,19 @@ class _RecommendedViewState extends State<RecommendedView> {
                                     context.router.push(
                                       StoryDetailsRoute(
                                         model: item,
-                                        leadBackHome: true,
                                       ),
                                     );
                                   },
                                   child: StoryCard(
+                                    likeCount: likeCount,
                                     storyModel: item,
                                     isFavorite: isfavorite,
                                     isFavoriteLoading: isLoading,
+                                    onFavouriteTap: () async {
+                                      await addFavorite(
+                                        storyId: item.id,
+                                      );
+                                    },
                                   ),
                                 ),
                               );

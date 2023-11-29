@@ -16,7 +16,7 @@ abstract interface class IStoryRepository {
   EitherFuture<bool> deleteStory(int storyId);
   EitherFuture<StoryModel> getStoryDetail(int storyId);
   EitherFuture<StoryModel> addStoryModel(AddStoryModel model);
-  EitherFuture<bool> addFavorite({
+  EitherFuture<StoryModel> addFavorite({
     required int itemId,
   });
   EitherFuture<List<StoryModel>> getLikedStories();
