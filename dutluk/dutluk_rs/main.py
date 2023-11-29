@@ -112,3 +112,7 @@ async def recommend_user(data: Recommend):
         print(f"An error occurred: {str(e)}")
         # Return an HTTP 500 Internal Server Error with a custom error message
         raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+@app.get("/test")
+async def test_page():
+    return "<h1> Hello world </h1>"
