@@ -51,16 +51,16 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
 
-  recengine:
-    build:
-      context: ./dutluk_rs
-    container_name: recengine
-    image: hdenizdogan/recengine:latest
-    ports:
-      - "8000:8000"
-    env_file:
-      - ./dutluk_frontend/.env
-    restart: always
+  #recengine:
+    #build:
+      #context: ./dutluk_rs
+    #container_name: recengine
+    #image: hdenizdogan/recengine:latest
+    #ports:
+      #- "8000:8000"
+    #env_file:
+      #- ./dutluk_frontend/.env
+    #restart: always
 
 volumes:
   backend-data:
