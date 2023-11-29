@@ -295,4 +295,16 @@ public class StoryService {
         userService.editUser(user);
         return storyRepository.save(story);
     }
+
+    public List<Story> savedStories(User foundUser) {
+        List<Long> saveList = new ArrayList<>(foundUser.getSavedStories());
+        List<Story> storyList = new ArrayList<>();
+        for (Long storyId : saveList) {
+            Story story = getStoryByStoryId(storyId);
+            if (story != null) {
+                storyList.add(story);
+            }
+        }
+        return storyList;
+    }
 }

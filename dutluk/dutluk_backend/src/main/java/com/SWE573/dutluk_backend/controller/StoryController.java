@@ -188,4 +188,18 @@ public class StoryController {
         Story savedStory = storyService.saveStory(saveRequest.getSavedEntityId(),tokenizedUser.getId());
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),savedStory);
     }
+
+    @GetMapping("/saved")
+    public ResponseEntity<?> savedStories(HttpServletRequest request){
+        User tokenizedUser = userService.validateTokenizedUser(request);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.savedStories(tokenizedUser));
+
+    }
+
+    @GetMapping("/savedByUser/{userId}")
+    public ResponseEntity<?> savedStoriesByUser(@PathVariable Long userId, HttpServletRequest request){
+        User foundUser = userService.findByUserId(userId);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.savedStories(foundUser));
+
+    }
 }
