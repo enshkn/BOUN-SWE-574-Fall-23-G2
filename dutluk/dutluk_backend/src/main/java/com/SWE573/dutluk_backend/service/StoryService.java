@@ -101,13 +101,18 @@ public class StoryService {
         User user = userService.findByUserId(userId);
         Set<Long> likesList = story.getLikes();
         Set<Long> likedList = user.getLikedStories();
+        int likedListCount;
         if(!likesList.contains(user.getId())){
             likesList.add(user.getId());
             likedList.add(storyId);
+            likedListCount = likedList.size();
+            //type=user, storyId, userId and userWeight= likedListCount data will be sent to the rec engine in this line
         }
         else{
             likesList.remove(user.getId());
             likedList.remove(storyId);
+            likedListCount = likedList.size();
+            //type=user, storyId, userId and userWeight= likedListCount data will be sent to the rec engine in this line
         }
         story.setLikes(likesList);
         user.setLikedStories(likedList);
@@ -211,6 +216,7 @@ public class StoryService {
             location.setStory(createdStory);
         }
         createdStory.setLocations(allLocations);
+        // send createdStory info to rec engine /vectorize endpoint in this line
         return createdStory;
     }
 
@@ -222,6 +228,7 @@ public class StoryService {
             enteredStory.setLikes(story.getLikes());
             enteredStory.setId(story.getId());
             enteredStory.setComments(story.getComments());
+            //enteredStory will be sent to rec engine /vectorize-edit endpoint in this line
             return storyRepository.save(enteredStory);
         }
         return getStoryByStoryId(storyId);
