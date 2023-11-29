@@ -123,7 +123,7 @@ def recommendation_parser(data: UserInteraction):
     return user_id, excluded_ids, vector_type
 
 
-def story_recommender(pinecone_index, user_vector, excluded_ids, vector_type):
+def story_and_user_recommender(pinecone_index, user_vector, excluded_ids, vector_type):
     response = pinecone_index.query(
         vector=user_vector,
         top_k=100,
