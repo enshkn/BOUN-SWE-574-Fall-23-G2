@@ -50,32 +50,18 @@ services:
       - ./dutluk_frontend/.env
     volumes:
       - db-data:/var/lib/postgresql/data
-      
-   
+
   recengine:
     build:
       context: ./dutluk_rs
-    container_name: rec-engine
-    image: hdenizdogan/rec-engine:latest
-    env_file:
-      - ./dutluk_frontend/.env
+    container_name: recengine
+    image: hdenizdogan/recengine:latest
     ports:
       - "8000:8000"
+    env_file:
+      - ./dutluk_frontend/.env
     restart: always
 
 volumes:
   backend-data:
   db-data:
-
-
-#sudo su -
-#apt-get update
-#apt-get install docker-compose
-#apt-get install git
-#git clone https://github.com/enshkn/BOUN-SWE-574-Fall-23-G2
-#cd BOUN-SWE-574-Fall-23-G2/
-#cd dutluk/
-#cd dutluk_frontend/
-#nano .env (paste the necessary env variables here)
-#cd ..
-#docker compose up --build -d 
