@@ -91,7 +91,7 @@ public class StoryService {
         for(Long id : idList){
             storyList.addAll(findByUserIdOrderByIdDesc(id));
         }
-        return storyList;
+        return sortStoriesByDescending(storyList);
 
     }
 
@@ -138,15 +138,16 @@ public class StoryService {
                 minLatitude, maxLatitude, minLongitude, maxLongitude);
     }
 
-    public Set<Story> searchStoriesWithQuery(String query) {
-        Set<Story> storySet = new HashSet<>();
-        storySet.addAll(storyRepository.findByTitleContainingIgnoreCase(query));
-        storySet.addAll(searchStoriesWithLabel(query));
-        return storySet;
+    public List<Story> searchStoriesWithQuery(String query) {
+        Set<Story> results = new HashSet<>();
+        results.addAll(storyRepository.findByTitleContainingIgnoreCase(query));
+        results.addAll(searchStoriesWithLabel(query));
+        return results.stream().toList();
     }
 
     public List<Story> searchStoriesWithLabel(String label){
-        return storyRepository.findByLabelsContainingIgnoreCase(label);
+        List<Story> results = storyRepository.findByLabelsContainingIgnoreCase(label);
+        return results.stream().toList();
     }
 
     public List<Story> searchStoriesWithDecade(String decade){
@@ -160,7 +161,6 @@ public class StoryService {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-
         return results.stream().toList();
     }
 
@@ -224,11 +224,11 @@ public class StoryService {
             enteredStory.setComments(story.getComments());
             return storyRepository.save(enteredStory);
         }
-        return null;
+        return getStoryByStoryId(storyId);
     }
 
     public List<Story> likedStories(User foundUser) {
-        List<Long> likeList = new ArrayList<>(foundUser.getLikedStories());
+        List<Long> likeList = new ArrayList<>(sortIdsByDescending(foundUser.getSavedStories().stream().toList()));
         List<Story> storyList = new ArrayList<>();
         for (Long storyId : likeList) {
             Story story = getStoryByStoryId(storyId);
@@ -236,14 +236,14 @@ public class StoryService {
                 storyList.add(story);
             }
         }
-        return storyList;
+        return sortStoriesByDescending(storyList);
     }
 
     public List<Story> findRecentStories() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, -7);
         Date date = calendar.getTime();
-        return storyRepository.findByCreatedAtAfterOrderByCreatedAtDesc(date);
+        return storyRepository.findByCreatedAtAfterOrderByIdDesc(date);
     }
 
     private static Date convertToStartDate(String decadeString) throws ParseException {
@@ -297,7 +297,7 @@ public class StoryService {
     }
 
     public List<Story> savedStories(User foundUser) {
-        List<Long> saveList = new ArrayList<>(foundUser.getSavedStories());
+        List<Long> saveList = new ArrayList<>(sortIdsByDescending(foundUser.getSavedStories().stream().toList()));
         List<Story> storyList = new ArrayList<>();
         for (Long storyId : saveList) {
             Story story = getStoryByStoryId(storyId);
@@ -305,6 +305,29 @@ public class StoryService {
                 storyList.add(story);
             }
         }
+        return sortStoriesByDescending(storyList);
+    }
+
+    public List<Story> recommendedStories(User foundUser) {
+        List<Long> recommendationList = new ArrayList<>(sortIdsByDescending(foundUser.getRecommendedStories().stream().toList()));
+
+        List<Story> storyList = new ArrayList<>();
+        for (Long storyId : recommendationList) {
+            Story story = getStoryByStoryId(storyId);
+            if (story != null) {
+                storyList.add(story);
+            }
+        }
         return storyList;
+    }
+
+    public List<Story> sortStoriesByDescending(List<Story> storyList){
+        storyList.sort(Comparator.comparingLong(Story::getId).reversed());
+        return storyList;
+    }
+
+    public List<Long> sortIdsByDescending(List<Long> storyIdList){
+        Collections.sort(storyIdList, Collections.reverseOrder());
+        return storyIdList.stream().toList();
     }
 }

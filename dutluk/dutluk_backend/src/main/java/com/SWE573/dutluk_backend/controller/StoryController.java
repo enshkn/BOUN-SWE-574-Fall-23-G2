@@ -35,7 +35,7 @@ public class StoryController {
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findAllByOrderByIdDesc());
     }
 
-    //MOCK UNTIL ACTIVITY FEED LOGIC IS ESTABLISHED
+    //MOCK UNTIL RECOMMENDED LOGIC IS ESTABLISHED
     @GetMapping("/feed")
     public ResponseEntity<?> findFeedStories(HttpServletRequest request){
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findAllByOrderByIdDesc());
@@ -114,14 +114,14 @@ public class StoryController {
             nullSet.add("No story found!");
             return ResponseEntity.ok(nullSet);
         }
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyService.sortStoriesByDescending(storySet.stream().toList()), "No stories with this search is found!"));
     }
 
     @GetMapping("/search/label")
     public ResponseEntity<?> searchStoriesByLabel(@RequestParam(required = false) String label,
                                                   HttpServletRequest request){
         List<Story> labelResults = storyService.searchStoriesWithLabel(label);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),labelResults);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.sortStoriesByDescending(labelResults));
     }
 
     @GetMapping("/nearby")
@@ -140,7 +140,7 @@ public class StoryController {
             nullSet.add("No story found!");
             return ResponseEntity.ok(nullSet);
         }
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyService.sortStoriesByDescending(storySet.stream().toList()), "No stories with this search is found!"));
     }
     @PostMapping("/like/")
     public ResponseEntity<?> likeStory(@RequestBody LikeRequest likeRequest, HttpServletRequest request){

@@ -8,10 +8,7 @@ import com.SWE573.dutluk_backend.request.CommentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CommentService {
@@ -31,13 +28,16 @@ public class CommentService {
 
     public Comment likeComment(Long commentId, Long userId) {
         Comment comment = getCommentByCommentId(commentId);
-        if (comment.getLikes().contains(userId)) {
-            comment.getLikes().remove(userId);
+        Set<Long> commentLikes = comment.getLikes();
+        if (commentLikes.contains(userId)) {
+            commentLikes.remove(userId);
         }
         else{
-            comment.getLikes().add(userId);
+            commentLikes.add(userId);
         }
-        return commentRepository.save(comment);
+        comment.setLikes(commentLikes);
+        commentRepository.save(comment);
+        return comment;
     }
 
     public Comment getCommentByCommentId(Long commentId) {
