@@ -12,6 +12,7 @@ class CommentModel extends BaseEntity<CommentModel> with _$CommentModel {
     String? text,
     User? user,
     List<int>? likes,
+    String? createdAt,
   }) = _CommentModel;
   const CommentModel._();
   factory CommentModel.initial() => const CommentModel();

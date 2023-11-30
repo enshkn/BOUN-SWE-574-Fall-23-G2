@@ -11,6 +11,7 @@ import 'package:swe/_domain/story/model/addStory_model.dart';
 import 'package:swe/_domain/story/model/comment_model.dart';
 import 'package:swe/_domain/story/model/getNearbyStories_model.dart';
 import 'package:swe/_domain/story/model/postComment_model.dart';
+import 'package:swe/_domain/story/model/story_filter.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/widgets/wrapper/favorite_type.dart';
 
@@ -123,13 +124,14 @@ class StoryRepository implements IStoryRepository {
   }
 
   @override
-  EitherFuture<bool> addFavorite({
+  EitherFuture<StoryModel> addFavorite({
     required int itemId,
   }) async {
-    final response = await manager.fetch<NoResultResponse, NoResultResponse>(
+    final response = await manager.fetch<StoryModel, StoryModel>(
       NetworkPaths.likeStory,
       type: HttpTypes.post,
-      parserModel: NoResultResponse(),
+      cachePolicy: CachePolicy.noCache,
+      parserModel: StoryModel(),
       data: {
         'likedEntityId': itemId,
       },
@@ -137,10 +139,7 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
-        final status = response.success ?? false;
-        if (!status) return left(AppFailure(message: response.message));
-
-        return right(true);
+        return right(response.entity as StoryModel);
       default:
         return left(response.errorType);
     }
@@ -203,6 +202,9 @@ class StoryRepository implements IStoryRepository {
       type: HttpTypes.get,
       parserModel: StoryModel(),
       cachePolicy: CachePolicy.noCache,
+      queryParameters: {
+        'id': storyId,
+      },
     );
     switch (response.statusCode) {
       case 1:
@@ -241,6 +243,68 @@ class StoryRepository implements IStoryRepository {
       NetworkPaths.getActivityFeed,
       type: HttpTypes.get,
       parserModel: StoryModel(),
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as List<StoryModel>);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<List<StoryModel>> getSearchStories(
+    StoryFilter? storyFilter,
+    String? searchTerm,
+  ) async {
+    final response = await manager.fetch<StoryModel, List<StoryModel>>(
+      NetworkPaths.search,
+      type: HttpTypes.get,
+      parserModel: StoryModel(),
+      cachePolicy: CachePolicy.noCache,
+      queryParameters: {
+        'query': searchTerm ?? 'null',
+        'radius': storyFilter?.radius,
+        'latitude': storyFilter?.latitude,
+        'longitude': storyFilter?.longitude,
+        'startTimeStamp': storyFilter?.startTimeStamp ?? 'null',
+        'endTimeStamp': storyFilter?.endTimeStamp,
+        'decade': storyFilter?.decade ?? 'null',
+        'season': storyFilter?.season ?? 'null',
+      },
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as List<StoryModel>);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<List<StoryModel>> getTimelineSearchStories(
+    StoryFilter? storyFilter,
+    String? searchTerm,
+  ) async {
+    final response = await manager.fetch<StoryModel, List<StoryModel>>(
+      NetworkPaths.searchTimeline,
+      type: HttpTypes.get,
+      parserModel: StoryModel(),
+      cachePolicy: CachePolicy.noCache,
+      queryParameters: {
+        'query': searchTerm ?? 'null',
+        'radius': storyFilter?.radius,
+        'latitude': storyFilter?.latitude,
+        'longitude': storyFilter?.longitude,
+        'startTimeStamp': storyFilter?.startTimeStamp ?? 'null',
+        'endTimeStamp': storyFilter?.endTimeStamp,
+        'decade': storyFilter?.decade ?? 'null',
+        'season': storyFilter?.season ?? 'null',
+        'title': storyFilter?.title,
+        'label': storyFilter?.label,
+      },
     );
 
     switch (response.statusCode) {

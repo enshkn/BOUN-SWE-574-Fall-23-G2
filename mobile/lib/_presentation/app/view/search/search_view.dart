@@ -1,7 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:swe/_application/profile/profile_cubit.dart';
-import 'package:swe/_application/profile/profile_state.dart';
 import 'package:swe/_application/session/session_cubit.dart';
 import 'package:swe/_application/session/session_state.dart';
 import 'package:swe/_application/story/story_cubit.dart';
@@ -19,18 +17,17 @@ import 'package:swe/_presentation/widgets/mixins/scroll_anim_mixin.dart';
 import 'package:swe/_presentation/widgets/modals.dart';
 
 @RoutePage()
-class TimelineView extends StatefulWidget {
-  const TimelineView({super.key});
+class SearchView extends StatefulWidget {
+  const SearchView({super.key});
 
   @override
-  State<TimelineView> createState() => _TimelineViewState();
+  State<SearchView> createState() => _SearchViewState();
 }
 
-class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
+class _SearchViewState extends State<SearchView> with ScrollAnimMixin {
   final FocusNode _focusNode = FocusNode();
   final debouncer = Debouncer(milliseconds: 500);
   TextEditingController? _searchController;
-
   @override
   Widget build(BuildContext context) {
     return BaseConsumer<SessionCubit, SessionState>(
@@ -98,24 +95,24 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
                           });
                           _searchController?.text = val!;
 
-                          await cubit.getTimelineSearchResult(
-                            searchTerm: val,
+                          await cubit.search(
+                            term: val,
                           );
                         });
                       },
                       onPressedFilter: () async {
                         _focusNode.unfocus();
 
-                        final filter = await showTimelineFilterModal(
+                        final filter = await showFilterModal(
                           context,
                           currentFilter: state.filter,
                         );
                         if (filter == null || filter.isEmpty) return;
 
                         //_searchController?.clear();
-                        await cubit.getTimelineSearchResult(
-                          filter: filter,
-                          searchTerm: _searchController?.text,
+                        await cubit.getSearchResult(
+                          filter,
+                          _searchController?.text,
                         );
                       },
                     ),
@@ -123,7 +120,7 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
                   Expanded(
                     child: BaseListView<StoryModel>(
                       controller: scrollController,
-                      items: state.timelineResultStories,
+                      items: state.searchResultStories,
                       itemBuilder: (item) {
                         return Container(
                           padding: const EdgeInsets.symmetric(

@@ -73,6 +73,7 @@ class _NearbyViewState extends State<NearbyView> {
           },
           builder: (context, cubit, state) {
             return Scaffold(
+              backgroundColor: Colors.white,
               appBar: AppBar(
                 leading: SizedBox(
                   child: Center(
@@ -129,37 +130,33 @@ class _NearbyViewState extends State<NearbyView> {
                         physics: const NeverScrollableScrollPhysics(),
                         items: state.nearbyStories,
                         itemBuilder: (item) {
-                          return FavoriteWrapper(
-                            initialState: item.likes!.contains(user.id),
-                            builder: (
-                              context,
-                              addFavorite,
-                              isfavorite,
-                              isLoading,
-                            ) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 8,
-                                ),
-                                height: 450,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    context.router.push(
-                                      StoryDetailsRoute(
-                                        model: item,
-                                        leadBackHome: true,
-                                      ),
-                                    );
-                                  },
-                                  child: StoryCard(
-                                    storyModel: item,
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 8,
+                            ),
+                            height: 450,
+                            child: GestureDetector(
+                              onTap: () {
+                                context.router.push(
+                                  StoryDetailsRoute(
+                                    model: item,
+                                  ),
+                                );
+                              },
+                              child: StoryCard(
+                                storyModel: item,
+                                showFavouriteButton: false,
+                                /* likeCount: likeCount,
                                     isFavorite: isfavorite,
                                     isFavoriteLoading: isLoading,
-                                  ),
-                                ),
-                              );
-                            },
+                                    onFavouriteTap: () async {
+                                      await addFavorite(
+                                        storyId: item.id,
+                                      );
+                                    }, */
+                              ),
+                            ),
                           );
                         },
                       ),

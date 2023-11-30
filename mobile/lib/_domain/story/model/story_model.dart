@@ -23,6 +23,9 @@ class StoryModel extends BaseEntity<StoryModel> with _$StoryModel {
     List<CommentModel>? comments,
     List<LocationModel>? locations,
     List<int>? likes,
+    int? startHourFlag,
+    int? endHourFlag,
+    List<int>? savedBy,
   }) = _StoryModel;
   StoryModel._();
   factory StoryModel.initial() => StoryModel();

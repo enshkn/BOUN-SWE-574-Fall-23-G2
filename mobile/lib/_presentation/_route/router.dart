@@ -6,6 +6,7 @@ import 'package:swe/_presentation/app/view/nearby/view/nearby.dart';
 import 'package:swe/_presentation/app/view/profile/view/other_profile_view.dart';
 import 'package:swe/_presentation/app/view/profile/view/profile_detail_view.dart';
 import 'package:swe/_presentation/app/view/recommended/view/recommended_view.dart';
+import 'package:swe/_presentation/app/view/search/search_view.dart';
 import 'package:swe/_presentation/app/view/timeline/view/timeline_view.dart';
 import 'package:swe/_presentation/story/add_story_view.dart';
 import 'package:swe/_presentation/story/liked_stories_view.dart';
@@ -99,6 +100,21 @@ class AppRouter extends _$AppRouter {
           ],
         ),
         AutoRoute(
+          path: RoutePaths.SEARCH,
+          page: SearchTabRoute.page,
+          children: [
+            AutoRoute(path: '', page: SearchRoute.page),
+            AutoRoute(
+              path: RoutePaths.STORYDETAILS,
+              page: StoryDetailsRoute.page,
+            ),
+            AutoRoute(
+              path: RoutePaths.OTHERPROFILE,
+              page: OtherProfileRoute.page,
+            ),
+          ],
+        ),
+        AutoRoute(
           path: RoutePaths.PROFILE,
           page: ProfileTabRoute.page,
           children: [
@@ -169,6 +185,16 @@ class NearbyTabView extends StatelessWidget {
 @RoutePage()
 class TimelineTabView extends StatelessWidget {
   const TimelineTabView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const AutoRouter();
+  }
+}
+
+@RoutePage()
+class SearchTabView extends StatelessWidget {
+  const SearchTabView({super.key});
 
   @override
   Widget build(BuildContext context) {

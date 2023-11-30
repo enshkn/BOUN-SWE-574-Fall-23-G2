@@ -5,7 +5,8 @@ enum BottomTabs {
   recommended(1),
   nearby(2),
   timeline(3),
-  profile(4);
+  search(4),
+  profile(5);
 
   const BottomTabs(this.value);
   final int value;
@@ -24,6 +25,8 @@ enum BottomTabs {
         return NearbyTabRoute.name;
       case BottomTabs.timeline:
         return TimelineTabRoute.name;
+      case BottomTabs.search:
+        return SearchTabRoute.name;
       case BottomTabs.profile:
         return ProfileTabRoute.name;
     }
