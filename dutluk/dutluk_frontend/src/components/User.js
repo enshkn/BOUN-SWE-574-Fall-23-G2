@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Space, message } from 'antd';
 import axios from "axios";
 import blankPhotoPreview from "../profile_pic.png";
+import Button from 'react-bootstrap/Button';
 import "./css/User.css";
 
 function UserComponent({ userId }) {
@@ -10,6 +11,7 @@ function UserComponent({ userId }) {
   const [photoPreview, setPhotoPreview] = useState(blankPhotoPreview);
   const [biography, setBiography] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     const cookieValue = document.cookie.replace(
@@ -63,6 +65,7 @@ function UserComponent({ userId }) {
 
     const formData = new FormData();
     formData.append("photo", photoFile);
+    setLoading(true);
 
     axios
       .post(
@@ -79,6 +82,8 @@ function UserComponent({ userId }) {
         setUser({ ...user, profilePhoto: response.data.photo });
         setPhotoFile(user.profilePhoto);
         setPhotoPreview(user.profilePhoto);
+        setLoading(false);
+        messageApi.open({ type: "success", content: "Your photo uploaded!"});
       })
       .catch((error) => 
       console.log(error));
@@ -113,7 +118,14 @@ function UserComponent({ userId }) {
           </p>
           <form onSubmit={handleSubmit}>
             <input type="file" name="photo" onChange={handleFileChange} />
-            <button type="submit">Save Photo</button>
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={isLoading}
+              onClick={!isLoading ? handleSubmit : null}
+            >
+              {isLoading ? 'Loading…' : 'Save photo'}
+            </Button>
           </form>
         </div>
         <div>

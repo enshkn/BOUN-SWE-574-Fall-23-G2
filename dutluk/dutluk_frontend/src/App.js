@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import "./App.css";
 import DutlukImage from "./dutlukfinal_1.jpg";
 import DutlukLogo from "./dutluk_logo.png";
@@ -18,6 +18,10 @@ import StorySearch from "./components/StorySearch";
 import TimelineSearch from "./components/TimelineSearch";
 import LabelSearch from "./components/LabelSearch"; // Add import for LabelSearch
 import axios from "axios";
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 
 function App() {
@@ -53,59 +57,79 @@ function App() {
 
   return (
     <Router>
-      <nav className="nav">
-        <div className="logo-container">
-          <Link to="/">
+      <Navbar
+        style={{ backgroundColor: "#ff5500ca" }}
+        expand="lg"
+        sticky="top"
+        className="nav"
+      >
+        <Container>
+          <Navbar.Brand href="/">
             <img src={DutlukLogo} alt="Logo" className="logo" />
-          </Link>
-        </div>
-        <Link to="/" className="nav-link">
-          Home
-        </Link>
-        {loggedIn ? (
-          <>
-            <Link to="/" onClick={handleLogout} className="nav-link">
-              Logout
-            </Link>
-            <Link to="/user/my-profile" className="nav-link">
-              My Profile
-            </Link>
-            <Link to="/story/add-story" className="nav-link">
-              Add Story
-            </Link>
-            <Link to="/story/followings" className="nav-link">
-              Story Feed
-            </Link>
-            <Link to="/story/my-stories" className="nav-link">
-              My Stories
-            </Link>
-            <Link to="/story/recommended-stories" className="nav-link">
-              Recommended Stories
-            </Link>
-            <Link to="/story/all-stories" className="nav-link">
-              All Stories
-            </Link>
-            <Link to="/story/search" className="nav-link">
-              Search
-            </Link>
-            <Link to="/story/timeline-search" className="nav-link">
-              Timeline Search
-            </Link>
-            <Link to="/story/search/label/:label" className="nav-link">
-              Label Search
-            </Link>
-          </>
-        ) : (
-          <>
-            <Link to="/login" className="nav-link">
-              Login
-            </Link>
-            <Link to="/register" className="nav-link">
-              Register
-            </Link>
-          </>
-        )}
-      </nav>
+          </Navbar.Brand>
+          {loggedIn ? (
+            <>
+              <Nav.Link href="/story/followings" className="nav-link">
+                Story Feed
+              </Nav.Link>
+              <Nav.Link href="/story/recommended-stories" className="nav-link">
+                Recommended Stories
+              </Nav.Link>
+              <Nav.Link href="/story/all-stories" className="nav-link">
+                All Stories
+              </Nav.Link>
+              <Nav.Link href="/story/search" className="nav-link">
+                Search
+              </Nav.Link>
+              <Nav.Link href="/story/timeline-search" className="nav-link">
+                Timeline Search
+              </Nav.Link>
+              <NavDropdown
+                title="My account"
+                id="basic-nav-dropdown"
+                className="nav-link"
+              >
+                <NavDropdown.Item
+                  href="/user/my-profile"
+                  className="justify-content-end"
+                >
+                  My Profile
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/my-stories"
+                  className="justify-content-end"
+                >
+                  My Stories
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/add-story"
+                  className="justify-content-end"
+                >
+                  Add Story
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item
+                  href="/"
+                  onClick={handleLogout}
+                  className="justify-content-end"
+                >
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
+            </>
+          ) : (
+            <>
+              <Nav.Link href="/login" className="nav-link">
+                Login
+              </Nav.Link>
+              <Nav.Link href="/register" className="nav-link">
+                Register
+              </Nav.Link>
+            </>
+          )}
+        </Container>
+      </Navbar>
+
       <Routes>
         <Route
           path="/"
