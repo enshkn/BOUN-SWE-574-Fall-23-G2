@@ -35,14 +35,16 @@ public class StoryService {
     @Autowired
     RecommendationService recService;
 
-
+    List<Story> blankStoryList  = new ArrayList<>();
 
     public List<Story> findAll(){
-        return storyRepository.findAll();
+        List<Story> storyList = storyRepository.findAll();
+        return (storyList != null) ? storyList : blankStoryList;
     }
 
     public List<Story> findAllByOrderByIdDesc(){
-        return storyRepository.findAllByOrderByIdDesc();
+        List<Story> storyList = storyRepository.findAllByOrderByIdDesc();
+        return (storyList != null) ? storyList : blankStoryList;
     }
 
     public Story createStory(User foundUser, StoryCreateRequest storyCreateRequest) throws ParseException, IOException {
@@ -69,20 +71,19 @@ public class StoryService {
     }
 
     public List<Story> findAllStoriesByUserId(Long userId){
-        return storyRepository.findByUserId(userId);
+        List<Story> storyList = storyRepository.findByUserId(userId);
+        return (storyList != null) ? storyList : blankStoryList;
     }
 
     public List<Story> findByUserIdOrderByIdDesc(Long userId){
-        return storyRepository.findByUserIdOrderByIdDesc(userId);
+        List<Story> storyList = storyRepository.findByUserIdOrderByIdDesc(userId);
+        return (storyList != null) ? storyList : blankStoryList;
     }
 
 
     public Story getStoryByStoryId(Long id) {
         Optional<Story> optionalStory = storyRepository.findById(id);
-        if (optionalStory.isEmpty()) {
-            throw new NoSuchElementException("Story with id '" + id + "' not found");
-        }
-        return optionalStory.get();
+        return optionalStory.orElse(null);
     }
 
     public List<Story> findFollowingStories(User foundUser) {
@@ -95,7 +96,8 @@ public class StoryService {
         for(Long id : idList){
             storyList.addAll(findByUserIdOrderByIdDesc(id));
         }
-        return sortStoriesByDescending(storyList);
+        List<Story> resultStoryList = sortStoriesByDescending(storyList);
+        return (resultStoryList != null) ? resultStoryList : blankStoryList;
 
     }
 
@@ -246,15 +248,21 @@ public class StoryService {
     }
 
     public List<Story> likedStories(User foundUser) {
-        List<Long> likeList = new ArrayList<>(foundUser.getLikedStories());
+        Set<Long> likeSet = new HashSet<>(foundUser.getLikedStories());
         List<Story> storyList = new ArrayList<>();
-        for (Long storyId : likeList) {
+        for (Long storyId : likeSet) {
             Story story = getStoryByStoryId(storyId);
             if (story != null) {
                 storyList.add(story);
             }
+            else{
+                likeSet.remove(storyId);
+            }
         }
-        return sortStoriesByDescending(storyList);
+        foundUser.setLikedStories(likeSet);
+        userService.editUser(foundUser);
+        List<Story> resultStoryList = sortStoriesByDescending(storyList);
+        return (resultStoryList != null) ? resultStoryList : blankStoryList;
     }
 
     public List<Story> findRecentStories() {
@@ -262,6 +270,7 @@ public class StoryService {
         calendar.add(Calendar.DAY_OF_MONTH, -7);
         Date date = calendar.getTime();
         return storyRepository.findByCreatedAtAfterOrderByIdDesc(date);
+
     }
 
     private static Date convertToStartDate(String decadeString) throws ParseException {
@@ -315,14 +324,19 @@ public class StoryService {
     }
 
     public List<Story> savedStories(User foundUser) {
-        List<Long> saveList = new ArrayList<>(foundUser.getSavedStories().stream().toList());
+        Set<Long> saveSet = new HashSet<>(foundUser.getSavedStories());
         List<Story> storyList = new ArrayList<>();
-        for (Long storyId : saveList) {
+        for (Long storyId : saveSet) {
             Story story = getStoryByStoryId(storyId);
             if (story != null) {
                 storyList.add(story);
             }
+            else{
+                saveSet.remove(storyId);
+            }
         }
+        foundUser.setSavedStories(saveSet);
+        userService.editUser(foundUser);
         return sortStoriesByDescending(storyList);
     }
 
