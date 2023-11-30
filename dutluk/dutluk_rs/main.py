@@ -115,6 +115,7 @@ async def recommend_story(data: Recommend):
         ids, scores = story_and_user_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
                                                  vector_type=vector_type)
         ids = parse_ids_with_prefix_for_lists(vector_ids=ids)
+        # parse ids for backend
         print(ids)
         print(type(ids))
         return {"ids": ids, "scores": scores}
@@ -130,11 +131,20 @@ async def recommend_user(data: Recommend):
     try:
         # parse the JSON
         user_id, excluded_ids, vector_type = recommendation_parser(data)
+        # add prefix to vector_id according to the type
+        user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
+        excluded_ids = generate_ids_with_prefix(vector_ids=excluded_ids, vector_type=vector_type)
+        print(excluded_ids)
+        print(type(excluded_ids))
         # fetch the user vector with its vector_id
         vector = single_vector_fetcher(pinecone_index=index, vector_id=user_id)
         # parse ids of the recommended story and scores
         ids, scores = story_and_user_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
                                                  vector_type=vector_type)
+        # parse ids for backend
+        ids = parse_ids_with_prefix_for_lists(vector_ids=ids)
+        print(ids)
+        print(type(ids))
         return {"ids": ids, "scores": scores}
     except Exception as e:
         # Log the exception for further debugging
