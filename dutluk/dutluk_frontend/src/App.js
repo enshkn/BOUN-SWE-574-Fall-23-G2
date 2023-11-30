@@ -57,32 +57,79 @@ function App() {
 
   return (
     <Router>
-      <Navbar bg="primary" data-bs-theme="dark" expand="lg" sticky="top" className="nav">
+      <Navbar
+        style={{ backgroundColor: "#ff5500ca" }}
+        expand="lg"
+        sticky="top"
+        className="nav"
+      >
         <Container>
-          <Navbar.Brand href="/"><img src={DutlukLogo} alt="Logo" className="logo" /></Navbar.Brand>
+          <Navbar.Brand href="/">
+            <img src={DutlukLogo} alt="Logo" className="logo" />
+          </Navbar.Brand>
           {loggedIn ? (
-          <>
-              <Nav.Link href="/story/followings" className="nav-link">Story Feed</Nav.Link>
-              <Nav.Link href="/story/recommended-stories" className="nav-link">Recommended Stories</Nav.Link>
-              <Nav.Link href="/story/all-stories" className="nav-link">All Stories</Nav.Link>
-              <Nav.Link href="/story/search" className="nav-link">Search</Nav.Link>
-              <Nav.Link href="/story/timeline-search" className="nav-link">Timeline Search</Nav.Link>
-              <NavDropdown title="My account" id="basic-nav-dropdown" className="nav-link ">
-                <NavDropdown.Item href="/user/my-profile" className="justify-content-end">My Profile</NavDropdown.Item>
-                <NavDropdown.Item href="/story/my-stories" className="justify-content-end">My Stories</NavDropdown.Item>
-                <NavDropdown.Item href="/story/add-story" className="justify-content-end">Add Story</NavDropdown.Item>
+            <>
+              <Nav.Link href="/story/followings" className="nav-link">
+                Story Feed
+              </Nav.Link>
+              <Nav.Link href="/story/recommended-stories" className="nav-link">
+                Recommended Stories
+              </Nav.Link>
+              <Nav.Link href="/story/all-stories" className="nav-link">
+                All Stories
+              </Nav.Link>
+              <Nav.Link href="/story/search" className="nav-link">
+                Search
+              </Nav.Link>
+              <Nav.Link href="/story/timeline-search" className="nav-link">
+                Timeline Search
+              </Nav.Link>
+              <NavDropdown
+                title="My account"
+                id="basic-nav-dropdown"
+                className="nav-link"
+              >
+                <NavDropdown.Item
+                  href="/user/my-profile"
+                  className="justify-content-end"
+                >
+                  My Profile
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/my-stories"
+                  className="justify-content-end"
+                >
+                  My Stories
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/add-story"
+                  className="justify-content-end"
+                >
+                  Add Story
+                </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="/" onClick={handleLogout} className="justify-content-end">Logout</NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/"
+                  onClick={handleLogout}
+                  className="justify-content-end"
+                >
+                  Logout
+                </NavDropdown.Item>
               </NavDropdown>
             </>
           ) : (
             <>
-              <Nav.Link href="/login" className="nav-link">Login</Nav.Link>
-              <Nav.Link href="/register" className="nav-link">Register</Nav.Link>
+              <Nav.Link href="/login" className="nav-link">
+                Login
+              </Nav.Link>
+              <Nav.Link href="/register" className="nav-link">
+                Register
+              </Nav.Link>
             </>
           )}
         </Container>
       </Navbar>
+
       <Routes>
         <Route
           path="/"
