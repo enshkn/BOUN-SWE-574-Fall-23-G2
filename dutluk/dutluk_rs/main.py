@@ -35,6 +35,10 @@ async def vectorize(data: Story):
 async def vectorize_edit(data: Story):
     # Extract the text from the JSON object
     vector_text, vector_ids, vector_tags, vector_type = story_parser(data)
+    # add prefix to vector_id according to the type
+    vector_ids = generate_id_with_prefix(vector_id=vector_ids, vector_type=vector_type)
+    print(vector_ids)
+    print(type(vector_ids))
     # convert tags list to string for tokenization
     vector_tags = list_to_string(vector_tags)
     # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
