@@ -83,7 +83,7 @@ public class StoryController {
             @RequestParam(required = false) String endTimeStamp,
             @RequestParam(required = false) String decade,
             @RequestParam(required = false) String season,
-            HttpServletRequest request) throws ParseException,NullPointerException {
+            HttpServletRequest request) throws ParseException {
         Set<Story> storySet = new HashSet<>();
         if(query != null){
             if(!query.equalsIgnoreCase("") && !query.equalsIgnoreCase("null")){
@@ -106,10 +106,10 @@ public class StoryController {
                 storySet.addAll(storyService.searchStoriesWithSingleDate(startTimeStamp));
             }
         }
-        if(decade != null && !query.equalsIgnoreCase("null")){
+        if(decade != null && !decade.equalsIgnoreCase("null")){
             storySet.addAll(storyService.searchStoriesWithDecade(decade));
         }
-        if(season != null && !query.equalsIgnoreCase("null")){
+        if(season != null && !season.equalsIgnoreCase("null")){
             storySet.addAll(storyService.searchStoriesWithSeason(season));
         }
         if(storySet.isEmpty()){
