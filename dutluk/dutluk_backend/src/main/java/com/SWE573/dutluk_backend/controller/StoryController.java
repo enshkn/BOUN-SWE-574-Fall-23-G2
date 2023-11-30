@@ -181,7 +181,7 @@ public class StoryController {
                 }
             }
         }
-        if(latitude != null && longitude != null && (radius != null)){
+        if(latitude != null && longitude != null && radius != null){
             locationSet.addAll(storyService.searchStoriesWithLocationOnly(radius,latitude,longitude));
         }
         if(startTimeStamp != null && !startTimeStamp.equalsIgnoreCase("null")){
@@ -193,20 +193,20 @@ public class StoryController {
             }
             else{
                 dateSet.addAll(storyService.searchStoriesWithSingleDate(startTimeStamp));
-                if(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp) != null){
+                if(storyService.searchStoriesWithSingleDate(startTimeStamp) != null){
                     storySet.retainAll(dateSet);
                 }
             }
         }
         if(decade != null && !decade.equalsIgnoreCase("null")){
             decadeSet.addAll(storyService.searchStoriesWithDecade(decade));
-            if(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp) != null){
+            if(storyService.searchStoriesWithDecade(decade) != null){
                 storySet.retainAll(decadeSet);
             }
         }
         if(season != null && !season.equalsIgnoreCase("null")){
             seasonSet.addAll(storyService.searchStoriesWithSeason(season));
-            if(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp) != null){
+            if(storyService.searchStoriesWithSeason(season) != null){
                 storySet.retainAll(seasonSet);
             }
         }
