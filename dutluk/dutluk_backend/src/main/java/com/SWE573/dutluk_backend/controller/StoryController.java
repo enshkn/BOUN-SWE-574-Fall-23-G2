@@ -7,6 +7,7 @@ import com.SWE573.dutluk_backend.request.SaveRequest;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
 import com.SWE573.dutluk_backend.service.IntegrationService;
+import com.SWE573.dutluk_backend.service.RecommendationService;
 import com.SWE573.dutluk_backend.service.StoryService;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,8 @@ public class StoryController {
     StoryService storyService;
     @Autowired
     private UserService userService;
+    @Autowired
+    RecommendationService recService;
 
     @GetMapping("/all")
     public ResponseEntity<?> findAllStories(HttpServletRequest request){
@@ -114,7 +117,7 @@ public class StoryController {
             nullSet.add("No story found!");
             return ResponseEntity.ok(nullSet);
         }
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyService.sortStoriesByDescending(storySet.stream().toList()), "No stories with this search is found!"));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
     }
 
     @GetMapping("/search/label")
@@ -201,5 +204,10 @@ public class StoryController {
         User foundUser = userService.findByUserId(userId);
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.savedStories(foundUser));
 
+    }
+
+    @GetMapping("/recEndPoint")
+    public String recommendationEndpointTest(){
+        return recService.testEndpoint();
     }
 }
