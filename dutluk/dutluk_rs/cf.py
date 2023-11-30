@@ -7,6 +7,7 @@ def list_to_string(parameters_list: list):
     combined_string = ' '.join(map(str, parameters_list))
     return combined_string
 
+
 def generate_id_with_prefix(vector_id, vector_type):
     if vector_type == "user":
         prefix = "u"
@@ -15,6 +16,7 @@ def generate_id_with_prefix(vector_id, vector_type):
     else:
         raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
     return f"{prefix}{vector_id}"
+
 
 def parse_id_with_prefix(vector_id):
     if vector_id[0] == "u":
@@ -28,6 +30,7 @@ def parse_id_with_prefix(vector_id):
     except ValueError:
         raise ValueError("Invalid vector_type value.")
     return id_value
+
 
 def parse_ids_with_prefix_for_lists(vector_ids):
     parsed_results = []
