@@ -334,14 +334,16 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               BaseWidgets.normalGap,
               Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blue),
+                  border: Border.all(color: Colors.orange),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ExpansionTile(
+                  iconColor: Colors.orange.shade800,
                   initiallyExpanded: true,
                   controller: controller,
-                  title: const Text(
+                  title: Text(
                     'Time Variants',
+                    style: TextStyle(color: Colors.orange.shade800),
                   ),
                   children: <Widget>[
                     if (widget.model.startTimeStamp != null)
@@ -401,12 +403,16 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               if (widget.model.locations != null)
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue),
+                    border: Border.all(color: Colors.orange),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: ExpansionTile(
+                    iconColor: Colors.orange.shade800,
                     controller: controller2,
-                    title: const Text('Locations'),
+                    title: Text(
+                      'Locations',
+                      style: TextStyle(color: Colors.orange.shade800),
+                    ),
                     initiallyExpanded: true,
                     children: <Widget>[
                       BaseWidgets.lowerGap,
@@ -740,7 +746,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
           color: Colors.white,
         ),
       ),
-      backgroundColor: Colors.blue,
+      backgroundColor: Colors.orange,
       elevation: 4,
       padding: const EdgeInsets.all(8),
     );

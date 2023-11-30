@@ -282,7 +282,7 @@ class StoryCard extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      backgroundColor: Colors.blue,
+      backgroundColor: Colors.orange,
       elevation: 4,
       padding: const EdgeInsets.all(8),
     );

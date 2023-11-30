@@ -51,7 +51,7 @@ extension PaddingExtension on BuildContext {
 
 extension PageExtension on BuildContext {
   Color get randomColor => Colors.primaries[Random().nextInt(17)];
-  Color get appBarColor => Colors.blue;
+  Color get appBarColor => Colors.orange;
 }
 
 extension DurationExtension on BuildContext {

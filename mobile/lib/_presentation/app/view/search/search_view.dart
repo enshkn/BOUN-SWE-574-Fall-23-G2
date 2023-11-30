@@ -63,7 +63,7 @@ class _SearchViewState extends State<SearchView> with ScrollAnimMixin {
                   Padding(
                     padding: const EdgeInsets.only(right: 16),
                     child: CircleAvatar(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.orange,
                       child: IconButton.outlined(
                         icon: const Icon(
                           Icons.edit,

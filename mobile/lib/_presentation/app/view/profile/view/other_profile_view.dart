@@ -125,7 +125,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                         padding: const EdgeInsets.fromLTRB(8, 8, 24, 8),
                         child: Container(
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.blue),
+                            border: Border.all(color: Colors.orange),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: ExpansionTile(
@@ -181,7 +181,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                         padding: const EdgeInsets.fromLTRB(8, 8, 24, 8),
                         child: Container(
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.blue),
+                            border: Border.all(color: Colors.orange),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: ExpansionTile(
@@ -237,7 +237,7 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                         padding: const EdgeInsets.fromLTRB(8, 8, 24, 8),
                         child: Container(
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.blue),
+                            border: Border.all(color: Colors.orange),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: ExpansionTile(
