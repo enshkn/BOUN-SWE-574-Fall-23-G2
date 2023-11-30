@@ -3,7 +3,7 @@ from appconfig import app_initializer
 from classes import Story, UserInteraction, Recommend
 from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising, update_story_vector, \
     update_user_vector, user_like_unlike_parser, story_user_vectors_fetcher, list_to_nparray, like_story_operations, \
-    unlike_story_operations, single_vector_fetcher, recommendation_parser, story_and_user_recommender, list_to_string, generate_id_with_prefix, parse_ids_with_prefix_for_lists,parse_id_with_prefix
+    unlike_story_operations, single_vector_fetcher, recommendation_parser, story_and_user_recommender, list_to_string, generate_id_with_prefix,generate_ids_with_prefix, parse_ids_with_prefix_for_lists,parse_id_with_prefix
 
 app, index, word2vec_model = app_initializer()
 
@@ -104,11 +104,19 @@ async def recommend_story(data: Recommend):
     try:
         # parse the JSON
         user_id, excluded_ids, vector_type = recommendation_parser(data)
+        # add prefix to vector_id according to the type
+        user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
+        excluded_ids = generate_ids_with_prefix(vector_ids=excluded_ids, vector_type=vector_type)
+        print(excluded_ids)
+        print(type(excluded_ids))
         # fetch the user vector with its vector_id
         vector = single_vector_fetcher(pinecone_index=index, vector_id=user_id)
         # parse ids of the recommended story and scores
         ids, scores = story_and_user_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
                                                  vector_type=vector_type)
+        ids = parse_ids_with_prefix_for_lists(vector_ids=ids)
+        print(ids)
+        print(type(ids))
         return {"ids": ids, "scores": scores}
     except Exception as e:
         # Log the exception for further debugging

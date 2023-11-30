@@ -18,6 +18,17 @@ def generate_id_with_prefix(vector_id, vector_type):
     return f"{prefix}{vector_id}"
 
 
+def generate_ids_with_prefix(vector_ids, vector_type):
+    if vector_type == "user":
+        prefix = "u"
+    elif vector_type == "story":
+        prefix = "s"
+    else:
+        raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+
+    return [f"{prefix}{vector_id}" for vector_id in vector_ids]
+
+
 def parse_id_with_prefix(vector_id):
     if vector_id[0] == "u":
         vector_type = "user"
@@ -47,7 +58,7 @@ def parse_ids_with_prefix_for_lists(vector_ids):
         except ValueError:
             raise ValueError("Invalid vector_type value. An integer is accepted.")
 
-        parsed_results.append((vector_type, id_value))
+        parsed_results.append(id_value)
 
     return parsed_results
 
