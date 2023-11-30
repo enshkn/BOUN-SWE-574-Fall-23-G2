@@ -83,39 +83,38 @@ public class StoryController {
             @RequestParam(required = false) String endTimeStamp,
             @RequestParam(required = false) String decade,
             @RequestParam(required = false) String season,
-            HttpServletRequest request) throws ParseException {
+            HttpServletRequest request) throws ParseException,NullPointerException {
         Set<Story> storySet = new HashSet<>();
         if(query != null){
-            if(!query.equalsIgnoreCase("")){
+            if(!query.equalsIgnoreCase("") && !query.equalsIgnoreCase("null")){
                 storySet.addAll(storyService.searchStoriesWithQuery(query));
             }
         }
         if(latitude != null && longitude != null && (radius != null)){
-            if (query == null){
-                storySet.addAll(storyService.searchStoriesWithLocationOnly(radius,latitude,longitude));
-            }
-            else{
+            if (query != null && !query.equalsIgnoreCase("null")){
                 storySet.addAll(storyService.searchStoriesWithLocation(query,radius,latitude,longitude));
             }
+            else{
+                storySet.addAll(storyService.searchStoriesWithLocationOnly(radius,latitude,longitude));
+            }
         }
-        if(startTimeStamp != null){
-            if(endTimeStamp != null){
+        if(startTimeStamp != null && !startTimeStamp.equalsIgnoreCase("null")){
+            if(endTimeStamp != null && !endTimeStamp.equalsIgnoreCase("null")){
                 storySet.addAll(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
             }
             else{
                 storySet.addAll(storyService.searchStoriesWithSingleDate(startTimeStamp));
             }
         }
-        if(decade != null){
+        if(decade != null && !query.equalsIgnoreCase("null")){
             storySet.addAll(storyService.searchStoriesWithDecade(decade));
         }
-        if(season != null){
+        if(season != null && !query.equalsIgnoreCase("null")){
             storySet.addAll(storyService.searchStoriesWithSeason(season));
         }
         if(storySet.isEmpty()){
             Set<String> nullSet = new HashSet<>();
-            nullSet.add("No story found!");
-            return ResponseEntity.ok(nullSet);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),nullSet);
         }
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
     }
@@ -124,7 +123,7 @@ public class StoryController {
     public ResponseEntity<?> searchStoriesByLabel(@RequestParam(required = false) String label,
                                                   HttpServletRequest request){
         List<Story> labelResults = storyService.searchStoriesWithLabel(label);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.sortStoriesByDescending(labelResults));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyService.sortStoriesByDescending(labelResults),"No story found!"));
     }
 
     @GetMapping("/nearby")
@@ -134,14 +133,13 @@ public class StoryController {
             @RequestParam(required = false) Double longitude,
             HttpServletRequest request) throws ParseException {
         Set<Story> storySet = new HashSet<>();
-        String query = null;
+
         if(latitude != null && longitude != null && (radius != null || radius != 0)){
-            storySet.addAll(storyService.searchStoriesWithLocation(query,radius,latitude,longitude));
+            storySet.addAll(storyService.searchStoriesWithLocationOnly(radius,latitude,longitude));
         }
         if(storySet.isEmpty()){
             Set<String> nullSet = new HashSet<>();
-            nullSet.add("No story found!");
-            return ResponseEntity.ok(nullSet);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),nullSet);
         }
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
     }

@@ -31,6 +31,9 @@ public class StoryService {
     @Autowired
     ImageService imageService;
 
+    @Autowired
+    RecommendationService recService;
+
 
 
     public List<Story> findAll(){
@@ -107,12 +110,14 @@ public class StoryService {
             likedList.add(storyId);
             likedListCount = likedList.size();
             //type=user, storyId, userId and userWeight= likedListCount data will be sent to the rec engine in this line
+            //recService.storyLiked("user",storyId.toString(),userId.toString(),likedList.size());
         }
         else{
             likesList.remove(user.getId());
             likedList.remove(storyId);
             likedListCount = likedList.size();
             //type=user, storyId, userId and userWeight= likedListCount data will be sent to the rec engine in this line
+            //recService.storydisLiked("user",storyId.toString(),userId.toString(),likedList.size());
         }
         story.setLikes(likesList);
         user.setLikedStories(likedList);
