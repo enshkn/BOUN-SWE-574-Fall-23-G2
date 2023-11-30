@@ -1006,6 +1006,7 @@ class _AddStoryViewState extends State<AddStoryView>
     );
     await cubit.addStory(model).then((value) {
       if (value) {
+        cubit.showNotification('Your Story is added.');
         Navigator.of(context).pop();
       }
     });
