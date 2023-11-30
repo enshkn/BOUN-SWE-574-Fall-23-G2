@@ -3,7 +3,7 @@ from appconfig import app_initializer
 from classes import Story, UserInteraction, Recommend
 from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising, update_story_vector, \
     update_user_vector, user_like_unlike_parser, story_user_vectors_fetcher, list_to_nparray, like_story_operations, \
-    unlike_story_operations, single_vector_fetcher, recommendation_parser, story_and_user_recommender
+    unlike_story_operations, single_vector_fetcher, recommendation_parser, story_and_user_recommender, list_to_string
 
 app, index, word2vec_model = app_initializer()
 
@@ -12,6 +12,9 @@ app, index, word2vec_model = app_initializer()
 async def vectorize(data: Story):
     # Extract the text from the JSON object
     vector_text, vector_ids, vector_tags, vector_type = story_parser(data)
+    vector_tags = list_to_string(vector_tags)
+    print(type(vector_tags))
+    print(vector_tags)
     # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
     tokenized_text, tokenized_tags = text_processor(vector_text=vector_text, vector_tags=vector_tags)
     # Initialize an empty array to store the vectors
@@ -19,7 +22,6 @@ async def vectorize(data: Story):
     tag_vectors = tokenizer(tokenized_tags, word2vec_model)
     # Vector operations with Numpy
     avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors, tag_vector=tag_vectors)
-
     # upsert to the vector db
     is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
                          vector_type=vector_type)
@@ -30,6 +32,9 @@ async def vectorize(data: Story):
 async def vectorize_edit(data: Story):
     # Extract the text from the JSON object
     vector_text, vector_ids, vector_tags, vector_type = story_parser(data)
+    vector_tags = list_to_string(vector_tags)
+    print(type(vector_tags))
+    print(vector_tags)
     # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
     tokenized_text, tokenized_tags = text_processor(vector_text=vector_text, vector_tags=vector_tags)
     text_vectors = tokenizer(tokenized_text, word2vec_model)
@@ -39,7 +44,7 @@ async def vectorize_edit(data: Story):
     # update the vector
     response = update_story_vector(final_text_vector=avg_vector.tolist(), pinecone_index=index, vector_ids=vector_ids,
                                    vector_type=vector_type)
-    return response
+    return {"vectorized": avg_vector.tolist()}
 
 
 @app.post("/story-liked")

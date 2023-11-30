@@ -1,3 +1,5 @@
 rs-word-embedding-model.gz
 .env
 unused.py
+Dockerfile
+useful_git_commands.txt

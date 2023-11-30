@@ -3,6 +3,11 @@ from gensim.utils import simple_preprocess
 import numpy as np
 
 
+def list_to_string(parameters_list: list):
+    combined_string = ' '.join(map(str, parameters_list))
+    return combined_string
+
+
 def story_parser(data: Story):
     vector_text = data.text
     vector_ids = data.ids
@@ -35,9 +40,9 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
     pinecone_index.upsert(
         vectors=[
             {
-                "vector_id": vector_ids,
+                "id": vector_ids,
                 "values": pinecone_vector,
-                "metadata": {"vector_id": vector_ids, "type": vector_type},
+                "metadata": {"id": vector_ids, "type": vector_type},
             }
         ]
     )
@@ -63,7 +68,7 @@ def update_story_vector(final_text_vector, pinecone_index, vector_ids, vector_ty
     update_response = pinecone_index.update(
         id=vector_ids,
         values=final_text_vector,
-        set_metadata={"vector_id": vector_ids, "type": vector_type}
+        set_metadata={"id": vector_ids, "type": vector_type}
     )
     return update_response
 
@@ -72,7 +77,7 @@ def update_user_vector(final_user_vector, pinecone_index, vector_ids, vector_typ
     update_response = pinecone_index.update(
         id=vector_ids,
         values=final_user_vector,
-        set_metadata={"vector_id": vector_ids, "type": vector_type}
+        set_metadata={"id": vector_ids, "type": vector_type}
     )
     return update_response
 
@@ -128,10 +133,11 @@ def story_and_user_recommender(pinecone_index, user_vector, excluded_ids, vector
     response = pinecone_index.query(
         vector=user_vector,
         top_k=100,
-        filter={"vector_id": {"$nin": excluded_ids},
+        filter={"id": {"$nin": excluded_ids},
                 "type": {"$eq": vector_type}
                 },
     )
-    ids = [match['vector_id'] for match in response['matches']]
+    print(response)
+    ids = [match['id'] for match in response['matches']]
     scores = [match['score'] for match in response['matches']]
     return ids, scores

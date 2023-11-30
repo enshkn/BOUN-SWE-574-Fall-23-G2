@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class Story(BaseModel):
     text: str
     ids: str
-    tags: str
+    tags: list
     type: str
 
 
