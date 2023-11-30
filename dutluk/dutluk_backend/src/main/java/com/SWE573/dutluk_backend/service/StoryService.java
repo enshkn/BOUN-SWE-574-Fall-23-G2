@@ -35,16 +35,14 @@ public class StoryService {
     @Autowired
     RecommendationService recService;
 
-    List<Story> blankStoryList  = new ArrayList<>();
-
     public List<Story> findAll(){
         List<Story> storyList = storyRepository.findAll();
-        return (storyList != null) ? storyList : blankStoryList;
+        return (storyList != null) ? storyList : Collections.emptyList();
     }
 
     public List<Story> findAllByOrderByIdDesc(){
         List<Story> storyList = storyRepository.findAllByOrderByIdDesc();
-        return (storyList != null) ? storyList : blankStoryList;
+        return (storyList != null) ? storyList : Collections.emptyList();
     }
 
     public Story createStory(User foundUser, StoryCreateRequest storyCreateRequest) throws ParseException, IOException {
@@ -72,12 +70,12 @@ public class StoryService {
 
     public List<Story> findAllStoriesByUserId(Long userId){
         List<Story> storyList = storyRepository.findByUserId(userId);
-        return (storyList != null) ? storyList : blankStoryList;
+        return (storyList != null) ? storyList : Collections.emptyList();
     }
 
     public List<Story> findByUserIdOrderByIdDesc(Long userId){
         List<Story> storyList = storyRepository.findByUserIdOrderByIdDesc(userId);
-        return (storyList != null) ? storyList : blankStoryList;
+        return (storyList != null) ? storyList : Collections.emptyList();
     }
 
 
@@ -97,7 +95,7 @@ public class StoryService {
             storyList.addAll(findByUserIdOrderByIdDesc(id));
         }
         List<Story> resultStoryList = sortStoriesByDescending(storyList);
-        return (resultStoryList != null) ? resultStoryList : blankStoryList;
+        return (resultStoryList != null) ? resultStoryList : Collections.emptyList();
 
     }
 
@@ -165,6 +163,9 @@ public class StoryService {
 
     public List<Story> searchStoriesWithLabel(String label){
         List<Story> results = storyRepository.findByLabelsContainingIgnoreCase(label);
+        if(results == null || results.isEmpty()){
+            return null;
+        }
         return results.stream().toList();
     }
 
@@ -262,7 +263,7 @@ public class StoryService {
         foundUser.setLikedStories(likeSet);
         userService.editUser(foundUser);
         List<Story> resultStoryList = sortStoriesByDescending(storyList);
-        return (resultStoryList != null) ? resultStoryList : blankStoryList;
+        return (resultStoryList != null) ? resultStoryList : Collections.emptyList();
     }
 
     public List<Story> findRecentStories() {
@@ -353,11 +354,12 @@ public class StoryService {
         return sortStoriesByDescending(storyList);
     }
 
-    public List<Story> sortStoriesByDescending(List<Story> storyList){
-        if(storyList.isEmpty()){
-            return storyList;
+    public List<Story> sortStoriesByDescending(List<Story> storyList) {
+        if (storyList != null && !storyList.isEmpty()) {
+            List<Story> sortedList = new ArrayList<>(storyList);
+            sortedList.sort(Comparator.comparingLong(Story::getId).reversed());
+            return sortedList;
         }
-        storyList.sort(Comparator.comparingLong(Story::getId).reversed());
-        return storyList;
+        return Collections.emptyList(); // or return blankStoryList;
     }
 }

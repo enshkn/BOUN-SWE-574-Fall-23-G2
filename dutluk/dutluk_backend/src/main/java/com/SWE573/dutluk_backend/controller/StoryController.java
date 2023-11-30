@@ -124,6 +124,10 @@ public class StoryController {
     public ResponseEntity<?> searchStoriesByLabel(@RequestParam(required = false) String label,
                                                   HttpServletRequest request){
         List<Story> labelResults = storyService.searchStoriesWithLabel(label);
+        if(labelResults.isEmpty()){
+            Set<String> nullSet = new HashSet<>();
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),nullSet);
+        }
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyService.sortStoriesByDescending(labelResults),"No story found!"));
     }
 
