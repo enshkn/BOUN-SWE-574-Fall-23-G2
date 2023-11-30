@@ -58,6 +58,11 @@ async def story_liked(data: UserInteraction):
     """ user weight should be updated  then received"""
     # parse the user and story attributes
     vector_type, story_id, user_id, user_weight = user_like_unlike_parser(data=data)
+    # add prefix to vector_id according to the type
+    story_id = generate_id_with_prefix(vector_id=story_id, vector_type=vector_type)
+    user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
+    print(story_id, user_id)
+    print(type(story_id), type(user_id))
     # fetch story and user vectors
     story_vector, user_vector = story_user_vectors_fetcher(pinecone_index=index, story_id=story_id, user_id=user_id)
     # python list to nparray
