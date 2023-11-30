@@ -29,6 +29,25 @@ def parse_id_with_prefix(vector_id):
         raise ValueError("Invalid vector_type value.")
     return id_value
 
+def parse_ids_with_prefix_for_lists(vector_ids):
+    parsed_results = []
+
+    for vector_id in vector_ids:
+        if vector_id[0] == "u":
+            vector_type = "user"
+        elif vector_id[0] == "s":
+            vector_type = "story"
+        else:
+            raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+        try:
+            id_value = int(vector_id[1:])
+        except ValueError:
+            raise ValueError("Invalid vector_type value. An integer is accepted.")
+
+        parsed_results.append((vector_type, id_value))
+
+    return parsed_results
+
 
 def story_parser(data: Story):
     vector_text = data.text
