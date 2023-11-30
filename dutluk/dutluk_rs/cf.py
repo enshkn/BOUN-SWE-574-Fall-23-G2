@@ -16,6 +16,19 @@ def generate_id_with_prefix(vector_id, vector_type):
         raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
     return f"{prefix}{vector_id}"
 
+def parse_id_with_prefix(vector_id):
+    if vector_id[0] == "u":
+        vector_type = "user"
+    elif vector_id[0] == "s":
+        vector_type = "story"
+    else:
+        raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+    try:
+        id_value = str(vector_id[1:])
+    except ValueError:
+        raise ValueError("Invalid vector_type value.")
+    return id_value
+
 
 def story_parser(data: Story):
     vector_text = data.text
