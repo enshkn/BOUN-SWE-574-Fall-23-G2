@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:swe/_common/style/text_styles.dart';
 import 'package:swe/_core/extensions/context_extensions.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
+import 'package:swe/_domain/story/model/story_filter.dart';
 import 'package:swe/_presentation/_route/router.dart';
 import 'package:swe/_presentation/widgets/app_button.dart';
+import 'package:swe/_presentation/widgets/filters/story_filter_modal.dart';
+import 'package:swe/_presentation/widgets/filters/story_timeline_filter_modal.dart';
 
 Future<void> showLogoutModal(
   BuildContext context,
@@ -94,6 +97,42 @@ Future<void> showLogoutModal(
           ],
         ),
       );
+    },
+  );
+}
+
+Future<StoryFilter?> showFilterModal(
+  BuildContext context, {
+  StoryFilter? currentFilter,
+}) {
+  return showModalBottomSheet<StoryFilter>(
+    context: context,
+    shape: const ContinuousRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(40),
+      ),
+    ),
+    isScrollControlled: true,
+    builder: (context) {
+      return StoryFilterModal(currentFilter: currentFilter);
+    },
+  );
+}
+
+Future<StoryFilter?> showTimelineFilterModal(
+  BuildContext context, {
+  StoryFilter? currentFilter,
+}) {
+  return showModalBottomSheet<StoryFilter>(
+    context: context,
+    shape: const ContinuousRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(40),
+      ),
+    ),
+    isScrollControlled: true,
+    builder: (context) {
+      return StoryTimelineFilterModal(currentFilter: currentFilter);
     },
   );
 }

@@ -7,6 +7,7 @@ import 'package:swe/_domain/story/model/addStory_model.dart';
 import 'package:swe/_domain/story/model/comment_model.dart';
 import 'package:swe/_domain/story/model/getNearbyStories_model.dart';
 import 'package:swe/_domain/story/model/postComment_model.dart';
+import 'package:swe/_domain/story/model/story_filter.dart';
 
 @injectable
 final class StoryCubit extends BaseCubit<StoryState> {
@@ -174,6 +175,69 @@ final class StoryCubit extends BaseCubit<StoryState> {
       (likedStories) {
         safeEmit(state.copyWith(likedStories: likedStories));
       },
+    );
+  }
+
+  Future<void> getSearchResult(StoryFilter? filter, String? searchTerm) async {
+    safeEmit(state.copyWith(search: searchTerm));
+    setLoading(true);
+    final result = await _storyRepository.getSearchStories(filter, searchTerm);
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (searchResult) {
+        safeEmit(
+          state.copyWith(searchResultStories: searchResult, filter: filter),
+        );
+      },
+    );
+  }
+
+  Future<void> getTimelineSearchResult({
+    StoryFilter? filter,
+    String? searchTerm,
+  }) async {
+    safeEmit(state.copyWith(search: searchTerm));
+    setLoading(true);
+    final result =
+        await _storyRepository.getTimelineSearchStories(filter, searchTerm);
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (searchResult) {
+        safeEmit(
+          state.copyWith(timelineResultStories: searchResult, filter: filter),
+        );
+      },
+    );
+  }
+
+  Future<void> search({
+    String? term,
+    StoryFilter? filter,
+  }) async {
+    safeEmit(state.copyWith(search: term));
+
+    //final currentFilter = filter ?? state.filter;
+
+    setLoading(true);
+    final result = await _storyRepository.getSearchStories(filter, term);
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (searchResult) {
+        safeEmit(state.copyWith(searchResultStories: searchResult));
+      },
+    );
+  }
+
+  void clearState() {
+    safeEmit(
+      state.copyWith(
+        isLoading: false,
+        filter: null,
+        search: null,
+      ),
     );
   }
 }

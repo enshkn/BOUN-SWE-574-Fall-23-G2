@@ -51,41 +51,41 @@ class _LikedStoiresViewState extends State<LikedStoiresView> {
             isLoading: state.isLoading,
             child: BaseScrollView(
               children: [
-                if (state.likedStories.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: BaseHeaderTitle(
-                      title: 'Liked Stories',
-                      onShowAllButtonPressed: () {},
-                    ),
-                  ),
-                SizedBox(
-                  child: BaseListView<StoryModel>(
-                    shrinkWrap: true,
-                    items: state.likedStories,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (item) {
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 8,
-                        ),
-                        height: 450,
-                        child: GestureDetector(
-                          onTap: () {
-                            context.router.push(
-                              StoryDetailsRoute(model: item),
-                            );
-                          },
-                          child: StoryCard(
-                            storyModel: item,
-                            showFavouriteButton: false,
-                          ),
-                        ),
-                      );
-                    },
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: BaseHeaderTitle(
+                    title: 'Liked Stories',
+                    onShowAllButtonPressed: () {},
                   ),
                 ),
+                if (state.likedStories.isNotEmpty)
+                  SizedBox(
+                    child: BaseListView<StoryModel>(
+                      shrinkWrap: true,
+                      items: state.likedStories,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (item) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 8,
+                          ),
+                          height: 450,
+                          child: GestureDetector(
+                            onTap: () {
+                              context.router.push(
+                                StoryDetailsRoute(model: item),
+                              );
+                            },
+                            child: StoryCard(
+                              storyModel: item,
+                              showFavouriteButton: false,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 BaseWidgets.highGap,
               ],
             ),

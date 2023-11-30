@@ -16,6 +16,7 @@ class RoutePaths {
   static const RECOMMENDED = 'recommended';
   static const NEARBY = 'nearby';
   static const TIMELINE = 'timeline';
+  static const SEARCH = 'search';
 
   //Story
   static const STORYDETAILS = 'story-details';

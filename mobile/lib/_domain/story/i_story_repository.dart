@@ -3,6 +3,7 @@ import 'package:swe/_domain/story/model/addStory_model.dart';
 import 'package:swe/_domain/story/model/comment_model.dart';
 import 'package:swe/_domain/story/model/getNearbyStories_model.dart';
 import 'package:swe/_domain/story/model/postComment_model.dart';
+import 'package:swe/_domain/story/model/story_filter.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
 
 abstract interface class IStoryRepository {
@@ -22,4 +23,13 @@ abstract interface class IStoryRepository {
   EitherFuture<List<StoryModel>> getLikedStories();
   EitherFuture<List<StoryModel>> getRecentStories();
   EitherFuture<CommentModel> postComment(PostCommentModel model);
+
+  EitherFuture<List<StoryModel>> getSearchStories(
+    StoryFilter? storyFilter,
+    String? searchTerm,
+  );
+  EitherFuture<List<StoryModel>> getTimelineSearchStories(
+    StoryFilter? storyFilter,
+    String? searchTerm,
+  );
 }

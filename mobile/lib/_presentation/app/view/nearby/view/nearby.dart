@@ -130,44 +130,33 @@ class _NearbyViewState extends State<NearbyView> {
                         physics: const NeverScrollableScrollPhysics(),
                         items: state.nearbyStories,
                         itemBuilder: (item) {
-                          return FavoriteWrapper(
-                            storyId: item.id,
-                            initialState: item.likes!.contains(user.id),
-                            builder: (
-                              context,
-                              addFavorite,
-                              isfavorite,
-                              isLoading,
-                              likeCount,
-                            ) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 8,
-                                ),
-                                height: 450,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    context.router.push(
-                                      StoryDetailsRoute(
-                                        model: item,
-                                      ),
-                                    );
-                                  },
-                                  child: StoryCard(
-                                    likeCount: likeCount,
-                                    storyModel: item,
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 8,
+                            ),
+                            height: 450,
+                            child: GestureDetector(
+                              onTap: () {
+                                context.router.push(
+                                  StoryDetailsRoute(
+                                    model: item,
+                                  ),
+                                );
+                              },
+                              child: StoryCard(
+                                storyModel: item,
+                                showFavouriteButton: false,
+                                /* likeCount: likeCount,
                                     isFavorite: isfavorite,
                                     isFavoriteLoading: isLoading,
                                     onFavouriteTap: () async {
                                       await addFavorite(
                                         storyId: item.id,
                                       );
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
+                                    }, */
+                              ),
+                            ),
                           );
                         },
                       ),

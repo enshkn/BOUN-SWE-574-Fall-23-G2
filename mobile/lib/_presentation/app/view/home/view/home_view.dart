@@ -135,46 +135,34 @@ class _HomeViewState extends State<HomeView>
                                       items: state.recentStories,
                                       shrinkWrap: true,
                                       itemBuilder: (item) {
-                                        return FavoriteWrapper(
-                                          storyId: item.id,
-                                          initialState:
-                                              item.likes!.contains(user.id),
-                                          builder: (
-                                            context,
-                                            addFavorite,
-                                            isfavorite,
-                                            isLoading,
-                                            likeCount,
-                                          ) {
-                                            return Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 20,
-                                                vertical: 8,
-                                              ),
-                                              height: 450,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  context.router.push(
-                                                    StoryDetailsRoute(
-                                                      model: item,
-                                                    ),
-                                                  );
-                                                },
-                                                child: StoryCard(
-                                                  storyModel: item,
-                                                  likeCount: likeCount,
-                                                  isFavorite: isfavorite,
-                                                  isFavoriteLoading: isLoading,
-                                                  onFavouriteTap: () async {
-                                                    await addFavorite(
-                                                      storyId: item.id,
-                                                    );
-                                                  },
+                                        return Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                            vertical: 8,
+                                          ),
+                                          height: 450,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              context.router.push(
+                                                StoryDetailsRoute(
+                                                  model: item,
                                                 ),
-                                              ),
-                                            );
-                                          },
+                                              );
+                                            },
+                                            child: StoryCard(
+                                              storyModel: item,
+                                              showFavouriteButton: false,
+                                              /*  likeCount: likeCount,
+                                                    isFavorite: isfavorite,
+                                                    isFavoriteLoading:
+                                                        isLoading,
+                                                    onFavouriteTap: () async {
+                                                      await addFavorite(
+                                                        storyId: item.id,
+                                                      );
+                                                    }, */
+                                            ),
+                                          ),
                                         );
                                       },
                                     ),
@@ -199,35 +187,24 @@ class _HomeViewState extends State<HomeView>
                                         items: state.fallowedStories!,
                                         shrinkWrap: true,
                                         itemBuilder: (item) {
-                                          return FavoriteWrapper(
-                                            storyId: item.id,
-                                            initialState:
-                                                item.likes!.contains(user.id),
-                                            builder: (
-                                              context,
-                                              addFavorite,
-                                              isfavorite,
-                                              isLoading,
-                                              likeCount,
-                                            ) {
-                                              return Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                  horizontal: 20,
-                                                  vertical: 8,
-                                                ),
-                                                height: 450,
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    context.router.push(
-                                                      StoryDetailsRoute(
-                                                        model: item,
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: StoryCard(
-                                                    storyModel: item,
-                                                    likeCount: likeCount,
+                                          return Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 8,
+                                            ),
+                                            height: 450,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                context.router.push(
+                                                  StoryDetailsRoute(
+                                                    model: item,
+                                                  ),
+                                                );
+                                              },
+                                              child: StoryCard(
+                                                storyModel: item,
+                                                showFavouriteButton: false,
+                                                /*  likeCount: likeCount,
                                                     isFavorite: isfavorite,
                                                     isFavoriteLoading:
                                                         isLoading,
@@ -235,11 +212,9 @@ class _HomeViewState extends State<HomeView>
                                                       await addFavorite(
                                                         storyId: item.id,
                                                       );
-                                                    },
-                                                  ),
-                                                ),
-                                              );
-                                            },
+                                                    }, */
+                                              ),
+                                            ),
                                           );
                                         },
                                       ),
