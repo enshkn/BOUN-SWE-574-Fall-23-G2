@@ -1,5 +1,4 @@
 rs-word-embedding-model.gz
 .env
 unused.txt
-Dockerfile
-useful_git_commands.txt
+useful_git_docker_commands.txt
