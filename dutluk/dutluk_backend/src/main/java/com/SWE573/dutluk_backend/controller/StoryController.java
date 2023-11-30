@@ -114,8 +114,7 @@ public class StoryController {
         }
         if(storySet.isEmpty()){
             Set<String> nullSet = new HashSet<>();
-            nullSet.add("No story found!");
-            return ResponseEntity.ok(nullSet);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),nullSet);
         }
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
     }
@@ -124,7 +123,7 @@ public class StoryController {
     public ResponseEntity<?> searchStoriesByLabel(@RequestParam(required = false) String label,
                                                   HttpServletRequest request){
         List<Story> labelResults = storyService.searchStoriesWithLabel(label);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.sortStoriesByDescending(labelResults));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyService.sortStoriesByDescending(labelResults),"No story found!"));
     }
 
     @GetMapping("/nearby")
@@ -140,8 +139,8 @@ public class StoryController {
         }
         if(storySet.isEmpty()){
             Set<String> nullSet = new HashSet<>();
-            nullSet.add("No story found!");
-            return ResponseEntity.ok(nullSet);
+
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),nullSet);
         }
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
     }
