@@ -3,6 +3,66 @@ from gensim.utils import simple_preprocess
 import numpy as np
 
 
+def list_to_string(parameters_list: list):
+    combined_string = ' '.join(map(str, parameters_list))
+    return combined_string
+
+
+def generate_id_with_prefix(vector_id, vector_type):
+    if vector_type == "user":
+        prefix = "u"
+    elif vector_type == "story":
+        prefix = "s"
+    else:
+        raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+    return f"{prefix}{vector_id}"
+
+
+def generate_ids_with_prefix(vector_ids, vector_type):
+    if vector_type == "user":
+        prefix = "u"
+    elif vector_type == "story":
+        prefix = "s"
+    else:
+        raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+
+    return [f"{prefix}{vector_id}" for vector_id in vector_ids]
+
+
+def parse_id_with_prefix(vector_id):
+    if vector_id[0] == "u":
+        vector_type = "user"
+    elif vector_id[0] == "s":
+        vector_type = "story"
+    else:
+        raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+    try:
+        id_value = str(vector_id[1:])
+    except ValueError:
+        raise ValueError("Invalid vector_type value.")
+    return id_value
+
+
+def parse_ids_with_prefix_for_lists(vector_ids):
+    parsed_results = []
+
+    for vector_id in vector_ids:
+        if vector_id[0] == "u":
+            vector_type = "user"
+        elif vector_id[0] == "s":
+            vector_type = "story"
+        else:
+            raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+        try:
+            id_value = int(vector_id[1:])
+        except ValueError:
+            raise ValueError("Invalid vector_type value. An integer is accepted.")
+
+        parsed_results.append(id_value)
+
+    return parsed_results
+
+
 def story_parser(data: Story):
     vector_text = data.text
     vector_ids = data.ids
@@ -35,9 +95,9 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
     pinecone_index.upsert(
         vectors=[
             {
-                "vector_id": vector_ids,
+                "id": vector_ids,
                 "values": pinecone_vector,
-                "metadata": {"vector_id": vector_ids, "type": vector_type},
+                "metadata": {"id": vector_ids, "type": vector_type},
             }
         ]
     )
@@ -63,7 +123,7 @@ def update_story_vector(final_text_vector, pinecone_index, vector_ids, vector_ty
     update_response = pinecone_index.update(
         id=vector_ids,
         values=final_text_vector,
-        set_metadata={"vector_id": vector_ids, "type": vector_type}
+        set_metadata={"id": vector_ids, "type": vector_type}
     )
     return update_response
 
@@ -72,7 +132,7 @@ def update_user_vector(final_user_vector, pinecone_index, vector_ids, vector_typ
     update_response = pinecone_index.update(
         id=vector_ids,
         values=final_user_vector,
-        set_metadata={"vector_id": vector_ids, "type": vector_type}
+        set_metadata={"id": vector_ids, "type": vector_type}
     )
     return update_response
 
@@ -128,10 +188,11 @@ def story_and_user_recommender(pinecone_index, user_vector, excluded_ids, vector
     response = pinecone_index.query(
         vector=user_vector,
         top_k=100,
-        filter={"vector_id": {"$nin": excluded_ids},
+        filter={"id": {"$nin": excluded_ids},
                 "type": {"$eq": vector_type}
                 },
     )
-    ids = [match['vector_id'] for match in response['matches']]
+    print(response)
+    ids = [match['id'] for match in response['matches']]
     scores = [match['score'] for match in response['matches']]
     return ids, scores
