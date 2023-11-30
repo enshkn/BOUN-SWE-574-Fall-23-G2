@@ -43,6 +43,16 @@ public class Story extends BaseEntity{
     @Column(name = "likes")
     private Set<Long> likes = new HashSet<>();
 
+
+    private Set<Long> savedBy = new HashSet<>();
+
+    public Set<Long> getSavedBy() {
+        if(savedBy == null){
+            savedBy = new HashSet<>();
+        }
+        return savedBy;
+    }
+
     @OneToMany(mappedBy = "story", cascade = CascadeType.ALL)
     private List<Location> locations = new ArrayList<>();
 

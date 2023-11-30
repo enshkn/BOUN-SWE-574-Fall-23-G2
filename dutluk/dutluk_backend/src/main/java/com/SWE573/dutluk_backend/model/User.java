@@ -67,6 +67,25 @@ public class User extends BaseEntity{
         return likedStories;
     }
 
+
+    private Set<Long> savedStories = new HashSet<>();
+
+    public Set<Long> getSavedStories() {
+        if(savedStories == null){
+            savedStories = new HashSet<>();
+        }
+        return savedStories;
+    }
+
+    private Set<Long> recommendedStories = new HashSet<>();
+
+    public Set<Long> getRecommendedStories() {
+        if(recommendedStories == null){
+            recommendedStories = new HashSet<>();
+        }
+        return recommendedStories;
+    }
+
     @JsonIgnoreProperties({"followers", "email" , "password" , "biography" , "stories","following"})
     @ManyToMany(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(

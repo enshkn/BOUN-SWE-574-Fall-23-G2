@@ -1,7 +1,66 @@
-import pinecone
-from classes import Story, UserInteraction
+from classes import Story, UserInteraction, Recommend
 from gensim.utils import simple_preprocess
 import numpy as np
+
+
+def list_to_string(parameters_list: list):
+    combined_string = ' '.join(map(str, parameters_list))
+    return combined_string
+
+
+def generate_id_with_prefix(vector_id, vector_type):
+    if vector_type == "user":
+        prefix = "u"
+    elif vector_type == "story":
+        prefix = "s"
+    else:
+        raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+    return f"{prefix}{vector_id}"
+
+
+def generate_ids_with_prefix(vector_ids, vector_type):
+    if vector_type == "user":
+        prefix = "u"
+    elif vector_type == "story":
+        prefix = "s"
+    else:
+        raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+
+    return [f"{prefix}{vector_id}" for vector_id in vector_ids]
+
+
+def parse_id_with_prefix(vector_id):
+    if vector_id[0] == "u":
+        vector_type = "user"
+    elif vector_id[0] == "s":
+        vector_type = "story"
+    else:
+        raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+    try:
+        id_value = str(vector_id[1:])
+    except ValueError:
+        raise ValueError("Invalid vector_type value.")
+    return id_value
+
+
+def parse_ids_with_prefix_for_lists(vector_ids):
+    parsed_results = []
+
+    for vector_id in vector_ids:
+        if vector_id[0] == "u":
+            vector_type = "user"
+        elif vector_id[0] == "s":
+            vector_type = "story"
+        else:
+            raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+        try:
+            id_value = int(vector_id[1:])
+        except ValueError:
+            raise ValueError("Invalid vector_type value. An integer is accepted.")
+
+        parsed_results.append(id_value)
+
+    return parsed_results
 
 
 def story_parser(data: Story):
@@ -93,9 +152,10 @@ def story_user_vectors_fetcher(pinecone_index, story_id, user_id):
     story_vector = story_response['vectors'][story_id]['values']
     return story_vector, user_vector
 
-def single_vector_fetcher(pinecone_index, id):
-    response = pinecone_index.fetch([id])
-    vector = response['vectors'][id]['values']
+
+def single_vector_fetcher(pinecone_index, vector_id):
+    response = pinecone_index.fetch([vector_id])
+    vector = response['vectors'][vector_id]['values']
     return vector
 
 
@@ -104,10 +164,35 @@ def list_to_nparray(story_vector, user_vector):
     np_user_vector = np.array(user_vector)
     return np_story_vector, np_user_vector
 
-def like_story_operations(np_user_vector,np_story_vector, user_weight):
+
+# ------------------------ USER INTERACTION LIKE/UNLIKE --------------------------- #
+def like_story_operations(np_user_vector, np_story_vector, user_weight):
     updated_user_vector = ((np_user_vector * (user_weight - 1)) + np_story_vector) / user_weight
     return updated_user_vector
 
-def unlike_story_operations(np_user_vector,np_story_vector, user_weight):
+
+def unlike_story_operations(np_user_vector, np_story_vector, user_weight):
     updated_user_vector = ((np_user_vector * (user_weight + 1)) - np_story_vector) / user_weight
     return updated_user_vector
+
+
+# ------------------------ RECOMMENDATION --------------------------- #
+def recommendation_parser(data: Recommend):
+    user_id = data.userId
+    excluded_ids = data.excludedIds
+    vector_type = data.vector_type
+    return user_id, excluded_ids, vector_type
+
+
+def story_and_user_recommender(pinecone_index, user_vector, excluded_ids, vector_type):
+    response = pinecone_index.query(
+        vector=user_vector,
+        top_k=100,
+        filter={"id": {"$nin": excluded_ids},
+                "type": {"$eq": vector_type}
+                },
+    )
+    print(response)
+    ids = [match['id'] for match in response['matches']]
+    scores = [match['score'] for match in response['matches']]
+    return ids, scores
