@@ -12,6 +12,7 @@ import com.SWE573.dutluk_backend.service.StoryService;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -143,6 +144,75 @@ public class StoryController {
         }
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
     }
+
+    @GetMapping("/search/timeline")
+    public ResponseEntity<?> timelineSearchStories(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String labels,
+            @RequestParam(required = false) Integer radius,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double longitude,
+            @RequestParam(required = false) String startTimeStamp,
+            @RequestParam(required = false) String endTimeStamp,
+            @RequestParam(required = false) String decade,
+            @RequestParam(required = false) String season,
+            HttpServletRequest request) throws ParseException {
+
+        Set<Story> titleSet = new HashSet<>();
+        Set<Story> labelsSet = new HashSet<>();
+        Set<Story> locationSet = new HashSet<>();
+        Set<Story> dateSet = new HashSet<>();
+        Set<Story> decadeSet = new HashSet<>();
+        Set<Story> seasonSet = new HashSet<>();
+        Set<Story> storySet = new HashSet<>(storyService.findAll());
+        if(title != null){
+            if(!title.equalsIgnoreCase("") && !title.equalsIgnoreCase("null")){
+                titleSet.addAll(storyService.searchStoriesWithTitle(title));
+                if(storyService.searchStoriesWithTitle(title) != null){
+                    storySet.retainAll(titleSet);
+                }
+            }
+        }
+        if(labels != null){
+            if(!labels.equalsIgnoreCase("") && !labels.equalsIgnoreCase("null")){
+                labelsSet.addAll(storyService.searchStoriesWithLabel(labels));
+                if(storyService.searchStoriesWithTitle(title) != null){
+                    storySet.retainAll(labelsSet);
+                }
+            }
+        }
+        if(latitude != null && longitude != null && (radius != null)){
+            locationSet.addAll(storyService.searchStoriesWithLocationOnly(radius,latitude,longitude));
+        }
+        if(startTimeStamp != null && !startTimeStamp.equalsIgnoreCase("null")){
+            if(endTimeStamp != null && !endTimeStamp.equalsIgnoreCase("null")){
+                dateSet.addAll(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
+                if(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp) != null){
+                    storySet.retainAll(dateSet);
+                }
+            }
+            else{
+                dateSet.addAll(storyService.searchStoriesWithSingleDate(startTimeStamp));
+                if(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp) != null){
+                    storySet.retainAll(dateSet);
+                }
+            }
+        }
+        if(decade != null && !decade.equalsIgnoreCase("null")){
+            decadeSet.addAll(storyService.searchStoriesWithDecade(decade));
+            if(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp) != null){
+                storySet.retainAll(decadeSet);
+            }
+        }
+        if(season != null && !season.equalsIgnoreCase("null")){
+            seasonSet.addAll(storyService.searchStoriesWithSeason(season));
+            if(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp) != null){
+                storySet.retainAll(seasonSet);
+            }
+        }
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+    }
+
     @PostMapping("/like/")
     public ResponseEntity<?> likeStory(@RequestBody LikeRequest likeRequest, HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);

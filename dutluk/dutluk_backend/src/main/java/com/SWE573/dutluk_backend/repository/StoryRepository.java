@@ -1,7 +1,10 @@
 package com.SWE573.dutluk_backend.repository;
 
 import com.SWE573.dutluk_backend.model.Story;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.Collection;

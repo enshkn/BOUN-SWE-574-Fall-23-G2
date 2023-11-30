@@ -8,6 +8,7 @@ import com.SWE573.dutluk_backend.repository.StoryRepository;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -152,6 +153,11 @@ public class StoryService {
         Set<Story> results = new HashSet<>();
         results.addAll(storyRepository.findByTitleContainingIgnoreCase(query));
         results.addAll(searchStoriesWithLabel(query));
+        return results.stream().toList();
+    }
+    public List<Story> searchStoriesWithTitle(String title) {
+        Set<Story> results = new HashSet<>();
+        results.addAll(storyRepository.findByTitleContainingIgnoreCase(title));
         return results.stream().toList();
     }
 
