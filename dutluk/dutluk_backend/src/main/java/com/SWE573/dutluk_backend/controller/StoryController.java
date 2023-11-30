@@ -183,6 +183,7 @@ public class StoryController {
         }
         if(latitude != null && longitude != null && radius != null){
             locationSet.addAll(storyService.searchStoriesWithLocationOnly(radius,latitude,longitude));
+            storySet.retainAll(locationSet);
         }
         if(startTimeStamp != null && !startTimeStamp.equalsIgnoreCase("null")){
             if(endTimeStamp != null && !endTimeStamp.equalsIgnoreCase("null")){
