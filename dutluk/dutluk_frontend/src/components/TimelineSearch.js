@@ -95,6 +95,32 @@ const TimelineSearch = () => {
     setSearchDecade(decade);
   };
 
+  const handleSearchByLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setSelectedLocation(userLocation);
+        },
+        (error) => {
+          console.error("Error getting user location:", error);
+          messageApi.open({
+            type: "error",
+            content: "Error getting user location. Please try again.",
+          });
+        }
+      );
+    } else {
+      messageApi.open({
+        type: "error",
+        content: "Geolocation is not supported by your browser.",
+      });
+    }
+  };
+
   return (
     <Space
     direction="vertical"
@@ -114,6 +140,9 @@ const TimelineSearch = () => {
             onChange={(e) => setRadius(parseInt(e.target.value))}
           />
         </label>
+        <button type="button" onClick={handleSearchByLocation}>
+            Use My Location
+        </button>
         <label>
           Date Type:
           <select value={searchDate.type} onChange={handleDateTypeChange}>
