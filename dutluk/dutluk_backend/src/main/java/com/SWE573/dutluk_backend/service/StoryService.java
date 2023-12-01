@@ -340,7 +340,7 @@ public class StoryService {
             }
         }
         deletedStoryIdList.forEach(savedSet::remove);
-        foundUser.setLikedStories(savedSet);
+        foundUser.setSavedStories(savedSet);
         userService.editUser(foundUser);
         List<Story> resultStoryList = sortStoriesByDescending(storyList);
         return (resultStoryList != null) ? resultStoryList : Collections.emptyList();
