@@ -49,6 +49,7 @@ class _AppViewState extends State<AppView> {
             RecommendedTabRoute(),
             NearbyTabRoute(),
             TimelineTabRoute(),
+            SearchTabRoute(),
             ProfileTabRoute(),
           ],
           duration: const Duration(milliseconds: 400),
@@ -156,6 +157,19 @@ class _AppViewState extends State<AppView> {
                     FontAwesomeIcons.timeline,
                     size: 20,
                     color: state.bottomTab == BottomTabs.timeline
+                        ? context.appBarColor
+                        : const Color(0xFF071F05).withOpacity(0.5),
+                  ),
+                ),
+                _buidNavigationItem(
+                  state,
+                  context,
+                  bottomTab: BottomTabs.search,
+                  label: 'Search',
+                  icon: Icon(
+                    FontAwesomeIcons.magnifyingGlass,
+                    size: 20,
+                    color: state.bottomTab == BottomTabs.search
                         ? context.appBarColor
                         : const Color(0xFF071F05).withOpacity(0.5),
                   ),

@@ -23,9 +23,12 @@ class NetworkPaths {
   static const String getStoryDetail = '/api/story';
   static const String nearby = '/api/story/nearby';
 
-  static const String likeStory = '/api/story/like';
+  static const String likeStory = '/api/story/like/';
   static const String getLikedStories = '/api/story/liked';
   static const String getRecent = '/api/story/recent';
+
+  static const String search = '/api/story/search';
+  static const String searchTimeline = '/api/story/search/timeline';
 
   //Comment
   static const String postComments = '/api/comment/add';

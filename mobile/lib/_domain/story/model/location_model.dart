@@ -15,6 +15,7 @@ class LocationModel extends BaseEntity<LocationModel> with _$LocationModel {
     int? isPolygon,
     int? isPoint,
     int? circleRadius,
+    String? createdAt,
   }) = _LocationModel;
   const LocationModel._();
   factory LocationModel.initial() => const LocationModel();

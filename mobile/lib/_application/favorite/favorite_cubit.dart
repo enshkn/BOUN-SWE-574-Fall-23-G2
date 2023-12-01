@@ -18,18 +18,63 @@ final class FavoriteCubit extends BaseCubit<FavoriteState> {
     safeEmit(state.copyWith(isLoading: loading));
   }
 
-  Future<(bool, bool?)> addFavorite({required int storyId}) async {
+  Future<void> getStoryLike(int storyId) async {
+    setLoading(true);
+    final result = await _repository.getStoryDetail(storyId);
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (story) {
+        safeEmit(
+          state.copyWith(
+            likeCount:
+                story.likes!.isNotEmpty ? story.likes!.length.toString() : '0',
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getLikedStories(int storyId) async {
+    setLoading(true);
+    final result = await _repository.getLikedStories();
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (likedStories) {
+        safeEmit(
+          state.copyWith(
+            isFavorite: likedStories.every((element) {
+              if (element.id == storyId) {
+                return true;
+              } else {
+                return false;
+              }
+            }),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<(bool, bool?, String?)> addFavorite({required int storyId}) async {
     setLoading(true);
     final result = await _repository.addFavorite(itemId: storyId);
     setLoading(false);
     return result.fold(
       (failure) {
         safeEmit(state.copyWith(isFavorite: !state.isFavorite));
-        return (false, null);
+        return (false, null, '0');
       },
-      (success) {
-        safeEmit(state.copyWith(isFavorite: !state.isFavorite));
-        return (true, state.isFavorite);
+      (story) {
+        safeEmit(
+          state.copyWith(
+            isFavorite: !state.isFavorite,
+            likeCount:
+                story.likes!.isNotEmpty ? story.likes!.length.toString() : '0',
+          ),
+        );
+        return (true, state.isFavorite, state.likeCount);
       },
     );
   }

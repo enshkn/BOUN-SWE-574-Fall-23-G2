@@ -19,6 +19,7 @@ class User extends BaseEntity<User> with _$User {
     String? profilePhoto,
     List<int>? likedStories,
     List<StoryModel>? stories,
+    String? createdAt,
   }) = _User;
   const User._();
   factory User.initial() => const User();
