@@ -29,13 +29,20 @@ const EditStoryForm = () => {
       setTitle(existingStory.title);
       setLabels(existingStory.labels.join(","));
       setText(existingStory.text);
-      setLocations(existingStory.locations);
       setStartTimeStamp(new Date(existingStory.startTimeStamp));
       setEndTimeStamp(
         existingStory.endTimeStamp ? new Date(existingStory.endTimeStamp) : null
       );
       setSeason(existingStory.season);
       setDecade(existingStory.decade);
+      setLocations(
+        existingStory.locations.map((location) => ({
+          latitude: location.latitude,
+          longitude: location.longitude,
+          name: location.locationName,
+        }))
+      );
+
     } catch (error) {
       console.log(error);
       messageApi.open({ type: "error", content: "Error occured while fetching the story data!"});
@@ -198,6 +205,12 @@ const EditStoryForm = () => {
     setEndTimeStamp(date);
   };
 
+  const handleLocationDelete = (index) => {
+    const updatedLocations = [...locations];
+    updatedLocations.splice(index, 1);
+    setLocations(updatedLocations);
+  };
+
   return (
     <Space
     direction="vertical"
@@ -227,14 +240,20 @@ const EditStoryForm = () => {
       </LoadScript>
       <br />
       <br />
-      {geocodedLocations.length > 0 && (
+      {locations.length > 0 && (
         <div className="edit-story-locations">
           <label className="edit-story-label">Locations:</label>
           <ul className="edit-story-location-list">
-            {geocodedLocations.map((location, index) => (
+            {locations.map((location, index) => (
               <li key={index} className="edit-story-location-item">
-                {location}
-              </li>
+                {location.name}
+                <button
+                  type="button"
+                  class="btn btn-danger m-2"
+                  onClick={() => handleLocationDelete(index)}
+                > Remove
+                </button>
+               </li>
             ))}
           </ul>
         </div>
