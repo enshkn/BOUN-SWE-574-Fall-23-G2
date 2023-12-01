@@ -39,6 +39,7 @@ class _SearchViewState extends State<SearchView> with ScrollAnimMixin {
           },
           builder: (context, cubit, state) {
             return Scaffold(
+              backgroundColor: Colors.white,
               appBar: AppBar(
                 leading: SizedBox(
                   child: Center(
@@ -63,7 +64,7 @@ class _SearchViewState extends State<SearchView> with ScrollAnimMixin {
                   Padding(
                     padding: const EdgeInsets.only(right: 16),
                     child: CircleAvatar(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.orange,
                       child: IconButton.outlined(
                         icon: const Icon(
                           Icons.edit,

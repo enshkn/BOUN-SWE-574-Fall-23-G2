@@ -12,6 +12,7 @@ import 'package:swe/_presentation/story/add_story_view.dart';
 import 'package:swe/_presentation/story/liked_stories_view.dart';
 import 'package:swe/_presentation/story/my_stories_view.dart';
 import 'package:swe/_presentation/story/story_details_view.dart';
+import 'package:swe/_presentation/story/tag_search_view.dart';
 import '../app/view/app_view.dart';
 import '../app/view/home/view/home_view.dart';
 import '../app/view/profile/view/profile_view.dart';
@@ -34,6 +35,7 @@ class AppRouter extends _$AppRouter {
     AutoRoute(path: RoutePaths.REGISTER, page: RegisterRoute.page),
     AutoRoute(path: RoutePaths.FORGOT_PASSWORD, page: ForgotPasswordRoute.page),
     AutoRoute(path: RoutePaths.ADDSTORY, page: AddStoryRoute.page),
+    AutoRoute(path: RoutePaths.TAGSEARCH, page: TagSearchRoute.page),
     AutoRoute(
       path: RoutePaths.APP,
       page: AppRoute.page,

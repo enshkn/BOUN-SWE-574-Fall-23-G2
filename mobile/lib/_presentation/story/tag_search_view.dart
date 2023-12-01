@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:swe/_application/story/story_cubit.dart';
 import 'package:swe/_application/story/story_state.dart';
-import 'package:swe/_common/style/text_styles.dart';
 import 'package:swe/_core/widgets/base_loader.dart';
 import 'package:swe/_core/widgets/base_scroll_view.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
@@ -14,26 +13,24 @@ import 'package:swe/_presentation/widgets/base/base_list_view.dart';
 import 'package:swe/_presentation/widgets/card/story_card.dart';
 
 @RoutePage()
-class MyStoriesView extends StatefulWidget {
-  const MyStoriesView({super.key});
+class TagSearchView extends StatefulWidget {
+  final String tag;
+  const TagSearchView({required this.tag, super.key});
 
   @override
-  State<MyStoriesView> createState() => _MyStoriesViewState();
+  State<TagSearchView> createState() => _TagSearchViewState();
 }
 
-class _MyStoriesViewState extends State<MyStoriesView> {
-  final FocusNode _focusNode = FocusNode();
-  List<StoryModel> myStories = [];
+class _TagSearchViewState extends State<TagSearchView> {
   @override
   Widget build(BuildContext context) {
     return BaseView<StoryCubit, StoryState>(
       onCubitReady: (cubit) async {
-        cubit.setContext(context);
         cubit.init();
-        await cubit.getMyStories();
+        cubit.setContext(context);
+        await cubit.getTagSearchStories(widget.tag);
       },
-      builder: (context, StoryCubit cubit, StoryState state) {
-        myStories = state.myStories;
+      builder: (context, cubit, state) {
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -47,41 +44,23 @@ class _MyStoriesViewState extends State<MyStoriesView> {
             ),
             backgroundColor: Colors.grey.shade200,
             elevation: 0,
-            /*  actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 16),
-                child: CircleAvatar(
-                  backgroundColor: Colors.orange,
-                  child: IconButton.outlined(
-                    icon: const Icon(
-                      Icons.edit,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      _focusNode.unfocus();
-                      context.router.push(const AddStoryRoute());
-                    },
-                  ),
-                ),
-              ),
-            ], */
           ),
           body: BaseLoader(
             isLoading: state.isLoading,
             child: BaseScrollView(
               children: [
-                if (state.myStories.isNotEmpty)
+                if (state.tagSearchStories.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: BaseHeaderTitle(
-                      title: 'My Stories',
+                      title: 'Label Search Result',
                       onShowAllButtonPressed: () {},
                     ),
                   ),
                 SizedBox(
                   child: BaseListView<StoryModel>(
                     shrinkWrap: true,
-                    items: state.myStories,
+                    items: state.tagSearchStories,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (item) {
                       return Container(
@@ -97,15 +76,8 @@ class _MyStoriesViewState extends State<MyStoriesView> {
                             );
                           },
                           child: StoryCard(
-                            myStories: true,
                             storyModel: item,
                             showFavouriteButton: false,
-                            onDeleteTap: () async {
-                              await cubit.deleteStory(item.id);
-                              setState(() {
-                                cubit.getMyStories();
-                              });
-                            },
                           ),
                         ),
                       );

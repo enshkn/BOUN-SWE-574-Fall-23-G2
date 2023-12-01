@@ -32,4 +32,7 @@ abstract interface class IStoryRepository {
     StoryFilter? storyFilter,
     String? searchTerm,
   );
+  EitherFuture<List<StoryModel>> getTagSearchStories(
+    String? label,
+  );
 }

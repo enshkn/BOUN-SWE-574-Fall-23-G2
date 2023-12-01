@@ -515,9 +515,9 @@ class _AddStoryViewState extends State<AddStoryView>
               left: 10,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Colors.orange,
                   border: Border.all(
-                    color: Colors.blue,
+                    color: Colors.orange,
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -798,15 +798,15 @@ class _AddStoryViewState extends State<AddStoryView>
       width: MediaQuery.of(context).size.width * 0.92,
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.blue),
+          borderSide: const BorderSide(color: Colors.orange),
           borderRadius: BorderRadius.circular(12),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.blue),
+          borderSide: const BorderSide(color: Colors.orange),
           borderRadius: BorderRadius.circular(12),
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.blue),
+          borderSide: const BorderSide(color: Colors.orange),
           borderRadius: BorderRadius.circular(12),
         ),
         errorBorder: OutlineInputBorder(
@@ -817,7 +817,7 @@ class _AddStoryViewState extends State<AddStoryView>
       menuStyle: MenuStyle(
         side: MaterialStateProperty.all(
           const BorderSide(
-            color: Colors.blue,
+            color: Colors.orange,
           ),
         ),
       ),
@@ -1006,6 +1006,7 @@ class _AddStoryViewState extends State<AddStoryView>
     );
     await cubit.addStory(model).then((value) {
       if (value) {
+        cubit.showNotification('Your Story is added.');
         Navigator.of(context).pop();
       }
     });

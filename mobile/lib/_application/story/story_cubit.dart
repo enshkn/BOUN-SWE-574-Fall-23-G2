@@ -115,7 +115,6 @@ final class StoryCubit extends BaseCubit<StoryState> {
         return false;
       },
       (data) {
-        showNotification('Your Story is added.');
         return true;
       },
     );
@@ -174,6 +173,18 @@ final class StoryCubit extends BaseCubit<StoryState> {
       (failure) => showNotification(failure?.message ?? '', isError: true),
       (likedStories) {
         safeEmit(state.copyWith(likedStories: likedStories));
+      },
+    );
+  }
+
+  Future<void> getTagSearchStories(String? label) async {
+    setLoading(true);
+    final result = await _storyRepository.getTagSearchStories(label);
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (tagSearchStories) {
+        safeEmit(state.copyWith(tagSearchStories: tagSearchStories));
       },
     );
   }

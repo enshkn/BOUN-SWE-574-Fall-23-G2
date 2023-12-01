@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
@@ -16,6 +17,7 @@ import 'package:swe/_presentation/widgets/card/button_card.dart';
 class StoryCard extends StatelessWidget {
   final StoryModel storyModel;
   final void Function(StoryModel)? onTap;
+  final void Function(String)? onTagSearch;
   final void Function()? onFavouriteTap;
   final VoidCallback? onDeleteTap;
   final bool isFavorite;
@@ -34,6 +36,7 @@ class StoryCard extends StatelessWidget {
     this.isFavorite = false,
     this.isFavoriteLoading = false,
     this.onDeleteTap,
+    this.onTagSearch,
   });
 
   @override
@@ -147,17 +150,22 @@ class StoryCard extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 items: storyModel.labels!,
                 itemBuilder: (item) {
-                  return Row(
-                    children: [
-                      Wrap(
-                        children: [
-                          _buildChip(item),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                        ],
-                      ),
-                    ],
+                  return GestureDetector(
+                    onTap: () {
+                      onTagSearch?.call(item);
+                    },
+                    child: Row(
+                      children: [
+                        Wrap(
+                          children: [
+                            _buildChip(item),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
@@ -274,17 +282,22 @@ class StoryCard extends StatelessWidget {
   }
 
   Widget _buildChip(String label) {
-    return Chip(
-      labelPadding: const EdgeInsets.all(2),
-      label: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white,
+    return GestureDetector(
+      onTap: () {
+        onTagSearch?.call(label);
+      },
+      child: Chip(
+        labelPadding: const EdgeInsets.all(2),
+        label: Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
         ),
+        backgroundColor: Colors.orange,
+        elevation: 4,
+        padding: const EdgeInsets.all(8),
       ),
-      backgroundColor: Colors.blue,
-      elevation: 4,
-      padding: const EdgeInsets.all(8),
     );
   }
 }

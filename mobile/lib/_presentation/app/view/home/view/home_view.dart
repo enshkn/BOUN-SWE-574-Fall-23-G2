@@ -95,7 +95,7 @@ class _HomeViewState extends State<HomeView>
                   Padding(
                     padding: const EdgeInsets.only(right: 16),
                     child: CircleAvatar(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.orange,
                       child: IconButton.outlined(
                         icon: const Icon(
                           Icons.edit,
@@ -152,6 +152,11 @@ class _HomeViewState extends State<HomeView>
                                             child: StoryCard(
                                               storyModel: item,
                                               showFavouriteButton: false,
+                                              onTagSearch: (label) async {
+                                                await context.router.push(
+                                                  TagSearchRoute(tag: label),
+                                                );
+                                              },
                                               /*  likeCount: likeCount,
                                                     isFavorite: isfavorite,
                                                     isFavoriteLoading:
@@ -204,6 +209,11 @@ class _HomeViewState extends State<HomeView>
                                               child: StoryCard(
                                                 storyModel: item,
                                                 showFavouriteButton: false,
+                                                onTagSearch: (label) async {
+                                                  await context.router.push(
+                                                    TagSearchRoute(tag: label),
+                                                  );
+                                                },
                                                 /*  likeCount: likeCount,
                                                     isFavorite: isfavorite,
                                                     isFavoriteLoading:

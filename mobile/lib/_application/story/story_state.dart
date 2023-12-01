@@ -19,6 +19,7 @@ class StoryState extends BaseState with _$StoryState {
     @Default([]) List<StoryModel> recentStories,
     @Default([]) List<StoryModel> nearbyStories,
     @Default([]) List<StoryModel> recommendedStories,
+    @Default([]) List<StoryModel> tagSearchStories,
     String? search,
     StoryFilter? filter,
     List<StoryModel>? fallowedStories,
