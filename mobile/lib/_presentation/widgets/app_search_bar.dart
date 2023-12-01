@@ -56,19 +56,19 @@ class _AppSearchBarState extends State<AppSearchBar> {
               fillColor: Colors.white,
               filled: true,
               border: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.transparent),
+                borderSide: BorderSide(color: Colors.grey),
                 borderRadius: BorderRadius.all(
                   Radius.circular(12),
                 ),
               ),
               focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.transparent),
+                borderSide: BorderSide(color: Colors.grey),
                 borderRadius: BorderRadius.all(
                   Radius.circular(12),
                 ),
               ),
               enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.transparent),
+                borderSide: BorderSide(color: Colors.grey),
                 borderRadius: BorderRadius.all(
                   Radius.circular(12),
                 ),
@@ -98,11 +98,11 @@ class _AppSearchBarState extends State<AppSearchBar> {
           GestureDetector(
             onTap: widget.onPressedFilter,
             child: Container(
-              width: 35,
-              height: 35,
+              width: 40,
+              height: 40,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white,
+                color: Colors.orange,
               ),
               child: const Center(
                 child: Icon(

@@ -42,6 +42,7 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
           },
           builder: (context, cubit, state) {
             return Scaffold(
+              backgroundColor: Colors.white,
               appBar: AppBar(
                 leading: SizedBox(
                   child: Center(

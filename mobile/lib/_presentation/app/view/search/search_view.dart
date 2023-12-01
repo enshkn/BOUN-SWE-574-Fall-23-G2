@@ -39,6 +39,7 @@ class _SearchViewState extends State<SearchView> with ScrollAnimMixin {
           },
           builder: (context, cubit, state) {
             return Scaffold(
+              backgroundColor: Colors.white,
               appBar: AppBar(
                 leading: SizedBox(
                   child: Center(
