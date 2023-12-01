@@ -1,6 +1,6 @@
 public class Recommendation {
     // call this function when a story is created
-    public void storyCreated(Story story) {
+    public void vectorizeStory(Story story) {
     // when a story is created by an user grap the story body, tags, title into a string variable then assign it a variable with name "textToSend"
     // create a JSON object with key "text"  then assign the variable textToSend into it.
     // send JSON object to RE server (async)

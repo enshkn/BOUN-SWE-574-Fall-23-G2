@@ -49,6 +49,7 @@ class _AppViewState extends State<AppView> {
             RecommendedTabRoute(),
             NearbyTabRoute(),
             TimelineTabRoute(),
+            SearchTabRoute(),
             ProfileTabRoute(),
           ],
           duration: const Duration(milliseconds: 400),
@@ -82,8 +83,6 @@ class _AppViewState extends State<AppView> {
     return BaseConsumer<SessionCubit, SessionState>(
       context,
       builder: (context, sessonCubit, sessionState) {
-        final user = sessionState.authUser;
-        final userLoggedIn = user != null;
         return DecoratedBox(
           position: DecorationPosition.foreground,
           decoration: const BoxDecoration(
@@ -100,8 +99,8 @@ class _AppViewState extends State<AppView> {
             child: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               backgroundColor: Colors.grey.shade100,
-              selectedFontSize: 10.5,
-              unselectedFontSize: 10.5,
+              selectedFontSize: 10,
+              unselectedFontSize: 10,
               onTap: (index) {
                 cubit.changeBottomTab(BottomTabs.fromValue(index));
               },
@@ -163,6 +162,19 @@ class _AppViewState extends State<AppView> {
                 _buidNavigationItem(
                   state,
                   context,
+                  bottomTab: BottomTabs.search,
+                  label: 'Search',
+                  icon: Icon(
+                    FontAwesomeIcons.magnifyingGlass,
+                    size: 20,
+                    color: state.bottomTab == BottomTabs.search
+                        ? context.appBarColor
+                        : const Color(0xFF071F05).withOpacity(0.5),
+                  ),
+                ),
+                _buidNavigationItem(
+                  state,
+                  context,
                   bottomTab: BottomTabs.profile,
                   label: 'Profile',
                   icon: Icon(
@@ -192,7 +204,7 @@ class _AppViewState extends State<AppView> {
   }) {
     return BottomNavigationBarItem(
       icon: SizedBox(
-        height: 25,
+        height: 30,
         child: svgName == null
             ? icon
             : SvgPicture.asset(
@@ -203,7 +215,7 @@ class _AppViewState extends State<AppView> {
                     : const Color(0xFF071F05).withOpacity(0.5),
               ),
       ),
-      label: label.tr(),
+      label: label,
     );
   }
 }

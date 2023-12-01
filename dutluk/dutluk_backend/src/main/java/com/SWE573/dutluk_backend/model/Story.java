@@ -43,13 +43,18 @@ public class Story extends BaseEntity{
     @Column(name = "likes")
     private Set<Long> likes = new HashSet<>();
 
+
+    private Set<Long> savedBy = new HashSet<>();
+
+    public Set<Long> getSavedBy() {
+        if(savedBy == null){
+            savedBy = new HashSet<>();
+        }
+        return savedBy;
+    }
+
     @OneToMany(mappedBy = "story", cascade = CascadeType.ALL)
     private List<Location> locations = new ArrayList<>();
-
-    @Column(name = "created_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Europe/Istanbul")
-    private Date createdAt;
 
     @Column(name = "start_time_stamp")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Europe/Istanbul")
@@ -62,6 +67,10 @@ public class Story extends BaseEntity{
     private String season;
 
     private String decade;
+
+    private Integer startHourFlag;
+
+    private Integer endHourFlag;
 
 
 

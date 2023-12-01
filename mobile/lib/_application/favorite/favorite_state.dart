@@ -8,6 +8,7 @@ class FavoriteState extends BaseState with _$FavoriteState {
   const factory FavoriteState({
     @Default(false) bool isLoading,
     @Default(false) bool isFavorite,
+    @Default('O') String likeCount,
     Failure? failure,
   }) = _FavoriteState;
   factory FavoriteState.initial() => const FavoriteState();

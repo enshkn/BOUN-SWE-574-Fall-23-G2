@@ -127,6 +127,18 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const RegisterView(),
       );
     },
+    SearchTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const SearchTabView(),
+      );
+    },
+    SearchRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const SearchView(),
+      );
+    },
     SplashRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -141,6 +153,16 @@ abstract class _$AppRouter extends RootStackRouter {
           model: args.model,
           key: args.key,
           leadBackHome: args.leadBackHome,
+        ),
+      );
+    },
+    TagSearchRoute.name: (routeData) {
+      final args = routeData.argsAs<TagSearchRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: TagSearchView(
+          tag: args.tag,
+          key: args.key,
         ),
       );
     },
@@ -436,6 +458,34 @@ class RegisterRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [SearchTabView]
+class SearchTabRoute extends PageRouteInfo<void> {
+  const SearchTabRoute({List<PageRouteInfo>? children})
+      : super(
+          SearchTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SearchTabRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [SearchView]
+class SearchRoute extends PageRouteInfo<void> {
+  const SearchRoute({List<PageRouteInfo>? children})
+      : super(
+          SearchRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SearchRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [SplashView]
 class SplashRoute extends PageRouteInfo<void> {
   const SplashRoute({List<PageRouteInfo>? children})
@@ -489,6 +539,44 @@ class StoryDetailsRouteArgs {
   @override
   String toString() {
     return 'StoryDetailsRouteArgs{model: $model, key: $key, leadBackHome: $leadBackHome}';
+  }
+}
+
+/// generated route for
+/// [TagSearchView]
+class TagSearchRoute extends PageRouteInfo<TagSearchRouteArgs> {
+  TagSearchRoute({
+    required String tag,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          TagSearchRoute.name,
+          args: TagSearchRouteArgs(
+            tag: tag,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'TagSearchRoute';
+
+  static const PageInfo<TagSearchRouteArgs> page =
+      PageInfo<TagSearchRouteArgs>(name);
+}
+
+class TagSearchRouteArgs {
+  const TagSearchRouteArgs({
+    required this.tag,
+    this.key,
+  });
+
+  final String tag;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'TagSearchRouteArgs{tag: $tag, key: $key}';
   }
 }
 

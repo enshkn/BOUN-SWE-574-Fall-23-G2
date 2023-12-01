@@ -1,28 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Space, message } from 'antd';
 import parse from "html-react-parser";
 import { useParams } from "react-router-dom";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import "react-quill/dist/quill.snow.css";
 import "./css/AllStories.css";
 
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-  const hours = date.getHours();
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-
-  const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
-
-  return formattedDate;
-}
-
 function StoryDetails() {
   const { id } = useParams();
   const [story, setStory] = useState(null);
   const [commentText, setCommentText] = useState("");
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     axios
@@ -34,8 +23,9 @@ function StoryDetails() {
       })
       .catch((error) => {
         console.log(error);
+        messageApi.open({ type: "error", content: "Error occured while loading the story!"});
       });
-  }, [id]);
+  }, [id, messageApi]);
 
   const handleCommentSubmit = async (event) => {
     event.preventDefault();
@@ -58,8 +48,10 @@ function StoryDetails() {
       updatedStory.comments.push(response.data);
       setStory(updatedStory);
       setCommentText("");
+      messageApi.open({ type: "success", content: "Your comment is posted!"});
     } catch (error) {
       console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while posting your comment!"});
     }
   };
 
@@ -73,8 +65,10 @@ function StoryDetails() {
         }
       );
       setStory(response.data);
+      messageApi.open({ type: "success", content: "You liked this story!"});
     } catch (error) {
       console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while liking this story!"});
     }
   };
   const handleLikeComment = async (commentId) => {
@@ -95,16 +89,26 @@ function StoryDetails() {
       });
       updatedStory.comments = updatedComments;
       setStory(updatedStory);
+      messageApi.open({ type: "success", content: "You liked the comment!"});
     } catch (error) {
       console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while liking the comment!"});
     }
   };
 
   if (!story) {
+    messageApi.open({ type: "error", content: "Story Not Found!"});
     return <div>Story Not Found!</div>;
   }
 
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '100%',
+    }}
+    >
+    {contextHolder}
     <div className="all-stories">
       <h1>Title: {story.title}</h1>
       <p>
@@ -135,7 +139,7 @@ function StoryDetails() {
       </p>
       <p>
         <b>Published at: </b>
-        {formatDate(story.createdAt)}
+        {story.createdAt}
       </p>
       <p>
         <b>Season:</b>
@@ -199,6 +203,7 @@ function StoryDetails() {
         <button type="submit">Submit</button>
       </form>
     </div>
+    </Space>
   );
 }
 

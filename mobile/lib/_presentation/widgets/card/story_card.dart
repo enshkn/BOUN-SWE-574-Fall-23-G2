@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:ffi';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
@@ -8,20 +10,24 @@ import 'package:swe/_common/style/text_styles.dart';
 import 'package:swe/_core/extensions/string_extensions.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
+import 'package:swe/_presentation/_route/router.dart';
 import 'package:swe/_presentation/widgets/base/base_list_view.dart';
 import 'package:swe/_presentation/widgets/card/button_card.dart';
 
 class StoryCard extends StatelessWidget {
   final StoryModel storyModel;
   final void Function(StoryModel)? onTap;
+  final void Function(String)? onTagSearch;
   final void Function()? onFavouriteTap;
   final VoidCallback? onDeleteTap;
   final bool isFavorite;
+  final String likeCount;
   final bool isFavoriteLoading;
   final bool showFavouriteButton;
   final bool myStories;
   const StoryCard({
     required this.storyModel,
+    this.likeCount = '0',
     this.myStories = false,
     super.key,
     this.onTap,
@@ -30,6 +36,7 @@ class StoryCard extends StatelessWidget {
     this.isFavorite = false,
     this.isFavoriteLoading = false,
     this.onDeleteTap,
+    this.onTagSearch,
   });
 
   @override
@@ -77,7 +84,7 @@ class StoryCard extends StatelessWidget {
           children: [
             buildContent(context, imgurl, noImage),
             if (showFavouriteButton) buildFavourite(),
-            buildUser(),
+            buildUser(context),
             if (myStories) buildDelete(),
           ],
         ),
@@ -143,17 +150,22 @@ class StoryCard extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 items: storyModel.labels!,
                 itemBuilder: (item) {
-                  return Row(
-                    children: [
-                      Wrap(
-                        children: [
-                          _buildChip(item),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                        ],
-                      ),
-                    ],
+                  return GestureDetector(
+                    onTap: () {
+                      onTagSearch?.call(item);
+                    },
+                    child: Row(
+                      children: [
+                        Wrap(
+                          children: [
+                            _buildChip(item),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
@@ -166,9 +178,9 @@ class StoryCard extends StatelessWidget {
   Widget buildFavourite() {
     return Positioned(
       bottom: 8,
-      right: 0,
+      right: 6,
       child: SizedBox(
-        width: 50,
+        width: 70,
         height: 30,
         child: Center(
           child: Row(
@@ -176,14 +188,31 @@ class StoryCard extends StatelessWidget {
               if (isFavoriteLoading)
                 const CircularProgressIndicator.adaptive()
               else
-                Icon(
-                  Icons.favorite,
-                  color: isFavorite ? Colors.red : Colors.grey,
-                  size: 32,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.favorite,
+                        color: isFavorite ? Colors.red : Colors.grey,
+                        size: 24,
+                      ),
+                      onPressed: () {
+                        onFavouriteTap?.call();
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        likeCount ?? '',
+                        style: const TextStyles.body(),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                  ],
                 ),
-              const SizedBox(
-                width: 4,
-              ),
             ],
           ),
         ),
@@ -191,26 +220,31 @@ class StoryCard extends StatelessWidget {
     );
   }
 
-  Widget buildUser() {
+  Widget buildUser(BuildContext context) {
     return Positioned(
       bottom: 8,
       left: 4,
-      child: SizedBox(
-        width: 150,
-        height: 30,
-        child: Center(
-          child: Row(
-            children: [
-              const Icon(
-                Icons.star,
-                color: Colors.yellow,
-                size: 32,
-              ),
-              const SizedBox(
-                width: 4,
-              ),
-              Text(storyModel.user?.username ?? ''),
-            ],
+      child: GestureDetector(
+        onTap: () {
+          context.router.push(OtherProfileRoute(profile: storyModel.user!));
+        },
+        child: SizedBox(
+          width: 150,
+          height: 30,
+          child: Center(
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.star,
+                  color: Colors.yellow,
+                  size: 32,
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                Text(storyModel.user?.username ?? ''),
+              ],
+            ),
           ),
         ),
       ),
@@ -248,17 +282,22 @@ class StoryCard extends StatelessWidget {
   }
 
   Widget _buildChip(String label) {
-    return Chip(
-      labelPadding: const EdgeInsets.all(2),
-      label: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white,
+    return GestureDetector(
+      onTap: () {
+        onTagSearch?.call(label);
+      },
+      child: Chip(
+        labelPadding: const EdgeInsets.all(2),
+        label: Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
         ),
+        backgroundColor: Colors.orange,
+        elevation: 4,
+        padding: const EdgeInsets.all(8),
       ),
-      backgroundColor: Colors.blue,
-      elevation: 4,
-      padding: const EdgeInsets.all(8),
     );
   }
 }

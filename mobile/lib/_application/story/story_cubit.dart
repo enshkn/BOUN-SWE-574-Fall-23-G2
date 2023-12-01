@@ -5,7 +5,9 @@ import 'package:swe/_core/utility/record_utils.dart';
 import 'package:swe/_domain/story/i_story_repository.dart';
 import 'package:swe/_domain/story/model/addStory_model.dart';
 import 'package:swe/_domain/story/model/comment_model.dart';
+import 'package:swe/_domain/story/model/getNearbyStories_model.dart';
 import 'package:swe/_domain/story/model/postComment_model.dart';
+import 'package:swe/_domain/story/model/story_filter.dart';
 
 @injectable
 final class StoryCubit extends BaseCubit<StoryState> {
@@ -79,6 +81,30 @@ final class StoryCubit extends BaseCubit<StoryState> {
     );
   }
 
+  Future<void> getNearbyStories(GetNearbyStoriesModel model) async {
+    setLoading(true);
+    final result = await _storyRepository.getNearbyStories(model);
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (nearbyStories) {
+        safeEmit(state.copyWith(nearbyStories: nearbyStories));
+      },
+    );
+  }
+
+  Future<void> getRecommendedStories() async {
+    setLoading(true);
+    final result = await _storyRepository.getRecommendedStories();
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (recommendedStories) {
+        safeEmit(state.copyWith(recommendedStories: recommendedStories));
+      },
+    );
+  }
+
   Future<bool> addStory(AddStoryModel model) async {
     setLoading(true);
     final result = await _storyRepository.addStoryModel(model);
@@ -89,7 +115,6 @@ final class StoryCubit extends BaseCubit<StoryState> {
         return false;
       },
       (data) {
-        showNotification('Your Story is added.');
         return true;
       },
     );
@@ -149,6 +174,81 @@ final class StoryCubit extends BaseCubit<StoryState> {
       (likedStories) {
         safeEmit(state.copyWith(likedStories: likedStories));
       },
+    );
+  }
+
+  Future<void> getTagSearchStories(String? label) async {
+    setLoading(true);
+    final result = await _storyRepository.getTagSearchStories(label);
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (tagSearchStories) {
+        safeEmit(state.copyWith(tagSearchStories: tagSearchStories));
+      },
+    );
+  }
+
+  Future<void> getSearchResult(StoryFilter? filter, String? searchTerm) async {
+    safeEmit(state.copyWith(search: searchTerm));
+    setLoading(true);
+    final result = await _storyRepository.getSearchStories(filter, searchTerm);
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (searchResult) {
+        safeEmit(
+          state.copyWith(searchResultStories: searchResult, filter: filter),
+        );
+      },
+    );
+  }
+
+  Future<void> getTimelineSearchResult({
+    StoryFilter? filter,
+    String? searchTerm,
+  }) async {
+    safeEmit(state.copyWith(search: searchTerm));
+    setLoading(true);
+    final result =
+        await _storyRepository.getTimelineSearchStories(filter, searchTerm);
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (searchResult) {
+        safeEmit(
+          state.copyWith(timelineResultStories: searchResult, filter: filter),
+        );
+      },
+    );
+  }
+
+  Future<void> search({
+    String? term,
+    StoryFilter? filter,
+  }) async {
+    safeEmit(state.copyWith(search: term));
+
+    //final currentFilter = filter ?? state.filter;
+
+    setLoading(true);
+    final result = await _storyRepository.getSearchStories(filter, term);
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (searchResult) {
+        safeEmit(state.copyWith(searchResultStories: searchResult));
+      },
+    );
+  }
+
+  void clearState() {
+    safeEmit(
+      state.copyWith(
+        isLoading: false,
+        filter: null,
+        search: null,
+      ),
     );
   }
 }

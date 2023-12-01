@@ -264,15 +264,15 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
   ) {
     return FavoriteWrapper(
       initialState: widget.model.likes!.contains(user.id),
+      storyId: widget.model.id,
       builder: (
         context,
         addFavorite,
         isfavorite,
         isLoading,
+        likeCount,
       ) {
-        var newlikes = widget.model.likes!.length;
-        final initialState = widget.model.likes!.contains(user.id);
-
+        var favoritePressed = false;
         return Padding(
           padding: const EdgeInsets.all(12),
           child: Column(
@@ -292,10 +292,9 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                               ButtonCard(
                                 minScale: 0.8,
                                 onPressed: () async {
+                                  await addFavorite(storyId: widget.model.id);
                                   setState(() {
-                                    addFavorite(storyId: widget.model.id);
-                                    addFavoriteTriggered = true;
-                                    newlikes = widget.model.likes!.length;
+                                    favoritePressed = true;
                                   });
                                 },
                                 child: Icon(
@@ -307,22 +306,9 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                               const SizedBox(
                                 width: 4,
                               ),
-                              if (addFavoriteTriggered)
-                                Text(
-                                  isfavorite & initialState
-                                      ? (newlikes).toString()
-                                      : isfavorite & !initialState
-                                          ? (newlikes + 1).toString()
-                                          : !isfavorite & initialState
-                                              ? (newlikes - 1).toString()
-                                              : (newlikes).toString(),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              if (!addFavoriteTriggered)
-                                Text(
-                                  newlikes.toString(),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
+                              Text(
+                                likeCount,
+                              ),
                             ],
                           ),
                         ),
@@ -348,14 +334,16 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               BaseWidgets.normalGap,
               Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blue),
+                  border: Border.all(color: Colors.orange),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ExpansionTile(
+                  iconColor: Colors.orange.shade800,
                   initiallyExpanded: true,
                   controller: controller,
-                  title: const Text(
+                  title: Text(
                     'Time Variants',
+                    style: TextStyle(color: Colors.orange.shade800),
                   ),
                   children: <Widget>[
                     if (widget.model.startTimeStamp != null)
@@ -379,8 +367,11 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.start,
                       ),
-                    if (widget.model.decade != '') BaseWidgets.lowerGap,
-                    if (widget.model.decade != '')
+                    if (widget.model.decade != '' &&
+                        widget.model.decade != null)
+                      BaseWidgets.lowerGap,
+                    if (widget.model.decade != '' &&
+                        widget.model.decade != null)
                       Text(
                         'Decade: ${widget.model.decade!}',
                         style: const TextStyles.body().copyWith(
@@ -390,8 +381,11 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.start,
                       ),
-                    if (widget.model.season != '') BaseWidgets.lowerGap,
-                    if (widget.model.season != '')
+                    if (widget.model.season != '' &&
+                        widget.model.season != null)
+                      BaseWidgets.lowerGap,
+                    if (widget.model.season != '' &&
+                        widget.model.season != null)
                       Text(
                         'Season: ${widget.model.season!}',
                         style: const TextStyles.body().copyWith(
@@ -409,12 +403,16 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               if (widget.model.locations != null)
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue),
+                    border: Border.all(color: Colors.orange),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: ExpansionTile(
+                    iconColor: Colors.orange.shade800,
                     controller: controller2,
-                    title: const Text('Locations'),
+                    title: Text(
+                      'Locations',
+                      style: TextStyle(color: Colors.orange.shade800),
+                    ),
                     initiallyExpanded: true,
                     children: <Widget>[
                       BaseWidgets.lowerGap,
@@ -698,18 +696,25 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                       scrollDirection: Axis.horizontal,
                       items: widget.model.labels!,
                       itemBuilder: (item) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Wrap(
-                              children: [
-                                _buildChip(item),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                              ],
-                            ),
-                          ],
+                        return GestureDetector(
+                          onTap: () async {
+                            await context.router.push(
+                              TagSearchRoute(tag: item),
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Wrap(
+                                children: [
+                                  _buildChip(item),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         );
                       },
                     ),
@@ -748,7 +753,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
           color: Colors.white,
         ),
       ),
-      backgroundColor: Colors.blue,
+      backgroundColor: Colors.orange,
       elevation: 4,
       padding: const EdgeInsets.all(8),
     );
@@ -780,39 +785,42 @@ class _CommentsViewState extends State<CommentsView> {
             context,
             title: 'Comments',
           ),
-          body: BaseScrollView(
-            children: [
-              BaseWidgets.lowerGap,
-              if (state.storyModel == null ||
-                  state.storyModel!.comments == null ||
-                  state.storyModel!.comments!.isEmpty)
-                const Center(
-                  child: Text(
-                    'No comment yet',
-                    style: TextStyles.title(),
+          body: BaseLoader(
+            isLoading: state.isLoading,
+            child: BaseScrollView(
+              children: [
+                BaseWidgets.lowerGap,
+                if (state.storyModel == null ||
+                    state.storyModel!.comments == null ||
+                    state.storyModel!.comments!.isEmpty)
+                  const Center(
+                    child: Text(
+                      'No comment yet',
+                      style: TextStyles.title(),
+                    ),
+                  )
+                else
+                  SizedBox(
+                    child: BaseListView(
+                      shrinkWrap: true,
+                      items: state.storyModel!.comments!,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (item) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 16,
+                          ),
+                          child: CommentCard(
+                            user: item.user,
+                            content: item.text,
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                )
-              else
-                SizedBox(
-                  child: BaseListView(
-                    shrinkWrap: true,
-                    items: state.storyModel!.comments!,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (item) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 8,
-                        ),
-                        child: CommentCard(
-                          user: item.user,
-                          content: item.text,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-            ],
+              ],
+            ),
           ),
         );
       },

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { Space, message } from 'antd';
 import "./css/StorySearch.css";
 import { Timeline } from 'antd';
 
@@ -11,6 +12,7 @@ const TimelineSearch = () => {
   const [searchDate, setSearchDate] = useState({ type: null, value: null });
   const [searchSeason, setSearchSeason] = useState(null);
   const [searchDecade, setSearchDecade] = useState(null);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSearch = useCallback(async () => {
     try {
@@ -57,6 +59,7 @@ const TimelineSearch = () => {
       setSearchResults(response.data);
     } catch (error) {
       console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while searching stories!"});
     }
   }, [
     radius,
@@ -64,6 +67,7 @@ const TimelineSearch = () => {
     searchDate,
     searchSeason,
     searchDecade,
+    messageApi,
   ]);
 
   const handleMapClick = (event) => {
@@ -91,7 +95,40 @@ const TimelineSearch = () => {
     setSearchDecade(decade);
   };
 
+  const handleSearchByLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setSelectedLocation(userLocation);
+        },
+        (error) => {
+          console.error("Error getting user location:", error);
+          messageApi.open({
+            type: "error",
+            content: "Error getting user location. Please try again.",
+          });
+        }
+      );
+    } else {
+      messageApi.open({
+        type: "error",
+        content: "Geolocation is not supported by your browser.",
+      });
+    }
+  };
+
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '100%',
+    }}
+    >
+    {contextHolder}
     <div className="story-search">
       <h2>Timeline Search</h2>
       <div className="search-form">
@@ -103,6 +140,9 @@ const TimelineSearch = () => {
             onChange={(e) => setRadius(parseInt(e.target.value))}
           />
         </label>
+        <button type="button" onClick={handleSearchByLocation}>
+            Use My Location
+        </button>
         <label>
           Date Type:
           <select value={searchDate.type} onChange={handleDateTypeChange}>
@@ -270,6 +310,7 @@ const TimelineSearch = () => {
         )}
       </div>
     </div>
+    </Space>
   );
 };
 

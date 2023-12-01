@@ -1,0 +1,6 @@
+git reset --soft HEAD^ : will delete last commit
+
+# Run the FastAPI application using uvicorn server
+
+docker build -t dutluk-re .
+docker run --memory=8g -p 8000:8000 dutluk-re

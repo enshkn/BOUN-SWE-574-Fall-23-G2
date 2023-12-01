@@ -1,15 +1,17 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Space, message } from 'antd';
+import photoPreview from "../profile_pic.png";
 import "./css/Profile.css";
 
 function Profile() {
   const { id } = useParams();
   const [user, setUser] = useState(null);
-  const [error, setError] = useState("");
   const [isFollowing, setIsFollowing] = useState();
   const [followButtonName, setFollowButtonName] = useState();
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     axios
@@ -30,9 +32,10 @@ function Profile() {
         }
       })
       .catch((error) => {
-        setError(error);
+        console.log(error);
+        messageApi.open({ type: "error", content: "Error occured while loading your profile!"});
       });
-  }, [id]);
+  }, [id, messageApi]);
 
   useEffect(() => {
     axios
@@ -43,9 +46,10 @@ function Profile() {
         setUser(response.data);
       })
       .catch((error) => {
-        setError(error);
+        console.log(error);
+        messageApi.open({ type: "error", content: "Error occured while loading the profile!"});
       });
-  }, [id, BACKEND_URL]);
+  }, [id, BACKEND_URL, messageApi]);
 
   const handleFollowClick = () => {
     if (isFollowing) {
@@ -60,7 +64,8 @@ function Profile() {
           setIsFollowing(false);
         })
         .catch((error) => {
-          setError(error);
+          console.log(error);
+          messageApi.open({ type: "error", content: "Error occured while trying to unfollow this user!"});
         });
     } else {
       axios
@@ -74,34 +79,45 @@ function Profile() {
           setIsFollowing(true);
         })
         .catch((error) => {
-          setError(error);
+          console.log(error);
+          messageApi.open({ type: "error", content: "Error occured while trying to follow this user!"});
         });
     }
   };
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  } else if (!user) {
-    return <div>Loading...</div>;
+  if (!user) {
+    return <div>User not found!</div>;
   } else {
     return (
-      <div className="profile-container">
-        <div className="profile-photo-container">
-          <label htmlFor="photo" className="profile-photo-label">
-            Photo:
-          </label>
-          <img
-            className="profile-photo"
-            src={`data:image/jpeg;base64,${user.profilePhoto}`}
-            alt={user.username}
-          />
+      <Space
+        direction="vertical"
+        style={{
+          width: "100%",
+        }}
+      >
+        {contextHolder}
+        <div className="profile-container">
+          <div className="profile-photo-container">
+            <label htmlFor="photo" className="profile-photo-label">
+              Photo:
+              <p>
+                {
+                  <img
+                    className="profile-photo"
+                    src={user.profilePhoto || photoPreview}
+                    alt={user.username}
+                  />
+                }
+              </p>
+            </label>
+          </div>
+          <h1 className="profile-username">Username: {user.username}</h1>
+          <p className="profile-biography">Biography: {user.biography}</p>
+          <button className="follow-button" onClick={handleFollowClick}>
+            {followButtonName}
+          </button>
         </div>
-        <h1 className="profile-username">Username: {user.username}</h1>
-        <p className="profile-biography">Biography: {user.biography}</p>
-        <button className="follow-button" onClick={handleFollowClick}>
-          {followButtonName}
-        </button>
-      </div>
+      </Space>
     );
   }
 }

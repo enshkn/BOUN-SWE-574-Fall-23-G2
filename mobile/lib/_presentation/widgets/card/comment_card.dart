@@ -52,14 +52,6 @@ class _CommentCardState extends State<CommentCard> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
         ),
         padding: const EdgeInsets.symmetric(
           vertical: 4,
@@ -79,13 +71,20 @@ class _CommentCardState extends State<CommentCard> {
       ),
       child: Row(
         children: [
-          const SizedBox(
-            child: Center(
-              child: CircleAvatar(
-                radius: 30,
-                backgroundImage: AssetImage('assets/images/profilePic.jpg'),
-              ),
-            ),
+          SizedBox(
+            child: widget.user!.profilePhoto != null
+                ? CircleAvatar(
+                    radius: 36,
+                    backgroundImage: NetworkImage(
+                      widget.user!.profilePhoto!,
+                    ),
+                  )
+                : const CircleAvatar(
+                    radius: 36,
+                    backgroundImage: AssetImage(
+                      'assets/images/profilePic.jpg',
+                    ),
+                  ),
           ),
           const SizedBox(
             width: 10,

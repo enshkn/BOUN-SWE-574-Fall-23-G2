@@ -4,7 +4,7 @@ class ThemeManager {
   ThemeManager._();
 
   static ThemeData get themeDev => ThemeData(
-        primaryColor: const Color(0xFF06789A),
+        primaryColor: Colors.orange,
         scaffoldBackgroundColor: const Color(0xFFF0F0F0),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: Colors.white,
@@ -24,7 +24,7 @@ class ThemeManager {
       );
 
   static ThemeData get themeProd => ThemeData(
-        primaryColor: const Color(0xFF06789A),
+        primaryColor: Colors.orange,
         scaffoldBackgroundColor: const Color(0xFFF0F0F0),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: Colors.white,

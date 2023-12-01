@@ -22,7 +22,7 @@ public class Comment extends BaseEntity{
     @Column(columnDefinition = "TEXT")
     private String text;
 
-    @JsonIncludeProperties(value = {"id" , "username"})
+    @JsonIncludeProperties(value = {"id" , "username","profilePhoto"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

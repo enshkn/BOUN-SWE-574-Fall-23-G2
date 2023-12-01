@@ -8,6 +8,7 @@ import com.SWE573.dutluk_backend.repository.StoryRepository;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,14 +32,17 @@ public class StoryService {
     @Autowired
     ImageService imageService;
 
-
+    @Autowired
+    RecommendationService recService;
 
     public List<Story> findAll(){
-        return storyRepository.findAll();
+        List<Story> storyList = storyRepository.findAll();
+        return (storyList != null) ? storyList : Collections.emptyList();
     }
 
     public List<Story> findAllByOrderByIdDesc(){
-        return storyRepository.findAllByOrderByIdDesc();
+        List<Story> storyList = storyRepository.findAllByOrderByIdDesc();
+        return (storyList != null) ? storyList : Collections.emptyList();
     }
 
     public Story createStory(User foundUser, StoryCreateRequest storyCreateRequest) throws ParseException, IOException {
@@ -49,9 +53,10 @@ public class StoryService {
                 .startTimeStamp(storyCreateRequest.getStartTimeStamp())
                 .endTimeStamp(storyCreateRequest.getEndTimeStamp())
                 .season(storyCreateRequest.getSeason())
+                .startHourFlag(storyCreateRequest.getStartHourFlag())
+                .endHourFlag(storyCreateRequest.getEndHourFlag())
                 .user(foundUser)
                 .decade(storyCreateRequest.getDecade())
-                .createdAt(new Date())
                 .likes(new HashSet<>())
                 .build();
         ArrayList<Location> allLocations = storyCreateRequest.getLocations();
@@ -64,20 +69,19 @@ public class StoryService {
     }
 
     public List<Story> findAllStoriesByUserId(Long userId){
-        return storyRepository.findByUserId(userId);
+        List<Story> storyList = storyRepository.findByUserId(userId);
+        return (storyList != null) ? storyList : Collections.emptyList();
     }
 
     public List<Story> findByUserIdOrderByIdDesc(Long userId){
-        return storyRepository.findByUserIdOrderByIdDesc(userId);
+        List<Story> storyList = storyRepository.findByUserIdOrderByIdDesc(userId);
+        return (storyList != null) ? storyList : Collections.emptyList();
     }
 
 
     public Story getStoryByStoryId(Long id) {
         Optional<Story> optionalStory = storyRepository.findById(id);
-        if (optionalStory.isEmpty()) {
-            throw new NoSuchElementException("Story with id '" + id + "' not found");
-        }
-        return optionalStory.get();
+        return optionalStory.orElse(null);
     }
 
     public List<Story> findFollowingStories(User foundUser) {
@@ -90,7 +94,8 @@ public class StoryService {
         for(Long id : idList){
             storyList.addAll(findByUserIdOrderByIdDesc(id));
         }
-        return storyList;
+        List<Story> resultStoryList = sortStoriesByDescending(storyList);
+        return (resultStoryList != null) ? resultStoryList : Collections.emptyList();
 
     }
 
@@ -100,13 +105,20 @@ public class StoryService {
         User user = userService.findByUserId(userId);
         Set<Long> likesList = story.getLikes();
         Set<Long> likedList = user.getLikedStories();
+        int likedListCount;
         if(!likesList.contains(user.getId())){
             likesList.add(user.getId());
             likedList.add(storyId);
+            likedListCount = likedList.size();
+            //type=user, storyId, userId and userWeight= likedListCount data will be sent to the rec engine in this line
+            //recService.storyLiked("user",storyId.toString(),userId.toString(),likedList.size());
         }
         else{
             likesList.remove(user.getId());
             likedList.remove(storyId);
+            likedListCount = likedList.size();
+            //type=user, storyId, userId and userWeight= likedListCount data will be sent to the rec engine in this line
+            //recService.storydisLiked("user",storyId.toString(),userId.toString(),likedList.size());
         }
         story.setLikes(likesList);
         user.setLikedStories(likedList);
@@ -137,15 +149,24 @@ public class StoryService {
                 minLatitude, maxLatitude, minLongitude, maxLongitude);
     }
 
-    public Set<Story> searchStoriesWithQuery(String query) {
-        Set<Story> storySet = new HashSet<>();
-        storySet.addAll(storyRepository.findByTitleContainingIgnoreCase(query));
-        storySet.addAll(searchStoriesWithLabel(query));
-        return storySet;
+    public List<Story> searchStoriesWithQuery(String query) {
+        Set<Story> results = new HashSet<>();
+        results.addAll(storyRepository.findByTitleContainingIgnoreCase(query));
+        results.addAll(searchStoriesWithLabel(query));
+        return results.stream().toList();
+    }
+    public List<Story> searchStoriesWithTitle(String title) {
+        Set<Story> results = new HashSet<>();
+        results.addAll(storyRepository.findByTitleContainingIgnoreCase(title));
+        return results.stream().toList();
     }
 
     public List<Story> searchStoriesWithLabel(String label){
-        return storyRepository.findByLabelsContainingIgnoreCase(label);
+        List<Story> results = storyRepository.findByLabelsContainingIgnoreCase(label);
+        if(results == null || results.isEmpty()){
+            return null;
+        }
+        return results.stream().toList();
     }
 
     public List<Story> searchStoriesWithDecade(String decade){
@@ -159,7 +180,6 @@ public class StoryService {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-
         return results.stream().toList();
     }
 
@@ -191,24 +211,26 @@ public class StoryService {
         return dateFormat.parse(timeStamp);
     }
 
-    public Story enterStory(User foundUser, StoryEditRequest storyEditRequestRequest) throws ParseException, IOException {
+    public Story enterStory(User foundUser, StoryEditRequest storyEditRequest) throws ParseException, IOException {
         Story createdStory = Story.builder()
-                .title(storyEditRequestRequest.getTitle())
-                .labels(storyEditRequestRequest.getLabels())
-                .text(imageService.parseAndSaveImages(storyEditRequestRequest.getText()))
-                .startTimeStamp(storyEditRequestRequest.getStartTimeStamp())
-                .endTimeStamp(storyEditRequestRequest.getEndTimeStamp())
-                .season(storyEditRequestRequest.getSeason())
+                .title(storyEditRequest.getTitle())
+                .labels(storyEditRequest.getLabels())
+                .text(imageService.parseAndSaveImages(storyEditRequest.getText()))
+                .startTimeStamp(storyEditRequest.getStartTimeStamp())
+                .endTimeStamp(storyEditRequest.getEndTimeStamp())
+                .season(storyEditRequest.getSeason())
+                .startHourFlag(storyEditRequest.getStartHourFlag())
+                .endHourFlag(storyEditRequest.getEndHourFlag())
                 .user(foundUser)
-                .decade(storyEditRequestRequest.getDecade())
-                .createdAt(new Date())
+                .decade(storyEditRequest.getDecade())
                 .likes(new HashSet<>())
                 .build();
-        ArrayList<Location> allLocations = storyEditRequestRequest.getLocations();
+        ArrayList<Location> allLocations = storyEditRequest.getLocations();
         for (Location location : allLocations) {
             location.setStory(createdStory);
         }
         createdStory.setLocations(allLocations);
+        // send createdStory info to rec engine /vectorize endpoint in this line
         return createdStory;
     }
 
@@ -220,28 +242,38 @@ public class StoryService {
             enteredStory.setLikes(story.getLikes());
             enteredStory.setId(story.getId());
             enteredStory.setComments(story.getComments());
+            //enteredStory will be sent to rec engine /vectorize-edit endpoint in this line
             return storyRepository.save(enteredStory);
         }
-        return null;
+        return getStoryByStoryId(storyId);
     }
 
     public List<Story> likedStories(User foundUser) {
-        List<Long> likeList = new ArrayList<>(foundUser.getLikedStories());
+        Set<Long> likeSet = foundUser.getLikedStories();
+        List<Long> deletedStoryIdList = new ArrayList<>();
         List<Story> storyList = new ArrayList<>();
-        for (Long storyId : likeList) {
+        for (Long storyId : likeSet) {
             Story story = getStoryByStoryId(storyId);
             if (story != null) {
                 storyList.add(story);
             }
+            else{
+                deletedStoryIdList.add(storyId);
+            }
         }
-        return storyList;
+        deletedStoryIdList.forEach(likeSet::remove);
+        foundUser.setLikedStories(likeSet);
+        userService.editUser(foundUser);
+        List<Story> resultStoryList = sortStoriesByDescending(storyList);
+        return (resultStoryList != null) ? resultStoryList : Collections.emptyList();
     }
 
     public List<Story> findRecentStories() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, -7);
         Date date = calendar.getTime();
-        return storyRepository.findByCreatedAtAfterOrderByCreatedAtDesc(date);
+        return storyRepository.findByCreatedAtAfterOrderByIdDesc(date);
+
     }
 
     private static Date convertToStartDate(String decadeString) throws ParseException {
@@ -273,5 +305,66 @@ public class StoryService {
         calendar.add(Calendar.YEAR,9);
 
         return calendar.getTime();
+    }
+
+    public Story saveStory(Long storyId,Long userId){
+        Story story = getStoryByStoryId(storyId);
+        User user = userService.findByUserId(userId);
+        Set<Long> storySavedByList = story.getSavedBy();
+        Set<Long> savedList = user.getSavedStories();
+        if(!storySavedByList.contains(user.getId())){
+            storySavedByList.add(user.getId());
+            savedList.add(storyId);
+        }
+        else{
+            storySavedByList.remove(user.getId());
+            savedList.remove(storyId);
+        }
+        story.setSavedBy(storySavedByList);
+        user.setSavedStories(savedList);
+        userService.editUser(user);
+        return storyRepository.save(story);
+    }
+
+    public List<Story> savedStories(User foundUser) {
+        Set<Long> savedSet = foundUser.getSavedStories();
+        List<Long> deletedStoryIdList = new ArrayList<>();
+        List<Story> storyList = new ArrayList<>();
+        for (Long storyId : savedSet) {
+            Story story = getStoryByStoryId(storyId);
+            if (story != null) {
+                storyList.add(story);
+            }
+            else{
+                deletedStoryIdList.add(storyId);
+            }
+        }
+        deletedStoryIdList.forEach(savedSet::remove);
+        foundUser.setSavedStories(savedSet);
+        userService.editUser(foundUser);
+        List<Story> resultStoryList = sortStoriesByDescending(storyList);
+        return (resultStoryList != null) ? resultStoryList : Collections.emptyList();
+    }
+
+    public List<Story> recommendedStories(User foundUser) {
+        List<Long> recommendationList = new ArrayList<>(foundUser.getRecommendedStories());
+
+        List<Story> storyList = new ArrayList<>();
+        for (Long storyId : recommendationList) {
+            Story story = getStoryByStoryId(storyId);
+            if (story != null) {
+                storyList.add(story);
+            }
+        }
+        return sortStoriesByDescending(storyList);
+    }
+
+    public List<Story> sortStoriesByDescending(List<Story> storyList) {
+        if (storyList != null && !storyList.isEmpty()) {
+            List<Story> sortedList = new ArrayList<>(storyList);
+            sortedList.sort(Comparator.comparingLong(Story::getId).reversed());
+            return sortedList;
+        }
+        return Collections.emptyList(); // or return blankStoryList;
     }
 }

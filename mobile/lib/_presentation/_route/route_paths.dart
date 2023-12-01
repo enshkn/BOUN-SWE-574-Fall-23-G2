@@ -16,10 +16,12 @@ class RoutePaths {
   static const RECOMMENDED = 'recommended';
   static const NEARBY = 'nearby';
   static const TIMELINE = 'timeline';
+  static const SEARCH = 'search';
 
   //Story
   static const STORYDETAILS = 'story-details';
   static const ADDSTORY = '/add-story';
   static const MYSTORIES = 'my-stories';
   static const LIKEDSTORIES = 'liked-stories';
+  static const TAGSEARCH = '/tag-search';
 }

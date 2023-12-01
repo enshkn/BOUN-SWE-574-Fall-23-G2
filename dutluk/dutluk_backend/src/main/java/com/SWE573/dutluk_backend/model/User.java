@@ -42,7 +42,7 @@ public class User extends BaseEntity{
     private String password;
 
     @Lob
-    private byte[] profilePhoto;
+    private String profilePhoto;
 
     @Column
     private String biography;
@@ -65,6 +65,25 @@ public class User extends BaseEntity{
             likedStories = new HashSet<>();
         }
         return likedStories;
+    }
+
+
+    private Set<Long> savedStories = new HashSet<>();
+
+    public Set<Long> getSavedStories() {
+        if(savedStories == null){
+            savedStories = new HashSet<>();
+        }
+        return savedStories;
+    }
+
+    private Set<Long> recommendedStories = new HashSet<>();
+
+    public Set<Long> getRecommendedStories() {
+        if(recommendedStories == null){
+            recommendedStories = new HashSet<>();
+        }
+        return recommendedStories;
     }
 
     @JsonIgnoreProperties({"followers", "email" , "password" , "biography" , "stories","following"})

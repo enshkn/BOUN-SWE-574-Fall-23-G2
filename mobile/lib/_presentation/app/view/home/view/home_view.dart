@@ -95,7 +95,7 @@ class _HomeViewState extends State<HomeView>
                   Padding(
                     padding: const EdgeInsets.only(right: 16),
                     child: CircleAvatar(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.orange,
                       child: IconButton.outlined(
                         icon: const Icon(
                           Icons.edit,
@@ -116,33 +116,82 @@ class _HomeViewState extends State<HomeView>
                   children: [
                     BaseWidgets.lowerGap,
                     buildTabs(context),
-                    Expanded(
-                      child: TabBarView(
-                        controller: _tabController,
-                        children: [
-                          RefreshIndicator(
-                            onRefresh: () async {
-                              await cubit.getFallowedStories();
-                            },
-                            child: BaseScrollView(
-                              children: [
-                                BaseWidgets.lowerGap,
-                                SizedBox(
-                                  child: BaseListView<StoryModel>(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    items: state.recentStories,
-                                    shrinkWrap: true,
-                                    itemBuilder: (item) {
-                                      return FavoriteWrapper(
-                                        initialState:
-                                            item.likes!.contains(user!.id),
-                                        builder: (
-                                          context,
-                                          addFavorite,
-                                          isfavorite,
-                                          isLoading,
-                                        ) {
+                    if (user != null)
+                      Expanded(
+                        child: TabBarView(
+                          controller: _tabController,
+                          children: [
+                            RefreshIndicator(
+                              onRefresh: () async {
+                                await cubit.getFallowedStories();
+                              },
+                              child: BaseScrollView(
+                                children: [
+                                  BaseWidgets.lowerGap,
+                                  SizedBox(
+                                    child: BaseListView<StoryModel>(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      items: state.recentStories,
+                                      shrinkWrap: true,
+                                      itemBuilder: (item) {
+                                        return Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                            vertical: 8,
+                                          ),
+                                          height: 450,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              context.router.push(
+                                                StoryDetailsRoute(
+                                                  model: item,
+                                                ),
+                                              );
+                                            },
+                                            child: StoryCard(
+                                              storyModel: item,
+                                              showFavouriteButton: false,
+                                              onTagSearch: (label) async {
+                                                await context.router.push(
+                                                  TagSearchRoute(tag: label),
+                                                );
+                                              },
+                                              /*  likeCount: likeCount,
+                                                    isFavorite: isfavorite,
+                                                    isFavoriteLoading:
+                                                        isLoading,
+                                                    onFavouriteTap: () async {
+                                                      await addFavorite(
+                                                        storyId: item.id,
+                                                      );
+                                                    }, */
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  BaseWidgets.normalGap,
+                                ],
+                              ),
+                            ),
+                            RefreshIndicator(
+                              onRefresh: () async {
+                                await cubit.getFallowedStories();
+                              },
+                              child: BaseScrollView(
+                                children: [
+                                  BaseWidgets.lowerGap,
+                                  if (state.fallowedStories != null &&
+                                      state.fallowedStories!.isNotEmpty)
+                                    SizedBox(
+                                      child: BaseListView<StoryModel>(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        items: state.fallowedStories!,
+                                        shrinkWrap: true,
+                                        itemBuilder: (item) {
                                           return Container(
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 20,
@@ -154,86 +203,39 @@ class _HomeViewState extends State<HomeView>
                                                 context.router.push(
                                                   StoryDetailsRoute(
                                                     model: item,
-                                                    leadBackHome: true,
                                                   ),
                                                 );
                                               },
                                               child: StoryCard(
                                                 storyModel: item,
-                                                isFavorite: isfavorite,
-                                                isFavoriteLoading: isLoading,
+                                                showFavouriteButton: false,
+                                                onTagSearch: (label) async {
+                                                  await context.router.push(
+                                                    TagSearchRoute(tag: label),
+                                                  );
+                                                },
+                                                /*  likeCount: likeCount,
+                                                    isFavorite: isfavorite,
+                                                    isFavoriteLoading:
+                                                        isLoading,
+                                                    onFavouriteTap: () async {
+                                                      await addFavorite(
+                                                        storyId: item.id,
+                                                      );
+                                                    }, */
                                               ),
                                             ),
                                           );
                                         },
-                                      );
-                                    },
-                                  ),
-                                ),
-                                BaseWidgets.normalGap,
-                              ],
-                            ),
-                          ),
-                          RefreshIndicator(
-                            onRefresh: () async {
-                              await cubit.getFallowedStories();
-                            },
-                            child: BaseScrollView(
-                              children: [
-                                BaseWidgets.lowerGap,
-                                if (state.fallowedStories != null &&
-                                    state.fallowedStories!.isNotEmpty)
-                                  SizedBox(
-                                    child: BaseListView<StoryModel>(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      items: state.fallowedStories!,
-                                      shrinkWrap: true,
-                                      itemBuilder: (item) {
-                                        return FavoriteWrapper(
-                                          initialState:
-                                              item.likes!.contains(user!.id),
-                                          builder: (
-                                            context,
-                                            addFavorite,
-                                            isfavorite,
-                                            isLoading,
-                                          ) {
-                                            return Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 20,
-                                                vertical: 8,
-                                              ),
-                                              height: 450,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  context.router.push(
-                                                    StoryDetailsRoute(
-                                                      model: item,
-                                                      leadBackHome: true,
-                                                    ),
-                                                  );
-                                                },
-                                                child: StoryCard(
-                                                  storyModel: item,
-                                                  isFavorite: isfavorite,
-                                                  isFavoriteLoading: isLoading,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
+                                      ),
                                     ),
-                                  ),
-                                BaseWidgets.normalGap,
-                              ],
+                                  BaseWidgets.normalGap,
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),

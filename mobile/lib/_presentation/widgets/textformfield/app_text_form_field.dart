@@ -22,15 +22,15 @@ class AppTextFormField extends TextFormField {
             fillColor: readOnly ? Colors.grey.shade100 : Colors.white,
             filled: true,
             border: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.blue),
+              borderSide: const BorderSide(color: Colors.orange),
               borderRadius: BorderRadius.circular(12),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.blue),
+              borderSide: const BorderSide(color: Colors.orange),
               borderRadius: BorderRadius.circular(12),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.blue),
+              borderSide: const BorderSide(color: Colors.orange),
               borderRadius: BorderRadius.circular(12),
             ),
             errorBorder: OutlineInputBorder(

@@ -22,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.core.io.ByteArrayResource;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 
@@ -47,6 +48,11 @@ public class ImageService {
         matcher.appendTail(updatedText);
 
         return updatedText.toString();
+    }
+
+    public String parseAndSaveImages(MultipartFile file) throws IOException {
+        byte[] uploadedPhotoBytes = file.getBytes();
+        return uploadImageToImgur(uploadedPhotoBytes,imgurClientId);
     }
 
     private byte[] resizeImage(byte[] imageBytes, int targetFileSizeKB) throws IOException {

@@ -1,24 +1,13 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { Space, message } from 'antd';
 import { useParams } from "react-router-dom";
 import "./css/AllStories.css";
 
 const LabelSearch = () => {
   const { label } = useParams();
   const [labeledStories, setLabeledStories] = useState([]);
-
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const hours = date.getHours();
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-
-    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
-
-    return formattedDate;
-  }
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     axios
@@ -30,10 +19,18 @@ const LabelSearch = () => {
       })
       .catch((error) => {
         console.log(error);
+        messageApi.open({ type: "error", content: "Error occured while loading stories from label!"});
       });
-  }, [label]);
+  }, [label, messageApi]);
 
   return (
+    <Space
+    direction="vertical"
+    style={{
+      width: '100%',
+    }}
+    >
+    {contextHolder}
     <div className="all-stories">
       <h1>Stories with Label: "{label}"</h1>
       {labeledStories.length > 0 ? (
@@ -92,6 +89,7 @@ const LabelSearch = () => {
         <p>No stories found with the label "{label}"</p>
       )}
     </div>
+    </Space>
   );
 };
 
