@@ -322,6 +322,17 @@ class MockIStoryRepository extends _i1.Mock implements _i7.IStoryRepository {
         returnValue: _i8.Future<(_i9.Failure?, List<_i2.StoryModel>?)>.value(
             (null, null)),
       ) as _i8.Future<(_i9.Failure?, List<_i2.StoryModel>?)>);
+  @override
+  _i8.Future<(_i9.Failure?, List<_i2.StoryModel>?)> getTagSearchStories(
+          String? label) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getTagSearchStories,
+          [label],
+        ),
+        returnValue: _i8.Future<(_i9.Failure?, List<_i2.StoryModel>?)>.value(
+            (null, null)),
+      ) as _i8.Future<(_i9.Failure?, List<_i2.StoryModel>?)>);
 }
 
 /// A class which mocks [IProfileRepository].

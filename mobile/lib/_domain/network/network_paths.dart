@@ -29,6 +29,7 @@ class NetworkPaths {
 
   static const String search = '/api/story/search';
   static const String searchTimeline = '/api/story/search/timeline';
+  static const String searchTag = '/api/story/search/label';
 
   //Comment
   static const String postComments = '/api/comment/add';

@@ -314,4 +314,23 @@ class StoryRepository implements IStoryRepository {
         return left(response.errorType);
     }
   }
+
+  @override
+  EitherFuture<List<StoryModel>> getTagSearchStories(String? label) async {
+    final response = await manager.fetch<StoryModel, List<StoryModel>>(
+      NetworkPaths.searchTag,
+      type: HttpTypes.get,
+      parserModel: StoryModel(),
+      cachePolicy: CachePolicy.noCache,
+      queryParameters: {
+        'label': label,
+      },
+    );
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as List<StoryModel>);
+      default:
+        return left(response.errorType);
+    }
+  }
 }

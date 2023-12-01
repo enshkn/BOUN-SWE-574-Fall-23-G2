@@ -156,6 +156,16 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    TagSearchRoute.name: (routeData) {
+      final args = routeData.argsAs<TagSearchRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: TagSearchView(
+          tag: args.tag,
+          key: args.key,
+        ),
+      );
+    },
     TimelineTabRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -529,6 +539,44 @@ class StoryDetailsRouteArgs {
   @override
   String toString() {
     return 'StoryDetailsRouteArgs{model: $model, key: $key, leadBackHome: $leadBackHome}';
+  }
+}
+
+/// generated route for
+/// [TagSearchView]
+class TagSearchRoute extends PageRouteInfo<TagSearchRouteArgs> {
+  TagSearchRoute({
+    required String tag,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          TagSearchRoute.name,
+          args: TagSearchRouteArgs(
+            tag: tag,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'TagSearchRoute';
+
+  static const PageInfo<TagSearchRouteArgs> page =
+      PageInfo<TagSearchRouteArgs>(name);
+}
+
+class TagSearchRouteArgs {
+  const TagSearchRouteArgs({
+    required this.tag,
+    this.key,
+  });
+
+  final String tag;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'TagSearchRouteArgs{tag: $tag, key: $key}';
   }
 }
 

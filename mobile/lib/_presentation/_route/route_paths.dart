@@ -23,4 +23,5 @@ class RoutePaths {
   static const ADDSTORY = '/add-story';
   static const MYSTORIES = 'my-stories';
   static const LIKEDSTORIES = 'liked-stories';
+  static const TAGSEARCH = '/tag-search';
 }

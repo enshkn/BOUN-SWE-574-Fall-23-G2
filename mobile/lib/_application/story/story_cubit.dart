@@ -177,6 +177,18 @@ final class StoryCubit extends BaseCubit<StoryState> {
     );
   }
 
+  Future<void> getTagSearchStories(String? label) async {
+    setLoading(true);
+    final result = await _storyRepository.getTagSearchStories(label);
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (tagSearchStories) {
+        safeEmit(state.copyWith(tagSearchStories: tagSearchStories));
+      },
+    );
+  }
+
   Future<void> getSearchResult(StoryFilter? filter, String? searchTerm) async {
     safeEmit(state.copyWith(search: searchTerm));
     setLoading(true);

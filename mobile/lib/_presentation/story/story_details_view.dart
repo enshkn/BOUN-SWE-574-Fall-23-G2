@@ -696,18 +696,25 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                       scrollDirection: Axis.horizontal,
                       items: widget.model.labels!,
                       itemBuilder: (item) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Wrap(
-                              children: [
-                                _buildChip(item),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                              ],
-                            ),
-                          ],
+                        return GestureDetector(
+                          onTap: () async {
+                            await context.router.push(
+                              TagSearchRoute(tag: item),
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Wrap(
+                                children: [
+                                  _buildChip(item),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         );
                       },
                     ),

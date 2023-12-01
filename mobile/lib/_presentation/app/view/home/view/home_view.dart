@@ -152,6 +152,11 @@ class _HomeViewState extends State<HomeView>
                                             child: StoryCard(
                                               storyModel: item,
                                               showFavouriteButton: false,
+                                              onTagSearch: (label) async {
+                                                await context.router.push(
+                                                  TagSearchRoute(tag: label),
+                                                );
+                                              },
                                               /*  likeCount: likeCount,
                                                     isFavorite: isfavorite,
                                                     isFavoriteLoading:
@@ -204,6 +209,11 @@ class _HomeViewState extends State<HomeView>
                                               child: StoryCard(
                                                 storyModel: item,
                                                 showFavouriteButton: false,
+                                                onTagSearch: (label) async {
+                                                  await context.router.push(
+                                                    TagSearchRoute(tag: label),
+                                                  );
+                                                },
                                                 /*  likeCount: likeCount,
                                                     isFavorite: isfavorite,
                                                     isFavoriteLoading:
