@@ -327,20 +327,23 @@ public class StoryService {
     }
 
     public List<Story> savedStories(User foundUser) {
-        Set<Long> saveSet = new HashSet<>(foundUser.getSavedStories());
+        Set<Long> savedSet = foundUser.getSavedStories();
+        List<Long> deletedStoryIdList = new ArrayList<>();
         List<Story> storyList = new ArrayList<>();
-        for (Long storyId : saveSet) {
+        for (Long storyId : savedSet) {
             Story story = getStoryByStoryId(storyId);
             if (story != null) {
                 storyList.add(story);
             }
             else{
-                saveSet.remove(storyId);
+                deletedStoryIdList.add(storyId);
             }
         }
-        foundUser.setSavedStories(saveSet);
+        deletedStoryIdList.forEach(savedSet::remove);
+        foundUser.setLikedStories(savedSet);
         userService.editUser(foundUser);
-        return sortStoriesByDescending(storyList);
+        List<Story> resultStoryList = sortStoriesByDescending(storyList);
+        return (resultStoryList != null) ? resultStoryList : Collections.emptyList();
     }
 
     public List<Story> recommendedStories(User foundUser) {
