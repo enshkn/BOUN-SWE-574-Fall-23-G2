@@ -74,7 +74,31 @@ function StoryDetails() {
       ]);
     });
 
-
+    // Polygons
+    // Group polygons by polygons id
+    const groupedPolygons = tempPolygons.reduce((acc, location) => {
+      if (location.isPolygon !== null) {
+        if (!acc[location.isPolygon]) {
+          acc[location.isPolygon] = [];
+        }
+        acc[location.isPolygon].push({
+          lat: location.latitude,
+          lng: location.longitude
+        });
+      }
+      return acc;
+    }, {});
+   
+    // Extract polygons by polygons id
+    Object.keys(groupedPolygons).forEach(key => {
+      setPolygons(prevPolygons => [
+        ...prevPolygons,
+        {
+          id: key,
+          path: groupedPolygons[key]
+        }
+      ]);
+    });
   };
 
   useEffect(() => {
@@ -250,7 +274,7 @@ function StoryDetails() {
             {polygons.map((polygon, index) => (
               <Polygon
                 key={index}
-                paths={polygon.paths}
+                paths={polygon.path}
               />
             ))}
             {polylines.map((polyline, index) => (
