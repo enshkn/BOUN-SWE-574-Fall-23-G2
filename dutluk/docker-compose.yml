@@ -59,7 +59,7 @@ services:
     #ports:
       #- "8000:8000"
     #env_file:
-      #- ./dutluk_frontend/.env
+      #- ./dutluk_rs/.env
     #restart: always
 
 volumes:
