@@ -304,7 +304,7 @@ class _AddStoryViewState extends State<AddStoryView>
       child: Stack(
         children: [
           MapLocationPicker(
-            radiusList: radiusList,
+            radiusList: radiusList.isEmpty ? [10] : radiusList,
             locations: selectedLocationsforMap,
             getSelectedLocations: () async {
               setState(() {
@@ -531,7 +531,11 @@ class _AddStoryViewState extends State<AddStoryView>
                       onPressed: () {
                         setState(() {
                           showRadiusSelection = false;
-                          radiusList.add(int.parse(radiusController.text));
+                          radiusList.add(
+                            radiusController.text != ''
+                                ? int.parse(radiusController.text)
+                                : 10,
+                          );
                         });
                       },
                       icon: const Icon(Icons.send),

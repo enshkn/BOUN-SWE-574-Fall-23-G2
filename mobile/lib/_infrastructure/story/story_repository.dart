@@ -33,6 +33,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as List<StoryModel>);
       default:
         return left(response.errorType);
@@ -49,6 +52,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as List<StoryModel>);
       default:
         return left(response.errorType);
@@ -66,6 +72,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as List<StoryModel>);
       default:
         return left(response.errorType);
@@ -83,6 +92,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as StoryModel);
       default:
         return left(response.errorType);
@@ -100,6 +112,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as List<StoryModel>);
       default:
         return left(response.errorType);
@@ -139,6 +154,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as StoryModel);
       default:
         return left(response.errorType);
@@ -161,6 +179,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as StoryModel);
       default:
         return left(response.errorType);
@@ -178,6 +199,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as List<StoryModel>);
       default:
         return left(response.errorType);
@@ -195,6 +219,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as List<StoryModel>);
       default:
         return left(response.errorType);
@@ -212,6 +239,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as List<StoryModel>);
       default:
         return left(response.errorType);
@@ -228,6 +258,9 @@ class StoryRepository implements IStoryRepository {
     );
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as CommentModel);
       default:
         return left(response.errorType);
@@ -247,6 +280,9 @@ class StoryRepository implements IStoryRepository {
     );
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as StoryModel);
       default:
         return left(response.errorType);
@@ -270,6 +306,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as List<StoryModel>);
       default:
         return left(response.errorType);
@@ -286,6 +325,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as List<StoryModel>);
       default:
         return left(response.errorType);
@@ -316,6 +358,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as List<StoryModel>);
       default:
         return left(response.errorType);
@@ -348,6 +393,9 @@ class StoryRepository implements IStoryRepository {
 
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as List<StoryModel>);
       default:
         return left(response.errorType);
@@ -367,6 +415,9 @@ class StoryRepository implements IStoryRepository {
     );
     switch (response.statusCode) {
       case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
         return right(response.entity as List<StoryModel>);
       default:
         return left(response.errorType);

@@ -419,64 +419,66 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                       BaseWidgets.lowerGap,
                       if (polylineLocations.isNotEmpty)
                         ExpansionTile(
-                          title: const Text('Polyline Locations'),
+                          iconColor: Colors.orange.shade800,
+                          title: Text(
+                            'Polyline Locations',
+                            style: TextStyle(color: Colors.orange.shade800),
+                          ),
                           controller: controller3,
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(left: 12),
                               child: SizedBox(
                                 height: polylineLocations.length * 60,
-                                child: Expanded(
-                                  child: BaseListView(
-                                    items: polylineLocations,
-                                    itemBuilder: (item) {
-                                      return Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 300,
-                                            child: Text(
-                                              item.locationName!.toLocation(),
-                                              style: const TextStyles.body()
-                                                  .copyWith(
-                                                letterSpacing: 0.016,
-                                              ),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
+                                child: BaseListView(
+                                  shrinkWrap: true,
+                                  items: polylineLocations,
+                                  itemBuilder: (item) {
+                                    return Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 300,
+                                          child: Text(
+                                            item.locationName!.toLocation(),
+                                            style: const TextStyles.body()
+                                                .copyWith(
+                                              letterSpacing: 0.016,
                                             ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          IconButton(
-                                            onPressed: () {
-                                              final storyLocation = LatLng(
-                                                item.latitude!,
-                                                item.longitude!,
-                                              );
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            final storyLocation = LatLng(
+                                              item.latitude!,
+                                              item.longitude!,
+                                            );
 
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => MapView(
-                                                    storyLocation:
-                                                        storyLocation,
-                                                    additionalMarkers:
-                                                        additionalMarkers,
-                                                    additionalPolygons:
-                                                        additionalPolygones,
-                                                    additionalPolylines:
-                                                        additionalPolylines,
-                                                    additionalCircles:
-                                                        additionalCircles,
-                                                  ),
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => MapView(
+                                                  storyLocation: storyLocation,
+                                                  additionalMarkers:
+                                                      additionalMarkers,
+                                                  additionalPolygons:
+                                                      additionalPolygones,
+                                                  additionalPolylines:
+                                                      additionalPolylines,
+                                                  additionalCircles:
+                                                      additionalCircles,
                                                 ),
-                                              );
-                                            },
-                                            icon: const Icon(
-                                              Icons.location_on,
-                                            ),
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(
+                                            Icons.location_on,
                                           ),
-                                        ],
-                                      );
-                                    },
-                                  ),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 ),
                               ),
                             ),
@@ -485,64 +487,66 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                       if (polygonLocations.isNotEmpty) BaseWidgets.lowerGap,
                       if (polygonLocations.isNotEmpty)
                         ExpansionTile(
-                          title: const Text('Polygon Locations'),
+                          iconColor: Colors.orange.shade800,
+                          title: Text(
+                            'Polygon Locations',
+                            style: TextStyle(color: Colors.orange.shade800),
+                          ),
                           controller: controller4,
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(left: 12),
                               child: SizedBox(
                                 height: polygonLocations.length * 60,
-                                child: Expanded(
-                                  child: BaseListView(
-                                    items: polygonLocations,
-                                    itemBuilder: (item) {
-                                      return Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 300,
-                                            child: Text(
-                                              item.locationName!.toLocation(),
-                                              style: const TextStyles.body()
-                                                  .copyWith(
-                                                letterSpacing: 0.016,
-                                              ),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
+                                child: BaseListView(
+                                  shrinkWrap: true,
+                                  items: polygonLocations,
+                                  itemBuilder: (item) {
+                                    return Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 300,
+                                          child: Text(
+                                            item.locationName!.toLocation(),
+                                            style: const TextStyles.body()
+                                                .copyWith(
+                                              letterSpacing: 0.016,
                                             ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          IconButton(
-                                            onPressed: () {
-                                              final storyLocation = LatLng(
-                                                item.latitude!,
-                                                item.longitude!,
-                                              );
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            final storyLocation = LatLng(
+                                              item.latitude!,
+                                              item.longitude!,
+                                            );
 
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => MapView(
-                                                    storyLocation:
-                                                        storyLocation,
-                                                    additionalMarkers:
-                                                        additionalMarkers,
-                                                    additionalPolygons:
-                                                        additionalPolygones,
-                                                    additionalPolylines:
-                                                        additionalPolylines,
-                                                    additionalCircles:
-                                                        additionalCircles,
-                                                  ),
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => MapView(
+                                                  storyLocation: storyLocation,
+                                                  additionalMarkers:
+                                                      additionalMarkers,
+                                                  additionalPolygons:
+                                                      additionalPolygones,
+                                                  additionalPolylines:
+                                                      additionalPolylines,
+                                                  additionalCircles:
+                                                      additionalCircles,
                                                 ),
-                                              );
-                                            },
-                                            icon: const Icon(
-                                              Icons.location_on,
-                                            ),
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(
+                                            Icons.location_on,
                                           ),
-                                        ],
-                                      );
-                                    },
-                                  ),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 ),
                               ),
                             ),
@@ -551,68 +555,69 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                       if (circleLocations.isNotEmpty) BaseWidgets.lowerGap,
                       if (circleLocations.isNotEmpty)
                         ExpansionTile(
-                          title: const Text('Circle Locations'),
+                          iconColor: Colors.orange.shade800,
+                          title: Text(
+                            'Circle Locations',
+                            style: TextStyle(color: Colors.orange.shade800),
+                          ),
                           controller: controller5,
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(left: 12),
                               child: SizedBox(
                                 height: circleLocations.length * 60,
-                                child: Expanded(
-                                  child: BaseListView(
-                                    items: circleLocations,
-                                    itemBuilder: (item) {
-                                      return Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 300,
-                                            child: Text(
-                                              item.locationName!.toLocation(),
-                                              style: const TextStyles.body()
-                                                  .copyWith(
-                                                letterSpacing: 0.016,
-                                              ),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
+                                child: BaseListView(
+                                  shrinkWrap: true,
+                                  items: circleLocations,
+                                  itemBuilder: (item) {
+                                    return Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 300,
+                                          child: Text(
+                                            item.locationName!.toLocation(),
+                                            style: const TextStyles.body()
+                                                .copyWith(
+                                              letterSpacing: 0.016,
                                             ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          IconButton(
-                                            onPressed: () {
-                                              final storyLocation = LatLng(
-                                                item.latitude!,
-                                                item.longitude!,
-                                              );
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            final storyLocation = LatLng(
+                                              item.latitude!,
+                                              item.longitude!,
+                                            );
 
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => MapView(
-                                                    storyLocation:
-                                                        storyLocation,
-                                                    additionalMarkers:
-                                                        additionalMarkers,
-                                                    additionalPolygons:
-                                                        additionalPolygones,
-                                                    additionalPolylines:
-                                                        additionalPolylines,
-                                                    additionalCircles:
-                                                        additionalCircles,
-                                                    radiusList:
-                                                        radiusList.isEmpty
-                                                            ? null
-                                                            : radiusList,
-                                                  ),
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => MapView(
+                                                  storyLocation: storyLocation,
+                                                  additionalMarkers:
+                                                      additionalMarkers,
+                                                  additionalPolygons:
+                                                      additionalPolygones,
+                                                  additionalPolylines:
+                                                      additionalPolylines,
+                                                  additionalCircles:
+                                                      additionalCircles,
+                                                  radiusList: radiusList.isEmpty
+                                                      ? null
+                                                      : radiusList,
                                                 ),
-                                              );
-                                            },
-                                            icon: const Icon(
-                                              Icons.location_on,
-                                            ),
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(
+                                            Icons.location_on,
                                           ),
-                                        ],
-                                      );
-                                    },
-                                  ),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 ),
                               ),
                             ),
@@ -621,64 +626,66 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                       if (pointLocations.isNotEmpty) BaseWidgets.lowerGap,
                       if (pointLocations.isNotEmpty)
                         ExpansionTile(
-                          title: const Text('Point Locations'),
+                          iconColor: Colors.orange.shade800,
+                          title: Text(
+                            'Point Locations',
+                            style: TextStyle(color: Colors.orange.shade800),
+                          ),
                           controller: controller6,
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(left: 12),
                               child: SizedBox(
                                 height: pointLocations.length * 60,
-                                child: Expanded(
-                                  child: BaseListView(
-                                    items: pointLocations,
-                                    itemBuilder: (item) {
-                                      return Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 300,
-                                            child: Text(
-                                              item.locationName!.toLocation(),
-                                              style: const TextStyles.body()
-                                                  .copyWith(
-                                                letterSpacing: 0.016,
-                                              ),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
+                                child: BaseListView(
+                                  shrinkWrap: true,
+                                  items: pointLocations,
+                                  itemBuilder: (item) {
+                                    return Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 300,
+                                          child: Text(
+                                            item.locationName!.toLocation(),
+                                            style: const TextStyles.body()
+                                                .copyWith(
+                                              letterSpacing: 0.016,
                                             ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          IconButton(
-                                            onPressed: () {
-                                              final storyLocation = LatLng(
-                                                item.latitude!,
-                                                item.longitude!,
-                                              );
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            final storyLocation = LatLng(
+                                              item.latitude!,
+                                              item.longitude!,
+                                            );
 
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => MapView(
-                                                    storyLocation:
-                                                        storyLocation,
-                                                    additionalMarkers:
-                                                        additionalMarkers,
-                                                    additionalPolygons:
-                                                        additionalPolygones,
-                                                    additionalPolylines:
-                                                        additionalPolylines,
-                                                    additionalCircles:
-                                                        additionalCircles,
-                                                  ),
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => MapView(
+                                                  storyLocation: storyLocation,
+                                                  additionalMarkers:
+                                                      additionalMarkers,
+                                                  additionalPolygons:
+                                                      additionalPolygones,
+                                                  additionalPolylines:
+                                                      additionalPolylines,
+                                                  additionalCircles:
+                                                      additionalCircles,
                                                 ),
-                                              );
-                                            },
-                                            icon: const Icon(
-                                              Icons.location_on,
-                                            ),
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(
+                                            Icons.location_on,
                                           ),
-                                        ],
-                                      );
-                                    },
-                                  ),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 ),
                               ),
                             ),
