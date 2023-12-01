@@ -42,16 +42,10 @@ final class FavoriteCubit extends BaseCubit<FavoriteState> {
     result.fold(
       (failure) => showNotification(failure?.message ?? '', isError: true),
       (likedStories) {
+        final status = likedStories.where((element) => element.id == storyId);
+        final favorite = status.isNotEmpty ? true : false;
         safeEmit(
-          state.copyWith(
-            isFavorite: likedStories.every((element) {
-              if (element.id == storyId) {
-                return true;
-              } else {
-                return false;
-              }
-            }),
-          ),
+          state.copyWith(isFavorite: favorite),
         );
       },
     );
