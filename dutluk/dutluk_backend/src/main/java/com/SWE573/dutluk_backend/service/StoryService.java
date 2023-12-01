@@ -249,7 +249,8 @@ public class StoryService {
     }
 
     public List<Story> likedStories(User foundUser) {
-        Set<Long> likeSet = new HashSet<>(foundUser.getLikedStories());
+        Set<Long> likeSet = foundUser.getLikedStories();
+        List<Long> deletedStoryIdList = new ArrayList<>();
         List<Story> storyList = new ArrayList<>();
         for (Long storyId : likeSet) {
             Story story = getStoryByStoryId(storyId);
@@ -257,9 +258,10 @@ public class StoryService {
                 storyList.add(story);
             }
             else{
-                likeSet.remove(storyId);
+                deletedStoryIdList.add(storyId);
             }
         }
+        deletedStoryIdList.forEach(likeSet::remove);
         foundUser.setLikedStories(likeSet);
         userService.editUser(foundUser);
         List<Story> resultStoryList = sortStoriesByDescending(storyList);
