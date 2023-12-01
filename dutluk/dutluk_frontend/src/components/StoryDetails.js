@@ -221,23 +221,31 @@ function StoryDetails() {
         <b>Written by:</b>
         <a href={"/user/" + story.user.id}>{story.user.username}</a>
         <p>
-          <b>Start Date:</b> {story.startTimeStamp}
-        </p>
-        <p>
-          <b>End Date:</b> {story.endTimeStamp}
-        </p>
-        <p>
+
           <b>Published at: </b>
           {story.createdAt}
         </p>
+          {story.season && (
+           <p>
+            <b>Season:</b> {story.season}
+           </p>
+          )}
+          {story.decade && (
         <p>
-          <b>Season:</b>
-          {story.season}
+          <b>Decade:</b> {story.decade}
         </p>
-        <p>
-          <b>Decade:</b>
-          {story.decade}
-        </p>
+        )}
+         {story.startTimeStamp && (
+         <p>
+           <b>Start Date:</b> {story.startTimeStamp}
+          </p>
+        )}
+        {story.endTimeStamp && (
+      <p>
+        <b>End Date:</b> {story.endTimeStamp}
+      </p>
+)}
+      
         <label>
           <b>Selected Locations:</b>
           <ul className="locations-list">
