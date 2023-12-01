@@ -74,8 +74,8 @@ class _LikedStoiresViewState extends State<LikedStoiresView> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (item) {
                             return FavoriteWrapper(
-                              initialStateSave:
-                                  item.savedBy!.contains(user!.id),
+                              userId: user!.id!,
+                              initialStateSave: item.savedBy!.contains(user.id),
                               storyId: item.id,
                               builder: (
                                 context,

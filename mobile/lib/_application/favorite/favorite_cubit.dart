@@ -14,6 +14,34 @@ final class FavoriteCubit extends BaseCubit<FavoriteState> {
     safeEmit(state.copyWith(isLoading: loading));
   }
 
+  Future<void> getStoryDetail(int storyId, int userId) async {
+    setLoading(true);
+    final result = await _repository.getStoryDetail(storyId);
+    setLoading(false);
+    result.fold(
+      (failure) {
+        //showNotification(failure?.message ?? '', isError: true);
+      },
+      (story) {
+        final statuslike =
+            story.likes != null ? story.likes!.contains(userId) : false;
+        final favorite = statuslike;
+
+        final statusSave =
+            story.savedBy != null ? story.savedBy!.contains(userId) : false;
+        final save = statusSave;
+        safeEmit(
+          state.copyWith(
+            likeCount:
+                story.likes!.isNotEmpty ? story.likes!.length.toString() : '0',
+            isFavorite: favorite,
+            isSaved: save,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> getStoryLike(int storyId) async {
     setLoading(true);
     final result = await _repository.getStoryDetail(storyId);

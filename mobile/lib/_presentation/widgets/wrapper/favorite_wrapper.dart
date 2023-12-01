@@ -10,6 +10,8 @@ class FavoriteWrapper extends StatefulWidget {
   final bool initialState;
   final bool initialStateSave;
   final int storyId;
+  final int userId;
+
   final Widget Function(
     BuildContext context,
     Future<(bool, bool?, String?)> Function({
@@ -31,6 +33,7 @@ class FavoriteWrapper extends StatefulWidget {
   const FavoriteWrapper({
     required this.builder,
     required this.storyId,
+    required this.userId,
     this.initialStateSave = false,
     super.key,
     this.initialState = false,
@@ -46,9 +49,10 @@ class _FavoriteWrapperState extends State<FavoriteWrapper> {
     return BaseView<FavoriteCubit, FavoriteState>(
       onCubitReady: (cubit) {
         cubit.setContext(context);
-        cubit.getStoryLike(widget.storyId);
+        /*   cubit.getStoryLike(widget.storyId);
         cubit.getLikedStories(widget.storyId);
-        cubit.getSavedStories(widget.storyId);
+        cubit.getSavedStories(widget.storyId); */
+        cubit.getStoryDetail(widget.storyId, widget.userId);
       },
       builder: (context, FavoriteCubit cubit, FavoriteState state) =>
           widget.builder(

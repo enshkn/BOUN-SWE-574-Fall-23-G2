@@ -127,6 +127,7 @@ class _SearchViewState extends State<SearchView> with ScrollAnimMixin {
                         items: state.searchResultStories,
                         itemBuilder: (item) {
                           return FavoriteWrapper(
+                            userId: user.id!,
                             initialStateSave: item.savedBy!.contains(user.id),
                             storyId: item.id,
                             builder: (

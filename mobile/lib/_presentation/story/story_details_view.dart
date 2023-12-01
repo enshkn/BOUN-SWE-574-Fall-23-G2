@@ -266,6 +266,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
     User user,
   ) {
     return FavoriteWrapper(
+      userId: user.id!,
       initialState: widget.model.likes!.contains(user.id),
       storyId: widget.model.id,
       builder: (

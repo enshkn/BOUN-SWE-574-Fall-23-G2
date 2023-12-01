@@ -138,6 +138,7 @@ class _HomeViewState extends State<HomeView>
                                       shrinkWrap: true,
                                       itemBuilder: (item) {
                                         return FavoriteWrapper(
+                                          userId: user.id!,
                                           initialStateSave:
                                               item.savedBy!.contains(user.id),
                                           storyId: item.id,
@@ -220,6 +221,7 @@ class _HomeViewState extends State<HomeView>
                                         shrinkWrap: true,
                                         itemBuilder: (item) {
                                           return FavoriteWrapper(
+                                            userId: user.id!,
                                             initialStateSave:
                                                 item.savedBy!.contains(user.id),
                                             storyId: item.id,

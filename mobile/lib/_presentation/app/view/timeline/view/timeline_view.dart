@@ -130,6 +130,7 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
                         items: state.timelineResultStories,
                         itemBuilder: (item) {
                           return FavoriteWrapper(
+                            userId: user.id!,
                             initialStateSave: item.savedBy!.contains(user.id),
                             storyId: item.id,
                             builder: (

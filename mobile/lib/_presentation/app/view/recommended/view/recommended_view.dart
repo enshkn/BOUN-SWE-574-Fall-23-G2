@@ -97,6 +97,7 @@ class _RecommendedViewState extends State<RecommendedView> {
                         items: state.recommendedStories,
                         itemBuilder: (item) {
                           return FavoriteWrapper(
+                            userId: user.id!,
                             initialStateSave: item.savedBy!.contains(user.id),
                             storyId: item.id,
                             builder: (

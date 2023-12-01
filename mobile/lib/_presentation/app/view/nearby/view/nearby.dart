@@ -177,6 +177,7 @@ class _NearbyViewState extends State<NearbyView> {
                         items: state.nearbyStories,
                         itemBuilder: (item) {
                           return FavoriteWrapper(
+                            userId: user.id!,
                             initialStateSave: item.savedBy!.contains(user.id),
                             storyId: item.id,
                             builder: (
