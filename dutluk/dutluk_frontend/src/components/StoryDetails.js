@@ -36,7 +36,7 @@ function StoryDetails() {
         }
       ]);
     });
-
+    // Circles
     tempCircles.forEach((location) => {
       setCircles(prevCircles => [
         ...prevCircles,
@@ -48,8 +48,31 @@ function StoryDetails() {
         }
       ]);
     });
-
-
+    // Polylines
+    // Group polylines by polyline id
+    const groupedPolylines = tempPolylines.reduce((acc, location) => {
+      if (location.isPolyline !== null) {
+        if (!acc[location.isPolyline]) {
+          acc[location.isPolyline] = [];
+        }
+        acc[location.isPolyline].push({
+          lat: location.latitude,
+          lng: location.longitude
+        });
+      }
+      return acc;
+    }, {});
+   
+    // Extract polylines by polyline id
+    Object.keys(groupedPolylines).forEach(key => {
+      setPolylines(prevPolylines => [
+        ...prevPolylines,
+        {
+          id: key,
+          path: groupedPolylines[key]
+        }
+      ]);
+    });
 
 
   };
@@ -224,7 +247,7 @@ function StoryDetails() {
                 radius={circle.radius}
               />
             ))}
-            {/* {polygons.map((polygon, index) => (
+            {polygons.map((polygon, index) => (
               <Polygon
                 key={index}
                 paths={polygon.paths}
@@ -235,7 +258,7 @@ function StoryDetails() {
                 key={index}
                 path={polyline.path}
               />
-            ))} */}
+            ))}
           </GoogleMap>
         </LoadScript>
         <p>
