@@ -160,7 +160,10 @@ function StoryDetails() {
       <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
         <GoogleMap
           mapContainerStyle={{ width: "80%", height: "400px" }}
-          center={{ lat: 41.085064, lng: 29.044687 }}
+          center={{
+            lat: story.locations[0].latitude,
+            lng: story.locations[0].longitude,
+          }}
           zoom={10}
         >
           {story.locations.map((location) => (
