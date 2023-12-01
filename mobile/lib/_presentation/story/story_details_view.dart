@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_map_location_picker/map_location_picker.dart';
 import 'package:swe/_application/session/session_cubit.dart';
 import 'package:swe/_application/session/session_state.dart';
@@ -70,6 +71,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
   int circleCount = 0;
   int pointCount = 0;
   List<int> radiusList = [];
+  StoryModel? pushBackModel;
 
   @override
   void initState() {
@@ -173,9 +175,9 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          onPressed: () {
+          onPressed: () async {
             if (widget.leadBackHome) {
-              context.router.push(const HomeRoute());
+              await context.router.push(const HomeRoute());
             } else {
               Navigator.pop(context);
             }
@@ -196,6 +198,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               await cubit.getStoryDetail(widget.model.id);
             },
             builder: (context, cubit, state) {
+              pushBackModel = state.storyModel;
               return BaseLoader(
                 isLoading: state.isLoading,
                 child: BaseScrollView(
@@ -268,11 +271,12 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
       builder: (
         context,
         addFavorite,
+        addSave,
         isfavorite,
+        isSaved,
         isLoading,
         likeCount,
       ) {
-        var favoritePressed = false;
         return Padding(
           padding: const EdgeInsets.all(12),
           child: Column(
@@ -293,9 +297,6 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                 minScale: 0.8,
                                 onPressed: () async {
                                   await addFavorite(storyId: widget.model.id);
-                                  setState(() {
-                                    favoritePressed = true;
-                                  });
                                 },
                                 child: Icon(
                                   Icons.favorite,

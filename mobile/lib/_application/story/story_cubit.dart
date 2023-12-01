@@ -177,6 +177,18 @@ final class StoryCubit extends BaseCubit<StoryState> {
     );
   }
 
+  Future<void> getSavedStories() async {
+    setLoading(true);
+    final result = await _storyRepository.getSavedStories();
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (savedStories) {
+        safeEmit(state.copyWith(savedStories: savedStories));
+      },
+    );
+  }
+
   Future<void> getTagSearchStories(String? label) async {
     setLoading(true);
     final result = await _storyRepository.getTagSearchStories(label);

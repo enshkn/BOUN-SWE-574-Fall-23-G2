@@ -96,33 +96,62 @@ class _RecommendedViewState extends State<RecommendedView> {
                         physics: const NeverScrollableScrollPhysics(),
                         items: state.recommendedStories,
                         itemBuilder: (item) {
-                          return Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 8,
-                            ),
-                            height: 450,
-                            child: GestureDetector(
-                              onTap: () {
-                                context.router.push(
-                                  StoryDetailsRoute(
-                                    model: item,
-                                  ),
-                                );
-                              },
-                              child: StoryCard(
-                                storyModel: item,
-                                showFavouriteButton: false,
-                                /* likeCount: likeCount,
-                                    isFavorite: isfavorite,
-                                    isFavoriteLoading: isLoading,
-                                    onFavouriteTap: () async {
-                                      await addFavorite(
+                          return FavoriteWrapper(
+                            initialStateSave: item.savedBy!.contains(user.id),
+                            storyId: item.id,
+                            builder: (
+                              context,
+                              addFavorite,
+                              addSave,
+                              isfavorite,
+                              isSaved,
+                              isLoading,
+                              likeCount,
+                            ) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 8,
+                                ),
+                                height: 450,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    context.router.push(
+                                      StoryDetailsRoute(
+                                        model: item,
+                                      ),
+                                    );
+                                  },
+                                  child: StoryCard(
+                                    storyModel: item,
+                                    showFavouriteButton: false,
+                                    onTagSearch: (label) async {
+                                      await context.router.push(
+                                        TagSearchRoute(
+                                          tag: label,
+                                        ),
+                                      );
+                                    },
+                                    isSaved: isSaved,
+                                    isSavedLoading: isLoading,
+                                    onSavedTap: () async {
+                                      await addSave(
                                         storyId: item.id,
                                       );
-                                    }, */
-                              ),
-                            ),
+                                    },
+                                    /*  likeCount: likeCount,
+                                                        isFavorite: isfavorite,
+                                                        isFavoriteLoading:
+                                                            isLoading,
+                                                        onFavouriteTap: () async {
+                                                          await addFavorite(
+                                                            storyId: item.id,
+                                                          );
+                                                        }, */
+                                  ),
+                                ),
+                              );
+                            },
                           );
                         },
                       ),

@@ -13,6 +13,7 @@ import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/_core/base_consumer.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
 import 'package:swe/_presentation/_route/router.dart';
+import 'package:swe/_presentation/story/story_details_view.dart';
 import 'package:swe/_presentation/widgets/base/base_header_title.dart';
 import 'package:swe/_presentation/widgets/base/base_list_view.dart';
 import 'package:swe/_presentation/widgets/card/story_card.dart';
@@ -32,6 +33,7 @@ class _HomeViewState extends State<HomeView>
 
   late TabController _tabController;
   int currnetIndex = 0;
+  StoryModel? _dataFromSecondPage;
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
@@ -135,39 +137,64 @@ class _HomeViewState extends State<HomeView>
                                       items: state.recentStories,
                                       shrinkWrap: true,
                                       itemBuilder: (item) {
-                                        return Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 8,
-                                          ),
-                                          height: 450,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              context.router.push(
-                                                StoryDetailsRoute(
-                                                  model: item,
+                                        return FavoriteWrapper(
+                                          initialStateSave:
+                                              item.savedBy!.contains(user.id),
+                                          storyId: item.id,
+                                          builder: (
+                                            context,
+                                            addFavorite,
+                                            addSave,
+                                            isfavorite,
+                                            isSaved,
+                                            isLoading,
+                                            likeCount,
+                                          ) {
+                                            return Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 20,
+                                                vertical: 8,
+                                              ),
+                                              height: 450,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  context.router.push(
+                                                    StoryDetailsRoute(
+                                                      leadBackHome: true,
+                                                      model: item,
+                                                    ),
+                                                  );
+                                                },
+                                                child: StoryCard(
+                                                  showFavouriteButton: false,
+                                                  storyModel: item,
+                                                  onTagSearch: (label) async {
+                                                    await context.router.push(
+                                                      TagSearchRoute(
+                                                        tag: label,
+                                                      ),
+                                                    );
+                                                  },
+                                                  isSaved: isSaved,
+                                                  isSavedLoading: isLoading,
+                                                  onSavedTap: () async {
+                                                    await addSave(
+                                                      storyId: item.id,
+                                                    );
+                                                  },
+                                                  likeCount: likeCount,
+                                                  isFavorite: isfavorite,
+                                                  isFavoriteLoading: isLoading,
+                                                  onFavouriteTap: () async {
+                                                    await addFavorite(
+                                                      storyId: item.id,
+                                                    );
+                                                  },
                                                 ),
-                                              );
-                                            },
-                                            child: StoryCard(
-                                              storyModel: item,
-                                              showFavouriteButton: false,
-                                              onTagSearch: (label) async {
-                                                await context.router.push(
-                                                  TagSearchRoute(tag: label),
-                                                );
-                                              },
-                                              /*  likeCount: likeCount,
-                                                    isFavorite: isfavorite,
-                                                    isFavoriteLoading:
-                                                        isLoading,
-                                                    onFavouriteTap: () async {
-                                                      await addFavorite(
-                                                        storyId: item.id,
-                                                      );
-                                                    }, */
-                                            ),
-                                          ),
+                                              ),
+                                            );
+                                          },
                                         );
                                       },
                                     ),
@@ -192,39 +219,64 @@ class _HomeViewState extends State<HomeView>
                                         items: state.fallowedStories!,
                                         shrinkWrap: true,
                                         itemBuilder: (item) {
-                                          return Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 20,
-                                              vertical: 8,
-                                            ),
-                                            height: 450,
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                context.router.push(
-                                                  StoryDetailsRoute(
-                                                    model: item,
-                                                  ),
-                                                );
-                                              },
-                                              child: StoryCard(
-                                                storyModel: item,
-                                                showFavouriteButton: false,
-                                                onTagSearch: (label) async {
-                                                  await context.router.push(
-                                                    TagSearchRoute(tag: label),
-                                                  );
-                                                },
-                                                /*  likeCount: likeCount,
-                                                    isFavorite: isfavorite,
-                                                    isFavoriteLoading:
-                                                        isLoading,
-                                                    onFavouriteTap: () async {
-                                                      await addFavorite(
+                                          return FavoriteWrapper(
+                                            initialStateSave:
+                                                item.savedBy!.contains(user.id),
+                                            storyId: item.id,
+                                            builder: (
+                                              context,
+                                              addFavorite,
+                                              addSave,
+                                              isfavorite,
+                                              isSaved,
+                                              isLoading,
+                                              likeCount,
+                                            ) {
+                                              return Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 20,
+                                                  vertical: 8,
+                                                ),
+                                                height: 450,
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    context.router.push(
+                                                      StoryDetailsRoute(
+                                                        model: item,
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: StoryCard(
+                                                    storyModel: item,
+                                                    showFavouriteButton: false,
+                                                    onTagSearch: (label) async {
+                                                      await context.router.push(
+                                                        TagSearchRoute(
+                                                          tag: label,
+                                                        ),
+                                                      );
+                                                    },
+                                                    isSaved: isSaved,
+                                                    isSavedLoading: isLoading,
+                                                    onSavedTap: () async {
+                                                      await addSave(
                                                         storyId: item.id,
                                                       );
-                                                    }, */
-                                              ),
-                                            ),
+                                                    },
+                                                    /*  likeCount: likeCount,
+                                                        isFavorite: isfavorite,
+                                                        isFavoriteLoading:
+                                                            isLoading,
+                                                        onFavouriteTap: () async {
+                                                          await addFavorite(
+                                                            storyId: item.id,
+                                                          );
+                                                        }, */
+                                                  ),
+                                                ),
+                                              );
+                                            },
                                           );
                                         },
                                       ),

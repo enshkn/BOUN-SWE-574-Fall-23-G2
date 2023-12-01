@@ -146,9 +146,48 @@ class StoryRepository implements IStoryRepository {
   }
 
   @override
+  EitherFuture<StoryModel> addSave({
+    required int itemId,
+  }) async {
+    final response = await manager.fetch<StoryModel, StoryModel>(
+      NetworkPaths.saveStory,
+      type: HttpTypes.post,
+      cachePolicy: CachePolicy.noCache,
+      parserModel: StoryModel(),
+      data: {
+        'savedEntityId': itemId,
+      },
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as StoryModel);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
   EitherFuture<List<StoryModel>> getLikedStories() async {
     final response = await manager.fetch<StoryModel, List<StoryModel>>(
       NetworkPaths.getLikedStories,
+      type: HttpTypes.get,
+      parserModel: StoryModel(),
+      cachePolicy: CachePolicy.noCache,
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        return right(response.entity as List<StoryModel>);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<List<StoryModel>> getSavedStories() async {
+    final response = await manager.fetch<StoryModel, List<StoryModel>>(
+      NetworkPaths.getSavedStories,
       type: HttpTypes.get,
       parserModel: StoryModel(),
       cachePolicy: CachePolicy.noCache,

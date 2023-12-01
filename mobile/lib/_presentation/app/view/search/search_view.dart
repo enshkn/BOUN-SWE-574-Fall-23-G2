@@ -15,6 +15,7 @@ import 'package:swe/_presentation/widgets/base/base_list_view.dart';
 import 'package:swe/_presentation/widgets/card/story_card.dart';
 import 'package:swe/_presentation/widgets/mixins/scroll_anim_mixin.dart';
 import 'package:swe/_presentation/widgets/modals.dart';
+import 'package:swe/_presentation/widgets/wrapper/favorite_wrapper.dart';
 
 @RoutePage()
 class SearchView extends StatefulWidget {
@@ -33,6 +34,7 @@ class _SearchViewState extends State<SearchView> with ScrollAnimMixin {
     return BaseConsumer<SessionCubit, SessionState>(
       context,
       builder: (context, sessionCubit, sessionState) {
+        final user = sessionState.authUser;
         return BaseView<StoryCubit, StoryState>(
           onCubitReady: (cubit) {
             cubit.setContext(context);
@@ -118,43 +120,72 @@ class _SearchViewState extends State<SearchView> with ScrollAnimMixin {
                       },
                     ),
                   ),
-                  Expanded(
-                    child: BaseListView<StoryModel>(
-                      controller: scrollController,
-                      items: state.searchResultStories,
-                      itemBuilder: (item) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 8,
-                          ),
-                          height: 450,
-                          child: GestureDetector(
-                            onTap: () {
-                              context.router.push(
-                                StoryDetailsRoute(
-                                  model: item,
+                  if (user != null)
+                    Expanded(
+                      child: BaseListView<StoryModel>(
+                        controller: scrollController,
+                        items: state.searchResultStories,
+                        itemBuilder: (item) {
+                          return FavoriteWrapper(
+                            initialStateSave: item.savedBy!.contains(user.id),
+                            storyId: item.id,
+                            builder: (
+                              context,
+                              addFavorite,
+                              addSave,
+                              isfavorite,
+                              isSaved,
+                              isLoading,
+                              likeCount,
+                            ) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 8,
+                                ),
+                                height: 450,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    context.router.push(
+                                      StoryDetailsRoute(
+                                        model: item,
+                                      ),
+                                    );
+                                  },
+                                  child: StoryCard(
+                                    storyModel: item,
+                                    showFavouriteButton: false,
+                                    onTagSearch: (label) async {
+                                      await context.router.push(
+                                        TagSearchRoute(
+                                          tag: label,
+                                        ),
+                                      );
+                                    },
+                                    isSaved: isSaved,
+                                    isSavedLoading: isLoading,
+                                    onSavedTap: () async {
+                                      await addSave(
+                                        storyId: item.id,
+                                      );
+                                    },
+                                    /*  likeCount: likeCount,
+                                                        isFavorite: isfavorite,
+                                                        isFavoriteLoading:
+                                                            isLoading,
+                                                        onFavouriteTap: () async {
+                                                          await addFavorite(
+                                                            storyId: item.id,
+                                                          );
+                                                        }, */
+                                  ),
                                 ),
                               );
                             },
-                            child: StoryCard(
-                              storyModel: item,
-                              showFavouriteButton: false,
-                              /*  likeCount: likeCount,
-                                                  isFavorite: isfavorite,
-                                                  isFavoriteLoading:
-                                                      isLoading,
-                                                  onFavouriteTap: () async {
-                                                    await addFavorite(
-                                                      storyId: item.id,
-                                                    );
-                                                  }, */
-                            ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
-                  ),
                 ],
               ),
             );
