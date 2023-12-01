@@ -11,9 +11,11 @@ import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/_core/base_consumer.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
 import 'package:swe/_presentation/_route/router.dart';
+import 'package:swe/_presentation/widgets/app_button.dart';
 import 'package:swe/_presentation/widgets/base/base_header_title.dart';
 import 'package:swe/_presentation/widgets/base/base_list_view.dart';
 import 'package:swe/_presentation/widgets/card/story_card.dart';
+import 'package:swe/_presentation/widgets/textformfield/app_text_form_field.dart';
 import 'package:swe/_presentation/widgets/wrapper/favorite_wrapper.dart';
 
 @RoutePage()
@@ -27,6 +29,7 @@ class NearbyView extends StatefulWidget {
 class _NearbyViewState extends State<NearbyView> {
   final FocusNode _focusNode = FocusNode();
   final Location _locationController = Location();
+  late TextEditingController _radiusController;
   GetNearbyStoriesModel model = const GetNearbyStoriesModel(
     radius: 0,
     latitude: 0,
@@ -35,6 +38,7 @@ class _NearbyViewState extends State<NearbyView> {
   late LocationData currentLocation;
   @override
   void initState() {
+    _radiusController = TextEditingController();
     getCurrentLocation();
     super.initState();
   }
@@ -64,7 +68,9 @@ class _NearbyViewState extends State<NearbyView> {
             if (currentLocation.latitude != null &&
                 currentLocation.longitude != null) {
               model = GetNearbyStoriesModel(
-                radius: 10,
+                radius: _radiusController.text != ''
+                    ? int.parse(_radiusController.text)
+                    : 10,
                 latitude: currentLocation.latitude,
                 longitude: currentLocation.longitude,
               );
@@ -119,9 +125,45 @@ class _NearbyViewState extends State<NearbyView> {
                     Padding(
                       padding: const EdgeInsets.all(20),
                       child: BaseHeaderTitle(
-                        title: 'Near Stories',
+                        title: 'Nearby Stories',
                         onShowAllButtonPressed: () {},
                       ),
+                    ),
+                  if (user != null)
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: AppTextFormField(
+                              controller: _radiusController,
+                              hintText: 'Write radius',
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: AppButton(
+                              backgroundColor: Colors.orange,
+                              label: 'Search',
+                              noIcon: true,
+                              onPressed: () async {
+                                model = GetNearbyStoriesModel(
+                                  radius: _radiusController.text != ''
+                                      ? int.parse(_radiusController.text)
+                                      : 10,
+                                  latitude: currentLocation.latitude,
+                                  longitude: currentLocation.longitude,
+                                );
+                                await cubit.getNearbyStories(model);
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   if (user != null)
                     SizedBox(
