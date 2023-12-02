@@ -103,6 +103,19 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
     )
     return True
 
+def upsert_for_empty_list(final_text_vector, pinecone_index, vector_ids, vector_type):
+    pinecone_vector = final_text_vector
+    pinecone_index.upsert(
+        vectors=[
+            {
+                "id": vector_ids,
+                "values": pinecone_vector,
+                "metadata": {"id": vector_ids, "type": vector_type},
+            }
+        ]
+    )
+    return True
+
 
 def weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector):
     # convert the lists into a vector, this makes two vectors same shape
@@ -196,3 +209,7 @@ def story_and_user_recommender(pinecone_index, user_vector, excluded_ids, vector
     ids = [match['id'] for match in response['matches']]
     scores = [match['score'] for match in response['matches']]
     return ids, scores
+
+def create_empty_float_list():
+    empty_list = [0.0] * 300
+    return empty_list

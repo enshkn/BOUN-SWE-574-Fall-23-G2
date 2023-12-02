@@ -40,8 +40,7 @@ enum TimeResolutionType {
   exactDate(0),
   exactDateWithTime(1),
   dateRange(2),
-  decade(3),
-  year(4);
+  decade(3);
 
   const TimeResolutionType(this.value);
   final int value;
@@ -143,7 +142,6 @@ class _AddStoryViewState extends State<AddStoryView>
   bool exactDateWithTimeSelected = false;
   bool dateRangeSelected = false;
   bool decadeSelected = false;
-  bool yearSelected = false;
   int currnetIndex = 0;
   bool showBottomNav = true;
   String? selectTimeResolutions;
@@ -170,7 +168,6 @@ class _AddStoryViewState extends State<AddStoryView>
     'Exact Date with Time',
     'Date Range',
     'Decade',
-    'Year',
   ];
 
   @override
@@ -307,7 +304,7 @@ class _AddStoryViewState extends State<AddStoryView>
       child: Stack(
         children: [
           MapLocationPicker(
-            radiusList: radiusList,
+            radiusList: radiusList.isEmpty ? [10] : radiusList,
             locations: selectedLocationsforMap,
             getSelectedLocations: () async {
               setState(() {
@@ -534,7 +531,11 @@ class _AddStoryViewState extends State<AddStoryView>
                       onPressed: () {
                         setState(() {
                           showRadiusSelection = false;
-                          radiusList.add(int.parse(radiusController.text));
+                          radiusList.add(
+                            radiusController.text != ''
+                                ? int.parse(radiusController.text)
+                                : 10,
+                          );
                         });
                       },
                       icon: const Icon(Icons.send),
@@ -836,31 +837,23 @@ class _AddStoryViewState extends State<AddStoryView>
                 exactDateWithTimeSelected = false;
                 dateRangeSelected = false;
                 decadeSelected = false;
-                yearSelected = false;
+
               case TimeResolutionType.exactDateWithTime:
                 exatDateSelected = false;
                 exactDateWithTimeSelected = true;
                 dateRangeSelected = false;
                 decadeSelected = false;
-                yearSelected = false;
+
               case TimeResolutionType.dateRange:
                 exatDateSelected = false;
                 exactDateWithTimeSelected = false;
                 dateRangeSelected = true;
                 decadeSelected = false;
-                yearSelected = false;
               case TimeResolutionType.decade:
                 exatDateSelected = false;
                 exactDateWithTimeSelected = false;
                 dateRangeSelected = false;
                 decadeSelected = true;
-                yearSelected = false;
-              case TimeResolutionType.year:
-                exatDateSelected = false;
-                exactDateWithTimeSelected = false;
-                dateRangeSelected = false;
-                decadeSelected = false;
-                yearSelected = true;
             }
           }
         });
