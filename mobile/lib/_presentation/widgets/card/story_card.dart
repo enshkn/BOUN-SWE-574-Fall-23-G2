@@ -19,8 +19,11 @@ class StoryCard extends StatelessWidget {
   final void Function(StoryModel)? onTap;
   final void Function(String)? onTagSearch;
   final void Function()? onFavouriteTap;
+  final void Function()? onSavedTap;
   final VoidCallback? onDeleteTap;
   final bool isFavorite;
+  final bool isSaved;
+  final bool isSavedLoading;
   final String likeCount;
   final bool isFavoriteLoading;
   final bool showFavouriteButton;
@@ -37,6 +40,9 @@ class StoryCard extends StatelessWidget {
     this.isFavoriteLoading = false,
     this.onDeleteTap,
     this.onTagSearch,
+    this.onSavedTap,
+    this.isSaved = false,
+    this.isSavedLoading = false,
   });
 
   @override
@@ -84,6 +90,7 @@ class StoryCard extends StatelessWidget {
           children: [
             buildContent(context, imgurl, noImage),
             if (showFavouriteButton) buildFavourite(),
+            if (myStories == false) buildSaved(),
             buildUser(context),
             if (myStories) buildDelete(),
           ],
@@ -212,6 +219,36 @@ class StoryCard extends StatelessWidget {
                       width: 4,
                     ),
                   ],
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildSaved() {
+    return Positioned(
+      top: 0,
+      right: 0,
+      child: SizedBox(
+        width: 50,
+        height: 40,
+        child: Center(
+          child: Row(
+            children: [
+              if (isSavedLoading)
+                const CircularProgressIndicator.adaptive()
+              else
+                IconButton(
+                  icon: Icon(
+                    Icons.collections_bookmark,
+                    color: isSaved ? Colors.orange : Colors.grey,
+                    size: 36,
+                  ),
+                  onPressed: () {
+                    onSavedTap?.call();
+                  },
                 ),
             ],
           ),

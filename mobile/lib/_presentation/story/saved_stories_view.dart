@@ -17,16 +17,14 @@ import 'package:swe/_presentation/widgets/card/story_card.dart';
 import 'package:swe/_presentation/widgets/wrapper/favorite_wrapper.dart';
 
 @RoutePage()
-class LikedStoiresView extends StatefulWidget {
-  const LikedStoiresView({super.key});
+class SavedStoriesView extends StatefulWidget {
+  const SavedStoriesView({super.key});
 
   @override
-  State<LikedStoiresView> createState() => _LikedStoiresViewState();
+  State<SavedStoriesView> createState() => _SavedStoriesViewState();
 }
 
-class _LikedStoiresViewState extends State<LikedStoiresView> {
-  @override
-  List<StoryModel> likedStories = [];
+class _SavedStoriesViewState extends State<SavedStoriesView> {
   @override
   Widget build(BuildContext context) {
     return BaseConsumer<SessionCubit, SessionState>(
@@ -37,10 +35,9 @@ class _LikedStoiresViewState extends State<LikedStoiresView> {
           onCubitReady: (cubit) async {
             cubit.setContext(context);
             cubit.init();
-            await cubit.getLikedStories();
+            await cubit.getSavedStories();
           },
           builder: (context, StoryCubit cubit, StoryState state) {
-            likedStories = state.likedStories;
             return Scaffold(
               appBar: AppBar(
                 leading: IconButton(
@@ -62,15 +59,15 @@ class _LikedStoiresViewState extends State<LikedStoiresView> {
                     Padding(
                       padding: const EdgeInsets.all(20),
                       child: BaseHeaderTitle(
-                        title: 'Liked Stories',
+                        title: 'Saved Stories',
                         onShowAllButtonPressed: () {},
                       ),
                     ),
-                    if (state.likedStories.isNotEmpty)
+                    if (state.savedStories.isNotEmpty)
                       SizedBox(
                         child: BaseListView<StoryModel>(
                           shrinkWrap: true,
-                          items: state.likedStories,
+                          items: state.savedStories,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (item) {
                             return FavoriteWrapper(
@@ -118,14 +115,14 @@ class _LikedStoiresViewState extends State<LikedStoiresView> {
                                         );
                                       },
                                       /*  likeCount: likeCount,
-                                                                isFavorite: isfavorite,
-                                                                isFavoriteLoading:
-                                                                    isLoading,
-                                                                onFavouriteTap: () async {
-                                                                  await addFavorite(
-                                                                    storyId: item.id,
-                                                                  );
-                                                                }, */
+                                                            isFavorite: isfavorite,
+                                                            isFavoriteLoading:
+                                                                isLoading,
+                                                            onFavouriteTap: () async {
+                                                              await addFavorite(
+                                                                storyId: item.id,
+                                                              );
+                                                            }, */
                                     ),
                                   ),
                                 );

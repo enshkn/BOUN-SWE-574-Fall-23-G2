@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_map_location_picker/map_location_picker.dart'
     hide Location;
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swe/_application/story/story_cubit.dart';
 import 'package:swe/_application/story/story_state.dart';
 import 'package:swe/_core/env/env.dart';
@@ -59,7 +60,7 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
   List<LocationModel> selectedLocationsforMap = [];
   List<int> radiusList = [];
   final FocusNode _focusNode = FocusNode();
-  late LatLng? _currentPosition = const LatLng(0, 0);
+  late LatLng? _currentPosition;
   final Location _locationController = Location();
   bool showRadiusSelection = false;
   double selectedLat = 0;
@@ -74,6 +75,7 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
 
   @override
   void initState() {
+    getLocationMemory();
     filter = const StoryFilter();
     radiusController = TextEditingController();
     latitudeController = TextEditingController();
@@ -89,6 +91,15 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
     setFilter(widget.currentFilter);
 
     super.initState();
+  }
+
+  Future<void> getLocationMemory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final latitude = prefs.getDouble('latitude');
+    final longitude = prefs.getDouble('longitude');
+    if (latitude != null && longitude != null) {
+      _currentPosition = LatLng(latitude, longitude);
+    }
   }
 
   void setFilter(StoryFilter? filter) {
