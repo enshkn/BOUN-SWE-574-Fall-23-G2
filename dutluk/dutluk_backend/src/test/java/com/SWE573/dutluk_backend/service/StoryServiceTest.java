@@ -32,7 +32,12 @@ class StoryServiceTest {
     private StoryService storyService;
 
     @Mock
+    private RecommendationService recService;
+
+    @Mock
     private ImageService imageService;
+
+
 
     @BeforeEach
     void setUp() {

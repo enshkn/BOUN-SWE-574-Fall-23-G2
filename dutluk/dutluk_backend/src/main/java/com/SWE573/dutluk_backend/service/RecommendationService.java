@@ -37,7 +37,7 @@ public class RecommendationService {
     UserService userService;
 
     @Value("${REC_ENGINE_STATUS}")
-    boolean recEngineStatus;
+    boolean recEngineStatus = false;
 
     RestTemplate restTemplate = new RestTemplate();
 
