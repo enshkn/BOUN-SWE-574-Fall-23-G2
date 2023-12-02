@@ -64,6 +64,7 @@ public class RecommendationService {
                         .text(removeHtmlFormatting(story.getText()))
                         .build();
         ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/vectorize-edit", vectorizeRequest,String.class);
+        System.out.println(response.getBody());
     }
 
     public String likedStory(Story story, User user, Integer likedStorySize) throws JsonProcessingException {
@@ -75,7 +76,9 @@ public class RecommendationService {
                         .userWeight(likedStorySize)
                         .build();
         ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-liked", likedRequest,String.class);
-        try {
+        //System.out.println(response);
+        //user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
+        /*try {
             ObjectMapper objectMapper = new ObjectMapper();
             RecResponse recResponse = objectMapper.readValue(response.getBody(), RecResponse.class);
             user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
@@ -86,7 +89,7 @@ public class RecommendationService {
 
     } catch (HttpServerErrorException e) {
         System.err.println("Server error: " + e.getRawStatusCode() + " - " + e.getResponseBodyAsString());
-        }
+        }*/
         return user.getRecommendedStories().toString();
     }
 
@@ -99,7 +102,9 @@ public class RecommendationService {
                         .userWeight(likedStorySize)
                         .build();
         ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-disliked", dislikedRequest,String.class);
-        try {
+        user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
+        //System.out.println(response);
+        /*try {
             ObjectMapper objectMapper = new ObjectMapper();
             RecResponse recResponse = objectMapper.readValue(response.getBody(), RecResponse.class);
             user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
@@ -111,12 +116,11 @@ public class RecommendationService {
 
         } catch (HttpServerErrorException e) {
             System.err.println("Server error: " + e.getRawStatusCode() + " - " + e.getResponseBodyAsString());
-        }
-        return null;
+        }*/
+        return user.getRecommendedStories().toString();
     }
 
     public Set<Long> recommendStory(User user, Set<Long> excludedLikedIds){
-        //RecStoryOrUserRequest builder
         RecStoryOrUserRequest recStoryRequest =
                 RecStoryOrUserRequest.builder()
                         .userId(user.getId().toString())
@@ -127,6 +131,7 @@ public class RecommendationService {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             RecResponse recResponse = objectMapper.readValue(response.getBody(), RecResponse.class);
+            System.out.println(recResponse);
             user.setRecommendedStories(recResponse.getIds());
             userService.editUser(user);
             return user.getRecommendedStories();
@@ -147,7 +152,7 @@ public class RecommendationService {
                 RecStoryOrUserRequest.builder()
                         .userId(userId.toString())
                         .excludedIds(excludedIds)
-                        .vector_type("story")
+                        .vector_type("user")
                         .build();
         ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/recommend-user", recStoryRequest,String.class);
         //return response.getBody();
