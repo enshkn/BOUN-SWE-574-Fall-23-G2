@@ -24,20 +24,15 @@ async def vectorize(data: Story):
     # Initialize an empty array to store the vectors
     text_vectors = tokenizer(tokenized_text, word2vec_model)
     tag_vectors = tokenizer(tokenized_tags, word2vec_model)
-    print(tag_vectors)
-    print(text_vectors)
     if tag_vectors['vectorized_text'] == [] or text_vectors['vectorized_text'] == []:
         # Vector operations with Numpy
         avg_vector = create_empty_float_list()
         is_upserted = upsert_for_empty_list(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
                                             vector_type=vector_type)
-        print(avg_vector)
         return {"vectorized": avg_vector, "is_upserted": is_upserted}
     else:
         avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors,
                                           tag_vector=tag_vectors)
-        print(avg_vector)
-        print(type(avg_vector))
         # upsert to the vector db
         is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
                              vector_type=vector_type)
@@ -46,6 +41,7 @@ async def vectorize(data: Story):
 
 @app.post("/vectorize-edit")
 async def vectorize_edit(data: Story):
+    global is_upserted
     # Extract the text from the JSON object
     vector_text, vector_ids, vector_tags, vector_type = story_parser(data)
     # add prefix to vector_id according to the type
@@ -58,12 +54,19 @@ async def vectorize_edit(data: Story):
     tokenized_text, tokenized_tags = text_processor(vector_text=vector_text, vector_tags=vector_tags)
     text_vectors = tokenizer(tokenized_text, word2vec_model)
     tag_vectors = tokenizer(tokenized_tags, word2vec_model)
-    # Vector operations with Numpy
-    avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors, tag_vector=tag_vectors)
-    # update the vector
-    response = update_story_vector(final_text_vector=avg_vector.tolist(), pinecone_index=index, vector_ids=vector_ids,
-                                   vector_type=vector_type)
-    return {"vectorized": avg_vector.tolist()}
+    if tag_vectors['vectorized_text'] == [] or text_vectors['vectorized_text'] == []:
+        # Vector operations with Numpy
+        avg_vector = create_empty_float_list()
+        is_upserted = upsert_for_empty_list(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
+                                            vector_type=vector_type)
+        return {"vectorized": avg_vector, "is_upserted": is_upserted}
+    else:
+        avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors,
+                                          tag_vector=tag_vectors)
+        # upsert to the vector db
+        is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
+                             vector_type=vector_type)
+        return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
 
 
 @app.post("/story-liked")
