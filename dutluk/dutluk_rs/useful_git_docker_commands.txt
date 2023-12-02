@@ -4,3 +4,24 @@ git reset --soft HEAD^ : will delete last commit
 
 docker build -t dutluk-re .
 docker run --memory=8g -p 8000:8000 dutluk-re
+
+
+#### google gcp ####
+sudo -s
+sudo apt-get install docker.io
+docker ps
+
+git clone --branch development https://github.com/enshkn/BOUN-SWE-574-Fall-23-G2.git
+
+cd BOUN-SWE-574-Fall-23-G2/dutluk/dutluk_rs
+
+touch .env
+nano .env
+PINECONE_API_KEY = "afeaaa5a-86af-4c5c-9c2f-b5b7afa80e51"
+ENVIRONMENT="gcp-starter"
+PROJECT_INDEX="swe574-re"
+
+gsutil cp gs://swe-574/rs-word-embedding-model.gz .
+
+docker build -t dutluk-re .
+docker run --memory=8g -p 8000:8000 dutluk-re

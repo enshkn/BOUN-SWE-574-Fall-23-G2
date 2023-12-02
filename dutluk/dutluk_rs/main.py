@@ -14,8 +14,6 @@ async def vectorize(data: Story):
     vector_text, vector_ids, vector_tags, vector_type = story_parser(data)
     # add prefix to vector_id according to the type
     vector_ids = generate_id_with_prefix(vector_id=vector_ids, vector_type=vector_type)
-    print(vector_ids)
-    print(type(vector_ids))
     # convert tags list to string for tokenization
     vector_tags = list_to_string(vector_tags)
     # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
@@ -23,8 +21,11 @@ async def vectorize(data: Story):
     # Initialize an empty array to store the vectors
     text_vectors = tokenizer(tokenized_text, word2vec_model)
     tag_vectors = tokenizer(tokenized_tags, word2vec_model)
+    print(text_vectors)
+    print(tag_vectors)
     # Vector operations with Numpy
     avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors, tag_vector=tag_vectors)
+    print(avg_vector)
     # upsert to the vector db
     is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
                          vector_type=vector_type)
