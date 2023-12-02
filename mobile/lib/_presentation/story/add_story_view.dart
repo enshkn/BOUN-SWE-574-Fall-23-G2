@@ -125,6 +125,9 @@ class _AddStoryViewState extends State<AddStoryView>
   late String selectedMonth;
   late DateTime selectedStartDateTime;
   late DateTime selectedEndDateTime;
+  late DateTime selectedStartDate;
+  late DateTime selectedEndDate;
+
   String selectedAddress = 'null';
   double selectedLat = 0;
   double selectedLng = 0;
@@ -170,6 +173,7 @@ class _AddStoryViewState extends State<AddStoryView>
     'Date Range',
     'Decade',
   ];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -187,6 +191,8 @@ class _AddStoryViewState extends State<AddStoryView>
     story = '';
     selectedStartDateTime = DateTime(0);
     selectedEndDateTime = DateTime(0);
+    selectedStartDate = DateTime(0);
+    selectedEndDate = DateTime(0);
   }
 
   @override
@@ -256,6 +262,7 @@ class _AddStoryViewState extends State<AddStoryView>
           child: WillPopScope(
             onWillPop: onPressedBack,
             child: Scaffold(
+              key: _scaffoldKey,
               backgroundColor: Colors.white,
               appBar: CustomAppBar(
                 context,
@@ -684,13 +691,13 @@ class _AddStoryViewState extends State<AddStoryView>
                 onPressed: () async {
                   final dateTime = await dateTimePicker(
                     formattedStartDate,
-                    selectedStartDateTime,
+                    selectedStartDate,
                     OmniDateTimePickerType.date,
                   );
                   setState(() {
-                    selectedStartDateTime = dateTime!;
+                    selectedStartDate = dateTime!;
                     formattedStartDate =
-                        DateFormat.yMd().format(selectedStartDateTime);
+                        DateFormat.yMd().format(selectedStartDate);
                   });
                 },
               ),
@@ -738,7 +745,7 @@ class _AddStoryViewState extends State<AddStoryView>
                     labelStyle: const TextStyle(color: Colors.black),
                     border: Border.all(color: context.appBarColor),
                     backgroundColor: Colors.white,
-                    label: formattedStartDate ?? 'Choose Start Date and Time',
+                    label: formattedStartDate ?? 'Choose Start Date',
                     onPressed: () async {
                       final dateTime = await dateTimePicker(
                         formattedStartDate,
@@ -747,9 +754,8 @@ class _AddStoryViewState extends State<AddStoryView>
                       );
                       setState(() {
                         selectedStartDateTime = dateTime!;
-                        formattedStartDate = DateFormat.yMd()
-                            .add_jm()
-                            .format(selectedStartDateTime);
+                        formattedStartDate =
+                            DateFormat.yMd().format(selectedStartDateTime);
                       });
                     },
                   ),
@@ -758,7 +764,7 @@ class _AddStoryViewState extends State<AddStoryView>
                     labelStyle: const TextStyle(color: Colors.black),
                     border: Border.all(color: context.appBarColor),
                     backgroundColor: Colors.white,
-                    label: formattedEndDate ?? 'Choose End Date and Time',
+                    label: formattedEndDate ?? 'Choose End Date',
                     onPressed: () async {
                       final dateTime = await dateTimePicker(
                         formattedEndDate,
@@ -772,9 +778,8 @@ class _AddStoryViewState extends State<AddStoryView>
                               0,
                               0,
                             );
-                        formattedEndDate = DateFormat.yMd()
-                            .add_jm()
-                            .format(selectedEndDateTime);
+                        formattedEndDate =
+                            DateFormat.yMd().format(selectedEndDateTime);
                       });
                     },
                   ),
@@ -969,21 +974,28 @@ class _AddStoryViewState extends State<AddStoryView>
 
   Future<void> onPressSubmit() async {
     final tagsList = tagController.text.split(',');
-
     var starttimecheck = false;
+    var endtimecheck = false;
+    /* var endTime = <String>[];
     var startTime = <String>[];
+    if (dateRangeSelected) {
+      if (selectedStartDateTime != DateTime(0)) {
+        final parsedStartTime = selectedStartDateTime.toString();
+        startTime = parsedStartTime.split(':00.000');
+        starttimecheck = true;
+      }
+
+      if (selectedEndDateTime != DateTime(0)) {
+        final parsedEndTime = selectedEndDateTime.toString();
+        endTime = parsedEndTime.split(':00.000');
+        endtimecheck = true;
+      }
+    } */
 
     if (selectedStartDateTime != DateTime(0)) {
-      final parsedStartTime = selectedStartDateTime.toString();
-      startTime = parsedStartTime.split(':00.000');
       starttimecheck = true;
     }
-
-    var endtimecheck = false;
-    var endTime = <String>[];
     if (selectedEndDateTime != DateTime(0)) {
-      final parsedEndTime = selectedEndDateTime.toString();
-      endTime = parsedEndTime.split(':00.000');
       endtimecheck = true;
     }
 
@@ -993,13 +1005,28 @@ class _AddStoryViewState extends State<AddStoryView>
       labels: tagsList,
       season: selectedSeason,
       decade: selectedDecade,
-      startTimeStamp: !starttimecheck ? null : startTime[0],
-      endTimeStamp: !endtimecheck ? null : endTime[0],
+/*       startTimeStamp: !starttimecheck ? null : startTime[0],
+      endTimeStamp: !endtimecheck ? null : endTime[0], */
+      startTimeStamp: starttimecheck
+          ? exactDateWithTimeSelected
+              ? selectedStartDateTime.toString()
+              : selectedStartDate.toString()
+          : null,
+      endTimeStamp: endtimecheck
+          ? exactDateWithTimeSelected
+              ? selectedEndDateTime.toString()
+              : selectedEndDate.toString()
+          : null,
+      startHourFlag: exactDateWithTimeSelected ? 1 : 0,
+      endHourFlag:
+          exactDateWithTimeSelected && selectedEndDateTime != DateTime(0)
+              ? 1
+              : 0,
       locations: locations,
     );
     await cubit.addStory(model).then((value) {
       if (value) {
-        Navigator.of(context).pop();
+        Navigator.of(_scaffoldKey.currentContext!).pop();
       }
     });
   }
