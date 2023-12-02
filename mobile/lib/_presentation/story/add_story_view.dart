@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_map_location_picker/map_location_picker.dart'
@@ -90,6 +91,8 @@ class _AddStoryViewState extends State<AddStoryView>
   bool showRadiusSelection = false;
 
   final customToolBarList = [
+    ToolBarStyle.image,
+    ToolBarStyle.link,
     ToolBarStyle.bold,
     ToolBarStyle.italic,
     ToolBarStyle.align,
@@ -100,8 +103,6 @@ class _AddStoryViewState extends State<AddStoryView>
     ToolBarStyle.clean,
     ToolBarStyle.addTable,
     ToolBarStyle.editTable,
-    ToolBarStyle.link,
-    ToolBarStyle.image,
   ];
 
   final _toolbarColor = Colors.grey.shade200;
@@ -583,79 +584,78 @@ class _AddStoryViewState extends State<AddStoryView>
   }
 
   Widget storyInfoWidget() {
-    return SingleChildScrollView(
-      child: GestureDetector(
-        onTap: _focusNode.unfocus,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              AppTextFormField(
-                controller: titleController,
-                hintText: 'Add Title',
+    return GestureDetector(
+      onTap: _focusNode.unfocus,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          children: [
+            AppTextFormField(
+              controller: titleController,
+              hintText: 'Add Title',
+            ),
+            BaseWidgets.lowerGap,
+            AppTextFormField(
+              controller: tagController,
+              hintText: 'Add Tag/s (Divide with coma!)',
+            ),
+            BaseWidgets.lowerGap,
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.6,
+              decoration: BoxDecoration(
+                border: Border.all(color: context.appBarColor),
+                borderRadius: BorderRadius.circular(12),
               ),
-              BaseWidgets.lowerGap,
-              AppTextFormField(
-                controller: tagController,
-                hintText: 'Add Tag/s (Divide with coma!)',
-              ),
-              BaseWidgets.lowerGap,
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.5,
-                decoration: BoxDecoration(
-                  border: Border.all(color: context.appBarColor),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    ToolBar(
-                      toolBarColor: _toolbarColor,
-                      padding: const EdgeInsets.all(8),
-                      iconColor: _toolbarIconColor,
-                      activeIconColor: Colors.greenAccent.shade400,
+              child: Column(
+                children: [
+                  ToolBar.scroll(
+                    mainAxisSize: MainAxisSize.max,
+                    toolBarColor: _toolbarColor,
+                    controller: controller,
+                    padding: const EdgeInsets.all(8),
+                    iconColor: _toolbarIconColor,
+                    activeIconColor: Colors.greenAccent.shade400,
+                    customButtons: const [],
+                    toolBarConfig: customToolBarList,
+                  ),
+                  Expanded(
+                    child: QuillHtmlEditor(
+                      autoFocus: true,
+                      text: story,
+                      hintText: 'Write your story',
                       controller: controller,
-                      customButtons: const [],
-                      toolBarConfig: customToolBarList,
+                      minHeight: 500,
+                      textStyle: _editorTextStyle,
+                      hintTextStyle: _hintTextStyle,
+                      padding: const EdgeInsets.only(left: 10, top: 10),
+                      hintTextPadding: const EdgeInsets.only(left: 20),
+                      backgroundColor: _backgroundColor,
+                      onTextChanged: (text) {
+                        setState(() async {
+                          story = text;
+                          htmlText = await controller.getText();
+                        });
+                      },
+                      onFocusChanged: (focus) {
+                        debugPrint('has focus $focus');
+                        setState(_focusNode.unfocus);
+                      },
+                      loadingBuilder: (context) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1,
+                            color: Colors.red,
+                          ),
+                        );
+                      },
                     ),
-                    Expanded(
-                      child: QuillHtmlEditor(
-                        autoFocus: true,
-                        text: story,
-                        hintText: 'Write your story',
-                        controller: controller,
-                        minHeight: 500,
-                        textStyle: _editorTextStyle,
-                        hintTextStyle: _hintTextStyle,
-                        padding: const EdgeInsets.only(left: 10, top: 10),
-                        hintTextPadding: const EdgeInsets.only(left: 20),
-                        backgroundColor: _backgroundColor,
-                        onTextChanged: (text) {
-                          setState(() async {
-                            story = text;
-                            htmlText = await controller.getText();
-                          });
-                        },
-                        onFocusChanged: (focus) {
-                          debugPrint('has focus $focus');
-                          setState(_focusNode.unfocus);
-                        },
-                        loadingBuilder: (context) {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 1,
-                              color: Colors.red,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              BaseWidgets.dynamicGap(500),
-            ],
-          ),
+            ),
+            BaseWidgets.dynamicGap(500),
+          ],
         ),
       ),
     );
