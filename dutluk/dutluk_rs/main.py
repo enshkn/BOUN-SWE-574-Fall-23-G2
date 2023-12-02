@@ -3,7 +3,9 @@ from appconfig import app_initializer
 from classes import Story, UserInteraction, Recommend
 from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising, update_story_vector, \
     update_user_vector, user_like_unlike_parser, story_user_vectors_fetcher, list_to_nparray, like_story_operations, \
-    unlike_story_operations, single_vector_fetcher, recommendation_parser, story_and_user_recommender, list_to_string, generate_id_with_prefix,generate_ids_with_prefix, parse_ids_with_prefix_for_lists,parse_id_with_prefix
+    unlike_story_operations, single_vector_fetcher, recommendation_parser, story_and_user_recommender, list_to_string, \
+    generate_id_with_prefix, generate_ids_with_prefix, parse_ids_with_prefix_for_lists, parse_id_with_prefix, \
+    create_empty_float_list, upsert_for_empty_list
 
 app, index, word2vec_model = app_initializer()
 
@@ -11,6 +13,7 @@ app, index, word2vec_model = app_initializer()
 @app.post("/vectorize")
 async def vectorize(data: Story):
     # Extract the text from the JSON object
+    global is_upserted
     vector_text, vector_ids, vector_tags, vector_type = story_parser(data)
     # add prefix to vector_id according to the type
     vector_ids = generate_id_with_prefix(vector_id=vector_ids, vector_type=vector_type)
@@ -21,15 +24,24 @@ async def vectorize(data: Story):
     # Initialize an empty array to store the vectors
     text_vectors = tokenizer(tokenized_text, word2vec_model)
     tag_vectors = tokenizer(tokenized_tags, word2vec_model)
-    print(text_vectors)
     print(tag_vectors)
-    # Vector operations with Numpy
-    avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors, tag_vector=tag_vectors)
-    print(avg_vector)
-    # upsert to the vector db
-    is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
-                         vector_type=vector_type)
-    return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
+    print(text_vectors)
+    if tag_vectors['vectorized_text'] == [] or text_vectors['vectorized_text'] == []:
+        # Vector operations with Numpy
+        avg_vector = create_empty_float_list()
+        is_upserted = upsert_for_empty_list(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
+                                            vector_type=vector_type)
+        print(avg_vector)
+        return {"vectorized": avg_vector, "is_upserted": is_upserted}
+    else:
+        avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors,
+                                          tag_vector=tag_vectors)
+        print(avg_vector)
+        print(type(avg_vector))
+        # upsert to the vector db
+        is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
+                             vector_type=vector_type)
+        return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
 
 
 @app.post("/vectorize-edit")
@@ -152,7 +164,8 @@ async def recommend_user(data: Recommend):
         print(f"An error occurred: {str(e)}")
         # Return an HTTP 500 Internal Server Error with a custom error message
         raise HTTPException(status_code=500, detail="Internal Server Error")
-    
+
+
 @app.get("/test")
 async def test_page():
     return "<h1> Hello world </h1>"
