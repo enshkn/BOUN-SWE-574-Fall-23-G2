@@ -22,6 +22,8 @@ class RoutePaths {
   static const STORYDETAILS = 'story-details';
   static const ADDSTORY = '/add-story';
   static const MYSTORIES = 'my-stories';
+  static const SAVEDSTORIES = 'saved-stories';
+
   static const LIKEDSTORIES = 'liked-stories';
   static const TAGSEARCH = '/tag-search';
 }

@@ -9,13 +9,37 @@ final class FavoriteCubit extends BaseCubit<FavoriteState> {
   final IStoryRepository _repository;
   FavoriteCubit(this._repository) : super(FavoriteState.initial());
 
-  void init(bool isFavorite) {
-    safeEmit(state.copyWith(isFavorite: isFavorite));
-  }
-
   @override
   void setLoading(bool loading) {
     safeEmit(state.copyWith(isLoading: loading));
+  }
+
+  Future<void> getStoryDetail(int storyId, int userId) async {
+    setLoading(true);
+    final result = await _repository.getStoryDetail(storyId);
+    setLoading(false);
+    result.fold(
+      (failure) {
+        // showNotification(failure?.message ?? '', isError: true);
+      },
+      (story) {
+        final statuslike =
+            story.likes != null ? story.likes!.contains(userId) : false;
+        final favorite = statuslike;
+
+        final statusSave =
+            story.savedBy != null ? story.savedBy!.contains(userId) : false;
+        final save = statusSave;
+        safeEmit(
+          state.copyWith(
+            likeCount:
+                story.likes!.isNotEmpty ? story.likes!.length.toString() : '0',
+            isFavorite: favorite,
+            isSaved: save,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> getStoryLike(int storyId) async {
@@ -51,6 +75,22 @@ final class FavoriteCubit extends BaseCubit<FavoriteState> {
     );
   }
 
+  Future<void> getSavedStories(int storyId) async {
+    setLoading(true);
+    final result = await _repository.getSavedStories();
+    setLoading(false);
+    result.fold(
+      (failure) => showNotification(failure?.message ?? '', isError: true),
+      (savedStories) {
+        final status = savedStories.where((element) => element.id == storyId);
+        final saved = status.isNotEmpty ? true : false;
+        safeEmit(
+          state.copyWith(isSaved: saved),
+        );
+      },
+    );
+  }
+
   Future<(bool, bool?, String?)> addFavorite({required int storyId}) async {
     setLoading(true);
     final result = await _repository.addFavorite(itemId: storyId);
@@ -69,6 +109,26 @@ final class FavoriteCubit extends BaseCubit<FavoriteState> {
           ),
         );
         return (true, state.isFavorite, state.likeCount);
+      },
+    );
+  }
+
+  Future<(bool, bool?)> addSave({required int storyId}) async {
+    setLoading(true);
+    final result = await _repository.addSave(itemId: storyId);
+    setLoading(false);
+    return result.fold(
+      (failure) {
+        safeEmit(state.copyWith(isSaved: !state.isSaved));
+        return (false, null);
+      },
+      (story) {
+        safeEmit(
+          state.copyWith(
+            isSaved: !state.isSaved,
+          ),
+        );
+        return (true, state.isSaved);
       },
     );
   }
