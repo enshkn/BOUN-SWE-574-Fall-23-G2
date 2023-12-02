@@ -13,7 +13,6 @@ app, index, word2vec_model = app_initializer()
 @app.post("/vectorize")
 async def vectorize(data: Story):
     # Extract the text from the JSON object
-    global is_upserted
     vector_text, vector_ids, vector_tags, vector_type = story_parser(data)
     # add prefix to vector_id according to the type
     vector_ids = generate_id_with_prefix(vector_id=vector_ids, vector_type=vector_type)
@@ -24,49 +23,34 @@ async def vectorize(data: Story):
     # Initialize an empty array to store the vectors
     text_vectors = tokenizer(tokenized_text, word2vec_model)
     tag_vectors = tokenizer(tokenized_tags, word2vec_model)
-    if tag_vectors['vectorized_text'] == [] or text_vectors['vectorized_text'] == []:
-        # Vector operations with Numpy
-        avg_vector = create_empty_float_list()
-        is_upserted = upsert_for_empty_list(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
-                                            vector_type=vector_type)
-        return {"vectorized": avg_vector, "is_upserted": is_upserted}
-    else:
-        avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors,
-                                          tag_vector=tag_vectors)
-        # upsert to the vector db
-        is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
-                             vector_type=vector_type)
-        return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
+    # Vector operations with Numpy
+    avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors,
+                                      tag_vector=tag_vectors)
+    # upsert to the vector db
+    is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
+                         vector_type=vector_type)
+    return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
 
 
 @app.post("/vectorize-edit")
 async def vectorize_edit(data: Story):
-    global is_upserted
     # Extract the text from the JSON object
     vector_text, vector_ids, vector_tags, vector_type = story_parser(data)
     # add prefix to vector_id according to the type
     vector_ids = generate_id_with_prefix(vector_id=vector_ids, vector_type=vector_type)
-    print(vector_ids)
-    print(type(vector_ids))
     # convert tags list to string for tokenization
     vector_tags = list_to_string(vector_tags)
     # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
     tokenized_text, tokenized_tags = text_processor(vector_text=vector_text, vector_tags=vector_tags)
     text_vectors = tokenizer(tokenized_text, word2vec_model)
     tag_vectors = tokenizer(tokenized_tags, word2vec_model)
-    if tag_vectors['vectorized_text'] == [] or text_vectors['vectorized_text'] == []:
-        # Vector operations with Numpy
-        avg_vector = create_empty_float_list()
-        is_upserted = upsert_for_empty_list(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
-                                            vector_type=vector_type)
-        return {"vectorized": avg_vector, "is_upserted": is_upserted}
-    else:
-        avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors,
-                                          tag_vector=tag_vectors)
-        # upsert to the vector db
-        is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
-                             vector_type=vector_type)
-        return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
+    # Vector operations with Numpy
+    avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors,
+                                      tag_vector=tag_vectors)
+    # upsert to the vector db
+    is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
+                         vector_type=vector_type)
+    return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
 
 
 @app.post("/story-liked")
