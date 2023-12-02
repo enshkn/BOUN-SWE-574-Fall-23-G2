@@ -3,7 +3,7 @@
 .add-story-form {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 20px;
 }
 
