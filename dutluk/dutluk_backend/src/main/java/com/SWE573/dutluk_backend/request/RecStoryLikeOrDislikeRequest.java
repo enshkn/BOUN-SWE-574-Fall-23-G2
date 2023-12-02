@@ -10,9 +10,9 @@ import lombok.Setter;
 public class RecStoryLikeOrDislikeRequest { // story-liked & story-disliked
     private String type;
 
-    private Long storyId;
+    private String storyId;
 
-    private Long userId;
+    private String userId;
 
     private Integer userWeight;
 

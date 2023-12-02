@@ -7,7 +7,6 @@ import com.SWE573.dutluk_backend.request.RecStoryOrUserRequest;
 import com.SWE573.dutluk_backend.request.RecVectorizeOrEditRequest;
 import com.SWE573.dutluk_backend.response.RecResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.jsoup.Jsoup;
@@ -20,12 +19,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.DataInput;
 import java.net.URI;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Getter
@@ -52,7 +47,7 @@ public class RecommendationService {
         RecVectorizeOrEditRequest vectorizeRequest =
                 RecVectorizeOrEditRequest.builder()
                         .type("story")
-                        .ids(story.getId())
+                        .ids(story.getId().toString())
                         .tags(story.getLabels())
                         .text(removeHtmlFormatting(story.getText()))
                         .build();
@@ -64,7 +59,7 @@ public class RecommendationService {
         RecVectorizeOrEditRequest vectorizeRequest =
                 RecVectorizeOrEditRequest.builder()
                         .type("story")
-                        .ids(story.getId())
+                        .ids(story.getId().toString())
                         .tags(story.getLabels())
                         .text(removeHtmlFormatting(story.getText()))
                         .build();
@@ -75,8 +70,8 @@ public class RecommendationService {
         RecStoryLikeOrDislikeRequest likedRequest =
                 RecStoryLikeOrDislikeRequest.builder()
                         .type("story")
-                        .storyId(story.getId())
-                        .userId(user.getId())
+                        .storyId(story.getId().toString())
+                        .userId(user.getId().toString())
                         .userWeight(likedStorySize)
                         .build();
         ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-liked", likedRequest,String.class);
@@ -99,8 +94,8 @@ public class RecommendationService {
         RecStoryLikeOrDislikeRequest dislikedRequest =
                 RecStoryLikeOrDislikeRequest.builder()
                         .type("story")
-                        .storyId(story.getId())
-                        .userId(user.getId())
+                        .storyId(story.getId().toString())
+                        .userId(user.getId().toString())
                         .userWeight(likedStorySize)
                         .build();
         ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-disliked", dislikedRequest,String.class);
