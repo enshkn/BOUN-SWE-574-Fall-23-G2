@@ -20,7 +20,7 @@ final class FavoriteCubit extends BaseCubit<FavoriteState> {
     setLoading(false);
     result.fold(
       (failure) {
-        //showNotification(failure?.message ?? '', isError: true);
+        // showNotification(failure?.message ?? '', isError: true);
       },
       (story) {
         final statuslike =

@@ -30,7 +30,8 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView>
     with SingleTickerProviderStateMixin {
   final FocusNode _focusNode = FocusNode();
-
+  bool savePressedRecent = false;
+  bool savePressedActivity = false;
   late TabController _tabController;
   int currnetIndex = 0;
   StoryModel? _dataFromSecondPage;
@@ -125,7 +126,9 @@ class _HomeViewState extends State<HomeView>
                           children: [
                             RefreshIndicator(
                               onRefresh: () async {
-                                await cubit.getFallowedStories();
+                                await cubit.getRecentStory();
+
+                                savePressedRecent = false;
                               },
                               child: BaseScrollView(
                                 children: [
@@ -139,6 +142,8 @@ class _HomeViewState extends State<HomeView>
                                       itemBuilder: (item) {
                                         return FavoriteWrapper(
                                           userId: user.id!,
+                                          initialLikeCount:
+                                              item.likes!.length.toString(),
                                           initialStateSave:
                                               item.savedBy!.contains(user.id),
                                           storyId: item.id,
@@ -162,14 +167,13 @@ class _HomeViewState extends State<HomeView>
                                                 onTap: () {
                                                   context.router.push(
                                                     StoryDetailsRoute(
-                                                      leadBackHome: true,
                                                       model: item,
                                                     ),
                                                   );
                                                 },
                                                 child: StoryCard(
-                                                  showFavouriteButton: false,
                                                   storyModel: item,
+                                                  showFavouriteButton: false,
                                                   onTagSearch: (label) async {
                                                     await context.router.push(
                                                       TagSearchRoute(
@@ -184,14 +188,16 @@ class _HomeViewState extends State<HomeView>
                                                       storyId: item.id,
                                                     );
                                                   },
-                                                  likeCount: likeCount,
-                                                  isFavorite: isfavorite,
-                                                  isFavoriteLoading: isLoading,
-                                                  onFavouriteTap: () async {
-                                                    await addFavorite(
-                                                      storyId: item.id,
-                                                    );
-                                                  },
+
+                                                  /* likeCount: likeCount,
+                                                        isFavorite: isfavorite,
+                                                        isFavoriteLoading:
+                                                            isLoading,
+                                                        onFavouriteTap: () async {
+                                                          await addFavorite(
+                                                            storyId: item.id,
+                                                          );
+                                                        },  */
                                                 ),
                                               ),
                                             );
@@ -207,6 +213,7 @@ class _HomeViewState extends State<HomeView>
                             RefreshIndicator(
                               onRefresh: () async {
                                 await cubit.getFallowedStories();
+                                savePressedActivity = false;
                               },
                               child: BaseScrollView(
                                 children: [
@@ -222,6 +229,8 @@ class _HomeViewState extends State<HomeView>
                                         itemBuilder: (item) {
                                           return FavoriteWrapper(
                                             userId: user.id!,
+                                            initialLikeCount:
+                                                item.likes!.length.toString(),
                                             initialStateSave:
                                                 item.savedBy!.contains(user.id),
                                             storyId: item.id,
@@ -266,7 +275,8 @@ class _HomeViewState extends State<HomeView>
                                                         storyId: item.id,
                                                       );
                                                     },
-                                                    /*  likeCount: likeCount,
+
+                                                    /* likeCount: likeCount,
                                                         isFavorite: isfavorite,
                                                         isFavoriteLoading:
                                                             isLoading,
@@ -274,7 +284,7 @@ class _HomeViewState extends State<HomeView>
                                                           await addFavorite(
                                                             storyId: item.id,
                                                           );
-                                                        }, */
+                                                        },  */
                                                   ),
                                                 ),
                                               );

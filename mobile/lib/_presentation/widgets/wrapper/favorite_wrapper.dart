@@ -9,9 +9,9 @@ import '../../../_presentation/_core/base_view.dart';
 class FavoriteWrapper extends StatefulWidget {
   final bool initialState;
   final bool initialStateSave;
+  final String initialLikeCount;
   final int storyId;
   final int userId;
-
   final Widget Function(
     BuildContext context,
     Future<(bool, bool?, String?)> Function({
@@ -37,6 +37,7 @@ class FavoriteWrapper extends StatefulWidget {
     this.initialStateSave = false,
     super.key,
     this.initialState = false,
+    this.initialLikeCount = '0',
   });
 
   @override
@@ -49,9 +50,7 @@ class _FavoriteWrapperState extends State<FavoriteWrapper> {
     return BaseView<FavoriteCubit, FavoriteState>(
       onCubitReady: (cubit) {
         cubit.setContext(context);
-        /*   cubit.getStoryLike(widget.storyId);
-        cubit.getLikedStories(widget.storyId);
-        cubit.getSavedStories(widget.storyId); */
+
         cubit.getStoryDetail(widget.storyId, widget.userId);
       },
       builder: (context, FavoriteCubit cubit, FavoriteState state) =>
