@@ -7,14 +7,12 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class RecStoryLikeOrDislikeRequest {
-
-
+public class RecStoryLikeOrDislikeRequest { // story-liked & story-disliked
     private String type;
 
-    private String storyId;
+    private Long storyId;
 
-    private String userId;
+    private Long userId;
 
     private Integer userWeight;
 

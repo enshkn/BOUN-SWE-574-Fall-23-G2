@@ -4,16 +4,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Builder
 @Getter
 @Setter
-public class RecVectorizeOrEditRequest {
+public class RecVectorizeOrEditRequest { // vectorize && vectorize-edit
+
+    private String type;
+
+    private Long ids;
+
+    private List<String> tags;
 
     private String text;
 
-    private String ids;
 
-    private String tags;
-
-    private String type;
 }
