@@ -356,7 +356,7 @@ public class StoryService {
 
     public List<Story> recommendedStories(User foundUser) {
         List<Long> recommendationList = new ArrayList<>(foundUser.getRecommendedStories());
-        if(recommendationList.isEmpty()){
+        if(foundUser.getRecommendedStories() == null || foundUser.getRecommendedStories().isEmpty()){
             return findRecentStories();
         }
         List<Story> storyList = new ArrayList<>();

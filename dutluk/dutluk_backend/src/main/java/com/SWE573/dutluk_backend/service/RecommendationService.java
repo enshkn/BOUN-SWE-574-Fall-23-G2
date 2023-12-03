@@ -78,6 +78,7 @@ public class RecommendationService {
                         .userWeight(likedStorySize)
                         .build();
         ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-liked", likedRequest,String.class);
+        user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
         //System.out.println(response);
         //user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
         /*try {
@@ -103,7 +104,7 @@ public class RecommendationService {
                         .userId(user.getId().toString())
                         .userWeight(likedStorySize)
                         .build();
-        ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-disliked", dislikedRequest,String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-unliked", dislikedRequest,String.class);
         user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
         //System.out.println(response);
         /*try {
