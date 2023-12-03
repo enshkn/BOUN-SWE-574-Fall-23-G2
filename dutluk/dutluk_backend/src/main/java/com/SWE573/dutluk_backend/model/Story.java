@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -71,7 +70,5 @@ public class Story extends BaseEntity{
     private Integer startHourFlag;
 
     private Integer endHourFlag;
-
-
 
 }

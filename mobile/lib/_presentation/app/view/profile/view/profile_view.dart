@@ -30,9 +30,12 @@ class _ProfileViewState extends State<ProfileView> {
         return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
-            title: const Text(
-              'DutlukApp',
-              style: TextStyle(color: Colors.black),
+            title: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: Image.asset(
+                'assets/images/2dutlukfinal.png',
+                fit: BoxFit.contain,
+              ),
             ),
             backgroundColor: Colors.white,
             elevation: 0,
@@ -116,6 +119,43 @@ class _ProfileViewState extends State<ProfileView> {
                           BaseWidgets.normalGap,
                           const Text(
                             'Liked Stories',
+                            style: TextStyles.listTitle(),
+                          ),
+                        ],
+                      ),
+                      BaseWidgets.normalGap,
+                      const SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: Icon(Icons.arrow_forward),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Divider(),
+              ButtonCard(
+                onPressed: () {
+                  context.router.push(const SavedStoriesRoute());
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Icon(Icons.chrome_reader_mode),
+                          ),
+                          BaseWidgets.normalGap,
+                          const Text(
+                            'Saved Stories',
                             style: TextStyles.listTitle(),
                           ),
                         ],

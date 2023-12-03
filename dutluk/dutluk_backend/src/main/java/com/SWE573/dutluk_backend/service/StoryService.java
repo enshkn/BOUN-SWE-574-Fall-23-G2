@@ -7,15 +7,14 @@ import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.StoryRepository;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 
 @Service
 public class StoryService {
@@ -64,7 +63,11 @@ public class StoryService {
             location.setStory(createdStory);
         }
         createdStory.setLocations(allLocations);
-        return storyRepository.save(createdStory);
+        Story committedStory = storyRepository.save(createdStory);
+        if(recService.isRecEngineStatus()){
+            recService.vectorizeRequest(committedStory);
+        }
+        return committedStory;
 
     }
 
@@ -100,25 +103,27 @@ public class StoryService {
     }
 
 
-    public Story likeStory(Long storyId,Long userId){
+    public Story likeStory(Long storyId,Long userId) throws JsonProcessingException {
         Story story = getStoryByStoryId(storyId);
         User user = userService.findByUserId(userId);
         Set<Long> likesList = story.getLikes();
         Set<Long> likedList = user.getLikedStories();
-        int likedListCount;
+        int likedListSize;
         if(!likesList.contains(user.getId())){
             likesList.add(user.getId());
             likedList.add(storyId);
-            likedListCount = likedList.size();
-            //type=user, storyId, userId and userWeight= likedListCount data will be sent to the rec engine in this line
-            //recService.storyLiked("user",storyId.toString(),userId.toString(),likedList.size());
+            likedListSize = likedList.size();
+            if(recService.isRecEngineStatus()){
+                recService.likedStory(story,user,likedListSize);
+            }
         }
         else{
             likesList.remove(user.getId());
             likedList.remove(storyId);
-            likedListCount = likedList.size();
-            //type=user, storyId, userId and userWeight= likedListCount data will be sent to the rec engine in this line
-            //recService.storydisLiked("user",storyId.toString(),userId.toString(),likedList.size());
+            likedListSize = likedList.size();
+            if(recService.isRecEngineStatus()){
+                recService.dislikedStory(story,user,likedListSize);
+            }
         }
         story.setLikes(likesList);
         user.setLikedStories(likedList);
@@ -242,8 +247,11 @@ public class StoryService {
             enteredStory.setLikes(story.getLikes());
             enteredStory.setId(story.getId());
             enteredStory.setComments(story.getComments());
-            //enteredStory will be sent to rec engine /vectorize-edit endpoint in this line
-            return storyRepository.save(enteredStory);
+            Story committedStory = storyRepository.save(enteredStory);
+            if(recService.isRecEngineStatus()){
+                recService.vectorizeEditRequest(committedStory);
+            }
+            return committedStory;
         }
         return getStoryByStoryId(storyId);
     }
@@ -348,7 +356,9 @@ public class StoryService {
 
     public List<Story> recommendedStories(User foundUser) {
         List<Long> recommendationList = new ArrayList<>(foundUser.getRecommendedStories());
-
+        if(foundUser.getRecommendedStories() == null || foundUser.getRecommendedStories().isEmpty()){
+            return findRecentStories();
+        }
         List<Story> storyList = new ArrayList<>();
         for (Long storyId : recommendationList) {
             Story story = getStoryByStoryId(storyId);
@@ -365,6 +375,16 @@ public class StoryService {
             sortedList.sort(Comparator.comparingLong(Story::getId).reversed());
             return sortedList;
         }
-        return Collections.emptyList(); // or return blankStoryList;
+        return Collections.emptyList();
+    }
+
+    public Boolean isLikedByUser(Long storyId, User user){
+        Set<Long> userLikedStories = user.getLikedStories();
+        return userLikedStories.contains(storyId);
+    }
+
+    public Boolean isSavedByUser(Long storyId, User user){
+        Set<Long> userSavedStories = user.getSavedStories();
+        return userSavedStories.contains(storyId);
     }
 }

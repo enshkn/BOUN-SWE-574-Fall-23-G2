@@ -103,6 +103,19 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
     )
     return True
 
+def upsert_for_empty_list(final_text_vector, pinecone_index, vector_ids, vector_type):
+    pinecone_vector = final_text_vector
+    pinecone_index.upsert(
+        vectors=[
+            {
+                "id": vector_ids,
+                "values": pinecone_vector,
+                "metadata": {"id": vector_ids, "type": vector_type},
+            }
+        ]
+    )
+    return True
+
 
 def weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector):
     # convert the lists into a vector, this makes two vectors same shape
@@ -145,6 +158,12 @@ def user_like_unlike_parser(data: UserInteraction):
     return vector_type, story_id, user_id, user_weight
 
 
+def vector_fetcher(pinecone_index, vector_id, vector_type):
+    vector_response = pinecone_index.fetch([vector_id])
+    vector = vector_response['vectors'][vector_id]['values']
+    return vector
+
+
 def story_user_vectors_fetcher(pinecone_index, story_id, user_id):
     story_response = pinecone_index.fetch([story_id])
     user_response = pinecone_index.fetch([user_id])
@@ -172,7 +191,10 @@ def like_story_operations(np_user_vector, np_story_vector, user_weight):
 
 
 def unlike_story_operations(np_user_vector, np_story_vector, user_weight):
-    updated_user_vector = ((np_user_vector * (user_weight + 1)) - np_story_vector) / user_weight
+    if user_weight != 0:
+        updated_user_vector = ((np_user_vector * (user_weight + 1)) - np_story_vector) / user_weight
+    else:
+        updated_user_vector = np.array(create_empty_float_list())
     return updated_user_vector
 
 
@@ -196,3 +218,7 @@ def story_and_user_recommender(pinecone_index, user_vector, excluded_ids, vector
     ids = [match['id'] for match in response['matches']]
     scores = [match['score'] for match in response['matches']]
     return ids, scores
+
+def create_empty_float_list():
+    empty_list = [0.0] * 300
+    return empty_list

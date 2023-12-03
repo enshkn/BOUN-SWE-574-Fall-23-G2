@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swe/_application/session/session_cubit.dart';
 import 'package:swe/_application/session/session_state.dart';
 import 'package:swe/_application/story/story_cubit.dart';
@@ -51,6 +52,9 @@ class _NearbyViewState extends State<NearbyView> {
         latitude: currentLocation.latitude,
         longitude: currentLocation.longitude,
       );
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setDouble('latitude', currentLocation.latitude!);
+      await prefs.setDouble('longitude', currentLocation.longitude!);
     }
   }
 
@@ -81,22 +85,12 @@ class _NearbyViewState extends State<NearbyView> {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: AppBar(
-                leading: SizedBox(
-                  child: Center(
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(24),
-                      ),
-                      child: Image.asset(
-                        'assets/images/dutlukfinal_1.jpg',
-                        fit: BoxFit.fill,
-                      ),
-                    ),
+                title: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  child: Image.asset(
+                    'assets/images/2dutlukfinal.png',
+                    fit: BoxFit.contain,
                   ),
-                ),
-                title: Text(
-                  'DutlukApp',
-                  style: const TextStyle().copyWith(color: Colors.black),
                 ),
                 backgroundColor: Colors.white,
                 elevation: 0,
@@ -172,33 +166,63 @@ class _NearbyViewState extends State<NearbyView> {
                         physics: const NeverScrollableScrollPhysics(),
                         items: state.nearbyStories,
                         itemBuilder: (item) {
-                          return Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 8,
-                            ),
-                            height: 450,
-                            child: GestureDetector(
-                              onTap: () {
-                                context.router.push(
-                                  StoryDetailsRoute(
-                                    model: item,
-                                  ),
-                                );
-                              },
-                              child: StoryCard(
-                                storyModel: item,
-                                showFavouriteButton: false,
-                                /* likeCount: likeCount,
-                                    isFavorite: isfavorite,
-                                    isFavoriteLoading: isLoading,
-                                    onFavouriteTap: () async {
-                                      await addFavorite(
+                          return FavoriteWrapper(
+                            userId: user.id!,
+                            initialStateSave: item.savedBy!.contains(user.id),
+                            storyId: item.id,
+                            builder: (
+                              context,
+                              addFavorite,
+                              addSave,
+                              isfavorite,
+                              isSaved,
+                              isLoading,
+                              likeCount,
+                            ) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 8,
+                                ),
+                                height: 450,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    context.router.push(
+                                      StoryDetailsRoute(
+                                        model: item,
+                                      ),
+                                    );
+                                  },
+                                  child: StoryCard(
+                                    storyModel: item,
+                                    showFavouriteButton: false,
+                                    onTagSearch: (label) async {
+                                      await context.router.push(
+                                        TagSearchRoute(
+                                          tag: label,
+                                        ),
+                                      );
+                                    },
+                                    isSaved: isSaved,
+                                    isSavedLoading: isLoading,
+                                    onSavedTap: () async {
+                                      await addSave(
                                         storyId: item.id,
                                       );
-                                    }, */
-                              ),
-                            ),
+                                    },
+                                    /*  likeCount: likeCount,
+                                                        isFavorite: isfavorite,
+                                                        isFavoriteLoading:
+                                                            isLoading,
+                                                        onFavouriteTap: () async {
+                                                          await addFavorite(
+                                                            storyId: item.id,
+                                                          );
+                                                        }, */
+                                  ),
+                                ),
+                              );
+                            },
                           );
                         },
                       ),

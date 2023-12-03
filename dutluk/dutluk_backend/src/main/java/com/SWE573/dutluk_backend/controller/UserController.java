@@ -33,9 +33,6 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Value("${FRONTEND_URL}")
-    private String FRONTEND_URL;
-
 
 
 

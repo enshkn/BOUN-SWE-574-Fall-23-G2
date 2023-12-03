@@ -16,6 +16,7 @@ class StoryState extends BaseState with _$StoryState {
     @Default([]) List<StoryModel> activityFeedStories,
     @Default([]) List<StoryModel> myStories,
     @Default([]) List<StoryModel> likedStories,
+    @Default([]) List<StoryModel> savedStories,
     @Default([]) List<StoryModel> recentStories,
     @Default([]) List<StoryModel> nearbyStories,
     @Default([]) List<StoryModel> recommendedStories,
