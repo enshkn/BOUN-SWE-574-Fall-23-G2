@@ -34,12 +34,14 @@ public class RecommendationService {
     @Value("${REC_ENGINE_STATUS}")
     boolean recEngineStatus = false;
 
-    RestTemplate restTemplate = new RestTemplate();
+    private RestTemplate restTemplate = new RestTemplate();
 
     public String testEndpoint() {
-
-        ResponseEntity<String> response = restTemplate.getForEntity(recUrl+"/test", String.class);
-        return response.getBody();
+        if(recEngineStatus){
+            ResponseEntity<String> response = restTemplate.getForEntity(recUrl+"/test", String.class);
+            return response.getBody();
+        }
+        return "Rec engine status false";
     }
 
 
