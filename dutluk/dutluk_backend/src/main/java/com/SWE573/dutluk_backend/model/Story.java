@@ -78,7 +78,7 @@ public class Story extends BaseEntity{
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "Europe/Istanbul")
     public Date getEndTimeStamp() {
-        return startTimeStamp;
+        return endTimeStamp;
     }
 
 }
