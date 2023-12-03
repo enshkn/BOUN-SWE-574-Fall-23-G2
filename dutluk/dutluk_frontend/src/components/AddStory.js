@@ -106,9 +106,7 @@ const AddStoryForm = () => {
 
     scrollToFifthSection();
 
-    // Optionally, you can cleanup the effect
     return () => {
-      // Cleanup code if needed
     };
   }, []); 
 
@@ -120,7 +118,7 @@ const AddStoryForm = () => {
     setCircleRadius(newValue);
   };
 
-  // Location related event handlers
+
   const onPlacesChanged = () => {
     const places = searchBox.getPlaces();
     const place = places[0];
