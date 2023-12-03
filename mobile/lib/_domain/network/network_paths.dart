@@ -15,7 +15,7 @@ class NetworkPaths {
 
   //Story
   static const String getAllStory = '/api/story/all';
-  static const String getActivityFeed = '/api/story/feed';
+  static const String getActivityFeed = '/api/story/recommended';
   static const String getFallowedStories = '/api/story/following';
   static const String addStory = '/api/story/add';
   static const String myStories = '/api/story/fromUser';
@@ -25,6 +25,10 @@ class NetworkPaths {
 
   static const String likeStory = '/api/story/like/';
   static const String getLikedStories = '/api/story/liked';
+  static const String getSavedStories = '/api/story/saved';
+
+  static const String saveStory = '/api/story/save';
+
   static const String getRecent = '/api/story/recent';
 
   static const String search = '/api/story/search';

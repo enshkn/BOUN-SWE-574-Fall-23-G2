@@ -10,18 +10,18 @@ import com.SWE573.dutluk_backend.service.IntegrationService;
 import com.SWE573.dutluk_backend.service.RecommendationService;
 import com.SWE573.dutluk_backend.service.StoryService;
 import com.SWE573.dutluk_backend.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/story")
@@ -40,9 +40,10 @@ public class StoryController {
     }
 
     //MOCK UNTIL RECOMMENDED LOGIC IS ESTABLISHED
-    @GetMapping("/feed")
+    @GetMapping("/recommended")
     public ResponseEntity<?> findFeedStories(HttpServletRequest request){
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findAllByOrderByIdDesc());
+        User user = userService.validateTokenizedUser(request);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.recommendedStories(user));
     }
 
     @PostMapping("/add")
@@ -219,7 +220,7 @@ public class StoryController {
     }
 
     @PostMapping("/like/")
-    public ResponseEntity<?> likeStory(@RequestBody LikeRequest likeRequest, HttpServletRequest request){
+    public ResponseEntity<?> likeStory(@RequestBody LikeRequest likeRequest, HttpServletRequest request) throws JsonProcessingException {
         User tokenizedUser = userService.validateTokenizedUser(request);
         Story likedStory = storyService.likeStory(likeRequest.getLikedEntityId(),tokenizedUser.getId());
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),likedStory);
@@ -280,7 +281,19 @@ public class StoryController {
     }
 
     @GetMapping("/recEndPoint")
-    public String recommendationEndpointTest(){
-        return recService.testEndpoint();
+    public ResponseEntity<?> recommendationEndpointTest(HttpServletRequest request){
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),recService.testEndpoint());
+    }
+
+    @GetMapping("/isLikedByUser/{storyId}")
+    public ResponseEntity<?> isStoryLikedByUser(@PathVariable Long storyId,HttpServletRequest request){
+        User tokenizedUser = userService.validateTokenizedUser(request);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.isLikedByUser(storyId,tokenizedUser));
+    }
+
+    @GetMapping("/isSavedByUser/{storyId}")
+    public ResponseEntity<?> isStorySavedByUser(@PathVariable Long storyId,HttpServletRequest request){
+        User tokenizedUser = userService.validateTokenizedUser(request);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.isSavedByUser(storyId,tokenizedUser));
     }
 }

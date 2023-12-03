@@ -260,10 +260,31 @@ class MockIStoryRepository extends _i1.Mock implements _i7.IStoryRepository {
             _i8.Future<(_i9.Failure?, _i2.StoryModel?)>.value((null, null)),
       ) as _i8.Future<(_i9.Failure?, _i2.StoryModel?)>);
   @override
+  _i8.Future<(_i9.Failure?, _i2.StoryModel?)> addSave({required int? itemId}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #addSave,
+          [],
+          {#itemId: itemId},
+        ),
+        returnValue:
+            _i8.Future<(_i9.Failure?, _i2.StoryModel?)>.value((null, null)),
+      ) as _i8.Future<(_i9.Failure?, _i2.StoryModel?)>);
+  @override
   _i8.Future<(_i9.Failure?, List<_i2.StoryModel>?)> getLikedStories() =>
       (super.noSuchMethod(
         Invocation.method(
           #getLikedStories,
+          [],
+        ),
+        returnValue: _i8.Future<(_i9.Failure?, List<_i2.StoryModel>?)>.value(
+            (null, null)),
+      ) as _i8.Future<(_i9.Failure?, List<_i2.StoryModel>?)>);
+  @override
+  _i8.Future<(_i9.Failure?, List<_i2.StoryModel>?)> getSavedStories() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getSavedStories,
           [],
         ),
         returnValue: _i8.Future<(_i9.Failure?, List<_i2.StoryModel>?)>.value(

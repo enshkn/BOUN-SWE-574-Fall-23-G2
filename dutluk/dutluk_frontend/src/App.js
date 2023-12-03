@@ -22,10 +22,13 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import { QRCode } from 'antd';
+import Paragraph from "antd/es/skeleton/Paragraph";
 
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [size] = useState(600);
 
   useEffect(() => {
     axios
@@ -58,7 +61,7 @@ function App() {
   return (
     <Router>
       <Navbar
-        style={{ backgroundColor: "#ff5500ca" }}
+        style={{ backgroundColor: "#ff5500ca", color: "white" }}
         expand="lg"
         sticky="top"
         className="nav"
@@ -72,7 +75,7 @@ function App() {
               <Nav.Link href="/story/followings" className="nav-link">
                 Story Feed
               </Nav.Link>
-              <Nav.Link href="/story/recommended-stories" className="nav-link">
+              <Nav.Link href="/story/recommended" className="nav-link">
                 Recommended Stories
               </Nav.Link>
               <Nav.Link href="/story/all-stories" className="nav-link">
@@ -135,7 +138,14 @@ function App() {
           path="/"
           element={
             <div className="dutluk-container">
-              <img src={DutlukImage} alt="Dutluk" className="dutluk-image" />
+              <QRCode
+                errorLevel="H"
+                type="svg"
+                size={size}
+                iconSize={size / 3}
+                value="https://drive.google.com/file/d/1CNu4UZIRLdt-MiicpNkl5kSKHmhClR_1/view?usp=drive_link"
+                icon="https://imgtr.ee/images/2023/12/03/6a9ea85221f5a50f74baa5578a9a9d3c.jpeg"
+              />
             </div>
           }
         />

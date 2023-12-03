@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_map_location_picker/map_location_picker.dart'
     hide Location;
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swe/_application/story/story_cubit.dart';
 import 'package:swe/_application/story/story_state.dart';
 import 'package:swe/_core/env/env.dart';
@@ -54,7 +55,7 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
   List<LocationModel> selectedLocationsforMap = [];
   List<int> radiusList = [];
   final FocusNode _focusNode = FocusNode();
-  late LatLng? _currentPosition = const LatLng(0, 0);
+  late LatLng? _currentPosition;
   final Location _locationController = Location();
   bool showRadiusSelection = false;
   double selectedLat = 0;
@@ -69,6 +70,8 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
 
   @override
   void initState() {
+    getLocationMemory();
+    getCurrentLocation();
     filter = const StoryFilter();
     radiusController = TextEditingController();
     latitudeController = TextEditingController();
@@ -77,11 +80,19 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
     endTimeStampController = TextEditingController();
     decadeController = TextEditingController();
     seasonController = TextEditingController();
-    getCurrentLocation();
 
     setFilter(widget.currentFilter);
 
     super.initState();
+  }
+
+  Future<void> getLocationMemory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final latitude = prefs.getDouble('latitude');
+    final longitude = prefs.getDouble('longitude');
+    if (latitude != null && longitude != null) {
+      _currentPosition = LatLng(latitude, longitude);
+    }
   }
 
   void setFilter(StoryFilter? filter) {
@@ -181,9 +192,11 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
                             height: MediaQuery.of(context).size.height * 0.8,
                             child: MapLocationPicker(
                               hideAreasList: true,
-                              hideLocationList: true,
                               radiusList: radiusList,
                               apiKey: AppEnv.apiKey,
+                              getLocation: () {
+                                getCurrentLocation();
+                              },
                               currentLatLng: filter.isEmpty
                                   ? _currentPosition
                                   : latitudeController.text == '' &&
@@ -207,9 +220,6 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
                               bottomCardShape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18),
                               ),
-                              getLocation: () {
-                                getCurrentLocation();
-                              },
                               onDecodeAddress: (
                                 GeocodingResult? result,
                                 LatLng? location,
@@ -318,7 +328,19 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
     }
   } */
 
+  /* Future<void> getCurrentLocation() async {
+    currentLocation = await _locationController.getLocation();
+    if (currentLocation.latitude != null && currentLocation.longitude != null) {
+      setState(() {
+        _currentPosition =
+            LatLng(currentLocation.latitude!, currentLocation.longitude!);
+        locationLoading = false;
+      });
+    }
+  } */
+
   Future<void> getCurrentLocation() async {
+    LocationData currentLocation;
     currentLocation = await _locationController.getLocation();
     if (currentLocation.latitude != null && currentLocation.longitude != null) {
       setState(() {

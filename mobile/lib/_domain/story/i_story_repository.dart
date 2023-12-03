@@ -20,7 +20,12 @@ abstract interface class IStoryRepository {
   EitherFuture<StoryModel> addFavorite({
     required int itemId,
   });
+  EitherFuture<StoryModel> addSave({
+    required int itemId,
+  });
   EitherFuture<List<StoryModel>> getLikedStories();
+  EitherFuture<List<StoryModel>> getSavedStories();
+
   EitherFuture<List<StoryModel>> getRecentStories();
   EitherFuture<CommentModel> postComment(PostCommentModel model);
 

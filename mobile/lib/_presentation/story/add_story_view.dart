@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_map_location_picker/map_location_picker.dart'
@@ -40,8 +41,7 @@ enum TimeResolutionType {
   exactDate(0),
   exactDateWithTime(1),
   dateRange(2),
-  decade(3),
-  year(4);
+  decade(3);
 
   const TimeResolutionType(this.value);
   final int value;
@@ -91,6 +91,8 @@ class _AddStoryViewState extends State<AddStoryView>
   bool showRadiusSelection = false;
 
   final customToolBarList = [
+    ToolBarStyle.image,
+    ToolBarStyle.link,
     ToolBarStyle.bold,
     ToolBarStyle.italic,
     ToolBarStyle.align,
@@ -101,8 +103,6 @@ class _AddStoryViewState extends State<AddStoryView>
     ToolBarStyle.clean,
     ToolBarStyle.addTable,
     ToolBarStyle.editTable,
-    ToolBarStyle.link,
-    ToolBarStyle.image,
   ];
 
   final _toolbarColor = Colors.grey.shade200;
@@ -125,6 +125,9 @@ class _AddStoryViewState extends State<AddStoryView>
   late String selectedMonth;
   late DateTime selectedStartDateTime;
   late DateTime selectedEndDateTime;
+  late DateTime selectedStartDate;
+  late DateTime selectedEndDate;
+
   String selectedAddress = 'null';
   double selectedLat = 0;
   double selectedLng = 0;
@@ -143,7 +146,6 @@ class _AddStoryViewState extends State<AddStoryView>
   bool exactDateWithTimeSelected = false;
   bool dateRangeSelected = false;
   bool decadeSelected = false;
-  bool yearSelected = false;
   int currnetIndex = 0;
   bool showBottomNav = true;
   String? selectTimeResolutions;
@@ -170,8 +172,8 @@ class _AddStoryViewState extends State<AddStoryView>
     'Exact Date with Time',
     'Date Range',
     'Decade',
-    'Year',
   ];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -189,6 +191,8 @@ class _AddStoryViewState extends State<AddStoryView>
     story = '';
     selectedStartDateTime = DateTime(0);
     selectedEndDateTime = DateTime(0);
+    selectedStartDate = DateTime(0);
+    selectedEndDate = DateTime(0);
   }
 
   @override
@@ -258,6 +262,7 @@ class _AddStoryViewState extends State<AddStoryView>
           child: WillPopScope(
             onWillPop: onPressedBack,
             child: Scaffold(
+              key: _scaffoldKey,
               backgroundColor: Colors.white,
               appBar: CustomAppBar(
                 context,
@@ -307,7 +312,7 @@ class _AddStoryViewState extends State<AddStoryView>
       child: Stack(
         children: [
           MapLocationPicker(
-            radiusList: radiusList,
+            radiusList: radiusList.isEmpty ? [10] : radiusList,
             locations: selectedLocationsforMap,
             getSelectedLocations: () async {
               setState(() {
@@ -534,7 +539,11 @@ class _AddStoryViewState extends State<AddStoryView>
                       onPressed: () {
                         setState(() {
                           showRadiusSelection = false;
-                          radiusList.add(int.parse(radiusController.text));
+                          radiusList.add(
+                            radiusController.text != ''
+                                ? int.parse(radiusController.text)
+                                : 10,
+                          );
                         });
                       },
                       icon: const Icon(Icons.send),
@@ -582,79 +591,78 @@ class _AddStoryViewState extends State<AddStoryView>
   }
 
   Widget storyInfoWidget() {
-    return SingleChildScrollView(
-      child: GestureDetector(
-        onTap: _focusNode.unfocus,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              AppTextFormField(
-                controller: titleController,
-                hintText: 'Add Title',
+    return GestureDetector(
+      onTap: _focusNode.unfocus,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          children: [
+            AppTextFormField(
+              controller: titleController,
+              hintText: 'Add Title',
+            ),
+            BaseWidgets.lowerGap,
+            AppTextFormField(
+              controller: tagController,
+              hintText: 'Add Tag/s (Divide with coma!)',
+            ),
+            BaseWidgets.lowerGap,
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.6,
+              decoration: BoxDecoration(
+                border: Border.all(color: context.appBarColor),
+                borderRadius: BorderRadius.circular(12),
               ),
-              BaseWidgets.lowerGap,
-              AppTextFormField(
-                controller: tagController,
-                hintText: 'Add Tag/s (Divide with coma!)',
-              ),
-              BaseWidgets.lowerGap,
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.5,
-                decoration: BoxDecoration(
-                  border: Border.all(color: context.appBarColor),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    ToolBar(
-                      toolBarColor: _toolbarColor,
-                      padding: const EdgeInsets.all(8),
-                      iconColor: _toolbarIconColor,
-                      activeIconColor: Colors.greenAccent.shade400,
+              child: Column(
+                children: [
+                  ToolBar.scroll(
+                    mainAxisSize: MainAxisSize.max,
+                    toolBarColor: _toolbarColor,
+                    controller: controller,
+                    padding: const EdgeInsets.all(8),
+                    iconColor: _toolbarIconColor,
+                    activeIconColor: Colors.greenAccent.shade400,
+                    customButtons: const [],
+                    toolBarConfig: customToolBarList,
+                  ),
+                  Expanded(
+                    child: QuillHtmlEditor(
+                      autoFocus: true,
+                      text: story,
+                      hintText: 'Write your story',
                       controller: controller,
-                      customButtons: const [],
-                      toolBarConfig: customToolBarList,
+                      minHeight: 500,
+                      textStyle: _editorTextStyle,
+                      hintTextStyle: _hintTextStyle,
+                      padding: const EdgeInsets.only(left: 10, top: 10),
+                      hintTextPadding: const EdgeInsets.only(left: 20),
+                      backgroundColor: _backgroundColor,
+                      onTextChanged: (text) {
+                        setState(() async {
+                          story = text;
+                          htmlText = await controller.getText();
+                        });
+                      },
+                      onFocusChanged: (focus) {
+                        debugPrint('has focus $focus');
+                        setState(_focusNode.unfocus);
+                      },
+                      loadingBuilder: (context) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1,
+                            color: Colors.red,
+                          ),
+                        );
+                      },
                     ),
-                    Expanded(
-                      child: QuillHtmlEditor(
-                        autoFocus: true,
-                        text: story,
-                        hintText: 'Write your story',
-                        controller: controller,
-                        minHeight: 500,
-                        textStyle: _editorTextStyle,
-                        hintTextStyle: _hintTextStyle,
-                        padding: const EdgeInsets.only(left: 10, top: 10),
-                        hintTextPadding: const EdgeInsets.only(left: 20),
-                        backgroundColor: _backgroundColor,
-                        onTextChanged: (text) {
-                          setState(() async {
-                            story = text;
-                            htmlText = await controller.getText();
-                          });
-                        },
-                        onFocusChanged: (focus) {
-                          debugPrint('has focus $focus');
-                          setState(_focusNode.unfocus);
-                        },
-                        loadingBuilder: (context) {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 1,
-                              color: Colors.red,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              BaseWidgets.dynamicGap(500),
-            ],
-          ),
+            ),
+            BaseWidgets.dynamicGap(500),
+          ],
         ),
       ),
     );
@@ -683,13 +691,13 @@ class _AddStoryViewState extends State<AddStoryView>
                 onPressed: () async {
                   final dateTime = await dateTimePicker(
                     formattedStartDate,
-                    selectedStartDateTime,
+                    selectedStartDate,
                     OmniDateTimePickerType.date,
                   );
                   setState(() {
-                    selectedStartDateTime = dateTime!;
+                    selectedStartDate = dateTime!;
                     formattedStartDate =
-                        DateFormat.yMd().format(selectedStartDateTime);
+                        DateFormat.yMd().format(selectedStartDate);
                   });
                 },
               ),
@@ -737,7 +745,7 @@ class _AddStoryViewState extends State<AddStoryView>
                     labelStyle: const TextStyle(color: Colors.black),
                     border: Border.all(color: context.appBarColor),
                     backgroundColor: Colors.white,
-                    label: formattedStartDate ?? 'Choose Start Date and Time',
+                    label: formattedStartDate ?? 'Choose Start Date',
                     onPressed: () async {
                       final dateTime = await dateTimePicker(
                         formattedStartDate,
@@ -746,9 +754,8 @@ class _AddStoryViewState extends State<AddStoryView>
                       );
                       setState(() {
                         selectedStartDateTime = dateTime!;
-                        formattedStartDate = DateFormat.yMd()
-                            .add_jm()
-                            .format(selectedStartDateTime);
+                        formattedStartDate =
+                            DateFormat.yMd().format(selectedStartDateTime);
                       });
                     },
                   ),
@@ -757,7 +764,7 @@ class _AddStoryViewState extends State<AddStoryView>
                     labelStyle: const TextStyle(color: Colors.black),
                     border: Border.all(color: context.appBarColor),
                     backgroundColor: Colors.white,
-                    label: formattedEndDate ?? 'Choose End Date and Time',
+                    label: formattedEndDate ?? 'Choose End Date',
                     onPressed: () async {
                       final dateTime = await dateTimePicker(
                         formattedEndDate,
@@ -771,9 +778,8 @@ class _AddStoryViewState extends State<AddStoryView>
                               0,
                               0,
                             );
-                        formattedEndDate = DateFormat.yMd()
-                            .add_jm()
-                            .format(selectedEndDateTime);
+                        formattedEndDate =
+                            DateFormat.yMd().format(selectedEndDateTime);
                       });
                     },
                   ),
@@ -836,31 +842,23 @@ class _AddStoryViewState extends State<AddStoryView>
                 exactDateWithTimeSelected = false;
                 dateRangeSelected = false;
                 decadeSelected = false;
-                yearSelected = false;
+
               case TimeResolutionType.exactDateWithTime:
                 exatDateSelected = false;
                 exactDateWithTimeSelected = true;
                 dateRangeSelected = false;
                 decadeSelected = false;
-                yearSelected = false;
+
               case TimeResolutionType.dateRange:
                 exatDateSelected = false;
                 exactDateWithTimeSelected = false;
                 dateRangeSelected = true;
                 decadeSelected = false;
-                yearSelected = false;
               case TimeResolutionType.decade:
                 exatDateSelected = false;
                 exactDateWithTimeSelected = false;
                 dateRangeSelected = false;
                 decadeSelected = true;
-                yearSelected = false;
-              case TimeResolutionType.year:
-                exatDateSelected = false;
-                exactDateWithTimeSelected = false;
-                dateRangeSelected = false;
-                decadeSelected = false;
-                yearSelected = true;
             }
           }
         });
@@ -976,21 +974,28 @@ class _AddStoryViewState extends State<AddStoryView>
 
   Future<void> onPressSubmit() async {
     final tagsList = tagController.text.split(',');
-
     var starttimecheck = false;
+    var endtimecheck = false;
+    /* var endTime = <String>[];
     var startTime = <String>[];
+    if (dateRangeSelected) {
+      if (selectedStartDateTime != DateTime(0)) {
+        final parsedStartTime = selectedStartDateTime.toString();
+        startTime = parsedStartTime.split(':00.000');
+        starttimecheck = true;
+      }
+
+      if (selectedEndDateTime != DateTime(0)) {
+        final parsedEndTime = selectedEndDateTime.toString();
+        endTime = parsedEndTime.split(':00.000');
+        endtimecheck = true;
+      }
+    } */
 
     if (selectedStartDateTime != DateTime(0)) {
-      final parsedStartTime = selectedStartDateTime.toString();
-      startTime = parsedStartTime.split(':00.000');
       starttimecheck = true;
     }
-
-    var endtimecheck = false;
-    var endTime = <String>[];
     if (selectedEndDateTime != DateTime(0)) {
-      final parsedEndTime = selectedEndDateTime.toString();
-      endTime = parsedEndTime.split(':00.000');
       endtimecheck = true;
     }
 
@@ -1000,14 +1005,28 @@ class _AddStoryViewState extends State<AddStoryView>
       labels: tagsList,
       season: selectedSeason,
       decade: selectedDecade,
-      startTimeStamp: !starttimecheck ? null : startTime[0],
-      endTimeStamp: !endtimecheck ? null : endTime[0],
+/*       startTimeStamp: !starttimecheck ? null : startTime[0],
+      endTimeStamp: !endtimecheck ? null : endTime[0], */
+      startTimeStamp: starttimecheck
+          ? exactDateWithTimeSelected
+              ? selectedStartDateTime.toString()
+              : selectedStartDate.toString()
+          : null,
+      endTimeStamp: endtimecheck
+          ? exactDateWithTimeSelected
+              ? selectedEndDateTime.toString()
+              : selectedEndDate.toString()
+          : null,
+      startHourFlag: exactDateWithTimeSelected ? 1 : 0,
+      endHourFlag:
+          exactDateWithTimeSelected && selectedEndDateTime != DateTime(0)
+              ? 1
+              : 0,
       locations: locations,
     );
     await cubit.addStory(model).then((value) {
       if (value) {
-        cubit.showNotification('Your Story is added.');
-        Navigator.of(context).pop();
+        Navigator.of(_scaffoldKey.currentContext!).pop();
       }
     });
   }
