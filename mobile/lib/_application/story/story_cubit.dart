@@ -115,6 +115,7 @@ final class StoryCubit extends BaseCubit<StoryState> {
         return false;
       },
       (data) {
+        showNotification('Your Story is added.');
         return true;
       },
     );

@@ -52,8 +52,10 @@ class _OtherProfileViewState extends State<OtherProfileView> {
       builder: (context, sessionCubit, sessionState) {
         final user = sessionState.authUser;
         if (user!.following != null) {
-          if (user.following!.contains(widget.profile)) {
-            isfollowed = true;
+          for (var i = 0; i < user.following!.length; i++) {
+            if (user.following![i].id == widget.profile.id) {
+              isfollowed = true;
+            }
           }
         }
         return BaseView<ProfileCubit, ProfileState>(
