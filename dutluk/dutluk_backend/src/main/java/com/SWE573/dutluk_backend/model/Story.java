@@ -73,27 +73,12 @@ public class Story extends BaseEntity{
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "Europe/Istanbul")
     public Date getStartTimeStamp() {
-        if(startHourFlag != null && startHourFlag != 1){
-            return getStartTimeStampWithoutTime();
-        }
-        return startTimeStamp;
-    }
-    @JsonFormat(pattern = "dd/MM/yyyy", timezone = "Europe/Istanbul")
-    public Date getStartTimeStampWithoutTime() {
         return startTimeStamp;
     }
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "Europe/Istanbul")
     public Date getEndTimeStamp() {
-        if(endHourFlag != null && endHourFlag == 1){
-            return getEndTimeStampWithoutTime();
-        }
         return startTimeStamp;
-    }
-
-    @JsonFormat(pattern = "dd/MM/yyyy", timezone = "Europe/Istanbul")
-    public Date getEndTimeStampWithoutTime() {
-        return endTimeStamp;
     }
 
 }
