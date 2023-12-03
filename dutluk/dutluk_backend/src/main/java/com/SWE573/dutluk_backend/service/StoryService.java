@@ -10,11 +10,11 @@ import com.SWE573.dutluk_backend.request.StoryEditRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 
 @Service
 public class StoryService {
@@ -375,6 +375,16 @@ public class StoryService {
             sortedList.sort(Comparator.comparingLong(Story::getId).reversed());
             return sortedList;
         }
-        return Collections.emptyList(); // or return blankStoryList;
+        return Collections.emptyList();
+    }
+
+    public Boolean isLikedByUser(Long storyId, User user){
+        Set<Long> userLikedStories = user.getLikedStories();
+        return userLikedStories.contains(storyId);
+    }
+
+    public Boolean isSavedByUser(Long storyId, User user){
+        Set<Long> userSavedStories = user.getSavedStories();
+        return userSavedStories.contains(storyId);
     }
 }

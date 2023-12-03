@@ -13,7 +13,7 @@ public class RecVectorizeOrEditRequest { // vectorize && vectorize-edit
 
     private String type;
 
-    private Long ids;
+    private String ids;
 
     private List<String> tags;
 

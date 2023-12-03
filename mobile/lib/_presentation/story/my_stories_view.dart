@@ -103,22 +103,16 @@ class _MyStoriesViewState extends State<MyStoriesView> {
                                   },
                                   child: StoryCard(
                                     storyModel: item,
+                                    myStories: true,
+                                    showFavouriteButton: false,
                                     onDeleteTap: () async {
                                       await cubit.deleteStory(item.id);
-                                      await cubit.getMyStories();
                                     },
                                     onTagSearch: (label) async {
                                       await context.router.push(
                                         TagSearchRoute(
                                           tag: label,
                                         ),
-                                      );
-                                    },
-                                    isSaved: isSaved,
-                                    isSavedLoading: isLoading,
-                                    onSavedTap: () async {
-                                      await addSave(
-                                        storyId: item.id,
                                       );
                                     },
 
