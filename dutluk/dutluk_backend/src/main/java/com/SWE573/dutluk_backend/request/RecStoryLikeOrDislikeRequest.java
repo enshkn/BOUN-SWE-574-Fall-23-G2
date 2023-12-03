@@ -7,9 +7,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class RecStoryLikeOrDislikeRequest {
-
-
+public class RecStoryLikeOrDislikeRequest { // story-liked & story-disliked
     private String type;
 
     private String storyId;

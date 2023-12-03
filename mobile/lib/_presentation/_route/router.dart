@@ -11,6 +11,7 @@ import 'package:swe/_presentation/app/view/timeline/view/timeline_view.dart';
 import 'package:swe/_presentation/story/add_story_view.dart';
 import 'package:swe/_presentation/story/liked_stories_view.dart';
 import 'package:swe/_presentation/story/my_stories_view.dart';
+import 'package:swe/_presentation/story/saved_stories_view.dart';
 import 'package:swe/_presentation/story/story_details_view.dart';
 import 'package:swe/_presentation/story/tag_search_view.dart';
 import '../app/view/app_view.dart';
@@ -132,6 +133,10 @@ class AppRouter extends _$AppRouter {
             AutoRoute(
               path: RoutePaths.LIKEDSTORIES,
               page: LikedStoiresRoute.page,
+            ),
+            AutoRoute(
+              path: RoutePaths.SAVEDSTORIES,
+              page: SavedStoriesRoute.page,
             ),
             AutoRoute(
               path: RoutePaths.STORYDETAILS,

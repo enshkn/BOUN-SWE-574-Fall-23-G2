@@ -6,6 +6,7 @@ import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.StoryRepository;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -31,7 +32,12 @@ class StoryServiceTest {
     private StoryService storyService;
 
     @Mock
+    private RecommendationService recService;
+
+    @Mock
     private ImageService imageService;
+
+
 
     @BeforeEach
     void setUp() {
@@ -226,7 +232,7 @@ class StoryServiceTest {
 
 
     @Test
-    void testLikeStory() {
+    void testLikeStory() throws JsonProcessingException {
 
         Story story = Story.builder()
                 .title("Test Story")

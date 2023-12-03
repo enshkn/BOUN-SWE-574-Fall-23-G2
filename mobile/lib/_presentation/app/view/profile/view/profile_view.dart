@@ -131,6 +131,43 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
               ),
               const Divider(),
+              ButtonCard(
+                onPressed: () {
+                  context.router.push(const SavedStoriesRoute());
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Icon(Icons.chrome_reader_mode),
+                          ),
+                          BaseWidgets.normalGap,
+                          const Text(
+                            'Saved Stories',
+                            style: TextStyles.listTitle(),
+                          ),
+                        ],
+                      ),
+                      BaseWidgets.normalGap,
+                      const SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: Icon(Icons.arrow_forward),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Divider(),
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: AppButton(
