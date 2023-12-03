@@ -64,13 +64,13 @@ function MyStories() {
       <h1>My Stories</h1>
       {myStories.map((story) => (
         <StoryList story={story}>
-          <button
+          {/* <button
             className="edit-button"
             onClick={() => handleEdit(story.id)}
           >
             Edit Story
           </button>
-          <br></br><br></br>
+          <br></br><br></br> */}
           <button
             className="delete-button"
             onClick={() => handleDelete(story.id)}
