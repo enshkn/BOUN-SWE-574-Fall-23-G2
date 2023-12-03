@@ -368,6 +368,7 @@ const AddStoryForm = () => {
   return (
     <Space
     direction="vertical"
+    align="center"
     style={{
       width: '100%',
     }}
