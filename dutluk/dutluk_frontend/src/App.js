@@ -72,7 +72,7 @@ function App() {
               <Nav.Link href="/story/followings" className="nav-link">
                 Story Feed
               </Nav.Link>
-              <Nav.Link href="/story/recommended-stories" className="nav-link">
+              <Nav.Link href="/story/recommended" className="nav-link">
                 Recommended Stories
               </Nav.Link>
               <Nav.Link href="/story/all-stories" className="nav-link">
