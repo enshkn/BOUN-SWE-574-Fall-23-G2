@@ -65,8 +65,8 @@ async def story_liked(data: UserInteraction):
         story_vector = vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
         user_vector = story_vector
         np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
-        updated_user_vector = like_story_operations(np_story_vector=np_story_vector, np_user_vector=np_user_vector,
-                                                    user_weight=user_weight)
+        updated_user_vector = np_user_vector
+        response = upsert(final_text_vector=updated_user_vector, pinecone_index=index, vector_ids=user_id, vector_type="user")
     else:
         # fetch story and user vectors
         story_vector = vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
@@ -76,9 +76,9 @@ async def story_liked(data: UserInteraction):
         # vector operations for story liking
         updated_user_vector = like_story_operations(np_story_vector=np_story_vector, np_user_vector=np_user_vector,
                                                     user_weight=user_weight)
-    # update the vector
-    response = update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index,
-                                  vector_ids=user_id, vector_type=vector_type)
+        # update the vector
+        response = update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index,
+                                      vector_ids=user_id, vector_type=vector_type)
     return {"return": response, "updated_vector": updated_user_vector.tolist()}
 
 
@@ -91,7 +91,8 @@ async def story_unliked(data: UserInteraction):
     story_id = generate_id_with_prefix(vector_id=story_id, vector_type=vector_type)
     user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
     # fetch story and user vectors
-    story_vector, user_vector = story_user_vectors_fetcher(pinecone_index=index, story_id=story_id, user_id=user_id)
+    story_vector = vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
+    user_vector = vector_fetcher(pinecone_index=index, vector_id=user_id, vector_type="user")
     # python list to nparray
     np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
     # vector operations for story unliking
@@ -100,7 +101,7 @@ async def story_unliked(data: UserInteraction):
     # update the vector
     response = update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index,
                                   vector_ids=user_id, vector_type=vector_type)
-    return {"return": response}
+    return {"return": response, "updated_vector=": updated_user_vector.tolist()}
 
 
 @app.post("/recommend-story")
