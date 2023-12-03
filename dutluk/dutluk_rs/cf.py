@@ -191,7 +191,10 @@ def like_story_operations(np_user_vector, np_story_vector, user_weight):
 
 
 def unlike_story_operations(np_user_vector, np_story_vector, user_weight):
-    updated_user_vector = ((np_user_vector * (user_weight + 1)) - np_story_vector) / user_weight
+    if user_weight != 0:
+        updated_user_vector = ((np_user_vector * (user_weight + 1)) - np_story_vector) / user_weight
+    else:
+        updated_user_vector = np.array(create_empty_float_list())
     return updated_user_vector
 
 
