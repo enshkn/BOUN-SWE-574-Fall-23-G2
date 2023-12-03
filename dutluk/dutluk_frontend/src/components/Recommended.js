@@ -10,7 +10,7 @@ function RecommendedStories() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/feed`, {
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/recommended`, {
         withCredentials: true,
       })
       .then((response) => {
