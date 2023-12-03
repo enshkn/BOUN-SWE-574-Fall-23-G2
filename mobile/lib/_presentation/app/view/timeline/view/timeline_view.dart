@@ -46,22 +46,12 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: AppBar(
-                leading: SizedBox(
-                  child: Center(
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(24),
-                      ),
-                      child: Image.asset(
-                        'assets/images/dutlukfinal_1.jpg',
-                        fit: BoxFit.fill,
-                      ),
-                    ),
+                title: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  child: Image.asset(
+                    'assets/images/2dutlukfinal.png',
+                    fit: BoxFit.contain,
                   ),
-                ),
-                title: Text(
-                  'DutlukApp',
-                  style: const TextStyle().copyWith(color: Colors.black),
                 ),
                 backgroundColor: Colors.white,
                 elevation: 0,

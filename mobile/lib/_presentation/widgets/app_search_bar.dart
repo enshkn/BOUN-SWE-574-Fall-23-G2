@@ -56,19 +56,19 @@ class _AppSearchBarState extends State<AppSearchBar> {
               fillColor: Colors.white,
               filled: true,
               border: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
+                borderSide: BorderSide(color: Colors.orange),
                 borderRadius: BorderRadius.all(
                   Radius.circular(12),
                 ),
               ),
               focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
+                borderSide: BorderSide(color: Colors.orange),
                 borderRadius: BorderRadius.all(
                   Radius.circular(12),
                 ),
               ),
               enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
+                borderSide: BorderSide(color: Colors.orange),
                 borderRadius: BorderRadius.all(
                   Radius.circular(12),
                 ),

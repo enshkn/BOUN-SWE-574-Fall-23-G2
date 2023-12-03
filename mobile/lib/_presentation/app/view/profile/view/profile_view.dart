@@ -30,9 +30,12 @@ class _ProfileViewState extends State<ProfileView> {
         return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
-            title: const Text(
-              'DutlukApp',
-              style: TextStyle(color: Colors.black),
+            title: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: Image.asset(
+                'assets/images/2dutlukfinal.png',
+                fit: BoxFit.contain,
+              ),
             ),
             backgroundColor: Colors.white,
             elevation: 0,

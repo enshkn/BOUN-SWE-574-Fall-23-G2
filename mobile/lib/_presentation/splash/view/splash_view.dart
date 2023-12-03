@@ -18,6 +18,7 @@ class SplashView extends StatelessWidget {
       },
       builder: (context, SplashCubit cubit, SplashState state) {
         return Scaffold(
+          backgroundColor: Colors.white,
           body: Center(
             child: SizedBox(
               child: Center(
@@ -28,7 +29,7 @@ class SplashView extends StatelessWidget {
                   child: AspectRatio(
                     aspectRatio: 16 / 9,
                     child: Image.asset(
-                      'assets/images/dutluk_logo.png',
+                      'assets/images/splash.gif',
                     ),
                   ),
                 ),
