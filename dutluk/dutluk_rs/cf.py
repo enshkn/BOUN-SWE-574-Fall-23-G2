@@ -158,6 +158,12 @@ def user_like_unlike_parser(data: UserInteraction):
     return vector_type, story_id, user_id, user_weight
 
 
+def vector_fetcher(pinecone_index, vector_id, vector_type):
+    vector_response = pinecone_index.fetch([vector_id])
+    vector = vector_response['vectors'][vector_id]['values']
+    return vector
+
+
 def story_user_vectors_fetcher(pinecone_index, story_id, user_id):
     story_response = pinecone_index.fetch([story_id])
     user_response = pinecone_index.fetch([user_id])

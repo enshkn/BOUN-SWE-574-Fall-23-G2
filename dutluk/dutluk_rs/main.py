@@ -5,7 +5,7 @@ from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectori
     update_user_vector, user_like_unlike_parser, story_user_vectors_fetcher, list_to_nparray, like_story_operations, \
     unlike_story_operations, single_vector_fetcher, recommendation_parser, story_and_user_recommender, list_to_string, \
     generate_id_with_prefix, generate_ids_with_prefix, parse_ids_with_prefix_for_lists, parse_id_with_prefix, \
-    create_empty_float_list, upsert_for_empty_list
+    create_empty_float_list, upsert_for_empty_list, vector_fetcher
 
 app, index, word2vec_model = app_initializer()
 
@@ -59,21 +59,27 @@ async def story_liked(data: UserInteraction):
     # parse the user and story attributes
     vector_type, story_id, user_id, user_weight = user_like_unlike_parser(data=data)
     # add prefix to vector_id according to the type
-    story_id = generate_id_with_prefix(vector_id=story_id, vector_type=vector_type)
+    story_id = generate_id_with_prefix(vector_id=story_id, vector_type="story")
     user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
-    print(story_id, user_id)
-    print(type(story_id), type(user_id))
-    # fetch story and user vectors
-    story_vector, user_vector = story_user_vectors_fetcher(pinecone_index=index, story_id=story_id, user_id=user_id)
-    # python list to nparray
-    np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
-    # vector operations for story liking
-    updated_user_vector = like_story_operations(np_story_vector=np_story_vector, np_user_vector=np_user_vector,
-                                                user_weight=user_weight)
+    if user_weight < 2:
+        story_vector = vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
+        user_vector = story_vector
+        np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
+        updated_user_vector = like_story_operations(np_story_vector=np_story_vector, np_user_vector=np_user_vector,
+                                                    user_weight=user_weight)
+    else:
+        # fetch story and user vectors
+        story_vector = vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
+        user_vector = vector_fetcher(pinecone_index=index, vector_id=user_id, vector_type="user")
+        # python list to nparray
+        np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
+        # vector operations for story liking
+        updated_user_vector = like_story_operations(np_story_vector=np_story_vector, np_user_vector=np_user_vector,
+                                                    user_weight=user_weight)
     # update the vector
     response = update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index,
                                   vector_ids=user_id, vector_type=vector_type)
-    return {"return": response}
+    return {"return": response, "updated_vector": updated_user_vector.tolist()}
 
 
 @app.post("/story-unliked")
@@ -84,8 +90,6 @@ async def story_unliked(data: UserInteraction):
     # add prefix to vector_id according to the type
     story_id = generate_id_with_prefix(vector_id=story_id, vector_type=vector_type)
     user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
-    print(story_id, user_id)
-    print(type(story_id), type(user_id))
     # fetch story and user vectors
     story_vector, user_vector = story_user_vectors_fetcher(pinecone_index=index, story_id=story_id, user_id=user_id)
     # python list to nparray
