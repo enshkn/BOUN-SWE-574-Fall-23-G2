@@ -10,7 +10,7 @@ function RecommendedStories() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/feed`, {
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/recommended`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -25,6 +25,7 @@ function RecommendedStories() {
   return (
     <Space
     direction="vertical"
+    align="center"
     style={{
       width: '100%',
     }}

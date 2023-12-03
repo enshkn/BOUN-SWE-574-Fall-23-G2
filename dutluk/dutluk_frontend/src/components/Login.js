@@ -49,7 +49,7 @@ function LoginComponent({ onLogin }) {
     <Space
       direction="vertical"
       style={{
-        width: "100%",
+        width: "400px",
       }}
     >
       {contextHolder}
