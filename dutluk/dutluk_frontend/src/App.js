@@ -58,7 +58,7 @@ function App() {
   return (
     <Router>
       <Navbar
-        style={{ backgroundColor: "#ff5500ca" }}
+        style={{ backgroundColor: "#ff5500ca", color: "white" }}
         expand="lg"
         sticky="top"
         className="nav"
