@@ -208,12 +208,11 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                       text,
                       user!,
                     ),
-                    BaseWidgets.lowerGap,
                     if (state.storyModel != null &&
                         state.storyModel!.comments != null)
                       GestureDetector(
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(8),
                           child: Text(
                             'Show Comments',
                             style: const TextStyles.body()
@@ -231,7 +230,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           );
                         },
                       ),
-                    BaseWidgets.lowerGap,
+                    BaseWidgets.lowestGap,
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                       child: CommentCard(
@@ -333,8 +332,81 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                   ],
                 ),
               ),
-              BaseWidgets.normalGap,
+              BaseWidgets.lowerGap,
               Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.orange),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Time Variants',
+                        style: TextStyle(color: Colors.orange.shade800),
+                      ),
+                      Row(
+                        children: [
+                          if (widget.model.startTimeStamp != null)
+                            Text(
+                              'Start Time: ${widget.model.startTimeStamp}',
+                              style: const TextStyles.body().copyWith(
+                                letterSpacing: 0.016,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.start,
+                            ),
+                          if (widget.model.endTimeStamp != null)
+                            BaseWidgets.lowestGap,
+                          if (widget.model.endTimeStamp != null)
+                            Text(
+                              'End Time: ${widget.model.endTimeStamp}',
+                              style: const TextStyles.body().copyWith(
+                                letterSpacing: 0.016,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.start,
+                            ),
+                        ],
+                      ),
+                      if (widget.model.decade != '' &&
+                          widget.model.decade != null)
+                        BaseWidgets.lowestGap,
+                      if (widget.model.decade != '' &&
+                          widget.model.decade != null)
+                        Text(
+                          'Decade: ${widget.model.decade!}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                      if (widget.model.season != '' &&
+                          widget.model.season != null)
+                        BaseWidgets.lowestGap,
+                      if (widget.model.season != '' &&
+                          widget.model.season != null)
+                        Text(
+                          'Season: ${widget.model.season!}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              /*  Container(
+                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.orange),
                   borderRadius: BorderRadius.circular(12),
@@ -358,7 +430,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.start,
                       ),
-                    BaseWidgets.lowerGap,
+                    if (widget.model.endTimeStamp != null) BaseWidgets.lowerGap,
                     if (widget.model.endTimeStamp != null)
                       Text(
                         'End Time: ${widget.model.endTimeStamp}',
@@ -400,30 +472,40 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                     BaseWidgets.lowerGap,
                   ],
                 ),
-              ),
-              BaseWidgets.lowerGap,
+              ), */
+
+              BaseWidgets.lowestGap,
               if (widget.model.locations != null)
                 Container(
+                  width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.orange),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: ExpansionTile(
-                    iconColor: Colors.orange.shade800,
-                    controller: controller2,
+                  child: Column(
+                    /*  iconColor: Colors.orange.shade800,
+                    controller: controller2
                     title: Text(
                       'Locations',
                       style: TextStyle(color: Colors.orange.shade800),
                     ),
-                    initiallyExpanded: true,
+                    initiallyExpanded: true, */
                     children: <Widget>[
-                      BaseWidgets.lowerGap,
+                      BaseWidgets.dynamicGap(4),
+                      Text(
+                        'Locations',
+                        style: TextStyle(color: Colors.orange.shade800),
+                      ),
+                      BaseWidgets.dynamicGap(4),
                       if (polylineLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
                           title: Text(
                             'Polyline Locations',
-                            style: TextStyle(color: Colors.orange.shade800),
+                            style: TextStyle(
+                              color: Colors.orange.shade800,
+                              fontSize: 14,
+                            ),
                           ),
                           controller: controller3,
                           children: [
@@ -485,13 +567,16 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                             ),
                           ],
                         ),
-                      if (polygonLocations.isNotEmpty) BaseWidgets.lowerGap,
+                      if (polygonLocations.isNotEmpty) BaseWidgets.lowestGap,
                       if (polygonLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
                           title: Text(
                             'Polygon Locations',
-                            style: TextStyle(color: Colors.orange.shade800),
+                            style: TextStyle(
+                              color: Colors.orange.shade800,
+                              fontSize: 14,
+                            ),
                           ),
                           controller: controller4,
                           children: [
@@ -559,7 +644,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           iconColor: Colors.orange.shade800,
                           title: Text(
                             'Circle Locations',
-                            style: TextStyle(color: Colors.orange.shade800),
+                            style: TextStyle(
+                              color: Colors.orange.shade800,
+                              fontSize: 14,
+                            ),
                           ),
                           controller: controller5,
                           children: [
@@ -624,13 +712,15 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                             ),
                           ],
                         ),
-                      if (pointLocations.isNotEmpty) BaseWidgets.lowerGap,
                       if (pointLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
                           title: Text(
                             'Point Locations',
-                            style: TextStyle(color: Colors.orange.shade800),
+                            style: TextStyle(
+                              color: Colors.orange.shade800,
+                              fontSize: 14,
+                            ),
                           ),
                           controller: controller6,
                           children: [
@@ -695,7 +785,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                     ],
                   ),
                 ),
-              BaseWidgets.lowerGap,
+              BaseWidgets.lowestGap,
               if (widget.model.labels != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -741,11 +831,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                 textAlign: TextAlign.center,
                 maxLines: 2,
               ),
-              BaseWidgets.lowerGap,
+              BaseWidgets.lowestGap,
               SingleChildScrollView(
                 child: Html(data: text),
               ),
-              BaseWidgets.highGap,
             ],
           ),
         );

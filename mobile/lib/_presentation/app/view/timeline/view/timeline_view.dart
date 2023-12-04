@@ -1,5 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:google_map_location_picker/map_location_picker.dart'
+    hide Location;
+import 'package:location/location.dart';
 import 'package:swe/_application/profile/profile_cubit.dart';
 import 'package:swe/_application/profile/profile_state.dart';
 import 'package:swe/_application/session/session_cubit.dart';
@@ -31,6 +34,30 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
   final FocusNode _focusNode = FocusNode();
   final debouncer = Debouncer(milliseconds: 500);
   TextEditingController? _searchController;
+  late LatLng? _currentPosition = const LatLng(0, 0);
+  final Location _locationController = Location();
+  bool locationLoading = true;
+
+  @override
+  void initState() {
+    getCurrentLocation();
+    super.initState();
+  }
+
+  Future<void> getCurrentLocation() async {
+    LocationData currentLocation;
+    Future.delayed(const Duration(seconds: 15), () async {
+      currentLocation = await _locationController.getLocation();
+      if (currentLocation.latitude != null &&
+          currentLocation.longitude != null) {
+        setState(() {
+          _currentPosition =
+              LatLng(currentLocation.latitude!, currentLocation.longitude!);
+          locationLoading = false;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +129,7 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
                         final filter = await showTimelineFilterModal(
                           context,
                           currentFilter: state.filter,
+                          currentPosition: _currentPosition,
                         );
                         if (filter == null || filter.isEmpty) return;
 
@@ -121,7 +149,9 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
                         itemBuilder: (item) {
                           return FavoriteWrapper(
                             userId: user.id!,
-                            initialStateSave: item.savedBy!.contains(user.id),
+                            initialStateSave: item.savedBy != null
+                                ? item.savedBy!.contains(user.id)
+                                : false,
                             storyId: item.id,
                             builder: (
                               context,
