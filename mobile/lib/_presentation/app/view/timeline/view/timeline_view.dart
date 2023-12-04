@@ -147,65 +147,101 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
                         controller: scrollController,
                         items: state.timelineResultStories,
                         itemBuilder: (item) {
-                          return FavoriteWrapper(
-                            userId: user.id!,
-                            initialStateSave: item.savedBy != null
-                                ? item.savedBy!.contains(user.id)
-                                : false,
-                            storyId: item.id,
-                            builder: (
-                              context,
-                              addFavorite,
-                              addSave,
-                              isfavorite,
-                              isSaved,
-                              isLoading,
-                              likeCount,
-                            ) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 8,
-                                ),
-                                height: 450,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    context.router.push(
-                                      StoryDetailsRoute(
-                                        model: item,
+                          return Stack(
+                            alignment: AlignmentDirectional.topEnd,
+                            children: <Widget>[
+                              FavoriteWrapper(
+                                userId: user.id!,
+                                initialStateSave: item.savedBy != null
+                                    ? item.savedBy!.contains(user.id)
+                                    : false,
+                                storyId: item.id,
+                                builder: (
+                                  context,
+                                  addFavorite,
+                                  addSave,
+                                  isfavorite,
+                                  isSaved,
+                                  isLoading,
+                                  likeCount,
+                                ) {
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 8,
+                                    ),
+                                    height: 450,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        context.router.push(
+                                          StoryDetailsRoute(
+                                            model: item,
+                                          ),
+                                        );
+                                      },
+                                      child: StoryCard(
+                                        storyModel: item,
+                                        showFavouriteButton: false,
+                                        onTagSearch: (label) async {
+                                          await context.router.push(
+                                            TagSearchRoute(
+                                              tag: label,
+                                            ),
+                                          );
+                                        },
+                                        isSaved: isSaved,
+                                        isSavedLoading: isLoading,
+                                        onSavedTap: () async {
+                                          await addSave(
+                                            storyId: item.id,
+                                          );
+                                        },
+                                        /*  likeCount: likeCount,
+                                                            isFavorite: isfavorite,
+                                                            isFavoriteLoading:
+                                                                isLoading,
+                                                            onFavouriteTap: () async {
+                                                              await addFavorite(
+                                                                storyId: item.id,
+                                                              );
+                                                            }, */
                                       ),
-                                    );
-                                  },
-                                  child: StoryCard(
-                                    storyModel: item,
-                                    showFavouriteButton: false,
-                                    onTagSearch: (label) async {
-                                      await context.router.push(
-                                        TagSearchRoute(
-                                          tag: label,
-                                        ),
-                                      );
-                                    },
-                                    isSaved: isSaved,
-                                    isSavedLoading: isLoading,
-                                    onSavedTap: () async {
-                                      await addSave(
-                                        storyId: item.id,
-                                      );
-                                    },
-                                    /*  likeCount: likeCount,
-                                                        isFavorite: isfavorite,
-                                                        isFavoriteLoading:
-                                                            isLoading,
-                                                        onFavouriteTap: () async {
-                                                          await addFavorite(
-                                                            storyId: item.id,
-                                                          );
-                                                        }, */
+                                    ),
+                                  );
+                                },
+                              ),
+                              Positioned(
+                                top: 10,
+                                bottom: 0,
+                                left: 25,
+                                child: Container(
+                                  height: double.infinity,
+                                  width: 1,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Positioned(
+                                top: 200,
+                                left: 5,
+                                child: Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white,
+                                  ),
+                                  child: Container(
+                                    margin: const EdgeInsets.all(5),
+                                    height: 30,
+                                    width: 30,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.orange,
+                                    ),
                                   ),
                                 ),
-                              );
-                            },
+                              ),
+                            ],
                           );
                         },
                       ),

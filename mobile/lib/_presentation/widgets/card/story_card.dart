@@ -72,6 +72,7 @@ class StoryCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       elevation: 6,
       child: Container(
+        width: MediaQuery.of(context).size.width * 0.8,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: Colors.white,
