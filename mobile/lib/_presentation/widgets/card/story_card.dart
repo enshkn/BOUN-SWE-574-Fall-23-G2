@@ -72,6 +72,7 @@ class StoryCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       elevation: 6,
       child: Container(
+        width: MediaQuery.of(context).size.width * 0.8,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: Colors.white,
@@ -112,24 +113,30 @@ class StoryCard extends StatelessWidget {
         ),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            child: Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: noImage
-                      ? Image.asset(
-                          'assets/images/dutluk_logo.png',
-                        )
-                      : Image.network(
-                          imgUrl!,
-                        ),
+          if (noImage)
+            SizedBox(
+              width: 100,
+              height: 100,
+              child: Image.asset(
+                'assets/images/dutluk_logo.png',
+              ),
+            )
+          else
+            SizedBox(
+              child: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Image.network(
+                      imgUrl!,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
           BaseWidgets.lowerGap,
           Text(
             storyModel.title,
@@ -139,7 +146,7 @@ class StoryCard extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 2,
           ),
-          BaseWidgets.lowerGap,
+          BaseWidgets.lowestGap,
           if (storyModel.locations != null && storyModel.locations!.isNotEmpty)
             Text(
               storyModel.locations![0].locationName!.toLocation() ?? '',
@@ -149,7 +156,7 @@ class StoryCard extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-          BaseWidgets.lowerGap,
+          BaseWidgets.lowestGap,
           if (storyModel.labels != null)
             SizedBox(
               height: 60,
@@ -229,7 +236,7 @@ class StoryCard extends StatelessWidget {
 
   Widget buildSaved() {
     return Positioned(
-      top: 0,
+      bottom: 10,
       right: 0,
       child: SizedBox(
         width: 50,

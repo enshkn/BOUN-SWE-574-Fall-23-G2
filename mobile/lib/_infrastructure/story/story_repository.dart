@@ -88,6 +88,7 @@ class StoryRepository implements IStoryRepository {
       type: HttpTypes.post,
       parserModel: StoryModel(),
       data: model.toJson(),
+      cachePolicy: CachePolicy.noCache,
     );
 
     switch (response.statusCode) {

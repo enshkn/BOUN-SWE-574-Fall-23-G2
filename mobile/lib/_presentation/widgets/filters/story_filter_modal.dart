@@ -18,9 +18,11 @@ import 'package:swe/_presentation/widgets/textformfield/app_text_form_field.dart
 class StoryFilterModal extends StatefulWidget {
   const StoryFilterModal({
     this.currentFilter,
+    this.currentposition,
     super.key,
   });
   final StoryFilter? currentFilter;
+  final LatLng? currentposition;
 
   @override
   State<StoryFilterModal> createState() => _StoryFilterModalState();
@@ -55,7 +57,7 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
   List<LocationModel> selectedLocationsforMap = [];
   List<int> radiusList = [];
   final FocusNode _focusNode = FocusNode();
-  late LatLng? _currentPosition;
+
   final Location _locationController = Location();
   bool showRadiusSelection = false;
   double selectedLat = 0;
@@ -70,8 +72,6 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
 
   @override
   void initState() {
-    getLocationMemory();
-    getCurrentLocation();
     filter = const StoryFilter();
     radiusController = TextEditingController();
     latitudeController = TextEditingController();
@@ -84,15 +84,6 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
     setFilter(widget.currentFilter);
 
     super.initState();
-  }
-
-  Future<void> getLocationMemory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final latitude = prefs.getDouble('latitude');
-    final longitude = prefs.getDouble('longitude');
-    if (latitude != null && longitude != null) {
-      _currentPosition = LatLng(latitude, longitude);
-    }
   }
 
   void setFilter(StoryFilter? filter) {
@@ -194,20 +185,19 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
                               hideAreasList: true,
                               radiusList: radiusList,
                               apiKey: AppEnv.apiKey,
-                              getLocation: () {
-                                getCurrentLocation();
-                              },
                               currentLatLng: filter.isEmpty
-                                  ? _currentPosition
+                                  ? widget.currentposition
                                   : latitudeController.text == '' &&
                                           longitudeController.text != ''
                                       ? LatLng(
-                                          double.parse(latitudeController.text),
+                                          double.parse(
+                                            latitudeController.text,
+                                          ),
                                           double.parse(
                                             longitudeController.text,
                                           ),
                                         )
-                                      : _currentPosition,
+                                      : widget.currentposition,
                               bottomCardMargin: const EdgeInsets.fromLTRB(
                                 8,
                                 0,
@@ -314,41 +304,6 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
         );
       },
     );
-  }
-
-  /* Future<void> getCurrentLocation() async {
-    LocationData currentLocation;
-    currentLocation = await _locationController.getLocation();
-    if (currentLocation.latitude != null && currentLocation.longitude != null) {
-      setState(() {
-        _currentPosition =
-            LatLng(currentLocation.latitude!, currentLocation.longitude!);
-        locationLoading = false;
-      });
-    }
-  } */
-
-  /* Future<void> getCurrentLocation() async {
-    currentLocation = await _locationController.getLocation();
-    if (currentLocation.latitude != null && currentLocation.longitude != null) {
-      setState(() {
-        _currentPosition =
-            LatLng(currentLocation.latitude!, currentLocation.longitude!);
-        locationLoading = false;
-      });
-    }
-  } */
-
-  Future<void> getCurrentLocation() async {
-    LocationData currentLocation;
-    currentLocation = await _locationController.getLocation();
-    if (currentLocation.latitude != null && currentLocation.longitude != null) {
-      setState(() {
-        _currentPosition =
-            LatLng(currentLocation.latitude!, currentLocation.longitude!);
-        locationLoading = false;
-      });
-    }
   }
 
   Future<void> onPressSubmit() async {

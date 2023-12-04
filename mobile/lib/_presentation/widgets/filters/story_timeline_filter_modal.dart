@@ -19,8 +19,10 @@ class StoryTimelineFilterModal extends StatefulWidget {
   const StoryTimelineFilterModal({
     this.currentFilter,
     super.key,
+    this.currentposition,
   });
   final StoryFilter? currentFilter;
+  final LatLng? currentposition;
 
   @override
   State<StoryTimelineFilterModal> createState() =>
@@ -60,7 +62,6 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
   List<LocationModel> selectedLocationsforMap = [];
   List<int> radiusList = [];
   final FocusNode _focusNode = FocusNode();
-  late LatLng? _currentPosition;
   final Location _locationController = Location();
   bool showRadiusSelection = false;
   double selectedLat = 0;
@@ -75,7 +76,6 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
 
   @override
   void initState() {
-    getLocationMemory();
     filter = const StoryFilter();
     radiusController = TextEditingController();
     latitudeController = TextEditingController();
@@ -86,20 +86,10 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
     seasonController = TextEditingController();
     titleController = TextEditingController();
     labelController = TextEditingController();
-    getCurrentLocation();
 
     setFilter(widget.currentFilter);
 
     super.initState();
-  }
-
-  Future<void> getLocationMemory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final latitude = prefs.getDouble('latitude');
-    final longitude = prefs.getDouble('longitude');
-    if (latitude != null && longitude != null) {
-      _currentPosition = LatLng(latitude, longitude);
-    }
   }
 
   void setFilter(StoryFilter? filter) {
@@ -209,7 +199,7 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
                               radiusList: radiusList,
                               apiKey: AppEnv.apiKey,
                               currentLatLng: filter.isEmpty
-                                  ? _currentPosition
+                                  ? widget.currentposition
                                   : latitudeController.text == '' &&
                                           longitudeController.text != ''
                                       ? LatLng(
@@ -218,7 +208,7 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
                                             longitudeController.text,
                                           ),
                                         )
-                                      : _currentPosition,
+                                      : widget.currentposition,
                               bottomCardMargin: const EdgeInsets.fromLTRB(
                                 8,
                                 0,
@@ -231,9 +221,6 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
                               bottomCardShape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18),
                               ),
-                              getLocation: () {
-                                getCurrentLocation();
-                              },
                               onDecodeAddress: (
                                 GeocodingResult? result,
                                 LatLng? location,
@@ -352,7 +339,7 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
     }
   } */
 
-  Future<void> getCurrentLocation() async {
+/*   Future<void> getCurrentLocation() async {
     currentLocation = await _locationController.getLocation();
     if (currentLocation.latitude != null && currentLocation.longitude != null) {
       setState(() {
@@ -361,7 +348,7 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
         locationLoading = false;
       });
     }
-  }
+  } */
 
   Future<void> onPressSubmit() async {
     final filter = StoryFilter(

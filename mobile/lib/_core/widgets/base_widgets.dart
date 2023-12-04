@@ -1,10 +1,11 @@
-
 import 'package:flutter/material.dart';
 import '../extensions/context_extensions.dart';
 
 class BaseWidgets {
   static Widget dynamicGap(double val) => SizedBox(height: val);
   static Widget get lowerGap => const SizedBox(height: 16);
+  static Widget get lowestGap => const SizedBox(height: 8);
+
   static Widget get normalGap => const SizedBox(height: 32);
   static Widget get highGap => const SizedBox(height: 64);
 
@@ -14,7 +15,7 @@ class BaseWidgets {
   static Widget get highDistance => const SizedBox(width: 64);
 
   static Widget baseDivider(BuildContext context) => Divider(
-    color: context.theme.colorScheme.secondary,
-    thickness: 2,
-  );
+        color: context.theme.colorScheme.secondary,
+        thickness: 2,
+      );
 }
