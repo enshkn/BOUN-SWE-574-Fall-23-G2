@@ -1,5 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:geocode/geocode.dart';
+import 'package:google_map_location_picker/map_location_picker.dart'
+    hide Location;
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swe/_application/session/session_cubit.dart';
@@ -37,6 +40,7 @@ class _NearbyViewState extends State<NearbyView> {
     longitude: 0,
   );
   late LocationData currentLocation;
+  Address? currentAddress;
   @override
   void initState() {
     _radiusController = TextEditingController();
@@ -52,9 +56,10 @@ class _NearbyViewState extends State<NearbyView> {
         latitude: currentLocation.latitude,
         longitude: currentLocation.longitude,
       );
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setDouble('latitude', currentLocation.latitude!);
-      await prefs.setDouble('longitude', currentLocation.longitude!);
+      currentAddress = await GeoCode().reverseGeocoding(
+        latitude: currentLocation.latitude!,
+        longitude: currentLocation.longitude!,
+      );
     }
   }
 
@@ -158,6 +163,15 @@ class _NearbyViewState extends State<NearbyView> {
                           ),
                         ),
                       ],
+                    ),
+                  if (currentAddress != null)
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: SizedBox(
+                        child: Text(
+                          '*Your Current Location: ${currentAddress!.city}, ${currentAddress!.streetAddress}, ${currentAddress!.region} ',
+                        ),
+                      ),
                     ),
                   if (user != null)
                     SizedBox(

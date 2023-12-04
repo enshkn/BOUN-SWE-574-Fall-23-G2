@@ -815,6 +815,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  geocode:
+    dependency: "direct main"
+    description:
+      name: geocode
+      sha256: cf9727c369bb3703b97d6e440225962dc27b7f3c686662fe3cdcc91cbfb7074d
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   geolocator:
     dependency: transitive
     description:
