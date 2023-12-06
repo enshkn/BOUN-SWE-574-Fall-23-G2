@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,10 +56,9 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
                                    HttpServletRequest request,
-                                   HttpServletResponse response) throws AccountNotFoundException {
-        User foundUser = new User();
+                                   HttpServletResponse response) throws AccountNotFoundException, HttpMessageNotWritableException {
         try {
-            foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
+            User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
             String token = userService.generateUserToken(foundUser);
             Cookie cookie = new Cookie("Bearer", token);
             cookie.setPath("/api");
@@ -69,12 +69,12 @@ public class UserController {
             if(!userService.existsByUsername(loginRequest.getIdentifier()) && !userService.existsByEmail(loginRequest.getIdentifier())){
                 return new ResponseEntity<>("User with identifier "+loginRequest.getIdentifier()+" not found", HttpStatus.NOT_FOUND);
             }
-            if(!userService.existsByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword())){
-                return new ResponseEntity<>("Wrong password", HttpStatus.NOT_FOUND);
-            }
-            return new ResponseEntity<>("",HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            // Handle other unexpected exceptions
+            return new ResponseEntity<>("Wrong password", HttpStatus.NOT_FOUND);
+        }
+        catch (HttpMessageNotWritableException e) {
+            return new ResponseEntity<>("HttpMessageNotWriteableException"+e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
             return new ResponseEntity<>("An error occurred on dutluk backend", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -90,7 +90,7 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest, HttpServletRequest request) {
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest, HttpServletRequest request) throws Exception{
         try {
             if(!userService.validateRegistrationInput(registerRequest)){
                 return new ResponseEntity<>("Username or Email already exists.", HttpStatus.BAD_REQUEST);
