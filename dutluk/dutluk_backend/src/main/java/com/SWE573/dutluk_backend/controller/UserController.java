@@ -56,27 +56,30 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
                                    HttpServletRequest request,
-                                   HttpServletResponse response) throws AccountNotFoundException, HttpMessageNotWritableException {
-        try {
-            User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
-            String token = userService.generateUserToken(foundUser);
-            Cookie cookie = new Cookie("Bearer", token);
-            cookie.setPath("/api");
-            response.addCookie(cookie);
-            foundUser.setToken(token);
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
-        } catch (AccountNotFoundException e) {
-            if(!userService.existsByUsername(loginRequest.getIdentifier()) && !userService.existsByEmail(loginRequest.getIdentifier())){
+                                   HttpServletResponse response) throws HttpMessageNotWritableException {
+        if(!userService.existsByEmail(loginRequest.getIdentifier()) && !userService.existsByUsername(loginRequest.getIdentifier())){
                 return new ResponseEntity<>("User with identifier "+loginRequest.getIdentifier()+" not found", HttpStatus.NOT_FOUND);
+        }
+        else{
+            try {
+                User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
+                String token = userService.generateUserToken(foundUser);
+                Cookie cookie = new Cookie("Bearer", token);
+                cookie.setPath("/api");
+                response.addCookie(cookie);
+                foundUser.setToken(token);
+                return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
+            } catch (AccountNotFoundException e) {
+                return new ResponseEntity<>("Wrong password", HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<>("Wrong password", HttpStatus.NOT_FOUND);
+            catch (HttpMessageNotWritableException e) {
+                return new ResponseEntity<>("HttpMessageNotWriteableException"+e.getMessage(), HttpStatus.NOT_FOUND);
+            }
+            catch (Exception e) {
+                return new ResponseEntity<>("An error occurred on dutluk backend", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
-        catch (HttpMessageNotWritableException e) {
-            return new ResponseEntity<>("HttpMessageNotWriteableException"+e.getMessage(), HttpStatus.NOT_FOUND);
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>("An error occurred on dutluk backend", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
     }
 
 
