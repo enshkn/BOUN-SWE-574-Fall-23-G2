@@ -2,6 +2,7 @@ package com.SWE573.dutluk_backend.service;
 
 import com.SWE573.dutluk_backend.response.SuccessfulResponse;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,6 +18,15 @@ class IntegrationServiceTest {
         Object entity = mock(Object.class);
         ResponseEntity<?> responseEntity = IntegrationService.mobileCheck(nonDartUserAgent, entity);
         assertEquals(200, responseEntity.getStatusCodeValue());
+        assertEquals(SuccessfulResponse.class, responseEntity.getBody().getClass());
+    }
+    @Test
+    void testMobileCheckWithHttpStatusWithDartUserAgent() {
+
+        String nonDartUserAgent = "Some Dart User Agent";
+        Object entity = mock(Object.class);
+        ResponseEntity<?> responseEntity = IntegrationService.mobileCheck(nonDartUserAgent, entity, HttpStatus.NOT_FOUND);
+        assertEquals(404, responseEntity.getStatusCodeValue());
         assertEquals(SuccessfulResponse.class, responseEntity.getBody().getClass());
     }
 
