@@ -3,6 +3,7 @@ import axios from "axios";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { Space, message } from 'antd';
 import "./css/StorySearch.css";
+import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 const StorySearch = () => {
   const [searchQuery, setSearchQuery] = useState(null);
@@ -247,16 +248,25 @@ const StorySearch = () => {
             <option value="2020s">2020s</option>
           </select>
         </label>
-        <button type="button" onClick={handleSearch}>
+        <div className="d-flex justify-content-center">
+        <button type="button" onClick={handleSearch} className="btn btn-primary">
           Search
         </button>
+        </div>
       </div>
       <div className="search-results">
         <LoadScript
           googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
         >
+        <div style={{
+        display: "flex",
+        justifyContent: "center",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Gölge
+        borderRadius: "8px", // Köşeleri yuvarlama
+        padding: "10px", // İçeriği çerçeve içine yerleştirme, // Arka plan rengi
+        }}>
           <GoogleMap
-            mapContainerStyle={{ width: "100%", height: "400px" }}
+            mapContainerStyle={{ width: "55%", height: "450px" }}
             center={{ lat: 41.085064, lng: 29.044687 }}
             zoom={10}
             onClick={handleMapClick}
@@ -270,6 +280,7 @@ const StorySearch = () => {
               />
             )}
           </GoogleMap>
+          </div>
         </LoadScript>
         {searchResults.length > 0 && (
           <div>
