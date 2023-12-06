@@ -19,13 +19,15 @@ public class IntegrationService {
         if(userAgent.contains("Dart")){
             successfulResponse.setEntity(entity);
             successfulResponse.setStatus(httpStatus.value());
+            successfulResponse.setMessage("fail");
+            successfulResponse.setSuccess(false);
             if(entity instanceof Collection<?>){
                 successfulResponse.setCount(((Collection<?>) entity).size());
             }
-            return ResponseEntity.ok(successfulResponse);
+            return new ResponseEntity<>(successfulResponse,httpStatus);
         }
         else{
-            return ResponseEntity.ok(entity);
+            return new ResponseEntity<>(entity,httpStatus);
         }
     }
     public static ResponseEntity<?> mobileCheck (String userAgent, Object entity){
