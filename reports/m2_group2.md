@@ -79,6 +79,7 @@ Mobile App Testing:
 
 UAT for mobile app testing is conducted through Firebase releases. We test the mobile app on our android phones and check the features functionalities. In addition, unit tests are written for the story related functions. For the moment, unit tests are for getting recent stories, activity feed, followed user stories, my stories, nearby stories, recommended stories ,liked stories, story detail, and sending add story requests. 
 
+-Related tests can be found under /mobile
 
 
 Web App Testing:
@@ -86,20 +87,6 @@ Web App Testing:
 **Register Page:**
 
 - In this page this is the default value that we test whether the register is working.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -114,14 +101,14 @@ Web App Testing:
 
 **All Stories Page:**
 
-
+- We chack whether the stories are visible.
 
 
 
 **Story Details:**
 
 
-
+-We check the story content.
 
 
 
@@ -137,32 +124,6 @@ Web App Testing:
 - Location and  time resolution is done here.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 **Recommended Stories Page:**
 
 
@@ -171,47 +132,28 @@ Web App Testing:
 - Here we update biography and profile picture.
 
 
-
-
-
-
-
-
-
 **Add Story Page:**
 
 - One of the default values to check add story functionality.
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 **My Stories Page:**
 
 - Delete function is tested here.
 
-**Other User Profile:**
+**Other User Profile Page:**
 
 - Follow/unfollow is tested here.
 
 
-**Followed User Stories:**
+**Followed User Stories Page:**
 
 - Following/Unfollowing functionality tested here.
 
 
 
 **Backend Testing:**
-
+- Unit tests can be seen on /test under the dutluk_backend directory.
 
 
 
