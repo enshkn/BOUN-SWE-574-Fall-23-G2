@@ -112,11 +112,13 @@ const StorySearch = () => {
     {contextHolder}
     <div className="story-search">
       <h2>Story Search</h2>
+      <div className="container mt-5">
       <div className="search-form">
         <label>
           Search Query:
           <input
             type="text"
+            className="form-control"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -124,6 +126,7 @@ const StorySearch = () => {
         <label>
           Radius (in km):
           <input
+            className="form-control"
             type="number"
             value={radius}
             onChange={(e) => setRadius(parseInt(e.target.value))}
@@ -131,7 +134,7 @@ const StorySearch = () => {
         </label>
         <label>
           Date Type:
-          <select value={searchDate.type} onChange={handleDateTypeChange}>
+          <select value={searchDate.type} onChange={handleDateTypeChange} className="form-control">
             <option value="">Select a Date Type</option>
             <option value="absolute-date">Absolute Date</option>
             <option value="interval-date">Interval Date</option>
@@ -144,6 +147,7 @@ const StorySearch = () => {
             Date:
             <input
               type="date"
+              className="form-control"
               value={searchDate.value || ""}
               onChange={(e) =>
                 setSearchDate({ ...searchDate, value: e.target.value })
@@ -153,10 +157,12 @@ const StorySearch = () => {
         )}
         {searchDate.type === "interval-date" && (
           <>
+            <div className="container mt-5">
             <label>
               Start Date:
               <input
                 type="date"
+                className="form-control"
                 value={searchDate.value?.startDate || ""}
                 onChange={(e) =>
                   setSearchDate({
@@ -170,6 +176,7 @@ const StorySearch = () => {
               End Date:
               <input
                 type="date"
+                className="form-control"
                 value={searchDate.value?.endDate || ""}
                 onChange={(e) =>
                   setSearchDate({
@@ -179,6 +186,7 @@ const StorySearch = () => {
                 }
               />
             </label>
+            </div>
           </>
         )}
         {searchDate.type === "absolute-year" && (
@@ -225,7 +233,7 @@ const StorySearch = () => {
         )}
         <label>
           Season:
-          <select value={searchSeason} onChange={handleSeasonChange}>
+          <select value={searchSeason} onChange={handleSeasonChange} className="form-control">
             <option value="">Select a Season</option>
             <option value="spring">Spring</option>
             <option value="summer">Summer</option>
@@ -235,7 +243,7 @@ const StorySearch = () => {
         </label>
         <label>
           Decade:
-          <select value={searchDecade} onChange={handleDecadeChange}>
+          <select value={searchDecade} onChange={handleDecadeChange} className="form-control">
             <option value="">Select a Decade</option>
             <option value="1940s">1940s</option>
             <option value="1950s">1950s</option>
@@ -253,6 +261,7 @@ const StorySearch = () => {
           Search
         </button>
         </div>
+      </div>
       </div>
       <div className="search-results">
         <LoadScript

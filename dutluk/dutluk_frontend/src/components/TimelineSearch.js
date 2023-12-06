@@ -4,6 +4,7 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { Space, message } from 'antd';
 import "./css/StorySearch.css";
 import { Timeline } from 'antd';
+import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 const TimelineSearch = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -135,17 +136,25 @@ const TimelineSearch = () => {
         <label>
           Radius (in km):
           <input
+            className="form-control"
             type="number"
             value={radius}
             onChange={(e) => setRadius(parseInt(e.target.value))}
           />
         </label>
-        <button type="button" onClick={handleSearchByLocation}>
+        <div className="d-flex justify-content-center mt-3">
+    {/* Boşluk bırakmak için */}
+    <span style={{ marginRight: '5px' }}></span>
+    </div>
+        
+        <div className="d-flex justify-content-center">
+        <button type="button" onClick={handleSearchByLocation} className="btn btn-primary">
             Use My Location
         </button>
+        </div>
         <label>
           Date Type:
-          <select value={searchDate.type} onChange={handleDateTypeChange}>
+          <select value={searchDate.type} onChange={handleDateTypeChange} className="form-control">
             <option value="">Select a Date Type</option>
             <option value="absolute-date">Absolute Date</option>
             <option value="interval-date">Interval Date</option>
@@ -239,7 +248,7 @@ const TimelineSearch = () => {
         )}
         <label>
           Season:
-          <select value={searchSeason} onChange={handleSeasonChange}>
+          <select value={searchSeason} onChange={handleSeasonChange} className="form-control">
             <option value="">Select a Season</option>
             <option value="spring">Spring</option>
             <option value="summer">Summer</option>
@@ -249,7 +258,7 @@ const TimelineSearch = () => {
         </label>
         <label>
           Decade:
-          <select value={searchDecade} onChange={handleDecadeChange}>
+          <select value={searchDecade} onChange={handleDecadeChange} className="form-control">
             <option value="">Select a Decade</option>
             <option value="1940s">1940s</option>
             <option value="1950s">1950s</option>
@@ -262,16 +271,25 @@ const TimelineSearch = () => {
             <option value="2020s">2020s</option>
           </select>
         </label>
-        <button type="button" onClick={handleSearch}>
+        <div className="d-flex justify-content-center">
+        <button type="button" onClick={handleSearch} className="btn btn-primary">
           Search
         </button>
+        </div>
       </div>
       <div className="search-results">
         <LoadScript
           googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
         >
+          <div style={{
+        display: "flex",
+        justifyContent: "center",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Gölge
+        borderRadius: "8px", // Köşeleri yuvarlama
+        padding: "10px", // İçeriği çerçeve içine yerleştirme, // Arka plan rengi
+        }}>
           <GoogleMap
-            mapContainerStyle={{ width: "100%", height: "400px" }}
+            mapContainerStyle={{ width: "55%", height: "450px" }}
             center={{ lat: 41.085064, lng: 29.044687 }}
             zoom={10}
             onClick={handleMapClick}
@@ -285,6 +303,7 @@ const TimelineSearch = () => {
               />
             )}
           </GoogleMap>
+          </div>
         </LoadScript>
         {searchResults.length > 0 && (
           <div>
