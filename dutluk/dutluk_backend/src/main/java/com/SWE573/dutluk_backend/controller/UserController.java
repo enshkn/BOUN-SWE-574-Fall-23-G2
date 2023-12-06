@@ -58,7 +58,7 @@ public class UserController {
                                    HttpServletRequest request,
                                    HttpServletResponse response) throws HttpMessageNotWritableException {
         if(!userService.existsByEmail(loginRequest.getIdentifier()) && !userService.existsByUsername(loginRequest.getIdentifier())){
-                return new ResponseEntity<>("User with identifier "+loginRequest.getIdentifier()+" not found", HttpStatus.NOT_FOUND);
+                return IntegrationService.mobileCheck(request.getHeader("User-Agent"),"User with identifier "+loginRequest.getIdentifier()+" not found");
         }
         else{
             try {
