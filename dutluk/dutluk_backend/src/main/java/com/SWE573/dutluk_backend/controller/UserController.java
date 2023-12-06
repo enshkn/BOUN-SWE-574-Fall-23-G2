@@ -13,7 +13,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,15 +55,30 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest,
                                    HttpServletRequest request,
-                                         HttpServletResponse response) throws AccountNotFoundException {
-        User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
-        String token = userService.generateUserToken(foundUser);
-        Cookie cookie = new Cookie("Bearer", token);
-        cookie.setPath("/api");
-        response.addCookie(cookie);
-        foundUser.setToken(token);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
+                                   HttpServletResponse response) throws AccountNotFoundException {
+        User foundUser = new User();
+        try {
+            foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
+            String token = userService.generateUserToken(foundUser);
+            Cookie cookie = new Cookie("Bearer", token);
+            cookie.setPath("/api");
+            response.addCookie(cookie);
+            foundUser.setToken(token);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
+        } catch (AccountNotFoundException e) {
+            if(!userService.existsByUsername(loginRequest.getIdentifier()) && !userService.existsByEmail(loginRequest.getIdentifier())){
+                return new ResponseEntity<>("User with identifier "+loginRequest.getIdentifier()+" not found", HttpStatus.NOT_FOUND);
+            }
+            if(!userService.existsByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword())){
+                return new ResponseEntity<>("Wrong password", HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>("",HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            // Handle other unexpected exceptions
+            return new ResponseEntity<>("An error occurred on dutluk backend", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
 
     @GetMapping("/logout")
@@ -76,14 +90,21 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest,HttpServletRequest request) {
-        User newUser = User.builder()
-                .email(registerRequest.getEmail())
-                .username(registerRequest.getUsername())
-                .password(registerRequest.getPassword())
-                .build();
-        User registeredUser = userService.addUser(newUser);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),registeredUser);
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest, HttpServletRequest request) {
+        try {
+            if(!userService.validateRegistrationInput(registerRequest)){
+                return new ResponseEntity<>("Username or Email already exists.", HttpStatus.BAD_REQUEST);
+            }
+            User newUser = User.builder()
+                    .email(registerRequest.getEmail())
+                    .username(registerRequest.getUsername())
+                    .password(registerRequest.getPassword())
+                    .build();
+            User registeredUser = userService.addUser(newUser);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"), registeredUser);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An error occurred during registration.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/update")
