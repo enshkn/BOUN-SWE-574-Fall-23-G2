@@ -137,6 +137,8 @@ class _AddStoryViewState extends State<AddStoryView>
   bool locationLoading = true;
   bool hasPermission = false;
   String? formattedStartDate;
+  String? formattedStartDateTime;
+
   String? formattedEndDate;
   LocationModel? selectedLocation;
   late List<LocationModel> locations = [];
@@ -230,7 +232,7 @@ class _AddStoryViewState extends State<AddStoryView>
   }
 
   void onPressed() {
-    FocusScope.of(context).unfocus();
+    // FocusScope.of(context).unfocus();
 
     if (isLastPage) {
       return;
@@ -707,16 +709,16 @@ class _AddStoryViewState extends State<AddStoryView>
                 border: Border.all(color: context.appBarColor),
                 backgroundColor: Colors.white,
                 labelStyle: const TextStyle(color: Colors.black),
-                label: formattedStartDate ?? 'Choose Date and Time',
+                label: formattedStartDateTime ?? 'Choose Date and Time',
                 onPressed: () async {
                   final dateTime = await dateTimePicker(
-                    formattedStartDate,
+                    formattedStartDateTime,
                     selectedStartDateTime,
                     OmniDateTimePickerType.dateAndTime,
                   );
                   setState(() {
                     selectedStartDateTime = dateTime!;
-                    formattedStartDate =
+                    formattedStartDateTime =
                         DateFormat.yMd().add_jm().format(selectedStartDateTime);
                   });
                 },
@@ -828,6 +830,7 @@ class _AddStoryViewState extends State<AddStoryView>
         ),
       ),
       onSelected: (String? value) {
+        selectedItem = value;
         setState(() {
           selectedItem = value;
           if (timeResolutions) {
@@ -935,40 +938,9 @@ class _AddStoryViewState extends State<AddStoryView>
               label: 'Continue',
               onPressed: onPressed,
             ),
-            //BaseWidgets.lowerGap,
-            //numberOfSection(),
           ],
         ),
       ),
-    );
-  }
-
-  Widget numberOfSection() {
-    const widthSize = 15.0;
-    const textStyle = TextStyle(
-      color: Colors.black,
-      fontSize: 15,
-      fontWeight: FontWeight.bold,
-    );
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: widthSize,
-          child: Center(child: Text('${currentPage + 1}', style: textStyle)),
-        ),
-        const SizedBox(
-          width: widthSize,
-          child: Center(child: Text('/', style: textStyle)),
-        ),
-        SizedBox(
-          width: widthSize,
-          child: Center(
-            child: Text('$maxPageCount', style: textStyle),
-          ),
-        ),
-      ],
     );
   }
 
@@ -1003,20 +975,24 @@ class _AddStoryViewState extends State<AddStoryView>
       text: htmlText,
       title: titleController.text,
       labels: tagsList,
-      season: selectedSeason,
-      decade: selectedDecade,
+      season: seasonController.text != '' ? seasonController.text : null,
+      decade: decadeController.text != '' ? decadeController.text : null,
 /*       startTimeStamp: !starttimecheck ? null : startTime[0],
       endTimeStamp: !endtimecheck ? null : endTime[0], */
       startTimeStamp: starttimecheck
           ? exactDateWithTimeSelected
               ? selectedStartDateTime.toString()
               : selectedStartDate.toString()
-          : null,
+          : selectedStartDate != DateTime(0)
+              ? selectedStartDate.toString()
+              : null,
       endTimeStamp: endtimecheck
           ? exactDateWithTimeSelected
               ? selectedEndDateTime.toString()
               : selectedEndDate.toString()
-          : null,
+          : selectedEndDate != DateTime(0)
+              ? selectedStartDate.toString()
+              : null,
       startHourFlag: exactDateWithTimeSelected ? 1 : 0,
       endHourFlag:
           exactDateWithTimeSelected && selectedEndDateTime != DateTime(0)

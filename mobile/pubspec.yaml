@@ -48,7 +48,7 @@ dependencies:
     git:
       url: https://github.com/amineglr/google_map_location_picker.git
   image_picker: ^0.8.3
- 
+  geocode: ^1.0.3
   
 
 dev_dependencies:

@@ -72,7 +72,9 @@ class _SavedStoriesViewState extends State<SavedStoriesView> {
                           itemBuilder: (item) {
                             return FavoriteWrapper(
                               userId: user!.id!,
-                              initialStateSave: item.savedBy!.contains(user.id),
+                              initialStateSave: item.savedBy != null
+                                  ? item.savedBy!.contains(user.id)
+                                  : false,
                               storyId: item.id,
                               builder: (
                                 context,

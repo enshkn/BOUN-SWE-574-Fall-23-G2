@@ -134,8 +134,9 @@ class _HomeViewState extends State<HomeView>
                                           userId: user.id!,
                                           initialLikeCount:
                                               item.likes!.length.toString(),
-                                          initialStateSave:
-                                              item.savedBy!.contains(user.id),
+                                          initialStateSave: item.savedBy != null
+                                              ? item.savedBy!.contains(user.id)
+                                              : false,
                                           storyId: item.id,
                                           builder: (
                                             context,
@@ -222,7 +223,10 @@ class _HomeViewState extends State<HomeView>
                                             initialLikeCount:
                                                 item.likes!.length.toString(),
                                             initialStateSave:
-                                                item.savedBy!.contains(user.id),
+                                                item.savedBy != null
+                                                    ? item.savedBy!
+                                                        .contains(user.id)
+                                                    : false,
                                             storyId: item.id,
                                             builder: (
                                               context,
