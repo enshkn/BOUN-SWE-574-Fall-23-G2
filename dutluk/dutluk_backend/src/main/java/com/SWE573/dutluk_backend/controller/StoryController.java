@@ -62,9 +62,9 @@ public class StoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getStoryById(@PathVariable Long id,HttpServletRequest request){
-        Story foundStory = storyService.getStoryByStoryId(id);
+        Story foundStory = storyService.storyAsStoryResponse(storyService.getStoryByStoryId(id));
         if (foundStory!=null) {
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundStory);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"), foundStory);
         }
         return ResponseEntity.notFound().build();
     }

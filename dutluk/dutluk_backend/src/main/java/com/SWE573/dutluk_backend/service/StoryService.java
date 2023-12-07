@@ -7,6 +7,7 @@ import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.StoryRepository;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
+import com.SWE573.dutluk_backend.response.StoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class StoryService {
     }
 
     public List<Story> findAllByOrderByIdDesc(){
-        List<Story> storyList = storyRepository.findAllByOrderByIdDesc();
+        List<Story> storyList = optimizeStoryLists(storyRepository.findAllByOrderByIdDesc());
         return (!storyList.isEmpty()) ? storyList : Collections.emptyList();
     }
 
@@ -73,13 +74,13 @@ public class StoryService {
     }
 
     public List<Story> findAllStoriesByUserId(Long userId){
-        List<Story> storyList = storyRepository.findByUserId(userId);
-        return (storyList != null) ? storyList : Collections.emptyList();
+        List<Story> storyList = optimizeStoryLists(storyRepository.findByUserId(userId));
+        return (!storyList.isEmpty()) ? storyList : Collections.emptyList();
     }
 
     public List<Story> findByUserIdOrderByIdDesc(Long userId){
-        List<Story> storyList = storyRepository.findByUserIdOrderByIdDesc(userId);
-        return (storyList != null) ? storyList : Collections.emptyList();
+        List<Story> storyList = optimizeStoryLists(storyRepository.findByUserIdOrderByIdDesc(userId));
+        return (!storyList.isEmpty()) ? storyList : Collections.emptyList();
     }
 
 
@@ -98,8 +99,7 @@ public class StoryService {
         for(Long id : idList){
             storyList.addAll(findByUserIdOrderByIdDesc(id));
         }
-        List<Story> resultStoryList = sortStoriesByDescending(storyList);
-        return (resultStoryList != null) ? resultStoryList : Collections.emptyList();
+        return optimizeStoryLists(sortStoriesByDescending(storyList));
 
     }
 
@@ -236,7 +236,6 @@ public class StoryService {
             location.setStory(createdStory);
         }
         createdStory.setLocations(allLocations);
-        // send createdStory info to rec engine /vectorize endpoint in this line
         return createdStory;
     }
 
@@ -248,9 +247,13 @@ public class StoryService {
             enteredStory.setLikes(story.getLikes());
             enteredStory.setId(story.getId());
             enteredStory.setComments(story.getComments());
-            Story committedStory = storyRepository.save(enteredStory);
+            Story committedStory;
             if(recService.isRecEngineStatus()){
+                committedStory = storyRepository.save(enteredStory);
                 recService.vectorizeEditRequest(committedStory);
+            }
+            else{
+                committedStory = storyRepository.save(enteredStory);
             }
             return committedStory;
         }
@@ -273,16 +276,14 @@ public class StoryService {
         deletedStoryIdList.forEach(likeSet::remove);
         foundUser.setLikedStories(likeSet);
         userService.editUser(foundUser);
-        List<Story> resultStoryList = sortStoriesByDescending(storyList);
-        return (resultStoryList != null) ? resultStoryList : Collections.emptyList();
+        return optimizeStoryLists(sortStoriesByDescending(storyList));
     }
 
     public List<Story> findRecentStories() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, -7);
         Date date = calendar.getTime();
-        return storyRepository.findByCreatedAtAfterOrderByIdDesc(date);
-
+        return optimizeStoryLists(storyRepository.findByCreatedAtAfterOrderByIdDesc(date));
     }
 
     private static Date convertToStartDate(String decadeString) throws ParseException {
@@ -351,8 +352,7 @@ public class StoryService {
         deletedStoryIdList.forEach(savedSet::remove);
         foundUser.setSavedStories(savedSet);
         userService.editUser(foundUser);
-        List<Story> resultStoryList = sortStoriesByDescending(storyList);
-        return (resultStoryList != null) ? resultStoryList : Collections.emptyList();
+        return optimizeStoryLists(sortStoriesByDescending(storyList));
     }
 
     public List<Story> recommendedStories(User foundUser) {
@@ -367,7 +367,7 @@ public class StoryService {
                 storyList.add(story);
             }
         }
-        return sortStoriesByDescending(storyList);
+        return optimizeStoryLists(sortStoriesByDescending(storyList));
     }
 
     public List<Story> sortStoriesByDescending(List<Story> storyList) {
@@ -392,9 +392,13 @@ public class StoryService {
     private List<Story> optimizeStoryLists(List<Story> storyList){
         List<Story> editedStoryList = new ArrayList<>();
         for(Story story : storyList){
-            StoryResponse storyResponse = new StoryResponse(story);
-            editedStoryList.add(storyResponse);
+            StoryListResponse storyListResponse = new StoryListResponse(story);
+            editedStoryList.add(storyListResponse);
         }
         return (!editedStoryList.isEmpty()) ? editedStoryList : Collections.emptyList();
+    }
+
+    public Story storyAsStoryResponse(Story story){;
+        return new StoryResponse(story);
     }
 }

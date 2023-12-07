@@ -5,7 +5,6 @@ import com.SWE573.dutluk_backend.model.Location;
 import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +15,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class StoryResponse extends Story{
+public class StoryListResponse extends Story{
     private Long id;
 
     private Date createdAt;
@@ -36,7 +35,7 @@ public class StoryResponse extends Story{
 
     private Set<Long> savedBy;
 
-    @JsonIgnoreProperties({"createdAt"})
+    @JsonIncludeProperties({"locationName"})
     private List<Location> locations;
 
     @JsonFormat(pattern="dd/MM/yyyy HH:mm",timezone = "Europe/Istanbul")
@@ -53,7 +52,7 @@ public class StoryResponse extends Story{
 
     private Integer endHourFlag;
 
-    public StoryResponse(Story story) {
+    public StoryListResponse(Story story) {
         this.id = story.getId();
         this.createdAt = story.getCreatedAt();
         this.text = story.getText();
@@ -72,4 +71,3 @@ public class StoryResponse extends Story{
         this.endHourFlag = story.getEndHourFlag();
     }
 }
-
