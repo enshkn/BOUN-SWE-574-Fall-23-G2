@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class StoryListResponse extends Story{
+public class StoryResponse extends Story{
     private Long id;
 
     private Date createdAt;
@@ -39,7 +39,7 @@ public class StoryListResponse extends Story{
 
     private Set<Long> savedBy;
 
-    public StoryListResponse(Story story) {
+    public StoryResponse(Story story) {
         this.id = story.getId();
         this.createdAt = story.getCreatedAt();
         this.title = story.getTitle();

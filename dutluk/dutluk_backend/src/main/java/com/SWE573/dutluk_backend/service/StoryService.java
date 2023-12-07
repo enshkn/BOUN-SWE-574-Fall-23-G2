@@ -7,7 +7,7 @@ import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.StoryRepository;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
-import com.SWE573.dutluk_backend.response.StoryListResponse;
+import com.SWE573.dutluk_backend.response.StoryResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -392,8 +392,8 @@ public class StoryService {
     private List<Story> optimizeStoryLists(List<Story> storyList){
         List<Story> editedStoryList = new ArrayList<>();
         for(Story story : storyList){
-            StoryListResponse storyListResponse = new StoryListResponse(story);
-            editedStoryList.add(storyListResponse);
+            StoryResponse storyResponse = new StoryResponse(story);
+            editedStoryList.add(storyResponse);
         }
         return (!editedStoryList.isEmpty()) ? editedStoryList : Collections.emptyList();
     }
