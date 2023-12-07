@@ -1,7 +1,10 @@
 package com.SWE573.dutluk_backend.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.SWE573.dutluk_backend.configuration.CustomDateDeserializer;
+import com.SWE573.dutluk_backend.configuration.CustomDateSerializer;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -56,11 +59,13 @@ public class Story extends BaseEntity{
     private List<Location> locations = new ArrayList<>();
 
     @Column(name = "start_time_stamp")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Europe/Istanbul")
+    @JsonSerialize(using = CustomDateSerializer.class)
+    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date startTimeStamp;
 
     @Column(name = "end_time_stamp")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Europe/Istanbul")
+    @JsonSerialize(using = CustomDateSerializer.class)
+    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date endTimeStamp;
 
     private String season;
