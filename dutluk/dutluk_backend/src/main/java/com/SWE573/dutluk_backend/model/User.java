@@ -2,7 +2,6 @@ package com.SWE573.dutluk_backend.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -50,7 +49,8 @@ public class User extends BaseEntity{
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @JsonIncludeProperties({"story_id", "title"})
+    //@JsonIncludeProperties({"title"})
+    @JsonIgnore
     private List<Story> stories;
 
     @JsonIgnore
@@ -67,7 +67,7 @@ public class User extends BaseEntity{
         return likedStories;
     }
 
-
+    @JsonIgnore
     private Set<Long> savedStories = new HashSet<>();
 
     public Set<Long> getSavedStories() {
@@ -76,7 +76,7 @@ public class User extends BaseEntity{
         }
         return savedStories;
     }
-
+    @JsonIgnore
     private Set<Long> recommendedStories = new HashSet<>();
 
     public Set<Long> getRecommendedStories() {
@@ -86,7 +86,8 @@ public class User extends BaseEntity{
         return recommendedStories;
     }
 
-    @JsonIgnoreProperties({"followers", "email" , "password" , "biography" , "stories","following"})
+    //@JsonIgnoreProperties({"followers", "email" , "password" , "biography" , "stories","following"})
+    @JsonIncludeProperties({"id","username"})
     @ManyToMany(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "followers",
@@ -95,7 +96,8 @@ public class User extends BaseEntity{
     private Set<User> followers = new HashSet<>();
 
     @ManyToMany(mappedBy = "followers", fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JsonIgnoreProperties({"followers", "email" , "password" , "biography" , "stories","following"})
+    //@JsonIgnoreProperties({"followers", "email" , "password" , "biography" , "stories","following"})
+    @JsonIncludeProperties({"id","username"})
     private Set<User> following = new HashSet<>();
 
     @Transient

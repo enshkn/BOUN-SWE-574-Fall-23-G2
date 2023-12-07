@@ -7,6 +7,7 @@ import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.StoryRepository;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
+import com.SWE573.dutluk_backend.response.StoryListResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class StoryService {
 
     public List<Story> findAllByOrderByIdDesc(){
         List<Story> storyList = storyRepository.findAllByOrderByIdDesc();
-        return (storyList != null) ? storyList : Collections.emptyList();
+        return (!storyList.isEmpty()) ? storyList : Collections.emptyList();
     }
 
     public Story createStory(User foundUser, StoryCreateRequest storyCreateRequest) throws ParseException, IOException {
@@ -386,5 +387,14 @@ public class StoryService {
     public Boolean isSavedByUser(Long storyId, User user){
         Set<Long> userSavedStories = user.getSavedStories();
         return userSavedStories.contains(storyId);
+    }
+
+    private List<Story> optimizeStoryLists(List<Story> storyList){
+        List<Story> editedStoryList = new ArrayList<>();
+        for(Story story : storyList){
+            StoryListResponse storyListResponse = new StoryListResponse(story);
+            editedStoryList.add(storyListResponse);
+        }
+        return (!editedStoryList.isEmpty()) ? editedStoryList : Collections.emptyList();
     }
 }
