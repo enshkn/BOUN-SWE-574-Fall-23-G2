@@ -4,6 +4,9 @@
   "private": true,
   "dependencies": {
     "@ant-design/colors": "^7.0.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.20",
     "@popperjs/core": "^2.11.8",
     "@react-google-maps/api": "^2.18.1",
     "@testing-library/jest-dom": "^5.16.5",

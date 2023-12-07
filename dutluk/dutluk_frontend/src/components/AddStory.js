@@ -10,6 +10,9 @@ import { format, getYear } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Space, message, Input, Tag, Tooltip} from 'antd';
 import "./css/AddStory.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-quill/dist/quill.snow.css'; // Örnek olarak Quill editörünün varsayılan stillerini ekliyoruz
+
 
 const AddStoryForm = () => {
   const [title, setTitle] = useState("");
@@ -379,8 +382,15 @@ const AddStoryForm = () => {
         <div style={{ flexGrow: 3, minWidth: 800, minHeight: 600 }}> {/* Allow map container to grow and take available space */}
           <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
             libraries={["places"]}>
+                      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Gölge
+        borderRadius: "8px", // Köşeleri yuvarlama
+        padding: "10px", // İçeriği çerçeve içine yerleştirme, // Arka plan rengi
+        }}>
             <GoogleMap
-              mapContainerStyle={mapContainerStyle}
+              mapContainerStyle={{ width: "90%", height: "450px" }}
               center={center}
               zoom={10}
               onClick={handleMapClick}
@@ -440,8 +450,13 @@ const AddStoryForm = () => {
                 ) : null
               )}
             </GoogleMap>
+            </div>
+            <div className="d-flex justify-content-center mt-3">
+    {/* Boşluk bırakmak için */}
+    <span style={{ marginRight: '5px' }}></span>
+    </div>
             <StandaloneSearchBox onLoad={onSearchBoxLoad} onPlacesChanged={onPlacesChanged}>
-              <input type="text" placeholder="Search" style={{ width: "100%", height: "40px" }} />
+              <input type="text" placeholder="Search" style={{ width: "100%", height: "40px" }} className="form-control"/>
             </StandaloneSearchBox>
           </LoadScript>
         </div>
@@ -536,7 +551,7 @@ const AddStoryForm = () => {
         Title:
         <input
           type="text"
-          className="add-story-input"
+          className="form-control"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required={true}
@@ -544,7 +559,7 @@ const AddStoryForm = () => {
       </label>
       <br />
       <div className="add-story-tags">
-        <label className="add-story-label">Tags:</label>
+        <label className="label">Tags:</label>
         <div>
           {tags.map((tag, index) => {
             if (editInputIndex === index) {
@@ -735,10 +750,11 @@ Time Resolution:
 )}
 
 
-
-      <button type="submit" className="add-story-button">
+<div className="d-flex justify-content-center mt-3">
+      <button type="submit" className="btn btn-primary">
         Add Story
       </button>
+    </div>
     </form>
     </Space>
   );
