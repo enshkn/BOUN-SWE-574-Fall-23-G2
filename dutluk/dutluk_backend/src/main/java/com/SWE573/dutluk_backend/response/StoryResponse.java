@@ -20,7 +20,7 @@ import java.util.Set;
 public class StoryResponse{
     private Long id;
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "Europe/Istanbul")
     private Date createdAt;
 
     private String text;
@@ -62,8 +62,8 @@ public class StoryResponse{
         this.likes = story.getLikes();
         this.savedBy = story.getSavedBy();
         this.locations = story.getLocations();
-        this.startTimeStamp = StoryService.dateToStringBasedOnHourFlag(story.getStartTimeStamp(),story.getStartHourFlag());
-        this.endTimeStamp = StoryService.dateToStringBasedOnHourFlag(story.getEndTimeStamp(),story.getEndHourFlag());
+        this.startTimeStamp = StoryService.dateToStringBasedOnFlags(story.getStartTimeStamp(),story.getStartHourFlag(),story.getStartDateFlag());
+        this.endTimeStamp = StoryService.dateToStringBasedOnFlags(story.getEndTimeStamp(),story.getEndHourFlag(),story.getEndDateFlag());
         this.season = story.getSeason();
         this.decade = story.getDecade();
     }

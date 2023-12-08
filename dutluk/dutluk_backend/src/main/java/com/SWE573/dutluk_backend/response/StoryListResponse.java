@@ -19,28 +19,26 @@ import java.util.Set;
 public class StoryListResponse{
     private Long id;
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "Europe/Istanbul")
     private Date createdAt;
 
-    private List<String> pictures;
+    private String picture;
 
     private String title;
 
     private List<String> labels;
 
-    @JsonIncludeProperties(value = {"id" , "username","profilePhoto"})
+    @JsonIncludeProperties(value = {"id","username","profilePhoto"})
     private User user;
 
-    private Set<Long> likes;
+    private Integer likeSize;
 
     private Set<Long> savedBy;
 
     @JsonIncludeProperties({"locationName"})
     private List<Location> locations;
 
-
     private String startTimeStamp;
-
 
     private String endTimeStamp;
 
@@ -51,15 +49,24 @@ public class StoryListResponse{
     public StoryListResponse(Story story) {
         this.id = story.getId();
         this.createdAt = story.getCreatedAt();
-        this.pictures = ImageService.extractImageLinks(story.getText());
+        this.picture = ImageService
+                .extractImageLinks(story.getText());
         this.title = story.getTitle();
         this.labels = story.getLabels();
         this.user = story.getUser();
-        this.likes = story.getLikes();
+        this.likeSize = story.getLikes().size();
         this.savedBy = story.getSavedBy();
         this.locations = story.getLocations();
-        this.startTimeStamp = StoryService.dateToStringBasedOnHourFlag(story.getStartTimeStamp(),story.getStartHourFlag());
-        this.endTimeStamp = StoryService.dateToStringBasedOnHourFlag(story.getEndTimeStamp(),story.getEndHourFlag());
+        this.startTimeStamp = StoryService
+                .dateToStringBasedOnFlags(
+                        story.getStartTimeStamp(),
+                        story.getStartHourFlag(),
+                        story.getStartDateFlag());
+        this.endTimeStamp = StoryService
+                .dateToStringBasedOnFlags(
+                        story.getEndTimeStamp(),
+                        story.getEndHourFlag(),
+                        story.getEndDateFlag());
         this.season = story.getSeason();
         this.decade = story.getDecade();
     }

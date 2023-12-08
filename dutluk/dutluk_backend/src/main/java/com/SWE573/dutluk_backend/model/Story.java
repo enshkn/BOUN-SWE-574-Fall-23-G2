@@ -67,8 +67,12 @@ public class Story extends BaseEntity{
 
     private String decade;
 
-    private Integer startHourFlag = -1;// if 0 no hour, if 1 hour exist
+    private Integer startHourFlag = -1;// if 0, no hour, if 1, hour exists
 
-    private Integer endHourFlag = -1;// if 0 no hour, if 1 hour exist
+    private Integer endHourFlag = -1;// if 0, no hour, if 1, hour exists
+
+    private Integer startDateFlag = -1;// if 1 -> yyyy, if 2 -> MM/yyyy, if 3 dd/MM/yyyy
+
+    private Integer endDateFlag = -1;// if 1 -> yyyy, if 2 -> MM/yyyy, if 3 dd/MM/yyyy
 
 }

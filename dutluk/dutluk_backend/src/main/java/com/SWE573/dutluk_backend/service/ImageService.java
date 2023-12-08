@@ -21,9 +21,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -112,17 +110,18 @@ public class ImageService {
         return imgUrl;
     }
 
-    public static List<String> extractImageLinks(String html) {
-        List<String> imageLinks = new ArrayList<>();
+    public static String extractImageLinks(String html) {
+        String imageLink = null;
 
         Document doc = Jsoup.parse(html);
         Elements images = doc.select("img");
 
         for (Element img : images) {
             String src = img.attr("src");
-            imageLinks.add(src);
+            imageLink = src;
+            break;
         }
 
-        return imageLinks;
+        return imageLink;
     }
 }

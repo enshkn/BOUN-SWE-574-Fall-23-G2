@@ -56,6 +56,8 @@ public class StoryService {
                 .season(storyCreateRequest.getSeason())
                 .startHourFlag(storyCreateRequest.getStartHourFlag())
                 .endHourFlag(storyCreateRequest.getEndHourFlag())
+                .startDateFlag(storyCreateRequest.getStartDateFlag())
+                .endDateFlag(storyCreateRequest.getEndDateFlag())
                 .user(foundUser)
                 .decade(storyCreateRequest.getDecade())
                 .likes(new HashSet<>())
@@ -227,6 +229,8 @@ public class StoryService {
                 .season(storyEditRequest.getSeason())
                 .startHourFlag(storyEditRequest.getStartHourFlag())
                 .endHourFlag(storyEditRequest.getEndHourFlag())
+                .startDateFlag(storyEditRequest.getStartDateFlag())
+                .endDateFlag(storyEditRequest.getEndDateFlag())
                 .user(foundUser)
                 .decade(storyEditRequest.getDecade())
                 .likes(new HashSet<>())
@@ -409,7 +413,7 @@ public class StoryService {
         return storyResponseList;
     }
 
-    public static String dateToStringBasedOnHourFlag(Date date, Integer hourFlag) {
+    public static String dateToStringBasedOnFlags(Date date, Integer hourFlag,Integer dateFlag) {
         if(date == null){
             return null;
         }
@@ -419,7 +423,16 @@ public class StoryService {
         if (hourFlag == null || hourFlag == -1 || hourFlag == 1) {
             formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         } else {
-            formatter = new SimpleDateFormat("dd/MM/yyyy");
+            if(dateFlag == 1){
+                formatter = new SimpleDateFormat("yyyy");
+            }
+            else if (dateFlag == 2) {
+                formatter = new SimpleDateFormat("MM/yyyy");
+            }
+            else{
+                formatter = new SimpleDateFormat("dd/MM/yyyy");
+            }
+
         }
 
         formatter.setTimeZone(TimeZone.getTimeZone("Europe/Istanbul"));
