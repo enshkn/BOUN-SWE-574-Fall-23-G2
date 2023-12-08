@@ -92,7 +92,8 @@ class _CommentCardState extends State<CommentCard> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('@${widget.user!.username!}'),
+              if (widget.user!.username != null)
+                Text('@${widget.user!.username!}'),
               const SizedBox(
                 height: 8,
               ),
@@ -100,13 +101,11 @@ class _CommentCardState extends State<CommentCard> {
                 children: [
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.60,
-                    child: Expanded(
-                      child: AppTextFormField(
-                        maxLines: 2,
-                        readOnly: widget.content != null ? true : false,
-                        controller: controller,
-                        hintText: 'Write your comment...',
-                      ),
+                    child: AppTextFormField(
+                      maxLines: 2,
+                      readOnly: widget.content != null ? true : false,
+                      controller: controller,
+                      hintText: 'Write your comment...',
                     ),
                   ),
                   if (widget.onTapSend != null)

@@ -111,7 +111,10 @@ final class StoryCubit extends BaseCubit<StoryState> {
     setLoading(false);
     return result.fold(
       (failure) {
-        showNotification(failure?.message ?? '', isError: true);
+        showNotification(
+          failure?.message ?? 'Your story could not be added.',
+          isError: true,
+        );
         return false;
       },
       (data) {
