@@ -1,30 +1,31 @@
 package com.SWE573.dutluk_backend.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.core.io.ByteArrayResource;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.imageio.ImageIO;
 
 @Service
 public class ImageService {
@@ -109,5 +110,19 @@ public class ImageService {
         JsonNode dataNode = rootNode.get("data");
         String imgUrl = dataNode.get("link").asText();
         return imgUrl;
+    }
+
+    public static List<String> extractImageLinks(String html) {
+        List<String> imageLinks = new ArrayList<>();
+
+        Document doc = Jsoup.parse(html);
+        Elements images = doc.select("img");
+
+        for (Element img : images) {
+            String src = img.attr("src");
+            imageLinks.add(src);
+        }
+
+        return imageLinks;
     }
 }

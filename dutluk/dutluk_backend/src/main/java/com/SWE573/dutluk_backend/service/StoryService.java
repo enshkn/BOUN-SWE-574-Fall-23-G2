@@ -392,13 +392,38 @@ public class StoryService {
     private List<Story> optimizeStoryLists(List<Story> storyList){
         List<Story> editedStoryList = new ArrayList<>();
         for(Story story : storyList){
-            StoryListResponse storyListResponse = new StoryListResponse(story);
-            editedStoryList.add(storyListResponse);
+            editedStoryList.add(story);
         }
         return (!editedStoryList.isEmpty()) ? editedStoryList : Collections.emptyList();
     }
 
-    public Story storyAsStoryResponse(Story story){;
+    public StoryResponse storyAsStoryResponse(Story story){
         return new StoryResponse(story);
+    }
+
+    public List<StoryListResponse> storyListAsStoryListResponse(List<Story> storyList){
+        List<StoryListResponse> storyResponseList = new ArrayList<>();
+        for(Story story: storyList){
+            storyResponseList.add(new StoryListResponse(story));
+        }
+        return storyResponseList;
+    }
+
+    public static String dateToStringBasedOnHourFlag(Date date, Integer hourFlag) {
+        if(date == null){
+            return null;
+        }
+
+        SimpleDateFormat formatter;
+
+        if (hourFlag == null || hourFlag == -1 || hourFlag == 1) {
+            formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        } else {
+            formatter = new SimpleDateFormat("dd/MM/yyyy");
+        }
+
+        formatter.setTimeZone(TimeZone.getTimeZone("Europe/Istanbul"));
+
+        return formatter.format(date);
     }
 }

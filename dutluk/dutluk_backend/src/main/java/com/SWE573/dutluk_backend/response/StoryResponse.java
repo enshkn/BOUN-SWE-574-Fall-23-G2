@@ -4,6 +4,7 @@ import com.SWE573.dutluk_backend.model.Comment;
 import com.SWE573.dutluk_backend.model.Location;
 import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
+import com.SWE573.dutluk_backend.service.StoryService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
@@ -16,9 +17,10 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class StoryResponse extends Story{
+public class StoryResponse{
     private Long id;
 
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private Date createdAt;
 
     private String text;
@@ -39,19 +41,15 @@ public class StoryResponse extends Story{
     @JsonIgnoreProperties({"createdAt"})
     private List<Location> locations;
 
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm",timezone = "Europe/Istanbul")
-    private Date startTimeStamp;
 
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm",timezone = "Europe/Istanbul")
-    private Date endTimeStamp;
+    private String startTimeStamp;
+
+
+    private String endTimeStamp;
 
     private String season;
 
     private String decade;
-
-    private Integer startHourFlag;
-
-    private Integer endHourFlag;
 
     public StoryResponse(Story story) {
         this.id = story.getId();
@@ -64,12 +62,10 @@ public class StoryResponse extends Story{
         this.likes = story.getLikes();
         this.savedBy = story.getSavedBy();
         this.locations = story.getLocations();
-        this.startTimeStamp = story.getStartTimeStamp();
-        this.endTimeStamp = story.getEndTimeStamp();
+        this.startTimeStamp = StoryService.dateToStringBasedOnHourFlag(story.getStartTimeStamp(),story.getStartHourFlag());
+        this.endTimeStamp = StoryService.dateToStringBasedOnHourFlag(story.getEndTimeStamp(),story.getEndHourFlag());
         this.season = story.getSeason();
         this.decade = story.getDecade();
-        this.startHourFlag = story.getStartHourFlag();
-        this.endHourFlag = story.getEndHourFlag();
     }
 }
 

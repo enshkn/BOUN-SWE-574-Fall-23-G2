@@ -6,6 +6,7 @@ import com.SWE573.dutluk_backend.request.LikeRequest;
 import com.SWE573.dutluk_backend.request.SaveRequest;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
+import com.SWE573.dutluk_backend.response.StoryListResponse;
 import com.SWE573.dutluk_backend.service.IntegrationService;
 import com.SWE573.dutluk_backend.service.RecommendationService;
 import com.SWE573.dutluk_backend.service.StoryService;
@@ -36,14 +37,15 @@ public class StoryController {
 
     @GetMapping("/all")
     public ResponseEntity<?> findAllStories(HttpServletRequest request){
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findAllByOrderByIdDesc());
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.findAllByOrderByIdDesc());
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyListResponse);
     }
 
-    //MOCK UNTIL RECOMMENDED LOGIC IS ESTABLISHED
+
     @GetMapping("/recommended")
     public ResponseEntity<?> findFeedStories(HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.recommendedStories(user));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.storyListAsStoryListResponse(storyService.recommendedStories(user)));
     }
 
     @PostMapping("/add")
@@ -56,15 +58,15 @@ public class StoryController {
     @GetMapping("/fromUser")
     public ResponseEntity<?> findAllStoriesfromUser(HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findByUserIdOrderByIdDesc(user.getId()));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.storyListAsStoryListResponse(storyService.findByUserIdOrderByIdDesc(user.getId())));
 
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getStoryById(@PathVariable Long id,HttpServletRequest request){
-        Story foundStory = storyService.storyAsStoryResponse(storyService.getStoryByStoryId(id));
+        Story foundStory = storyService.getStoryByStoryId(id);
         if (foundStory!=null) {
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"), foundStory);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"), storyService.storyAsStoryResponse(foundStory));
         }
         return ResponseEntity.notFound().build();
     }
@@ -72,7 +74,7 @@ public class StoryController {
     @GetMapping("/following")
     public ResponseEntity<?> findAllStoriesfromFollowings(HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findFollowingStories(tokenizedUser));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.storyListAsStoryListResponse(storyService.findFollowingStories(tokenizedUser)));
     }
 
     @GetMapping("/search")

@@ -67,8 +67,8 @@ public class Story extends BaseEntity{
 
     private String decade;
 
-    private Integer startHourFlag;
+    private Integer startHourFlag = -1;// if 0 no hour, if 1 hour exist
 
-    private Integer endHourFlag;
+    private Integer endHourFlag = -1;// if 0 no hour, if 1 hour exist
 
 }
