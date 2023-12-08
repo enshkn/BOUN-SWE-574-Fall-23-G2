@@ -107,10 +107,12 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
     }
 
     for (var i = 0; i < pointLocations.length; i++) {
-      additionalMarkers['$i'] = LatLng(
-        pointLocations[i].latitude!,
-        pointLocations[i].longitude!,
-      );
+      if (pointLocations[i].latitude != null) {
+        additionalMarkers['$i'] = LatLng(
+          pointLocations[i].latitude!,
+          pointLocations[i].longitude!,
+        );
+      }
     }
     for (var k = 0; k <= polygoneCount; k++) {
       if (k != 0) {
@@ -208,46 +210,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                       text,
                       user!,
                     ),
-                    if (state.storyModel != null &&
-                        state.storyModel!.comments != null)
-                      GestureDetector(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Text(
-                            'Show Comments',
-                            style: const TextStyles.body()
-                                .copyWith(color: context.appBarColor),
-                          ),
-                        ),
-                        onTap: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CommentsView(
-                                storyId: widget.model.id,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    BaseWidgets.lowestGap,
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                      child: CommentCard(
-                        user: user,
-                        storyId: widget.model.id,
-                        onTapSend: (comment) {
-                          setState(() {
-                            cubit.addComment(comment);
-                            _focusnode.unfocus();
-
-                            context.replaceRoute(
-                              StoryDetailsRoute(model: widget.model),
-                            );
-                          });
-                        },
-                      ),
-                    ),
+                    commentBuild(state, user),
                     BaseWidgets.normalGap,
                   ],
                 ),
@@ -256,6 +219,53 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
           );
         },
       ),
+    );
+  }
+
+  Widget commentBuild(StoryState state, User user) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (state.storyModel != null && state.storyModel!.comments != null)
+          GestureDetector(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                'Show Comments',
+                style: const TextStyles.body()
+                    .copyWith(color: context.appBarColor),
+              ),
+            ),
+            onTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CommentsView(
+                    storyId: widget.model.id,
+                  ),
+                ),
+              );
+            },
+          ),
+        BaseWidgets.lowestGap,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+          child: CommentCard(
+            user: user,
+            storyId: widget.model.id,
+            onTapSend: (comment) {
+              setState(() {
+                cubit.addComment(comment);
+                _focusnode.unfocus();
+
+                context.replaceRoute(
+                  StoryDetailsRoute(model: widget.model),
+                );
+              });
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -347,32 +357,28 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         'Time Variants',
                         style: TextStyle(color: Colors.orange.shade800),
                       ),
-                      Row(
-                        children: [
-                          if (widget.model.startTimeStamp != null)
-                            Text(
-                              'Start Time: ${widget.model.startTimeStamp}',
-                              style: const TextStyles.body().copyWith(
-                                letterSpacing: 0.016,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.start,
-                            ),
-                          if (widget.model.endTimeStamp != null)
-                            BaseWidgets.lowestGap,
-                          if (widget.model.endTimeStamp != null)
-                            Text(
-                              'End Time: ${widget.model.endTimeStamp}',
-                              style: const TextStyles.body().copyWith(
-                                letterSpacing: 0.016,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.start,
-                            ),
-                        ],
-                      ),
+                      if (widget.model.startTimeStamp != null)
+                        Text(
+                          'Start Time: ${widget.model.startTimeStamp}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                      if (widget.model.endTimeStamp != null)
+                        BaseWidgets.lowestGap,
+                      if (widget.model.endTimeStamp != null)
+                        Text(
+                          'End Time: ${widget.model.endTimeStamp}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
                       if (widget.model.decade != '' &&
                           widget.model.decade != null)
                         BaseWidgets.lowestGap,
@@ -496,7 +502,6 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         'Locations',
                         style: TextStyle(color: Colors.orange.shade800),
                       ),
-                      BaseWidgets.dynamicGap(4),
                       if (polylineLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
@@ -520,7 +525,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                     return Row(
                                       children: [
                                         SizedBox(
-                                          width: 300,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.75,
                                           child: Text(
                                             item.locationName!.toLocation(),
                                             style: const TextStyles.body()
@@ -567,7 +575,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                             ),
                           ],
                         ),
-                      if (polygonLocations.isNotEmpty) BaseWidgets.lowestGap,
+                      if (polygonLocations.isNotEmpty)
+                        BaseWidgets.dynamicGap(4),
                       if (polygonLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
@@ -591,7 +600,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                     return Row(
                                       children: [
                                         SizedBox(
-                                          width: 300,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.75,
                                           child: Text(
                                             item.locationName!.toLocation(),
                                             style: const TextStyles.body()
@@ -638,7 +650,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                             ),
                           ],
                         ),
-                      if (circleLocations.isNotEmpty) BaseWidgets.lowerGap,
+                      if (circleLocations.isNotEmpty) BaseWidgets.dynamicGap(4),
                       if (circleLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
@@ -662,7 +674,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                     return Row(
                                       children: [
                                         SizedBox(
-                                          width: 300,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.75,
                                           child: Text(
                                             item.locationName!.toLocation(),
                                             style: const TextStyles.body()
@@ -735,7 +750,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                     return Row(
                                       children: [
                                         SizedBox(
-                                          width: 300,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.75,
                                           child: Text(
                                             item.locationName!.toLocation(),
                                             style: const TextStyles.body()
@@ -835,6 +853,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               SingleChildScrollView(
                 child: Html(data: text),
               ),
+
+              //comments
             ],
           ),
         );

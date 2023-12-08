@@ -234,10 +234,6 @@ class _AddStoryViewState extends State<AddStoryView>
   void onPressed() {
     // FocusScope.of(context).unfocus();
 
-    if (isLastPage) {
-      return;
-    }
-
     final step = AddStoryStepType.fromValue(pageController.page!.toInt());
 
     switch (step) {
@@ -1003,6 +999,8 @@ class _AddStoryViewState extends State<AddStoryView>
     await cubit.addStory(model).then((value) {
       if (value) {
         Navigator.of(_scaffoldKey.currentContext!).pop();
+      } else {
+        Navigator.of(context).pop();
       }
     });
   }
