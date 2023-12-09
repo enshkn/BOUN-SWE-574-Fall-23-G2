@@ -40,7 +40,7 @@ public class CommentController {
     }
 
     @GetMapping("/{commentId}")
-    public ResponseEntity<?> getCommentsId(@PathVariable Long commentId,HttpServletRequest request){
+    public ResponseEntity<?> getByCommentId(@PathVariable Long commentId,HttpServletRequest request){
         Comment foundComment = commentService.getCommentById(commentId);
         if (foundComment!=null) {
             return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundComment);
@@ -54,12 +54,19 @@ public class CommentController {
 
     }
 
-    @GetMapping("/{storyId}")
+    @GetMapping("/byStory/{storyId}")
     public ResponseEntity<?> getCommentsByStoryId(@PathVariable Long storyId,HttpServletRequest request){
         List<Comment> foundComments = commentService.getCommentsByStoryId(storyId);
         if (foundComments!=null) {
             return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundComments);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/delete/{commentId}")
+    public ResponseEntity<?> deleteByCommentId(@PathVariable Long commentId,HttpServletRequest request){
+        Comment foundComment = commentService.getCommentById(commentId);
+        String deletionStatus = commentService.deleteComment(foundComment);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),deletionStatus);
     }
 }

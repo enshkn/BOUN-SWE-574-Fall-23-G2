@@ -52,8 +52,12 @@ public class CommentService {
         return commentRepository.findAllByStoryId(storyId);
     }
 
-    public void deleteComment(Comment comment){
+    public String deleteComment(Comment comment){
         commentRepository.delete(comment);
+        if(getCommentById(comment.getId()) == null){
+            return "comment deleted";
+        }
+        return "comment not deleted";
     }
 
     public Comment getCommentById(Long commentId) {
