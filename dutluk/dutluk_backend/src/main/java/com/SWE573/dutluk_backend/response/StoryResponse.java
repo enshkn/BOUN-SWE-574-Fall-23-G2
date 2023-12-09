@@ -63,7 +63,11 @@ public class StoryResponse{
         this.savedBy = story.getSavedBy();
         this.locations = story.getLocations();
         this.startTimeStamp = StoryService.dateToStringBasedOnFlags(story.getStartTimeStamp(),story.getStartHourFlag(),story.getStartDateFlag());
-        this.endTimeStamp = StoryService.dateToStringBasedOnFlags(story.getEndTimeStamp(),story.getEndHourFlag(),story.getEndDateFlag());
+        this.endTimeStamp = StoryService
+                .dateToStringBasedOnFlags(
+                        story.getEndTimeStamp(),
+                        story.getEndHourFlag(),
+                        story.getEndDateFlag());
         this.season = story.getSeason();
         this.decade = story.getDecade();
     }

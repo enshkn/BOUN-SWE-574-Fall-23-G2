@@ -68,6 +68,6 @@ public class StoryListResponse {
                         story.getEndHourFlag(),
                         story.getEndDateFlag());
         this.season = story.getSeason();
-        this.decade = story.getDecade();
+        this.decade = StoryService.getDecadeString(story);
     }
 }

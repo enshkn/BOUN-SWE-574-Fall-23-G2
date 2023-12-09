@@ -209,6 +209,17 @@ public class StoryService {
         return storyRepository.findByStartTimeStampBetween(formattedStartDate, formattedEndDate);
     }
 
+    public static String getDecadeString(Story story) {
+        Calendar calendar = Calendar.getInstance();
+        if(story.getDecade() == null && story.getStartTimeStamp() != null){
+            calendar.setTime(story.getStartTimeStamp());
+            int year = calendar.get(Calendar.YEAR);
+            int decadeStart = year - (year % 10);
+            return decadeStart + "s";
+        }
+        return null;
+    }
+
     public String deleteByStoryId(Story story) {
         List<Comment> commentList = story.getComments();
         for (Comment comment: commentList) {
@@ -218,9 +229,28 @@ public class StoryService {
         return "deleted";
     }
 
-    public Date stringToDate(String timeStamp) throws ParseException{
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return dateFormat.parse(timeStamp);
+    public Date stringToDate(String timeStamp) throws ParseException {
+        Date date = null;
+        SimpleDateFormat[] dateFormats = {
+                new SimpleDateFormat("yyyy-MM-dd"),
+                new SimpleDateFormat("yyyy-MM"),
+                new SimpleDateFormat("yyyy")
+        };
+
+        for (SimpleDateFormat dateFormat : dateFormats) {
+            try {
+                date = dateFormat.parse(timeStamp);
+                break;
+            } catch (ParseException e) {
+
+            }
+        }
+
+        if (date == null) {
+            throw new ParseException("Unable to parse the date", 0);
+        }
+
+        return date;
     }
 
     public Story enterStory(User foundUser, StoryEditRequest storyEditRequest) throws ParseException, IOException {
