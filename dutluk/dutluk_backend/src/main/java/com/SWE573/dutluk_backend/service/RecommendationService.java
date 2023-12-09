@@ -9,6 +9,7 @@ import com.SWE573.dutluk_backend.response.RecResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import lombok.Setter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,14 @@ import java.util.Set;
 
 @Service
 @Getter
+@Setter
 public class RecommendationService {
     @Value("${REC_URL}")
     private URI recUrl;
 
     @Autowired
     UserService userService;
+
 
     @Value("${REC_ENGINE_STATUS}")
     boolean recEngineStatus = false;
@@ -45,7 +48,7 @@ public class RecommendationService {
     }
 
 
-    public void vectorizeRequest(Story story){
+    public String vectorizeRequest(Story story){
         RecVectorizeOrEditRequest vectorizeRequest =
                 RecVectorizeOrEditRequest.builder()
                         .type("story")
@@ -53,8 +56,8 @@ public class RecommendationService {
                         .tags(story.getLabels())
                         .text(removeHtmlFormatting(story.getText()))
                         .build();
-        ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/vectorize", vectorizeRequest,String.class);
-        System.out.println(response.getBody());
+        restTemplate.postForEntity(recUrl + "/vectorize", vectorizeRequest,String.class);
+        return "Data sent to karadut";
     }
 
     public void vectorizeEditRequest(Story story){
@@ -66,7 +69,6 @@ public class RecommendationService {
                         .text(removeHtmlFormatting(story.getText()))
                         .build();
         ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/vectorize-edit", vectorizeRequest,String.class);
-        System.out.println(response.getBody());
     }
 
     public String likedStory(Story story, User user, Integer likedStorySize) throws JsonProcessingException {
@@ -77,23 +79,16 @@ public class RecommendationService {
                         .userId(user.getId().toString())
                         .userWeight(likedStorySize)
                         .build();
-        ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-liked", likedRequest,String.class);
-        user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
-        //System.out.println(response);
-        //user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
-        /*try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            RecResponse recResponse = objectMapper.readValue(response.getBody(), RecResponse.class);
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-liked", likedRequest,String.class);
             user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
-            userService.editUser(user);
-
-        } catch (HttpClientErrorException e) {
-        System.err.println("Client error: " + e.getRawStatusCode() + " - " + e.getResponseBodyAsString());
-
-    } catch (HttpServerErrorException e) {
-        System.err.println("Server error: " + e.getRawStatusCode() + " - " + e.getResponseBodyAsString());
-        }*/
-        return user.getRecommendedStories().toString();
+            if(user.getRecommendedStories() != null){
+                return "Karadut has sent the relevant stories";
+            }
+            return "No stories recommended";
+        }catch (NullPointerException e){
+            return "Recommendation complete";
+        }
     }
 
     public String dislikedStory(Story story, User user,Integer likedStorySize) throws JsonProcessingException {
@@ -104,23 +99,16 @@ public class RecommendationService {
                         .userId(user.getId().toString())
                         .userWeight(likedStorySize)
                         .build();
-        ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-unliked", dislikedRequest,String.class);
-        user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
-        //System.out.println(response);
-        /*try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            RecResponse recResponse = objectMapper.readValue(response.getBody(), RecResponse.class);
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-liked", dislikedRequest,String.class);
             user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
-            userService.editUser(user);
-            return user.getRecommendedStories().toString();
-
-        } catch (HttpClientErrorException e) {
-            System.err.println("Client error: " + e.getRawStatusCode() + " - " + e.getResponseBodyAsString());
-
-        } catch (HttpServerErrorException e) {
-            System.err.println("Server error: " + e.getRawStatusCode() + " - " + e.getResponseBodyAsString());
-        }*/
-        return user.getRecommendedStories().toString();
+            if(user.getRecommendedStories() != null){
+                return "Karadut has sent the relevant stories";
+            }
+            return "No stories recommended";
+        }catch (NullPointerException e){
+            return "Recommendation complete";
+        }
     }
 
     public Set<Long> recommendStory(User user, Set<Long> excludedLikedIds){
@@ -162,7 +150,7 @@ public class RecommendationService {
         return null;
     }
 
-    private String removeHtmlFormatting(String text) {
+    public String removeHtmlFormatting(String text) {
         Document document = Jsoup.parse(text);
         return document.text();
     }
