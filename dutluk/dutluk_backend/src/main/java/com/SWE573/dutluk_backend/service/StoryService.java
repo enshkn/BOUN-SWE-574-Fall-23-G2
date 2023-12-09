@@ -200,8 +200,22 @@ public class StoryService {
     }
 
     public List<Story> searchStoriesWithSingleDate(String startTimeStamp) throws ParseException {
-        Date formattedDate = stringToDate(startTimeStamp);
-        return storyRepository.findByStartTimeStamp(formattedDate);
+        Date formattedStartDate = stringToDate(startTimeStamp);
+        Date formattedEndDate;
+        switch (startTimeStamp.length()) {
+            case 4: // yyyy
+                formattedEndDate = incrementDateByOneYear(formattedStartDate);
+                break;
+            case 7: // yyyy-MM
+                formattedEndDate = incrementDateByOneMonth(formattedStartDate);
+                break;
+            case 10: // yyyy-MM-dd
+                formattedEndDate = incrementDateByOneDay(formattedStartDate);
+                break;
+            default:
+                throw new ParseException("Invalid date format", 0);
+        }
+        return storyRepository.findByStartTimeStampBetween(formattedStartDate,formattedEndDate);
     }
     public List<Story> searchStoriesWithMultipleDate(String startTimeStamp,String endTimeStamp) throws ParseException {
         Date formattedStartDate = stringToDate(startTimeStamp);
@@ -229,7 +243,14 @@ public class StoryService {
         return "deleted";
     }
 
-    public Date stringToDate(String timeStamp) throws ParseException{
+    public Date stringToDate(String timeStamp) throws ParseException {
+
+        if (timeStamp.length() == 4) { // yyyy
+            timeStamp += "-01-01";
+        } else if (timeStamp.length() == 7) { // yyyy-MM
+            timeStamp += "-01";
+        }
+        // yyyy-MM-dd format will remain unchanged
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.parse(timeStamp);
     }
@@ -460,4 +481,28 @@ public class StoryService {
 
         return formatter.format(date);
     }
+
+    public Date incrementDateByOneYear(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.YEAR, 1);
+        return calendar.getTime();
+    }
+
+    public Date incrementDateByOneMonth(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MONTH, 1);
+        return calendar.getTime();
+    }
+
+    public Date incrementDateByOneDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, 1);
+        return calendar.getTime();
+    }
+
+
+
 }
