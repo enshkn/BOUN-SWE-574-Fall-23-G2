@@ -7,6 +7,7 @@ import com.SWE573.dutluk_backend.request.SaveRequest;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
 import com.SWE573.dutluk_backend.response.StoryListResponse;
+import com.SWE573.dutluk_backend.response.StoryResponse;
 import com.SWE573.dutluk_backend.service.IntegrationService;
 import com.SWE573.dutluk_backend.service.RecommendationService;
 import com.SWE573.dutluk_backend.service.StoryService;
@@ -45,7 +46,8 @@ public class StoryController {
     @GetMapping("/recommended")
     public ResponseEntity<?> findFeedStories(HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.storyListAsStoryListResponse(storyService.recommendedStories(user)));
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.recommendedStories(user));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyListResponse);
     }
 
     @PostMapping("/add")
@@ -58,7 +60,8 @@ public class StoryController {
     @GetMapping("/fromUser")
     public ResponseEntity<?> findAllStoriesfromUser(HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.storyListAsStoryListResponse(storyService.findByUserIdOrderByIdDesc(user.getId())));
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.findByUserIdOrderByIdDesc(user.getId()));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyListResponse);
 
     }
 
@@ -66,7 +69,8 @@ public class StoryController {
     public ResponseEntity<?> getStoryById(@PathVariable Long id,HttpServletRequest request){
         Story foundStory = storyService.getStoryByStoryId(id);
         if (foundStory!=null) {
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"), storyService.storyAsStoryResponse(foundStory));
+            StoryResponse storyResponse = storyService.storyAsStoryResponse(foundStory);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyResponse);
         }
         return ResponseEntity.notFound().build();
     }
@@ -74,7 +78,8 @@ public class StoryController {
     @GetMapping("/following")
     public ResponseEntity<?> findAllStoriesfromFollowings(HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.storyListAsStoryListResponse(storyService.findFollowingStories(tokenizedUser)));
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.findFollowingStories(tokenizedUser));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyListResponse);
     }
 
     @GetMapping("/search")
@@ -120,7 +125,8 @@ public class StoryController {
             Set<String> nullSet = new HashSet<>();
             return IntegrationService.mobileCheck(request.getHeader("User-Agent"),nullSet);
         }
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storySet.stream().toList());
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyListResponse, "[]"));
     }
 
     @GetMapping("/search/label")
@@ -131,7 +137,8 @@ public class StoryController {
             Set<String> nullSet = new HashSet<>();
             return IntegrationService.mobileCheck(request.getHeader("User-Agent"),nullSet);
         }
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyService.sortStoriesByDescending(labelResults),"No story found!"));
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(labelResults);
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyListResponse,"No story found!"));
     }
 
     @GetMapping("/nearby")
@@ -149,7 +156,8 @@ public class StoryController {
             Set<String> nullSet = new HashSet<>();
             return IntegrationService.mobileCheck(request.getHeader("User-Agent"),nullSet);
         }
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storySet.stream().toList());
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyListResponse, "No stories with this search is found!"));
     }
 
     @GetMapping("/search/timeline")
@@ -218,13 +226,14 @@ public class StoryController {
                 storySet.retainAll(seasonSet);
             }
         }
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storySet, "No stories with this search is found!"));
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storySet.stream().toList());
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyListResponse, "No stories with this search is found!"));
     }
 
     @PostMapping("/like/")
     public ResponseEntity<?> likeStory(@RequestBody LikeRequest likeRequest, HttpServletRequest request) throws JsonProcessingException {
         User tokenizedUser = userService.validateTokenizedUser(request);
-        Story likedStory = storyService.likeStory(likeRequest.getLikedEntityId(),tokenizedUser.getId());
+        StoryResponse likedStory = storyService.storyAsStoryResponse(storyService.likeStory(likeRequest.getLikedEntityId(),tokenizedUser.getId()));
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),likedStory);
     }
     @GetMapping("/delete/{storyId}")
@@ -238,7 +247,7 @@ public class StoryController {
     @PostMapping("/edit/{storyId}")
     public ResponseEntity<?> editStory(@PathVariable Long storyId, @RequestBody StoryEditRequest storyEditRequest, HttpServletRequest request) throws ParseException, IOException {
         User tokenizedUser = userService.validateTokenizedUser(request);
-        Story editedStory = storyService.editStory(storyEditRequest,tokenizedUser,storyId);
+        StoryResponse editedStory = storyService.storyAsStoryResponse(storyService.editStory(storyEditRequest,tokenizedUser,storyId));
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),editedStory);
 
     }
@@ -246,43 +255,48 @@ public class StoryController {
     @GetMapping("/liked")
     public ResponseEntity<?> likedStories(HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.likedStories(tokenizedUser));
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.likedStories(tokenizedUser));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyListResponse);
 
     }
 
     @GetMapping("/recent")
     public ResponseEntity<?> findRecentStories(HttpServletRequest request){
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findRecentStories());
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.findRecentStories());
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyListResponse);
     }
 
     @GetMapping("/fromUserId/{userId}")
     public ResponseEntity<?> findAllStoriesbyUserId(@PathVariable Long userId, HttpServletRequest request){
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.findByUserIdOrderByIdDesc(userId));
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.findByUserIdOrderByIdDesc(userId));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyListResponse);
 
     }
 
     @PostMapping("/save")
     public ResponseEntity<?> saveStory(@RequestBody SaveRequest saveRequest, HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
-        Story savedStory = storyService.saveStory(saveRequest.getSavedEntityId(),tokenizedUser.getId());
+        StoryResponse savedStory = storyService.storyAsStoryResponse(storyService.saveStory(saveRequest.getSavedEntityId(),tokenizedUser.getId()));
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),savedStory);
     }
 
     @GetMapping("/saved")
     public ResponseEntity<?> savedStories(HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.savedStories(tokenizedUser));
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.savedStories(tokenizedUser));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyListResponse);
 
     }
 
     @GetMapping("/savedByUser/{userId}")
     public ResponseEntity<?> savedStoriesByUser(@PathVariable Long userId, HttpServletRequest request){
         User foundUser = userService.findByUserId(userId);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyService.savedStories(foundUser));
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.savedStories(foundUser));
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyListResponse);
 
     }
 
-    @GetMapping("/recEndPoint")
+    @GetMapping("/karadutStatusCheck")
     public ResponseEntity<?> recommendationEndpointTest(HttpServletRequest request){
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),recService.testEndpoint());
     }

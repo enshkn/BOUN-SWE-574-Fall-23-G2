@@ -185,6 +185,10 @@ public class StoryService {
             Date endDecadeDate = convertToEndDate(decade);
             results.addAll(storyRepository.findByStartTimeStampBetween(startDecadeDate,endDecadeDate));
             results.addAll(storyRepository.findByEndTimeStampBetween(startDecadeDate,endDecadeDate));
+            for(Story story: results){
+                story.setDecade(decade);
+                results.add(story);
+            }
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -423,15 +427,21 @@ public class StoryService {
         if (hourFlag == null || hourFlag == -1 || hourFlag == 1) {
             formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         } else {
-            if(dateFlag == 1){
-                formatter = new SimpleDateFormat("yyyy");
-            }
-            else if (dateFlag == 2) {
-                formatter = new SimpleDateFormat("MM/yyyy");
-            }
-            else{
+            if(dateFlag == null){
                 formatter = new SimpleDateFormat("dd/MM/yyyy");
             }
+            else{
+                if(dateFlag == 1){
+                    formatter = new SimpleDateFormat("yyyy");
+                }
+                else if (dateFlag == 2) {
+                    formatter = new SimpleDateFormat("MM/yyyy");
+                }
+                else{
+                    formatter = new SimpleDateFormat("dd/MM/yyyy");
+                }
+            }
+
 
         }
 

@@ -41,7 +41,7 @@ public class RecommendationService {
             ResponseEntity<String> response = restTemplate.getForEntity(recUrl+"/test", String.class);
             return response.getBody();
         }
-        return "Rec engine status false";
+        return "Karadut implementation is offline";
     }
 
 

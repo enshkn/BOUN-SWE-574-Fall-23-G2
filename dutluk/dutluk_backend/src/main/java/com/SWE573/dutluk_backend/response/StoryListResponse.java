@@ -16,7 +16,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class StoryListResponse{
+public class StoryListResponse {
     private Long id;
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "Europe/Istanbul")
