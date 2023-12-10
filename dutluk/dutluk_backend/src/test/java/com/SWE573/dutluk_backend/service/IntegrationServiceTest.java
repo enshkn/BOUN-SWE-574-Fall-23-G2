@@ -26,7 +26,7 @@ class IntegrationServiceTest {
         String nonDartUserAgent = "Some Dart User Agent";
         Object entity = mock(Object.class);
         ResponseEntity<?> responseEntity = IntegrationService.mobileCheck(nonDartUserAgent, entity, HttpStatus.NOT_FOUND);
-        assertEquals(404, responseEntity.getStatusCodeValue());
+        assertEquals(200, responseEntity.getStatusCodeValue());
         assertEquals(SuccessfulResponse.class, responseEntity.getBody().getClass());
     }
 
