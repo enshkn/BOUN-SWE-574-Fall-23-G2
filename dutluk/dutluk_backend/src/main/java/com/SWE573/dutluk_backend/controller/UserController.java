@@ -67,14 +67,11 @@ public class UserController {
             response.addCookie(cookie);
             foundUser.setToken(token);
             return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
-            /*LoginResponse loginResponse = new LoginResponse(foundUser,token);
-             * */
-            //return IntegrationService.mobileCheck(request.getHeader("User-Agent"),loginResponse);
         } catch (AccountNotFoundException e) {
-            return new ResponseEntity<>("Wrong password", HttpStatus.NOT_FOUND);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),"Wrong password",HttpStatus.NOT_FOUND);
         }
         catch (Exception e) {
-            return new ResponseEntity<>("An error occurred on dutluk backend", HttpStatus.INTERNAL_SERVER_ERROR);
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),"An error occurred on dutluk backend", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

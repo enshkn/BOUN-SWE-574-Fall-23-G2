@@ -17,14 +17,14 @@ public class IntegrationService {
 
     public static ResponseEntity<?> mobileCheck (String userAgent, Object entity, HttpStatus httpStatus){
         if(userAgent.contains("Dart")){
-            successfulResponse.setEntity(entity);
+            successfulResponse.setEntity("");
             successfulResponse.setStatus(httpStatus.value());
-            successfulResponse.setMessage("fail");
+            successfulResponse.setMessage(entity.toString());
             successfulResponse.setSuccess(false);
             if(entity instanceof Collection<?>){
                 successfulResponse.setCount(((Collection<?>) entity).size());
             }
-            return new ResponseEntity<>(successfulResponse,httpStatus);
+            return new ResponseEntity<>(successfulResponse,HttpStatus.OK);
         }
         else{
             return new ResponseEntity<>(entity,httpStatus);
