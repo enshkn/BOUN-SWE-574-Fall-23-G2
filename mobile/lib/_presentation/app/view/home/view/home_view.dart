@@ -132,8 +132,6 @@ class _HomeViewState extends State<HomeView>
                                       itemBuilder: (item) {
                                         return FavoriteWrapper(
                                           userId: user.id!,
-                                          initialLikeCount:
-                                              item.likes!.length.toString(),
                                           initialStateSave: item.savedBy != null
                                               ? item.savedBy!.contains(user.id)
                                               : false,
@@ -220,8 +218,6 @@ class _HomeViewState extends State<HomeView>
                                         itemBuilder: (item) {
                                           return FavoriteWrapper(
                                             userId: user.id!,
-                                            initialLikeCount:
-                                                item.likes!.length.toString(),
                                             initialStateSave:
                                                 item.savedBy != null
                                                     ? item.savedBy!
