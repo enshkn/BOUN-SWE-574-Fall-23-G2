@@ -11,11 +11,10 @@ import java.util.Collection;
 @Service
 public class IntegrationService {
 
-    private static Response successfulResponse = new SuccessfulResponse();
-
 
 
     public static ResponseEntity<?> mobileCheck (String userAgent, Object entity, HttpStatus httpStatus){
+        Response successfulResponse = new SuccessfulResponse();
         if(userAgent.contains("Dart")){
             successfulResponse.setEntity("");
             successfulResponse.setStatus(httpStatus.value());
@@ -31,11 +30,9 @@ public class IntegrationService {
         }
     }
     public static ResponseEntity<?> mobileCheck (String userAgent, Object entity){
+        Response successfulResponse = new SuccessfulResponse();
         if(userAgent.contains("Dart")){
             successfulResponse.setEntity(entity);
-            successfulResponse.setMessage("success");
-            successfulResponse.setStatus(200);
-            successfulResponse.setSuccess(true);
             if(entity instanceof Collection<?>){
                 successfulResponse.setCount(((Collection<?>) entity).size());
             }
