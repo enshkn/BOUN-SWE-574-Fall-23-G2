@@ -36,6 +36,7 @@ class AuthRepository implements IAuthRepository {
       NetworkPaths.login,
       parserModel: const User(),
       type: HttpTypes.post,
+      cachePolicy: CachePolicy.noCache,
       data: {
         'identifier': username,
         'password': password,
@@ -76,6 +77,7 @@ class AuthRepository implements IAuthRepository {
       NetworkPaths.register,
       parserModel: NoResultResponse(),
       type: HttpTypes.post,
+      cachePolicy: CachePolicy.noCache,
       data: model.toJson(),
     );
 
