@@ -231,7 +231,7 @@ public class StoryService {
             int decadeStart = year - (year % 10);
             return decadeStart + "s";
         }
-        return null;
+        return story.getDecade();
     }
 
     public String deleteByStoryId(Story story) {
