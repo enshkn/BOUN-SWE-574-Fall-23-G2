@@ -60,8 +60,8 @@ public class StoryController {
     @GetMapping("/fromUser")
     public ResponseEntity<?> findAllStoriesfromUser(HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.findByUserIdOrderByIdDesc(user.getId()));
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyListResponse);
+        List<Story> storyList = storyService.findByUserIdOrderByIdDesc(user.getId());
+        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyList);
 
     }
 
