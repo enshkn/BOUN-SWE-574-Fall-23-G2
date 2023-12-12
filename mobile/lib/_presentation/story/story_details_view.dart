@@ -166,7 +166,6 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    final text = widget.model.text;
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
       appBar: AppBar(
@@ -200,17 +199,18 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               await cubit.getStoryDetail(widget.model.id);
             },
             builder: (context, cubit, state) {
-              pushBackModel = state.storyModel;
               return BaseLoader(
                 isLoading: state.isLoading,
                 child: BaseScrollView(
                   children: [
-                    buildContent(
-                      context,
-                      text,
-                      user!,
-                    ),
-                    commentBuild(state, user),
+                    if (state.storyModel != null)
+                      buildContent(
+                        context,
+                        state.storyModel!.text,
+                        user!,
+                        state,
+                      ),
+                    commentBuild(state, user!),
                     BaseWidgets.normalGap,
                   ],
                 ),
@@ -273,10 +273,13 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
     BuildContext context,
     String text,
     User user,
+    StoryState state,
   ) {
     return FavoriteWrapper(
       userId: user.id!,
-      initialState: widget.model.likes!.contains(user.id),
+      initialState: state.storyModel!.likes != null
+          ? state.storyModel!.likes!.contains(user.id)
+          : false,
       storyId: widget.model.id,
       builder: (
         context,
@@ -296,7 +299,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (widget.model.likes != null)
+                    if (state.storyModel!.likes != null)
                       SizedBox(
                         width: 50,
                         height: 30,
@@ -306,7 +309,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                               ButtonCard(
                                 minScale: 0.8,
                                 onPressed: () async {
-                                  await addFavorite(storyId: widget.model.id);
+                                  await addFavorite(
+                                      storyId: state.storyModel!.id);
                                 },
                                 child: Icon(
                                   Icons.favorite,
@@ -327,7 +331,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                     GestureDetector(
                       onTap: () {
                         context.router.push(
-                          OtherProfileRoute(profile: widget.model.user!),
+                          OtherProfileRoute(profile: state.storyModel!.user!),
                         );
                       },
                       child: IconWithLabel(
@@ -336,7 +340,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           Icons.star,
                           color: Colors.yellow,
                         ),
-                        label: widget.model.user!.username!,
+                        label: state.storyModel!.user!.username!,
                       ),
                     ),
                   ],
@@ -357,9 +361,9 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         'Time Variants',
                         style: TextStyle(color: Colors.orange.shade800),
                       ),
-                      if (widget.model.startTimeStamp != null)
+                      if (state.storyModel!.startTimeStamp != null)
                         Text(
-                          'Start Time: ${widget.model.startTimeStamp}',
+                          'Start Time: ${state.storyModel!.startTimeStamp}',
                           style: const TextStyles.body().copyWith(
                             letterSpacing: 0.016,
                           ),
@@ -367,11 +371,11 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
                         ),
-                      if (widget.model.endTimeStamp != null)
+                      if (state.storyModel!.endTimeStamp != null)
                         BaseWidgets.lowestGap,
-                      if (widget.model.endTimeStamp != null)
+                      if (state.storyModel!.endTimeStamp != null)
                         Text(
-                          'End Time: ${widget.model.endTimeStamp}',
+                          'End Time: ${state.storyModel!.endTimeStamp}',
                           style: const TextStyles.body().copyWith(
                             letterSpacing: 0.016,
                           ),
@@ -379,13 +383,13 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
                         ),
-                      if (widget.model.decade != '' &&
-                          widget.model.decade != null)
+                      if (state.storyModel!.decade != '' &&
+                          state.storyModel!.decade != null)
                         BaseWidgets.lowestGap,
-                      if (widget.model.decade != '' &&
-                          widget.model.decade != null)
+                      if (state.storyModel!.decade != '' &&
+                          state.storyModel!.decade != null)
                         Text(
-                          'Decade: ${widget.model.decade!}',
+                          'Decade: ${state.storyModel!.decade!}',
                           style: const TextStyles.body().copyWith(
                             letterSpacing: 0.016,
                           ),
@@ -393,13 +397,13 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
                         ),
-                      if (widget.model.season != '' &&
-                          widget.model.season != null)
+                      if (state.storyModel!.season != '' &&
+                          state.storyModel!.season != null)
                         BaseWidgets.lowestGap,
-                      if (widget.model.season != '' &&
-                          widget.model.season != null)
+                      if (state.storyModel!.season != '' &&
+                          state.storyModel!.season != null)
                         Text(
-                          'Season: ${widget.model.season!}',
+                          'Season: ${state.storyModel!.season!}',
                           style: const TextStyles.body().copyWith(
                             letterSpacing: 0.016,
                           ),
@@ -481,7 +485,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               ), */
 
               BaseWidgets.lowestGap,
-              if (widget.model.locations != null)
+              if (state.storyModel!.locations != null)
                 Container(
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
@@ -804,14 +808,14 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                   ),
                 ),
               BaseWidgets.lowestGap,
-              if (widget.model.labels != null)
+              if (state.storyModel!.labels != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: SizedBox(
                     height: 60,
                     child: BaseListView(
                       scrollDirection: Axis.horizontal,
-                      items: widget.model.labels!,
+                      items: state.storyModel!.labels!,
                       itemBuilder: (item) {
                         return GestureDetector(
                           onTap: () async {
@@ -842,7 +846,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               ),
               BaseWidgets.lowerGap,
               Text(
-                widget.model.title,
+                state.storyModel!.title,
                 style: const TextStyles.title().copyWith(
                   letterSpacing: 0.016,
                 ),

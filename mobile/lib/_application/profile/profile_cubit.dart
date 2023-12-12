@@ -102,13 +102,14 @@ final class ProfileCubit extends BaseCubit<ProfileState> {
   Future<void> getOtherUser(int id) async {
     setLoading(true);
     final result = await _profileRepository.otherProfile(id);
-    setLoading(false);
+
     result.fold(
       (failure) => showNotification(failure?.message ?? '', isError: true),
       (data) {
         safeEmit(state.copyWith(otherProfile: data));
       },
     );
+    setLoading(false);
   }
 
   Future<void> logout() async {

@@ -21,6 +21,8 @@ class StoryCard extends StatelessWidget {
   final void Function()? onFavouriteTap;
   final void Function()? onSavedTap;
   final VoidCallback? onDeleteTap;
+  final VoidCallback? onEditTap;
+
   final bool isFavorite;
   final bool isSaved;
   final bool isSavedLoading;
@@ -43,15 +45,15 @@ class StoryCard extends StatelessWidget {
     this.onSavedTap,
     this.isSaved = false,
     this.isSavedLoading = false,
+    this.onEditTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final text = storyModel.text;
+    /*  final text = storyModel.text;
 
     final document = parse(text);
-    String? imgurl;
-    var noImage = true;
+   
 
     if (document.outerHtml.contains('<img>')) {
       final parsedImage = text.split('<img>');
@@ -65,6 +67,13 @@ class StoryCard extends StatelessWidget {
       final secondParse = parsedImage[1].split('">');
       final finalParse = secondParse[0];
       imgurl = finalParse;
+      noImage = false;
+    } */
+
+    String? imgurl;
+    var noImage = true;
+    imgurl = storyModel.picture;
+    if (imgurl != null) {
       noImage = false;
     }
 
@@ -94,6 +103,7 @@ class StoryCard extends StatelessWidget {
             if (myStories == false) buildSaved(),
             buildUser(context),
             if (myStories) buildDelete(),
+            if (myStories) buildEdit(),
           ],
         ),
       ),
@@ -311,6 +321,36 @@ class StoryCard extends StatelessWidget {
                 },
                 icon: const Icon(
                   Icons.delete,
+                  size: 32,
+                  color: Colors.red,
+                ),
+              ),
+              const SizedBox(
+                width: 4,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildEdit() {
+    return Positioned(
+      top: 8,
+      left: 0,
+      child: SizedBox(
+        width: 52,
+        height: 30,
+        child: Center(
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  onEditTap?.call();
+                },
+                icon: const Icon(
+                  Icons.edit,
                   size: 32,
                   color: Colors.red,
                 ),
