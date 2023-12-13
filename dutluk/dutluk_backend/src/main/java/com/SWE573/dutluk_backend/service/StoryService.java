@@ -278,28 +278,16 @@ public class StoryService {
         foundStory.setStartDateFlag(storyEditRequest.getStartDateFlag());
         foundStory.setEndDateFlag(storyEditRequest.getEndDateFlag());
 
-
-        List<Location> allFormerLocations = foundStory.getLocations();
         List<Location> allLocations = storyEditRequest.getLocations();
-        for (Location location : allLocations) {
-            if(!allFormerLocations.contains(location)){
-                allFormerLocations.add(location);
-            }
-            else{
-                for(Location foundLocation: allFormerLocations){
-                    foundLocation.setLocationName(location.getLocationName());
-                    foundLocation.setCircleRadius(location.getCircleRadius());
-                    foundLocation.setIsCircle(location.getIsCircle());
-                    foundLocation.setLatitude(location.getLatitude());
-                    foundLocation.setLongitude(location.getLongitude());
-                    foundLocation.setIsPoint(location.getIsPoint());
-                    foundLocation.setIsPolyline(location.getIsPolyline());
-                    foundLocation.setIsPolygon(location.getIsPolygon());
-                    foundLocation.setCreatedAt(new Date());
-                }
-            }
+        List<Location> allFormerLocations = foundStory.getLocations();
+        for(Location location : allFormerLocations){
+            location.setStory(null);
         }
-        foundStory.setLocations(allFormerLocations);
+        foundStory.setLocations(null);
+        for (Location location : allLocations) {
+            location.setStory(foundStory);
+        }
+        foundStory.setLocations(allLocations);
         return foundStory;
     }
 
