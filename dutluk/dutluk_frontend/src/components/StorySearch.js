@@ -20,6 +20,11 @@ const StorySearch = () => {
     if (searchQuery && searchQuery.length < 4) {
       return;
     }
+  
+  const handleFormSubmit = (e) => {
+      e.preventDefault();
+      handleSearch(); 
+    };
 
     try {
       let startDate = null;
@@ -124,7 +129,21 @@ const StorySearch = () => {
                 className="form-control"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSearch();
+                  }
+                }}
               />
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleSearch}
+              >
+                Search
+              </button>
+              
             </div>
           </form>
           {/* Radius Element */}
