@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/story")
@@ -93,51 +91,23 @@ public class StoryController {
             @RequestParam(required = false) String decade,
             @RequestParam(required = false) String season,
             HttpServletRequest request) throws ParseException {
-        Set<Story> storySet = new HashSet<>();
-        if(query != null){
-            if(!query.equalsIgnoreCase("") && !query.equalsIgnoreCase("null")){
-                storySet.addAll(storyService.searchStoriesWithQuery(query));
-            }
-        }
-        if(latitude != null && longitude != null && (radius != null)){
-            if (query != null && !query.equalsIgnoreCase("null")){
-                storySet.addAll(storyService.searchStoriesWithLocation(query,radius,latitude,longitude));
-            }
-            else{
-                storySet.addAll(storyService.searchStoriesWithLocationOnly(radius,latitude,longitude));
-            }
-        }
-        if(startTimeStamp != null && !startTimeStamp.equalsIgnoreCase("null")){
-            if(endTimeStamp != null && !endTimeStamp.equalsIgnoreCase("null")){
-                storySet.addAll(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
-            }
-            else{
-                storySet.addAll(storyService.searchStoriesWithSingleDate(startTimeStamp));
-            }
-        }
-        if(decade != null && !decade.equalsIgnoreCase("null")){
-            storySet.addAll(storyService.searchStoriesWithDecade(decade));
-        }
-        if(season != null && !season.equalsIgnoreCase("null")){
-            storySet.addAll(storyService.searchStoriesWithSeason(season));
-        }
-        if(storySet.isEmpty()){
-            Set<String> nullSet = new HashSet<>();
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),nullSet);
-        }
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storySet.stream().toList());
+        List<Story> storyList = storyService.searchStoriesWithCombination(
+                query,
+                radius,
+                latitude,
+                longitude,
+                startTimeStamp,
+                endTimeStamp,
+                decade,
+                season);
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyList);
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyListResponse, "[]"));
     }
 
     @GetMapping("/search/label")
     public ResponseEntity<?> searchStoriesByLabel(@RequestParam(required = false) String label,
                                                   HttpServletRequest request){
-        List<Story> labelResults = storyService.searchStoriesWithLabel(label);
-        if(labelResults.isEmpty()){
-            Set<String> nullSet = new HashSet<>();
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),nullSet);
-        }
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(labelResults);
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.searchStoriesWithLabel(label));
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyListResponse,"No story found!"));
     }
 
@@ -146,17 +116,8 @@ public class StoryController {
             @RequestParam(required = false) Integer radius,
             @RequestParam(required = false) Double latitude,
             @RequestParam(required = false) Double longitude,
-            HttpServletRequest request) throws ParseException {
-        Set<Story> storySet = new HashSet<>();
-
-        if(latitude != null && longitude != null && (radius != null || radius != 0)){
-            storySet.addAll(storyService.searchStoriesWithLocationOnly(radius,latitude,longitude));
-        }
-        if(storySet.isEmpty()){
-            Set<String> nullSet = new HashSet<>();
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),nullSet);
-        }
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storySet.stream().toList());
+            HttpServletRequest request){
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.searchStoriesWithLocationOnly(radius,latitude,longitude).stream().toList());
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyListResponse, "No stories with this search is found!"));
     }
 
@@ -172,61 +133,17 @@ public class StoryController {
             @RequestParam(required = false) String decade,
             @RequestParam(required = false) String season,
             HttpServletRequest request) throws ParseException {
-
-        Set<Story> titleSet = new HashSet<>();
-        Set<Story> labelsSet = new HashSet<>();
-        Set<Story> locationSet = new HashSet<>();
-        Set<Story> dateSet = new HashSet<>();
-        Set<Story> decadeSet = new HashSet<>();
-        Set<Story> seasonSet = new HashSet<>();
-        Set<Story> storySet = new HashSet<>(storyService.findAll());
-        if(title != null){
-            if(!title.equalsIgnoreCase("") && !title.equalsIgnoreCase("null")){
-                titleSet.addAll(storyService.searchStoriesWithTitle(title));
-                if(storyService.searchStoriesWithTitle(title) != null){
-                    storySet.retainAll(titleSet);
-                }
-            }
-        }
-        if(labels != null){
-            if(!labels.equalsIgnoreCase("") && !labels.equalsIgnoreCase("null")){
-                labelsSet.addAll(storyService.searchStoriesWithLabel(labels));
-                if(storyService.searchStoriesWithTitle(title) != null){
-                    storySet.retainAll(labelsSet);
-                }
-            }
-        }
-        if(latitude != null && longitude != null && radius != null){
-            locationSet.addAll(storyService.searchStoriesWithLocationOnly(radius,latitude,longitude));
-            storySet.retainAll(locationSet);
-        }
-        if(startTimeStamp != null && !startTimeStamp.equalsIgnoreCase("null")){
-            if(endTimeStamp != null && !endTimeStamp.equalsIgnoreCase("null")){
-                dateSet.addAll(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
-                if(storyService.searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp) != null){
-                    storySet.retainAll(dateSet);
-                }
-            }
-            else{
-                dateSet.addAll(storyService.searchStoriesWithSingleDate(startTimeStamp));
-                if(storyService.searchStoriesWithSingleDate(startTimeStamp) != null){
-                    storySet.retainAll(dateSet);
-                }
-            }
-        }
-        if(decade != null && !decade.equalsIgnoreCase("null")){
-            decadeSet.addAll(storyService.searchStoriesWithDecade(decade));
-            if(storyService.searchStoriesWithDecade(decade) != null){
-                storySet.retainAll(decadeSet);
-            }
-        }
-        if(season != null && !season.equalsIgnoreCase("null")){
-            seasonSet.addAll(storyService.searchStoriesWithSeason(season));
-            if(storyService.searchStoriesWithSeason(season) != null){
-                storySet.retainAll(seasonSet);
-            }
-        }
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storySet.stream().toList());
+        List<Story> storyList = storyService.searchStoriesWithIntersection(
+                title,
+                labels,
+                radius,
+                latitude,
+                longitude,
+                startTimeStamp,
+                endTimeStamp,
+                decade,
+                season);
+        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyList);
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyListResponse, "No stories with this search is found!"));
     }
 

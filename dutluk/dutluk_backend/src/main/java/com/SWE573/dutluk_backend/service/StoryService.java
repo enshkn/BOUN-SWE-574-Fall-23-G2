@@ -42,7 +42,7 @@ public class StoryService {
     }
 
     public List<Story> findAllByOrderByIdDesc(){
-        List<Story> storyList = optimizeStoryLists(storyRepository.findAllByOrderByIdDesc());
+        List<Story> storyList = storyRepository.findAllByOrderByIdDesc();
         return (!storyList.isEmpty()) ? storyList : Collections.emptyList();
     }
 
@@ -76,12 +76,12 @@ public class StoryService {
     }
 
     public List<Story> findAllStoriesByUserId(Long userId){
-        List<Story> storyList = optimizeStoryLists(storyRepository.findByUserId(userId));
+        List<Story> storyList = storyRepository.findByUserId(userId);
         return (!storyList.isEmpty()) ? storyList : Collections.emptyList();
     }
 
     public List<Story> findByUserIdOrderByIdDesc(Long userId){
-        List<Story> storyList = optimizeStoryLists(storyRepository.findByUserIdOrderByIdDesc(userId));
+        List<Story> storyList = storyRepository.findByUserIdOrderByIdDesc(userId);
         return (!storyList.isEmpty()) ? storyList : Collections.emptyList();
     }
 
@@ -101,7 +101,7 @@ public class StoryService {
         for(Long id : idList){
             storyList.addAll(findByUserIdOrderByIdDesc(id));
         }
-        return optimizeStoryLists(sortStoriesByDescending(storyList));
+        return sortStoriesByDescending(storyList);
 
     }
 
@@ -147,14 +147,21 @@ public class StoryService {
                 minLatitude, maxLatitude, minLongitude, maxLongitude);
     }
 
-    public List<Story> searchStoriesWithLocationOnly(int radius, Double latitude, Double longitude) {
-        double minLatitude, maxLatitude, minLongitude, maxLongitude;
-        minLatitude = latitude - (radius / 111.0);
-        maxLatitude = latitude + (radius / 111.0);
-        minLongitude = longitude - (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
-        maxLongitude = longitude + (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
-        return storyRepository.findByLocations_LatitudeBetweenAndLocations_LongitudeBetween(
-                minLatitude, maxLatitude, minLongitude, maxLongitude);
+    public List<Story> searchStoriesWithLocationOnly(Integer radius, Double latitude, Double longitude) {
+        if(latitude != null && longitude != null && (radius != null && radius != 0)){
+            double minLatitude, maxLatitude, minLongitude, maxLongitude;
+            minLatitude = latitude - (radius / 111.0);
+            maxLatitude = latitude + (radius / 111.0);
+            minLongitude = longitude - (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
+            maxLongitude = longitude + (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
+            List<Story> storyList = storyRepository.findByLocations_LatitudeBetweenAndLocations_LongitudeBetween(
+                    minLatitude, maxLatitude, minLongitude, maxLongitude);
+            if(storyList.isEmpty()){
+                return new ArrayList<>();
+            }
+            return storyList;
+        }
+        return null;
     }
 
     public List<Story> searchStoriesWithQuery(String query) {
@@ -172,7 +179,7 @@ public class StoryService {
     public List<Story> searchStoriesWithLabel(String label){
         List<Story> results = storyRepository.findByLabelsContainingIgnoreCase(label);
         if(results == null || results.isEmpty()){
-            return null;
+            return new ArrayList<>();
         }
         return results.stream().toList();
     }
@@ -255,38 +262,51 @@ public class StoryService {
         return dateFormat.parse(timeStamp);
     }
 
-    public Story enterStory(User foundUser, StoryEditRequest storyEditRequest) throws ParseException, IOException {
-        Story createdStory = Story.builder()
-                .title(storyEditRequest.getTitle())
-                .labels(storyEditRequest.getLabels())
-                .text(imageService.parseAndSaveImages(storyEditRequest.getText()))
-                .startTimeStamp(storyEditRequest.getStartTimeStamp())
-                .endTimeStamp(storyEditRequest.getEndTimeStamp())
-                .season(storyEditRequest.getSeason())
-                .startHourFlag(storyEditRequest.getStartHourFlag())
-                .endHourFlag(storyEditRequest.getEndHourFlag())
-                .startDateFlag(storyEditRequest.getStartDateFlag())
-                .endDateFlag(storyEditRequest.getEndDateFlag())
-                .user(foundUser)
-                .decade(storyEditRequest.getDecade())
-                .likes(new HashSet<>())
-                .build();
-        ArrayList<Location> allLocations = storyEditRequest.getLocations();
+    public Story enterStory(User foundUser, StoryEditRequest storyEditRequest,Story foundStory) throws ParseException, IOException {
+
+        foundStory.setLabels(storyEditRequest.getLabels());
+        foundStory.setTitle(storyEditRequest.getTitle());
+        foundStory.setText(imageService.parseAndSaveImages(storyEditRequest.getText()));
+        foundStory.setStartTimeStamp(storyEditRequest.getStartTimeStamp());
+        foundStory.setEndTimeStamp(storyEditRequest.getEndTimeStamp());
+        foundStory.setStartHourFlag(storyEditRequest.getStartHourFlag());
+        foundStory.setDecade(storyEditRequest.getDecade());
+        foundStory.setSeason(storyEditRequest.getSeason());
+        foundStory.setLocations(storyEditRequest.getLocations());
+        foundStory.setStartHourFlag(storyEditRequest.getStartHourFlag());
+        foundStory.setEndHourFlag(storyEditRequest.getEndHourFlag());
+        foundStory.setStartDateFlag(storyEditRequest.getStartDateFlag());
+        foundStory.setEndDateFlag(storyEditRequest.getEndDateFlag());
+
+
+        List<Location> allFormerLocations = foundStory.getLocations();
+        List<Location> allLocations = storyEditRequest.getLocations();
         for (Location location : allLocations) {
-            location.setStory(createdStory);
+            if(!allFormerLocations.contains(location)){
+                allFormerLocations.add(location);
+            }
+            else{
+                for(Location foundLocation: allFormerLocations){
+                    foundLocation.setLocationName(location.getLocationName());
+                    foundLocation.setCircleRadius(location.getCircleRadius());
+                    foundLocation.setIsCircle(location.getIsCircle());
+                    foundLocation.setLatitude(location.getLatitude());
+                    foundLocation.setLongitude(location.getLongitude());
+                    foundLocation.setIsPoint(location.getIsPoint());
+                    foundLocation.setIsPolyline(location.getIsPolyline());
+                    foundLocation.setIsPolygon(location.getIsPolygon());
+                    foundLocation.setCreatedAt(new Date());
+                }
+            }
         }
-        createdStory.setLocations(allLocations);
-        return createdStory;
+        foundStory.setLocations(allFormerLocations);
+        return foundStory;
     }
 
     public Story editStory(StoryEditRequest request, User user, Long storyId) throws ParseException, IOException {
         Story story = getStoryByStoryId(storyId);
         if(Objects.equals(story.getUser().getId(),user.getId())){
-            Story enteredStory = enterStory(user,request);
-            enteredStory.setId(storyId);
-            enteredStory.setLikes(story.getLikes());
-            enteredStory.setId(story.getId());
-            enteredStory.setComments(story.getComments());
+            Story enteredStory = enterStory(user,request,story);
             Story committedStory;
             if(recService.isRecEngineStatus()){
                 committedStory = storyRepository.save(enteredStory);
@@ -316,14 +336,14 @@ public class StoryService {
         deletedStoryIdList.forEach(likeSet::remove);
         foundUser.setLikedStories(likeSet);
         userService.editUser(foundUser);
-        return optimizeStoryLists(sortStoriesByDescending(storyList));
+        return sortStoriesByDescending(storyList);
     }
 
     public List<Story> findRecentStories() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, -7);
         Date date = calendar.getTime();
-        return optimizeStoryLists(storyRepository.findByCreatedAtAfterOrderByIdDesc(date));
+        return storyRepository.findByCreatedAtAfterOrderByIdDesc(date);
     }
 
     private static Date convertToStartDate(String decadeString) throws ParseException {
@@ -392,7 +412,7 @@ public class StoryService {
         deletedStoryIdList.forEach(savedSet::remove);
         foundUser.setSavedStories(savedSet);
         userService.editUser(foundUser);
-        return optimizeStoryLists(sortStoriesByDescending(storyList));
+        return sortStoriesByDescending(storyList);
     }
 
     public List<Story> recommendedStories(User foundUser) {
@@ -407,7 +427,7 @@ public class StoryService {
                 storyList.add(story);
             }
         }
-        return optimizeStoryLists(sortStoriesByDescending(storyList));
+        return sortStoriesByDescending(storyList);
     }
 
     public List<Story> sortStoriesByDescending(List<Story> storyList) {
@@ -429,19 +449,14 @@ public class StoryService {
         return userSavedStories.contains(storyId);
     }
 
-    private List<Story> optimizeStoryLists(List<Story> storyList){
-        List<Story> editedStoryList = new ArrayList<>();
-        for(Story story : storyList){
-            editedStoryList.add(story);
-        }
-        return (!editedStoryList.isEmpty()) ? editedStoryList : Collections.emptyList();
-    }
-
     public StoryResponse storyAsStoryResponse(Story story){
         return new StoryResponse(story);
     }
 
     public List<StoryListResponse> storyListAsStoryListResponse(List<Story> storyList){
+        if(storyList.isEmpty()){
+            return new ArrayList<>();
+        }
         List<StoryListResponse> storyResponseList = new ArrayList<>();
         for(Story story: storyList){
             storyResponseList.add(new StoryListResponse(story));
@@ -502,6 +517,123 @@ public class StoryService {
         calendar.add(Calendar.DATE, 1);
         return calendar.getTime();
     }
+
+
+
+    public List<Story> searchStoriesWithCombination(
+            String query,
+            Integer radius,
+            Double latitude,
+            Double longitude,
+            String startTimeStamp,
+            String endTimeStamp,
+            String decade,
+            String season) throws ParseException {
+        Set<Story> storySet = new HashSet<>();
+        if(query != null){
+            if(!query.equalsIgnoreCase("") && !query.equalsIgnoreCase("null")){
+                storySet.addAll(searchStoriesWithQuery(query));
+            }
+        }
+        if(latitude != null && longitude != null && (radius != null)){
+            if (query != null && !query.equalsIgnoreCase("null")){
+                storySet.addAll(searchStoriesWithLocation(query,radius,latitude,longitude));
+            }
+            else{
+                storySet.addAll(searchStoriesWithLocationOnly(radius,latitude,longitude));
+            }
+        }
+        if(startTimeStamp != null && !startTimeStamp.equalsIgnoreCase("null")){
+            if(endTimeStamp != null && !endTimeStamp.equalsIgnoreCase("null")){
+                storySet.addAll(searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
+            }
+            else{
+                storySet.addAll(searchStoriesWithSingleDate(startTimeStamp));
+            }
+        }
+        if(decade != null && !decade.equalsIgnoreCase("null")){
+            storySet.addAll(searchStoriesWithDecade(decade));
+        }
+        if(season != null && !season.equalsIgnoreCase("null")){
+            storySet.addAll(searchStoriesWithSeason(season));
+        }
+        if(storySet.isEmpty()){
+            return new ArrayList<>();
+        }
+        return storySet.stream().toList();
+    }
+
+    public List<Story> searchStoriesWithIntersection(
+            String title,
+            String labels,
+            Integer radius,
+            Double latitude,
+            Double longitude,
+            String startTimeStamp,
+            String endTimeStamp,
+            String decade,
+            String season) throws ParseException {
+        Set<Story> titleSet = new HashSet<>();
+        Set<Story> labelsSet = new HashSet<>();
+        Set<Story> locationSet = new HashSet<>();
+        Set<Story> dateSet = new HashSet<>();
+        Set<Story> decadeSet = new HashSet<>();
+        Set<Story> seasonSet = new HashSet<>();
+        Set<Story> storySet = new HashSet<>(findAll());
+        if(title != null){
+            if(!title.equalsIgnoreCase("") && !title.equalsIgnoreCase("null")){
+                titleSet.addAll(searchStoriesWithTitle(title));
+                if(searchStoriesWithTitle(title) != null){
+                    storySet.retainAll(titleSet);
+                }
+            }
+        }
+        if(labels != null){
+            if(!labels.equalsIgnoreCase("") && !labels.equalsIgnoreCase("null")){
+                labelsSet.addAll(searchStoriesWithLabel(labels));
+                if(searchStoriesWithTitle(title) != null){
+                    storySet.retainAll(labelsSet);
+                }
+            }
+        }
+        if(latitude != null && longitude != null && radius != null){
+            locationSet.addAll(searchStoriesWithLocationOnly(radius,latitude,longitude));
+            storySet.retainAll(locationSet);
+        }
+        if(startTimeStamp != null && !startTimeStamp.equalsIgnoreCase("null")){
+            if(endTimeStamp != null && !endTimeStamp.equalsIgnoreCase("null")){
+                dateSet.addAll(searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
+                if(searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp) != null){
+                    storySet.retainAll(dateSet);
+                }
+            }
+            else{
+                dateSet.addAll(searchStoriesWithSingleDate(startTimeStamp));
+                if(searchStoriesWithSingleDate(startTimeStamp) != null){
+                    storySet.retainAll(dateSet);
+                }
+            }
+        }
+        if(decade != null && !decade.equalsIgnoreCase("null")){
+            decadeSet.addAll(searchStoriesWithDecade(decade));
+            if(searchStoriesWithDecade(decade) != null){
+                storySet.retainAll(decadeSet);
+            }
+        }
+        if(season != null && !season.equalsIgnoreCase("null")){
+            seasonSet.addAll(searchStoriesWithSeason(season));
+            if(searchStoriesWithSeason(season) != null){
+                storySet.retainAll(seasonSet);
+            }
+        }
+        if(storySet.isEmpty()){
+            return new ArrayList<>();
+        }
+        return storySet.stream().toList();
+    }
+
+
+
 
 
 
