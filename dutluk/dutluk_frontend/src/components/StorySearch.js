@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { Space, message } from 'antd';
 import "./css/StorySearch.css";
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const StorySearch = () => {
@@ -20,11 +20,6 @@ const StorySearch = () => {
     if (searchQuery && searchQuery.length < 4) {
       return;
     }
-  
-  const handleFormSubmit = (e) => {
-      e.preventDefault();
-      handleSearch(); 
-    };
 
     try {
       let startDate = null;
@@ -89,10 +84,6 @@ const StorySearch = () => {
     setSelectedLocation({ lat: clickedLat, lng: clickedLng });
   };
 
-  useEffect(() => {
-    handleSearch();
-  }, [handleSearch, searchDate, searchSeason, searchDecade]);
-
   const handleDateTypeChange = (event) => {
     const type = event.target.value;
     setSearchDate({ type, value: null });
@@ -136,13 +127,6 @@ const StorySearch = () => {
                   }
                 }}
               />
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={handleSearch}
-              >
-                Search
-              </button>
               
             </div>
           </form>
