@@ -262,7 +262,7 @@ public class StoryService {
         return dateFormat.parse(timeStamp);
     }
 
-    public Story enterStory(User foundUser, StoryEditRequest storyEditRequest,Story foundStory) throws ParseException, IOException {
+    public Story enterStory(StoryEditRequest storyEditRequest,Story foundStory) throws ParseException, IOException {
 
         foundStory.setLabels(storyEditRequest.getLabels());
         foundStory.setTitle(storyEditRequest.getTitle());
@@ -277,24 +277,19 @@ public class StoryService {
         foundStory.setEndHourFlag(storyEditRequest.getEndHourFlag());
         foundStory.setStartDateFlag(storyEditRequest.getStartDateFlag());
         foundStory.setEndDateFlag(storyEditRequest.getEndDateFlag());
-
-        List<Location> allLocations = storyEditRequest.getLocations();
-        List<Location> allFormerLocations = foundStory.getLocations();
-        for(Location location : allFormerLocations){
-            location.setStory(null);
-        }
-        foundStory.setLocations(null);
-        for (Location location : allLocations) {
-            location.setStory(foundStory);
-        }
-        foundStory.setLocations(allLocations);
+        List<Location> storyLocations = foundStory.getLocations();
+        storyLocations.clear();
+        foundStory.setLocations(storyLocations);
+        storyRepository.save(foundStory);
+        storyLocations.addAll(storyEditRequest.getLocations());
+        foundStory.setLocations(storyLocations);
         return foundStory;
     }
 
     public Story editStory(StoryEditRequest request, User user, Long storyId) throws ParseException, IOException {
         Story story = getStoryByStoryId(storyId);
         if(Objects.equals(story.getUser().getId(),user.getId())){
-            Story enteredStory = enterStory(user,request,story);
+            Story enteredStory = enterStory(request,story);
             Story committedStory;
             if(recService.isRecEngineStatus()){
                 committedStory = storyRepository.save(enteredStory);
@@ -305,7 +300,7 @@ public class StoryService {
             }
             return committedStory;
         }
-        return getStoryByStoryId(storyId);
+        return story;
     }
 
     public List<Story> likedStories(User foundUser) {
