@@ -3,6 +3,8 @@ import axios from "axios";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { Space, message } from 'antd';
 import "./css/StorySearch.css";
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+
 
 const StorySearch = () => {
   const [searchQuery, setSearchQuery] = useState(null);
@@ -110,34 +112,49 @@ const StorySearch = () => {
     >
     {contextHolder}
     <div className="story-search">
+      {/* Story Search Element */}
       <h2>Story Search</h2>
       <div className="search-form">
-        <label>
-          Search Query:
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </label>
-        <label>
-          Radius (in km):
-          <input
-            type="number"
-            value={radius}
-            onChange={(e) => setRadius(parseInt(e.target.value))}
-          />
-        </label>
-        <label>
-          Date Type:
-          <select value={searchDate.type} onChange={handleDateTypeChange}>
-            <option value="">Select a Date Type</option>
-            <option value="absolute-date">Absolute Date</option>
-            <option value="interval-date">Interval Date</option>
-            <option value="absolute-year">Absolute Year</option>
-            <option value="interval-year">Interval Year</option>
-          </select>
-        </label>
+      <form className="row g-3">
+            <div className="col-md-6">
+              <label htmlFor="searchQuery" className="form-label">Search Query:</label>
+              <input
+                id="searchQuery"
+                type="text"
+                className="form-control"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </form>
+          {/* Radius Element */}
+          <div className="col-md-6">
+  <label htmlFor="radius" className="form-label">Radius (in km):</label>
+  <input
+    id="radius"
+    type="number"
+    className="form-control"
+    value={radius}
+    onChange={(e) => setRadius(parseInt(e.target.value))}
+  />
+</div>
+          {/* Time Type Picker Element */}
+<div className="col-md-6">
+  <label htmlFor="dateType" className="form-label">Date Type:</label>
+  <select
+    id="dateType"
+    className="form-select"
+    value={searchDate.type}
+    onChange={handleDateTypeChange}
+  >
+    <option value="">Select a Date Type</option>
+    <option value="absolute-date">Absolute Date</option>
+    <option value="interval-date">Interval Date</option>
+    <option value="absolute-year">Absolute Year</option>
+    <option value="interval-year">Interval Year</option>
+  </select>
+</div>
+
         {searchDate.type === "absolute-date" && (
           <label>
             Date:
@@ -222,41 +239,61 @@ const StorySearch = () => {
             </label>
           </>
         )}
-        <label>
-          Season:
-          <select value={searchSeason} onChange={handleSeasonChange}>
-            <option value="">Select a Season</option>
-            <option value="spring">Spring</option>
-            <option value="summer">Summer</option>
-            <option value="fall">Fall</option>
-            <option value="winter">Winter</option>
-          </select>
-        </label>
-        <label>
-          Decade:
-          <select value={searchDecade} onChange={handleDecadeChange}>
-            <option value="">Select a Decade</option>
-            <option value="1940s">1940s</option>
-            <option value="1950s">1950s</option>
-            <option value="1960s">1960s</option>
-            <option value="1970s">1970s</option>
-            <option value="1980s">1980s</option>
-            <option value="1990s">1990s</option>
-            <option value="2000s">2000s</option>
-            <option value="2010s">2010s</option>
-            <option value="2020s">2020s</option>
-          </select>
-        </label>
-        <button type="button" onClick={handleSearch}>
-          Search
-        </button>
+        {/* Season Picker Element */}
+<div className="col-md-6">
+  <label htmlFor="season" className="form-label">Season:</label>
+  <select
+    id="season"
+    className="form-select"
+    value={searchSeason}
+    onChange={handleSeasonChange}
+  >
+    <option value="">Select a Season</option>
+    <option value="spring">Spring</option>
+    <option value="summer">Summer</option>
+    <option value="fall">Fall</option>
+    <option value="winter">Winter</option>
+  </select>
+</div>
+        {/* Decade Picker Element */}
+<div className="col-md-6">
+  <label htmlFor="decade" className="form-label">Decade:</label>
+  <select
+    id="decade"
+    className="form-select"
+    value={searchDecade}
+    onChange={handleDecadeChange}
+  >
+    <option value="">Select a Decade</option>
+    <option value="1940s">1940s</option>
+    <option value="1950s">1950s</option>
+    <option value="1960s">1960s</option>
+    <option value="1970s">1970s</option>
+    <option value="1980s">1980s</option>
+    <option value="1990s">1990s</option>
+    <option value="2000s">2000s</option>
+    <option value="2010s">2010s</option>
+    <option value="2020s">2020s</option>
+  </select>
+</div>
+        {/* Button  Element */}
+<div className="col-md-6 mt-3">
+  <button
+    type="button"
+    className="btn btn-primary"
+    onClick={handleSearch}
+  >
+    Search
+  </button>
+</div>
+
       </div>
       <div className="search-results">
         <LoadScript
           googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
         >
           <GoogleMap
-            mapContainerStyle={{ width: "100%", height: "400px" }}
+            mapContainerStyle={{ width: "80%", height: "400px" , margin: "0 auto"}}
             center={{ lat: 41.085064, lng: 29.044687 }}
             zoom={10}
             onClick={handleMapClick}
@@ -271,6 +308,7 @@ const StorySearch = () => {
             )}
           </GoogleMap>
         </LoadScript>
+        <div style={{ marginBottom: "20px" }} />
         {searchResults.length > 0 && (
           <div>
             <h3>Search Results:</h3>
