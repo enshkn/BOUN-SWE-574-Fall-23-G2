@@ -617,25 +617,82 @@ def unlike_story_operations(np_user_vector, np_story_vector, user_weight):
 
 # ------------------------ RECOMMENDATION --------------------------- #
 def recommendation_parser(data: Recommend):
-    user_id = data.userId
-    excluded_ids = data.excludedIds
-    vector_type = data.vector_type
-    return user_id, excluded_ids, vector_type
+    """
+    Parses recommendation data for generating recommendations.
+
+    Parameters:
+    - data (Recommend): An instance of Recommend class containing recommendation data.
+
+    Returns:
+    - tuple: A tuple containing user_id, excluded_ids, and vector_type.
+
+    This function extracts relevant information from Recommend data for generating recommendations.
+    """
+
+    try:
+        user_id = data.userId
+        excluded_ids = data.excludedIds
+        vector_type = data.vector_type
+
+        return user_id, excluded_ids, vector_type
+
+    except Exception as e:
+        print(f"Error in recommendation_parser function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 
 def story_and_user_recommender(pinecone_index, user_vector, excluded_ids, vector_type):
-    response = pinecone_index.query(
-        vector=user_vector,
-        top_k=100,
-        filter={"id": {"$nin": excluded_ids},
-                "type": {"$eq": vector_type}
-                },
-    )
-    print(response)
-    ids = [match['id'] for match in response['matches']]
-    scores = [match['score'] for match in response['matches']]
-    return ids, scores
+    """
+    Performs recommendations for stories based on a user's vector.
+
+    Parameters:
+    - pinecone_index: The Pinecone index object for querying vectors.
+    - user_vector (list): Vector representing the user.
+    - excluded_ids (list): List of IDs to be excluded from recommendations.
+    - vector_type (str): Type associated with the vector.
+
+    Returns:
+    - tuple: A tuple containing recommended IDs and their scores.
+
+    This function queries a Pinecone index to recommend stories based on a user's vector,
+    excluding specified IDs and considering a specific vector type.
+    """
+
+    try:
+        response = pinecone_index.query(
+            vector=user_vector,
+            top_k=100,
+            filter={"id": {"$nin": excluded_ids},
+                    "type": {"$eq": vector_type}
+                    },
+        )
+        ids = [match['id'] for match in response['matches']]
+        scores = [match['score'] for match in response['matches']]
+        return ids, scores
+
+    except Exception as e:
+        print(f"Error in story_and_user_recommender function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 def create_empty_float_list():
-    empty_list = [0.0] * 300
-    return empty_list
+    """
+    Creates a list of floating-point zeros.
+
+    Returns:
+    - list: A list of 300 floating-point zeros.
+
+    This function generates a list of floating-point zeros with a length of 300 elements.
+    """
+
+    try:
+        empty_list = [0.0] * 300
+        return empty_list
+
+    except Exception as e:
+        print(f"Error in create_empty_float_list function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
