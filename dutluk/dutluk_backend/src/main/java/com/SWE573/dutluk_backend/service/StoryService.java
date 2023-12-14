@@ -648,6 +648,13 @@ public class StoryService {
         return document.text();
     }
 
+    public static String getSubstring(String text){
+        if(removeHtmlFormatting(text).length() < 100){
+            return removeHtmlFormatting(text);
+        }
+        return removeHtmlFormatting(text).substring(0,100);
+    }
+
 
 
 }

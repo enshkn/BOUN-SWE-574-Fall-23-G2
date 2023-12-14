@@ -24,6 +24,8 @@ public class StoryListResponse {
 
     private String picture;
 
+    private String text;
+
     private String title;
 
     private List<String> labels;
@@ -53,6 +55,7 @@ public class StoryListResponse {
         this.createdAt = story.getCreatedAt();
         this.picture = ImageService
                 .extractImageLinks(story.getText());
+        this.text = StoryService.getSubstring(story.getText());
         this.title = story.getTitle();
         this.labels = story.getLabels();
         this.user = story.getUser();
