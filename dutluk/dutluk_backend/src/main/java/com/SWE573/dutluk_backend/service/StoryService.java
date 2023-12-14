@@ -7,6 +7,7 @@ import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.StoryRepository;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
+import com.SWE573.dutluk_backend.response.MyStoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -443,6 +444,17 @@ public class StoryService {
         List<StoryListResponse> storyResponseList = new ArrayList<>();
         for(Story story: storyList){
             storyResponseList.add(new StoryListResponse(story));
+        }
+        return storyResponseList;
+    }
+
+    public List<MyStoryListResponse> storyListAsMyStoryListResponse(List<Story> storyList){
+        if(storyList.isEmpty()){
+            return new ArrayList<>();
+        }
+        List<MyStoryListResponse> storyResponseList = new ArrayList<>();
+        for(Story story: storyList){
+            storyResponseList.add(new MyStoryListResponse(story));
         }
         return storyResponseList;
     }

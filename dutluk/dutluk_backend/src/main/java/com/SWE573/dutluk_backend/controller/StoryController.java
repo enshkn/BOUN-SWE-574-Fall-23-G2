@@ -6,6 +6,7 @@ import com.SWE573.dutluk_backend.request.LikeRequest;
 import com.SWE573.dutluk_backend.request.SaveRequest;
 import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.SWE573.dutluk_backend.request.StoryEditRequest;
+import com.SWE573.dutluk_backend.response.MyStoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryResponse;
 import com.SWE573.dutluk_backend.service.IntegrationService;
@@ -58,7 +59,7 @@ public class StoryController {
     @GetMapping("/fromUser")
     public ResponseEntity<?> findAllStoriesfromUser(HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        List<Story> storyList = storyService.findByUserIdOrderByIdDesc(user.getId());
+        List<MyStoryListResponse> storyList = storyService.storyListAsMyStoryListResponse(storyService.findByUserIdOrderByIdDesc(user.getId()));
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyList);
 
     }
