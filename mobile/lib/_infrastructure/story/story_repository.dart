@@ -103,6 +103,33 @@ class StoryRepository implements IStoryRepository {
   }
 
   @override
+  EitherFuture<StoryModel> editStoryModel(
+    AddStoryModel model,
+    int storyId,
+  ) async {
+    final response = await manager.fetch<StoryModel, StoryModel>(
+      '/api/story/edit/$storyId',
+      type: HttpTypes.post,
+      parserModel: StoryModel(),
+      data: model.toJson(),
+      cachePolicy: CachePolicy.noCache,
+      queryParameters: {
+        'storyId': storyId,
+      },
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
+        return right(response.entity as StoryModel);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
   EitherFuture<List<StoryModel>> myStories() async {
     final response = await manager.fetch<StoryModel, List<StoryModel>>(
       NetworkPaths.myStories,

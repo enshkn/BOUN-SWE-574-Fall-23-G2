@@ -62,7 +62,7 @@ class _RecommendedViewState extends State<RecommendedView> {
                         ),
                         onPressed: () {
                           _focusNode.unfocus();
-                          context.router.push(const AddStoryRoute());
+                          context.router.push(AddStoryRoute());
                         },
                       ),
                     ),

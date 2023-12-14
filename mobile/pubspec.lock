@@ -892,7 +892,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "01a45637e8cd69707f3fb946b101c31d1071da66"
+      resolved-ref: "7146274c433789285837e337db2e72b5fe82ae0f"
       url: "https://github.com/amineglr/google_map_location_picker.git"
     source: git
     version: "1.2.8+4"
@@ -1705,10 +1705,10 @@ packages:
     dependency: transitive
     description:
       name: signature
-      sha256: d95143b8e310b395ea0be59a46bb69fa24106cb6ec79815fc56fd320268e24e6
+      sha256: d072a766e9a40496296b7593c0d9dee2abded0bdcfb306d9962d0320a9763395
       url: "https://pub.dev"
     source: hosted
-    version: "5.4.0"
+    version: "5.4.1"
   sky_engine:
     dependency: transitive
     description: flutter

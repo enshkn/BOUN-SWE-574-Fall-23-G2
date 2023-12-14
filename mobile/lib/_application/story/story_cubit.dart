@@ -124,6 +124,25 @@ final class StoryCubit extends BaseCubit<StoryState> {
     );
   }
 
+  Future<bool> editStory(AddStoryModel model, int storyId) async {
+    setLoading(true);
+    final result = await _storyRepository.editStoryModel(model, storyId);
+    setLoading(false);
+    return result.fold(
+      (failure) {
+        showNotification(
+          failure?.message ?? 'Your story could not be edited.',
+          isError: true,
+        );
+        return false;
+      },
+      (data) {
+        showNotification('Your Story is edited.');
+        return true;
+      },
+    );
+  }
+
   Future<bool> addComment(PostCommentModel model) async {
     setLoading(true);
     final result = await _storyRepository.postComment(model);

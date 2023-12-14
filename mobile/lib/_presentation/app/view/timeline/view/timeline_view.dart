@@ -95,7 +95,7 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
                         ),
                         onPressed: () {
                           _focusNode.unfocus();
-                          context.router.push(const AddStoryRoute());
+                          context.router.push(AddStoryRoute());
                         },
                       ),
                     ),
@@ -128,7 +128,7 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
                         },
                         onPressedFilter: () async {
                           _focusNode.unfocus();
-
+                          await getCurrentLocation();
                           final filter = await showTimelineFilterModal(
                             context,
                             currentFilter: state.filter,
@@ -242,7 +242,8 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
                                         shape: BoxShape.circle,
                                       ),
                                       child: Center(
-                                          child: Text(item.decade ?? '')),
+                                        child: Text(item.decade ?? ''),
+                                      ),
                                     ),
                                   ),
                                 ),
