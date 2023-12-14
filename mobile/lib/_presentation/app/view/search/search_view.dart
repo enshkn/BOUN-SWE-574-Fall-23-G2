@@ -46,7 +46,7 @@ class _SearchViewState extends State<SearchView> with ScrollAnimMixin {
 
   Future<void> getCurrentLocation() async {
     LocationData currentLocation;
-    Future.delayed(const Duration(seconds: 10), () async {
+    Future.delayed(const Duration(seconds: 5), () async {
       currentLocation = await _locationController.getLocation();
       if (currentLocation.latitude != null &&
           currentLocation.longitude != null) {
@@ -94,7 +94,7 @@ class _SearchViewState extends State<SearchView> with ScrollAnimMixin {
                         ),
                         onPressed: () {
                           _focusNode.unfocus();
-                          context.router.push(const AddStoryRoute());
+                          context.router.push(AddStoryRoute());
                         },
                       ),
                     ),
@@ -127,7 +127,7 @@ class _SearchViewState extends State<SearchView> with ScrollAnimMixin {
                         },
                         onPressedFilter: () async {
                           _focusNode.unfocus();
-
+                          await getCurrentLocation();
                           final filter = await showFilterModal(
                             context,
                             currentFilter: state.filter,

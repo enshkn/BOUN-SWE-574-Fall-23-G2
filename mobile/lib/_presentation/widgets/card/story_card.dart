@@ -50,31 +50,32 @@ class StoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /*  final text = storyModel.text;
-
-    final document = parse(text);
-   
-
-    if (document.outerHtml.contains('<img>')) {
-      final parsedImage = text.split('<img>');
-      final secondParse = parsedImage[1].split('/>');
-      final finalParse = secondParse[0];
-      imgurl = finalParse;
-      noImage = false;
-    }
-    if (document.outerHtml.contains('<img src=')) {
-      final parsedImage = text.split('img src="');
-      final secondParse = parsedImage[1].split('">');
-      final finalParse = secondParse[0];
-      imgurl = finalParse;
-      noImage = false;
-    } */
-
     String? imgurl;
     var noImage = true;
-    imgurl = storyModel.picture;
-    if (imgurl != null) {
-      noImage = false;
+    if (myStories) {
+      final text = storyModel.text;
+
+      final document = parse(text);
+
+      if (document.outerHtml.contains('<img>')) {
+        final parsedImage = text.split('<img>');
+        final secondParse = parsedImage[1].split('/>');
+        final finalParse = secondParse[0];
+        imgurl = finalParse;
+        noImage = false;
+      }
+      if (document.outerHtml.contains('<img src=')) {
+        final parsedImage = text.split('img src="');
+        final secondParse = parsedImage[1].split('">');
+        final finalParse = secondParse[0];
+        imgurl = finalParse;
+        noImage = false;
+      }
+    } else {
+      imgurl = storyModel.picture;
+      if (imgurl != null) {
+        noImage = false;
+      }
     }
 
     return Material(
@@ -94,10 +95,15 @@ class StoryCard extends StatelessWidget {
             ),
           ],
         ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 18),
         child: Stack(
           clipBehavior: Clip.none,
           children: [
+            if (storyModel.createdAt != null)
+              Text(
+                storyModel.createdAt!,
+              ),
+            BaseWidgets.lowestGap,
             buildContent(context, imgurl, noImage),
             if (showFavouriteButton) buildFavourite(),
             if (myStories == false) buildSaved(),
@@ -116,6 +122,7 @@ class StoryCard extends StatelessWidget {
     bool noImage,
   ) {
     return Card(
+      margin: const EdgeInsets.fromLTRB(0, 16, 0, 16),
       elevation: 0,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -147,7 +154,7 @@ class StoryCard extends StatelessWidget {
                 ),
               ),
             ),
-          BaseWidgets.lowerGap,
+          BaseWidgets.lowestGap,
           Text(
             storyModel.title,
             style: const TextStyles.title().copyWith(
@@ -246,7 +253,7 @@ class StoryCard extends StatelessWidget {
 
   Widget buildSaved() {
     return Positioned(
-      bottom: 10,
+      bottom: 0,
       right: 0,
       child: SizedBox(
         width: 50,
@@ -276,7 +283,7 @@ class StoryCard extends StatelessWidget {
 
   Widget buildUser(BuildContext context) {
     return Positioned(
-      bottom: 8,
+      bottom: 0,
       left: 4,
       child: GestureDetector(
         onTap: () {
@@ -289,8 +296,8 @@ class StoryCard extends StatelessWidget {
             child: Row(
               children: [
                 const Icon(
-                  Icons.star,
-                  color: Colors.yellow,
+                  Icons.person,
+                  color: Colors.grey,
                   size: 32,
                 ),
                 const SizedBox(
@@ -352,7 +359,7 @@ class StoryCard extends StatelessWidget {
                 icon: const Icon(
                   Icons.edit,
                   size: 32,
-                  color: Colors.red,
+                  color: Colors.grey,
                 ),
               ),
               const SizedBox(

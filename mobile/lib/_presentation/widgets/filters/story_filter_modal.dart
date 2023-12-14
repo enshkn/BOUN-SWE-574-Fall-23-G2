@@ -49,6 +49,22 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
   String? decade;
   String? season;
 
+  String? selectedSeason;
+  String? selectedDecade;
+
+  List<String> seasonList = <String>['Winter', 'Spring', 'Summer', 'Fall'];
+  List<String> decadeList = <String>[
+    '1940s',
+    '1950s',
+    '1960s',
+    '1970s',
+    '1980s',
+    '1990s',
+    '2000s',
+    '2010s',
+    '2020s',
+  ];
+
   int index = 0;
   late TextEditingController radiusMapController;
 
@@ -180,7 +196,7 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
                         children: [
                           BaseWidgets.normalGap,
                           SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.8,
+                            height: MediaQuery.of(context).size.height * 0.6,
                             child: MapLocationPicker(
                               hideAreasList: true,
                               radiusList: radiusList,
@@ -276,14 +292,18 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
                             hintText: 'Write end time',
                           ),
                           BaseWidgets.normalGap,
-                          AppTextFormField(
-                            controller: decadeController,
-                            hintText: 'Write decade',
+                          dropDownMenu(
+                            selectedSeason,
+                            seasonList,
+                            'Choose Season',
+                            seasonController,
                           ),
-                          BaseWidgets.normalGap,
-                          AppTextFormField(
-                            controller: seasonController,
-                            hintText: 'Write season',
+                          BaseWidgets.lowerGap,
+                          dropDownMenu(
+                            selectedDecade,
+                            decadeList,
+                            'Choose Decade',
+                            decadeController,
                           ),
                           BaseWidgets.normalGap,
                           AppButton.primary(
@@ -303,6 +323,56 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
           ),
         );
       },
+    );
+  }
+
+  Widget dropDownMenu(
+    String? selectedItem,
+    List<String> menu,
+    String title,
+    TextEditingController controller, {
+    bool timeResolutions = false,
+  }) {
+    return DropdownMenu<String>(
+      controller: controller,
+      hintText: title,
+      width: MediaQuery.of(context).size.width * 0.96,
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.orange),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.orange),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.orange),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red.shade900),
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      menuStyle: MenuStyle(
+        side: MaterialStateProperty.all(
+          const BorderSide(
+            color: Colors.orange,
+          ),
+        ),
+      ),
+      onSelected: (String? value) {
+        setState(() {
+          selectedItem = value;
+        });
+      },
+      dropdownMenuEntries: menu.map<DropdownMenuEntry<String>>((String value) {
+        return DropdownMenuEntry<String>(
+          value: value,
+          label: value,
+        );
+      }).toList(),
     );
   }
 
