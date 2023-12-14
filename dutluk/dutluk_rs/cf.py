@@ -120,33 +120,76 @@ def parse_id_with_prefix(vector_id):
         raise
 
 
-
 def parse_ids_with_prefix_for_lists(vector_ids):
-    parsed_results = []
+    """
+    Parses IDs in a list to extract ID values and determine vector types.
 
-    for vector_id in vector_ids:
-        if vector_id[0] == "u":
-            vector_type = "user"
-        elif vector_id[0] == "s":
-            vector_type = "story"
-        else:
-            raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
-        try:
-            id_value = int(vector_id[1:])
-        except ValueError:
-            raise ValueError("Invalid vector_type value. An integer is accepted.")
+    Parameters:
+    - vector_ids (list): List of ID strings to be parsed.
 
-        parsed_results.append(id_value)
+    Returns:
+    - list: List containing extracted ID values as integers.
 
-    return parsed_results
+    This function parses a list of ID strings to extract the ID values and determine vector types ('user' or 'story').
+    """
+
+    try:
+        parsed_results = []
+
+        for vector_id in vector_ids:
+            if vector_id[0] == "u":
+                vector_type = "user"
+            elif vector_id[0] == "s":
+                vector_type = "story"
+            else:
+                raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+
+            try:
+                id_value = int(vector_id[1:])
+            except ValueError:
+                raise ValueError("Invalid vector_type value. An integer is accepted.")
+
+            parsed_results.append(id_value)
+
+        return parsed_results
+
+    except ValueError as ve:
+        print(f"Error in parse_ids_with_prefix_for_lists function: {ve}")
+        # Re-raise the exception to propagate it further if needed
+        raise
 
 
 def story_parser(data: Story):
-    vector_text = data.text
-    vector_ids = data.ids
-    vector_tags = data.tags
-    vector_type = data.type
-    return vector_text, vector_ids, vector_tags, vector_type
+    """
+    Parses story attributes and returns them as a tuple containing text, ids, tags, and type.
+
+    Returns:
+    - tuple: A tuple containing vector_text, vector_ids, vector_tags, and vector_type.
+
+    This method is assumed to be part of a class, where it retrieves specific attributes:
+    - self.text: The text attribute of the story.
+    - self.ids: The ids attribute of the story.
+    - self.tags: The tags attribute of the story.
+    - self.type: The type attribute of the story.
+
+    Note: The method assumes these attributes exist within the class instance.
+    """
+
+    try:
+        vector_text = data.text
+        vector_ids = data.ids
+        vector_tags = data.tags
+        vector_type = data.type
+
+        # Print retrieved attributes for verification
+        print(vector_text, vector_ids, vector_tags, vector_type)
+
+        return vector_text, vector_ids, vector_tags, vector_type
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
 
 
 def text_processor(vector_text, vector_tags):
@@ -242,17 +285,39 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
 
 
 def upsert_for_empty_list(final_text_vector, pinecone_index, vector_ids, vector_type):
-    pinecone_vector = final_text_vector
-    pinecone_index.upsert(
-        vectors=[
-            {
-                "id": vector_ids,
-                "values": pinecone_vector,
-                "metadata": {"id": vector_ids, "type": vector_type},
-            }
-        ]
-    )
-    return True
+    """
+    Upserts vectors into a Pinecone index even for empty final_text_vector.
+
+    Parameters:
+    - final_text_vector: The vector to be upserted into the index.
+    - pinecone_index: The Pinecone index object.
+    - vector_ids: The ID(s) associated with the vector.
+    - vector_type: The type associated with the vector.
+
+    Returns:
+    - bool: True if the upsert operation is successful.
+
+    This function upserts a vector into a Pinecone index with associated metadata even if the final_text_vector is empty.
+    """
+
+    try:
+        pinecone_vector = final_text_vector
+        pinecone_index.upsert(
+            vectors=[
+                {
+                    "id": vector_ids,
+                    "values": pinecone_vector,
+                    "metadata": {"id": vector_ids, "type": vector_type},
+                }
+            ]
+        )
+        return True
+
+    except Exception as e:
+        print(f"Error in upsert_for_empty_list function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 
 def weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector):
