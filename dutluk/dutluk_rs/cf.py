@@ -418,25 +418,89 @@ def update_user_vector(final_user_vector, pinecone_index, vector_ids, vector_typ
 
 
 def user_like_unlike_parser(data: UserInteraction):
-    vector_type = data.type
-    story_id = data.storyId
-    user_id = data.userId
-    user_weight = data.userWeight
-    return vector_type, story_id, user_id, user_weight
+    """
+    Parses user interaction data for like/unlike events.
+
+    Parameters:
+    - data (UserInteraction): An instance of UserInteraction class containing interaction data.
+
+    Returns:
+    - tuple: A tuple containing vector_type, story_id, user_id, and user_weight.
+
+    This function extracts relevant information from UserInteraction data for like/unlike events.
+    """
+
+    try:
+        vector_type = data.type
+        story_id = data.storyId
+        user_id = data.userId
+        user_weight = data.userWeight
+
+        return vector_type, story_id, user_id, user_weight
+
+    except Exception as e:
+        print(f"Error in user_like_unlike_parser function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 
 def vector_fetcher(pinecone_index, vector_id, vector_type):
-    vector_response = pinecone_index.fetch([vector_id])
-    vector = vector_response['vectors'][vector_id]['values']
-    return vector
+    """
+    Fetches a vector from a Pinecone index.
+
+    Parameters:
+    - pinecone_index: The Pinecone index object.
+    - vector_id: The ID of the vector to fetch.
+    - vector_type: The type associated with the vector.
+
+    Returns:
+    - list: The fetched vector values.
+
+    This function fetches a vector from a Pinecone index based on the provided vector ID and type.
+    """
+
+    try:
+        vector_response = pinecone_index.fetch([vector_id])
+        vector = vector_response['vectors'][vector_id]['values']
+        return vector
+
+    except Exception as e:
+        print(f"Error in vector_fetcher function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 
 def story_user_vectors_fetcher(pinecone_index, story_id, user_id):
-    story_response = pinecone_index.fetch([story_id])
-    user_response = pinecone_index.fetch([user_id])
-    user_vector = user_response['vectors'][user_id]['values']
-    story_vector = story_response['vectors'][story_id]['values']
-    return story_vector, user_vector
+    """
+    Fetches story and user vectors from a Pinecone index.
+
+    Parameters:
+    - pinecone_index: The Pinecone index object.
+    - story_id: The ID of the story vector to fetch.
+    - user_id: The ID of the user vector to fetch.
+
+    Returns:
+    - tuple: A tuple containing the fetched story vector and user vector.
+
+    This function fetches story and user vectors from a Pinecone index based on the provided IDs.
+    """
+
+    try:
+        story_response = pinecone_index.fetch([story_id])
+        user_response = pinecone_index.fetch([user_id])
+
+        user_vector = user_response['vectors'][user_id]['values']
+        story_vector = story_response['vectors'][story_id]['values']
+
+        return story_vector, user_vector
+
+    except Exception as e:
+        print(f"Error in story_user_vectors_fetcher function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 
 def single_vector_fetcher(pinecone_index, vector_id):
