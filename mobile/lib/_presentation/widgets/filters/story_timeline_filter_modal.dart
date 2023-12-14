@@ -192,7 +192,7 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
                         children: [
                           BaseWidgets.normalGap,
                           SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.8,
+                            height: MediaQuery.of(context).size.height * 0.6,
                             child: MapLocationPicker(
                               hideAreasList: true,
                               hideLocationList: true,

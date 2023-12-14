@@ -50,31 +50,32 @@ class StoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /*  final text = storyModel.text;
-
-    final document = parse(text);
-   
-
-    if (document.outerHtml.contains('<img>')) {
-      final parsedImage = text.split('<img>');
-      final secondParse = parsedImage[1].split('/>');
-      final finalParse = secondParse[0];
-      imgurl = finalParse;
-      noImage = false;
-    }
-    if (document.outerHtml.contains('<img src=')) {
-      final parsedImage = text.split('img src="');
-      final secondParse = parsedImage[1].split('">');
-      final finalParse = secondParse[0];
-      imgurl = finalParse;
-      noImage = false;
-    } */
-
     String? imgurl;
     var noImage = true;
-    imgurl = storyModel.picture;
-    if (imgurl != null) {
-      noImage = false;
+    if (myStories) {
+      final text = storyModel.text;
+
+      final document = parse(text);
+
+      if (document.outerHtml.contains('<img>')) {
+        final parsedImage = text.split('<img>');
+        final secondParse = parsedImage[1].split('/>');
+        final finalParse = secondParse[0];
+        imgurl = finalParse;
+        noImage = false;
+      }
+      if (document.outerHtml.contains('<img src=')) {
+        final parsedImage = text.split('img src="');
+        final secondParse = parsedImage[1].split('">');
+        final finalParse = secondParse[0];
+        imgurl = finalParse;
+        noImage = false;
+      }
+    } else {
+      imgurl = storyModel.picture;
+      if (imgurl != null) {
+        noImage = false;
+      }
     }
 
     return Material(
@@ -352,7 +353,7 @@ class StoryCard extends StatelessWidget {
                 icon: const Icon(
                   Icons.edit,
                   size: 32,
-                  color: Colors.red,
+                  color: Colors.grey,
                 ),
               ),
               const SizedBox(

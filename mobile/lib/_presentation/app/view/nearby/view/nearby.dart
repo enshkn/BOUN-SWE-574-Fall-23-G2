@@ -108,7 +108,7 @@ class _NearbyViewState extends State<NearbyView> {
                         ),
                         onPressed: () {
                           _focusNode.unfocus();
-                          context.router.push(const AddStoryRoute());
+                          context.router.push(AddStoryRoute());
                         },
                       ),
                     ),

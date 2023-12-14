@@ -180,7 +180,7 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
                         children: [
                           BaseWidgets.normalGap,
                           SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.8,
+                            height: MediaQuery.of(context).size.height * 0.6,
                             child: MapLocationPicker(
                               hideAreasList: true,
                               radiusList: radiusList,
