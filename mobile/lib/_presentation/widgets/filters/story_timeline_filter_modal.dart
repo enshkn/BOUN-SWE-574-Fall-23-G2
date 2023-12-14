@@ -42,7 +42,21 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
   late TextEditingController seasonController;
   late TextEditingController titleController;
   late TextEditingController labelController;
+  String? selectedSeason;
+  String? selectedDecade;
 
+  List<String> seasonList = <String>['Winter', 'Spring', 'Summer', 'Fall'];
+  List<String> decadeList = <String>[
+    '1940s',
+    '1950s',
+    '1960s',
+    '1970s',
+    '1980s',
+    '1990s',
+    '2000s',
+    '2010s',
+    '2020s',
+  ];
   String? query;
   int? radius;
   double? latitude;
@@ -297,14 +311,18 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
                             hintText: 'Write end time',
                           ),
                           BaseWidgets.normalGap,
-                          AppTextFormField(
-                            controller: decadeController,
-                            hintText: 'Write decade',
+                          dropDownMenu(
+                            selectedSeason,
+                            seasonList,
+                            'Choose Season',
+                            seasonController,
                           ),
-                          BaseWidgets.normalGap,
-                          AppTextFormField(
-                            controller: seasonController,
-                            hintText: 'Write season',
+                          BaseWidgets.lowerGap,
+                          dropDownMenu(
+                            selectedDecade,
+                            decadeList,
+                            'Choose Decade',
+                            decadeController,
                           ),
                           BaseWidgets.normalGap,
                           AppButton.primary(
@@ -349,6 +367,56 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
       });
     }
   } */
+
+  Widget dropDownMenu(
+    String? selectedItem,
+    List<String> menu,
+    String title,
+    TextEditingController controller, {
+    bool timeResolutions = false,
+  }) {
+    return DropdownMenu<String>(
+      controller: controller,
+      hintText: title,
+      width: MediaQuery.of(context).size.width * 0.96,
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.orange),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.orange),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.orange),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red.shade900),
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      menuStyle: MenuStyle(
+        side: MaterialStateProperty.all(
+          const BorderSide(
+            color: Colors.orange,
+          ),
+        ),
+      ),
+      onSelected: (String? value) {
+        setState(() {
+          selectedItem = value;
+        });
+      },
+      dropdownMenuEntries: menu.map<DropdownMenuEntry<String>>((String value) {
+        return DropdownMenuEntry<String>(
+          value: value,
+          label: value,
+        );
+      }).toList(),
+    );
+  }
 
   Future<void> onPressSubmit() async {
     final filter = StoryFilter(
