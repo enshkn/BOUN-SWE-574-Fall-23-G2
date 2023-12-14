@@ -7,14 +7,16 @@ import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.service.StoryService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+@Getter
+@Setter
 public class MyStoryListResponse {
 
     private Long id;
@@ -37,11 +39,11 @@ public class MyStoryListResponse {
     @OneToMany(mappedBy = "story")
     private List<Comment> comments;
 
-    private Integer likeSize;
+    private Set<Long> likes;
     private Set<Long> savedBy;
 
-    @OneToMany(mappedBy = "story", cascade = CascadeType.ALL)
-    private List<Location> locations = new ArrayList<>();
+    @JsonIncludeProperties({"id","locationName"})
+    private List<Location> locations;
 
     private String startTimeStamp;
 
@@ -59,7 +61,7 @@ public class MyStoryListResponse {
         this.labels = story.getLabels();
         this.user = story.getUser();
         this.comments = story.getComments();
-        this.likeSize = story.getLikes().size();
+        this.likes = story.getLikes();
         this.savedBy = story.getSavedBy();
         this.locations = story.getLocations();
         this.startTimeStamp = StoryService.dateToStringBasedOnFlags(story.getStartTimeStamp(),story.getStartHourFlag(),story.getStartDateFlag());
