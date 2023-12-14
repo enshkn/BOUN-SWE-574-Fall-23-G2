@@ -66,7 +66,8 @@ public class StoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getStoryById(@PathVariable Long id,HttpServletRequest request){
-        Story foundStory = storyService.getStoryByStoryId(id);
+        User user = userService.validateTokenizedUser(request);
+        Story foundStory = storyService.getStoryByStoryIdWithPercentage(id,user);
         if (foundStory!=null) {
             StoryResponse storyResponse = storyService.storyAsStoryResponse(foundStory);
             return IntegrationService.mobileCheck(request.getHeader("User-Agent"),storyResponse);

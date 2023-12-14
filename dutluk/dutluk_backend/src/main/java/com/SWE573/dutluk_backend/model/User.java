@@ -9,9 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name="users")
@@ -75,14 +73,15 @@ public class User extends BaseEntity{
         }
         return savedStories;
     }
-    @JsonIgnore
-    private Set<Long> recommendedStories = new HashSet<>();
 
-    public Set<Long> getRecommendedStories() {
-        if(recommendedStories == null){
-            recommendedStories = new HashSet<>();
+    @ElementCollection
+    private Map<Long, String> recommendedStoriesMap = new HashMap<>();
+
+    public Map<Long, String> getRecommendedStoriesMap() {
+        if(recommendedStoriesMap == null){
+            recommendedStoriesMap = new HashMap<>();
         }
-        return recommendedStories;
+        return recommendedStoriesMap;
     }
 
     @JsonIncludeProperties({"id","username"})

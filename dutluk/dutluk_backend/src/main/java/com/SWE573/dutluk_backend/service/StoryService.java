@@ -11,6 +11,8 @@ import com.SWE573.dutluk_backend.response.MyStoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -90,6 +92,11 @@ public class StoryService {
     public Story getStoryByStoryId(Long id) {
         Optional<Story> optionalStory = storyRepository.findById(id);
         return optionalStory.orElse(null);
+    }
+
+    public Story getStoryByStoryIdWithPercentage(Long storyId,User user) {
+        Story story = addPercentageToStory(getStoryByStoryId(storyId),user.getRecommendedStoriesMap().get(storyId));
+        return story;
     }
 
     public List<Story> findFollowingStories(User foundUser) {
@@ -400,18 +407,26 @@ public class StoryService {
     }
 
     public List<Story> recommendedStories(User foundUser) {
-        List<Long> recommendationList = new ArrayList<>(foundUser.getRecommendedStories());
-        if(foundUser.getRecommendedStories() == null || foundUser.getRecommendedStories().isEmpty()){
+        List<Long> recommendationList = new ArrayList<>(foundUser.getRecommendedStoriesMap().keySet());
+        if(foundUser.getRecommendedStoriesMap() == null || foundUser.getRecommendedStoriesMap().isEmpty()){
             return findRecentStories();
         }
         List<Story> storyList = new ArrayList<>();
         for (Long storyId : recommendationList) {
             Story story = getStoryByStoryId(storyId);
             if (story != null) {
-                storyList.add(story);
+                Story storyWithPercentage = addPercentageToStory(story, foundUser.getRecommendedStoriesMap().get(storyId));
+                storyList.add(storyWithPercentage);
             }
         }
         return sortStoriesByDescending(storyList);
+    }
+
+    public Story addPercentageToStory(Story story, String percentage) {
+        if(percentage != null){
+            story.setPercentage(percentage);
+        }
+        return story;
     }
 
     public List<Story> sortStoriesByDescending(List<Story> storyList) {
@@ -628,7 +643,10 @@ public class StoryService {
     }
 
 
-
+    public static String removeHtmlFormatting(String text) {
+        Document document = Jsoup.parse(text);
+        return document.text();
+    }
 
 
 

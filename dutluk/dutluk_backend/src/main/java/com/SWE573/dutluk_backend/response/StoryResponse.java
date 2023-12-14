@@ -51,6 +51,8 @@ public class StoryResponse{
 
     private String decade;
 
+    private String percentage;
+
     public StoryResponse(Story story) {
         this.id = story.getId();
         this.createdAt = story.getCreatedAt();
@@ -70,6 +72,7 @@ public class StoryResponse{
                         story.getEndDateFlag());
         this.season = story.getSeason();
         this.decade = story.getDecade();
+        this.percentage = story.getPercentage();
     }
 }
 

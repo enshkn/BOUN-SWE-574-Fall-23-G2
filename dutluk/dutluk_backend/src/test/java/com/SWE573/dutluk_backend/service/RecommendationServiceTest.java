@@ -1,27 +1,23 @@
 package com.SWE573.dutluk_backend.service;
 
-import com.SWE573.dutluk_backend.model.Location;
 import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
-import com.SWE573.dutluk_backend.request.RecStoryLikeOrDislikeRequest;
-import com.SWE573.dutluk_backend.request.RecVectorizeOrEditRequest;
-import com.SWE573.dutluk_backend.request.StoryCreateRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -156,17 +152,6 @@ class RecommendationServiceTest {
         assertEquals("Recommendation complete", result);
     }
 
-
-    @Test
-    void removeHtmlFormatting() {
-        String input = "<p>Hello <b>World</b></p>";
-        String expected = "Hello World";
-
-        String result = recommendationService.removeHtmlFormatting(input);
-
-        assertEquals(expected, result);
-    }
-
     @Test
     void recommendStory_Successful() throws Exception {
         // Given
@@ -176,19 +161,25 @@ class RecommendationServiceTest {
         user.setId(1L);
         // Set necessary properties
         Set<Long> excludedLikedIds = new HashSet<>(); // Example set
-        String mockResponse = "{\"ids\": [1, 2, 3]}";
+        String mockResponse = "{\"ids\": [1, 2, 3], \"scores\": [0.5, 0.75, 1.0]}"; // Include scores in mock response
 
         when(restTemplate.postForEntity(eq("http://example.com/recommend-story"), any(), eq(String.class)))
                 .thenReturn(ResponseEntity.ok(mockResponse));
 
         // When
-        Set<Long> result = recommendationService.recommendStory(user, excludedLikedIds);
+        Map<Long, String> result = recommendationService.recommendStory(user);
 
         // Then
         assertNotNull(result);
         assertEquals(3, result.size());
-        assertTrue(result.containsAll(Set.of(1L, 2L, 3L)));
+        assertTrue(result.containsKey(1L));
+        assertTrue(result.containsKey(2L));
+        assertTrue(result.containsKey(3L));
+        assertEquals("50%", result.get(1L)); // Check if the values are correctly formatted as percentage strings
+        assertEquals("75%", result.get(2L));
+        assertEquals("100%", result.get(3L));
     }
+
 
 
 

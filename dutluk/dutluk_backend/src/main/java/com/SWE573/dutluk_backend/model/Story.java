@@ -1,6 +1,7 @@
 package com.SWE573.dutluk_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -74,5 +75,9 @@ public class Story extends BaseEntity{
     private Integer startDateFlag = -1;// if 1 -> yyyy, if 2 -> MM/yyyy, if 3 dd/MM/yyyy
 
     private Integer endDateFlag = -1;// if 1 -> yyyy, if 2 -> MM/yyyy, if 3 dd/MM/yyyy
+
+    @Transient
+    @JsonIgnore
+    private String percentage;
 
 }

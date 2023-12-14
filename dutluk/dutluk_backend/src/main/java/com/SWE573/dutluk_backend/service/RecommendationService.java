@@ -10,8 +10,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +19,9 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -35,7 +36,7 @@ public class RecommendationService {
 
 
     @Value("${REC_ENGINE_STATUS}")
-    boolean recEngineStatus = false;
+    boolean recEngineStatus;
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -54,7 +55,7 @@ public class RecommendationService {
                         .type("story")
                         .ids(story.getId().toString())
                         .tags(story.getLabels())
-                        .text(removeHtmlFormatting(story.getText()))
+                        .text(StoryService.removeHtmlFormatting(story.getText()))
                         .build();
         restTemplate.postForEntity(recUrl + "/vectorize", vectorizeRequest,String.class);
         return "Data sent to karadut";
@@ -66,7 +67,7 @@ public class RecommendationService {
                         .type("story")
                         .ids(story.getId().toString())
                         .tags(story.getLabels())
-                        .text(removeHtmlFormatting(story.getText()))
+                        .text(StoryService.removeHtmlFormatting(story.getText()))
                         .build();
         ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/vectorize-edit", vectorizeRequest,String.class);
     }
@@ -81,8 +82,8 @@ public class RecommendationService {
                         .build();
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-liked", likedRequest,String.class);
-            user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
-            if(user.getRecommendedStories() != null){
+            user.setRecommendedStoriesMap(recommendStory(user));
+            if(user.getRecommendedStoriesMap() != null){
                 return "Karadut has sent the relevant stories";
             }
             return "No stories recommended";
@@ -101,8 +102,8 @@ public class RecommendationService {
                         .build();
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-liked", dislikedRequest,String.class);
-            user.setRecommendedStories(recommendStory(user,user.getLikedStories()));
-            if(user.getRecommendedStories() != null){
+            user.setRecommendedStoriesMap(recommendStory(user));
+            if(user.getRecommendedStoriesMap()!= null){
                 return "Karadut has sent the relevant stories";
             }
             return "No stories recommended";
@@ -111,21 +112,29 @@ public class RecommendationService {
         }
     }
 
-    public Set<Long> recommendStory(User user, Set<Long> excludedLikedIds){
+    public Map<Long,String> recommendStory(User user){
+        Set<Long> excludedStoryIds  = user.getLikedStories();
+        List<Story> userCreatedStories = user.getStories();
+        if(userCreatedStories != null && !userCreatedStories.isEmpty()){
+            for(Story story : userCreatedStories){
+                excludedStoryIds.add(story.getId());
+            }
+        }
         RecStoryOrUserRequest recStoryRequest =
                 RecStoryOrUserRequest.builder()
                         .userId(user.getId().toString())
-                        .excludedIds(excludedLikedIds)
+                        .excludedIds(excludedStoryIds)
                         .vector_type("story")
                         .build();
         ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/recommend-story", recStoryRequest,String.class);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             RecResponse recResponse = objectMapper.readValue(response.getBody(), RecResponse.class);
-            System.out.println(recResponse);
-            user.setRecommendedStories(recResponse.getIds());
+            System.out.println(response);
+            Map<Long, String> recommendedStoriesMap = getLongStringMap(recResponse);
+            user.setRecommendedStoriesMap(recommendedStoriesMap);
             userService.editUser(user);
-            return user.getRecommendedStories();
+            return user.getRecommendedStoriesMap();
 
         } catch (HttpClientErrorException e) {
             System.err.println("Client error: " + e.getRawStatusCode() + " - " + e.getResponseBodyAsString());
@@ -137,6 +146,21 @@ public class RecommendationService {
         }
         return null;
     }
+
+    private Map<Long, String> getLongStringMap(RecResponse recResponse) {
+        Map<Long, String> recommendedStoriesMap = new HashMap<>();
+        if (recResponse.getIds() != null && recResponse.getScores() != null
+                && recResponse.getIds().size() == recResponse.getScores().size()) {
+            for (int i = 0; i < recResponse.getIds().size(); i++) {
+                Long id = recResponse.getIds().get(i);
+                Double score = recResponse.getScores().get(i);
+                String percentString = String.format("%.0f%%", score * 100);
+                recommendedStoriesMap.put(id, percentString);
+            }
+        }
+        return recommendedStoriesMap;
+    }
+
 
     public Set<Long> recommendUser(Long userId, Set<Long> excludedIds){
         RecStoryOrUserRequest recStoryRequest =
@@ -150,8 +174,5 @@ public class RecommendationService {
         return null;
     }
 
-    public String removeHtmlFormatting(String text) {
-        Document document = Jsoup.parse(text);
-        return document.text();
-    }
+
 }
