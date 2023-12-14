@@ -504,12 +504,43 @@ def story_user_vectors_fetcher(pinecone_index, story_id, user_id):
 
 
 def single_vector_fetcher(pinecone_index, vector_id):
-    response = pinecone_index.fetch([vector_id])
-    vector = response['vectors'][vector_id]['values']
-    return vector
+    """
+    Fetches a single vector from a Pinecone index.
+
+    Parameters:
+    - pinecone_index: The Pinecone index object.
+    - vector_id: The ID of the vector to fetch.
+
+    Returns:
+    - list: The fetched vector values.
+
+    This function fetches a single vector from a Pinecone index based on the provided vector ID.
+    """
+
+    try:
+        response = pinecone_index.fetch([vector_id])
+        vector = response['vectors'][vector_id]['values']
+        return vector
+
+    except Exception as e:
+        print(f"Error in single_vector_fetcher function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
 
 
 def list_to_nparray(story_vector, user_vector):
+    """
+    Converts lists to NumPy arrays.
+
+    Parameters:
+    - story_vector (list): List representing the story vector.
+    - user_vector (list): List representing the user vector.
+
+    Returns:
+    - tuple: Tuple containing NumPy arrays of story and user vectors.
+
+    This function converts the provided story_vector and user_vector lists into NumPy arrays.
+    """
     np_story_vector = np.array(story_vector)
     np_user_vector = np.array(user_vector)
     return np_story_vector, np_user_vector
