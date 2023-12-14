@@ -8,7 +8,6 @@ import com.SWE573.dutluk_backend.service.StoryService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.OneToMany;
 
 import java.util.ArrayList;
@@ -38,8 +37,7 @@ public class MyStoryListResponse {
     @OneToMany(mappedBy = "story")
     private List<Comment> comments;
 
-    @Column(name = "likes")
-    private Set<Long> likes;
+    private Integer likeSize;
     private Set<Long> savedBy;
 
     @OneToMany(mappedBy = "story", cascade = CascadeType.ALL)
@@ -61,7 +59,7 @@ public class MyStoryListResponse {
         this.labels = story.getLabels();
         this.user = story.getUser();
         this.comments = story.getComments();
-        this.likes = story.getLikes();
+        this.likeSize = story.getLikes().size();
         this.savedBy = story.getSavedBy();
         this.locations = story.getLocations();
         this.startTimeStamp = StoryService.dateToStringBasedOnFlags(story.getStartTimeStamp(),story.getStartHourFlag(),story.getStartDateFlag());
