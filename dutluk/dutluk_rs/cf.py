@@ -186,8 +186,12 @@ def list_to_nparray(story_vector, user_vector):
 
 # ------------------------ USER INTERACTION LIKE/UNLIKE --------------------------- #
 def like_story_operations(np_user_vector, np_story_vector, user_weight):
-    updated_user_vector = ((np_user_vector * (user_weight - 1)) + np_story_vector) / user_weight
-    return updated_user_vector
+    if user_weight == 1:
+        updated_user_vector = np_story_vector
+        return updated_user_vector
+    else:
+        updated_user_vector = ((np_user_vector * (user_weight - 1)) + np_story_vector) / user_weight
+        return updated_user_vector
 
 
 def unlike_story_operations(np_user_vector, np_story_vector, user_weight):
