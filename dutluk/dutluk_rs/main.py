@@ -130,7 +130,6 @@ async def recommend_story(data: Recommend):
         # Return an HTTP 500 Internal Server Error with a custom error message
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
-
 @app.post("/recommend-user")
 async def recommend_user(data: Recommend):
     try:
