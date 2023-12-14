@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from appconfig import app_initializer
-from classes import Story, UserInteraction, Recommend, DeleteStory
+from classes import Story, UserInteraction, Recommend, DeleteStory, IdGenerator
 from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising, update_story_vector, \
     update_user_vector, user_like_unlike_parser, story_user_vectors_fetcher, list_to_nparray, like_story_operations, \
     unlike_story_operations, single_vector_fetcher, recommendation_parser, story_and_user_recommender, list_to_string, \
@@ -13,11 +13,11 @@ app, index, word2vec_model = app_initializer()
 @app.post("/vectorize")
 async def vectorize(data: Story):
     # Extract the text from the JSON object
-    vector_text, vector_ids, vector_tags, vector_type = story_parser(data)
-    # add prefix to vector_id according to the type
-    vector_ids = generate_id_with_prefix(vector_id=vector_ids, vector_type=vector_type)
+    vector_text, vector_ids, vector_tags, vector_type = Story.story_parser(data)
+    # add prefix to vector_id according to the type ( u if user and s if story)
+    vector_ids = IdGenerator.generate_id_with_prefix(vector_id=vector_ids, vector_type=vector_type)
     # convert tags list to string for tokenization
-    vector_tags = list_to_string(vector_tags)
+    vector_tags = Story.list_to_string(vector_tags)
     # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
     tokenized_text, tokenized_tags = text_processor(vector_text=vector_text, vector_tags=vector_tags)
     # Initialize an empty array to store the vectors
