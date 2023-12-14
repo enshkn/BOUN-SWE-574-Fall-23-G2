@@ -42,7 +42,7 @@ public class MyStoryListResponse {
     private Set<Long> likes;
     private Set<Long> savedBy;
 
-    @JsonIncludeProperties({"id","locationName"})
+
     private List<Location> locations;
 
     private String startTimeStamp;
