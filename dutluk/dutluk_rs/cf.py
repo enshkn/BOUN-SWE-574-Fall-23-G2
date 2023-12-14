@@ -319,7 +319,6 @@ def upsert_for_empty_list(final_text_vector, pinecone_index, vector_ids, vector_
         raise
 
 
-
 def weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector):
     """
     Calculates weighted average vectors from given text and tag vectors.
@@ -357,21 +356,65 @@ def weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector):
 
 
 def update_story_vector(final_text_vector, pinecone_index, vector_ids, vector_type):
-    update_response = pinecone_index.update(
-        id=vector_ids,
-        values=final_text_vector,
-        set_metadata={"id": vector_ids, "type": vector_type}
-    )
-    return update_response
+    """
+    Updates a story vector in a Pinecone index with new values and metadata.
+
+    Parameters:
+    - final_text_vector: The updated vector for the story.
+    - pinecone_index: The Pinecone index object.
+    - vector_ids: The ID(s) associated with the story vector.
+    - vector_type: The type associated with the story vector.
+
+    Returns:
+    - dict: Response from the update operation.
+
+    This function updates a story vector in a Pinecone index with new values and associated metadata.
+    """
+
+    try:
+        update_response = pinecone_index.update(
+            id=vector_ids,
+            values=final_text_vector,
+            set_metadata={"id": vector_ids, "type": vector_type}
+        )
+        return update_response
+
+    except Exception as e:
+        print(f"Error in update_story_vector function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 
 def update_user_vector(final_user_vector, pinecone_index, vector_ids, vector_type):
-    update_response = pinecone_index.update(
-        id=vector_ids,
-        values=final_user_vector,
-        set_metadata={"id": vector_ids, "type": vector_type}
-    )
-    return update_response
+    """
+    Updates a user vector in a Pinecone index with new values and metadata.
+
+    Parameters:
+    - final_user_vector: The updated vector for the user.
+    - pinecone_index: The Pinecone index object.
+    - vector_ids: The ID(s) associated with the user vector.
+    - vector_type: The type associated with the user vector.
+
+    Returns:
+    - dict: Response from the update operation.
+
+    This function updates a user vector in a Pinecone index with new values and associated metadata.
+    """
+
+    try:
+        update_response = pinecone_index.update(
+            id=vector_ids,
+            values=final_user_vector,
+            set_metadata={"id": vector_ids, "type": vector_type}
+        )
+        return update_response
+
+    except Exception as e:
+        print(f"Error in update_user_vector function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 
 def user_like_unlike_parser(data: UserInteraction):
