@@ -310,7 +310,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                 minScale: 0.8,
                                 onPressed: () async {
                                   await addFavorite(
-                                      storyId: state.storyModel!.id);
+                                    storyId: state.storyModel!.id,
+                                  );
                                 },
                                 child: Icon(
                                   Icons.favorite,
@@ -335,10 +336,22 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         );
                       },
                       child: IconWithLabel(
+                        specialIcon: true,
                         spacing: 8,
-                        icon: const Icon(
-                          Icons.star,
-                          color: Colors.yellow,
+                        icon: SizedBox(
+                          child: state.storyModel!.user!.profilePhoto != null
+                              ? CircleAvatar(
+                                  radius: 36,
+                                  backgroundImage: NetworkImage(
+                                    state.storyModel!.user!.profilePhoto!,
+                                  ),
+                                )
+                              : const CircleAvatar(
+                                  radius: 36,
+                                  backgroundImage: AssetImage(
+                                    'assets/images/profilePic.jpg',
+                                  ),
+                                ),
                         ),
                         label: state.storyModel!.user!.username!,
                       ),
