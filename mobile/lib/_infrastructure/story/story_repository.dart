@@ -296,6 +296,23 @@ class StoryRepository implements IStoryRepository {
   }
 
   @override
+  EitherFuture<bool> deleteComment(int commentId) async {
+    final response = await manager.fetch<NoResultResponse, NoResultResponse>(
+      '/api/comment/delete/$commentId',
+      type: HttpTypes.get,
+      parserModel: NoResultResponse(),
+    );
+    switch (response.statusCode) {
+      case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+        return right(true);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
   EitherFuture<StoryModel> getStoryDetail(int storyId) async {
     final response = await manager.fetch<StoryModel, StoryModel>(
       '/api/story/$storyId',

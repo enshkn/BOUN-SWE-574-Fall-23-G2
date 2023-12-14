@@ -242,6 +242,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                 MaterialPageRoute(
                   builder: (context) => CommentsView(
                     storyId: widget.model.id,
+                    authUser: user,
                   ),
                 ),
               );
@@ -897,8 +898,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
 
 class CommentsView extends StatefulWidget {
   final int storyId;
+  final User authUser;
   const CommentsView({
     required this.storyId,
+    required this.authUser,
     super.key,
   });
 
@@ -920,41 +923,52 @@ class _CommentsViewState extends State<CommentsView> {
             context,
             title: 'Comments',
           ),
-          body: BaseLoader(
-            isLoading: state.isLoading,
-            child: BaseScrollView(
-              children: [
-                BaseWidgets.lowerGap,
-                if (state.storyModel == null ||
-                    state.storyModel!.comments == null ||
-                    state.storyModel!.comments!.isEmpty)
-                  const Center(
-                    child: Text(
-                      'No comment yet',
-                      style: TextStyles.title(),
+          body: RefreshIndicator(
+            onRefresh: () async {
+              await cubit.getStoryDetail(widget.storyId);
+            },
+            child: BaseLoader(
+              isLoading: state.isLoading,
+              child: BaseScrollView(
+                children: [
+                  BaseWidgets.lowerGap,
+                  if (state.storyModel == null ||
+                      state.storyModel!.comments == null ||
+                      state.storyModel!.comments!.isEmpty)
+                    const Center(
+                      child: Text(
+                        'No comment yet',
+                        style: TextStyles.title(),
+                      ),
+                    )
+                  else
+                    SizedBox(
+                      child: BaseListView(
+                        shrinkWrap: true,
+                        items: state.storyModel!.comments!,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (item) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 16,
+                            ),
+                            child: CommentCard(
+                              myComment: widget.authUser.id == item.user!.id
+                                  ? true
+                                  : false,
+                              user: item.user,
+                              content: item.text,
+                              onDeleteTap: () async {
+                                await cubit.deleteComment(item.id!);
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  )
-                else
-                  SizedBox(
-                    child: BaseListView(
-                      shrinkWrap: true,
-                      items: state.storyModel!.comments!,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (item) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 16,
-                          ),
-                          child: CommentCard(
-                            user: item.user,
-                            content: item.text,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         );

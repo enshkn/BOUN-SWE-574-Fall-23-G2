@@ -176,6 +176,23 @@ final class StoryCubit extends BaseCubit<StoryState> {
     );
   }
 
+  Future<bool> deleteComment(int commentId) async {
+    setLoading(true);
+    final result = await _storyRepository.deleteComment(commentId);
+    setLoading(false);
+    return result.fold(
+      (failure) {
+        showNotification(failure?.message ?? '', isError: true);
+        return false;
+      },
+      (data) {
+        showNotification('Your comment is deleted.');
+
+        return true;
+      },
+    );
+  }
+
   Future<void> getStoryDetail(int storyId) async {
     setLoading(true);
     final result = await _storyRepository.getStoryDetail(storyId);
