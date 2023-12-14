@@ -72,36 +72,96 @@ def story_parser(data: Story):
 
 
 def text_processor(vector_text, vector_tags):
-    tokenized_text = simple_preprocess(vector_text)
-    tokenized_tags = simple_preprocess(vector_tags)
-    return tokenized_text, tokenized_tags
+    """
+    Processes text and tags by tokenizing them using the simple_preprocess function.
+
+    Parameters:
+    - vector_text (str): The text to be tokenized.
+    - vector_tags (str): The tags to be tokenized.
+
+    Returns:
+    - tuple: A tuple containing tokenized_text and tokenized_tags.
+
+    This function tokenizes the input text and tags using the simple_preprocess function from gensim.
+    """
+
+    try:
+        tokenized_text = simple_preprocess(vector_text)
+        tokenized_tags = simple_preprocess(vector_tags)
+        return tokenized_text, tokenized_tags
+
+    except Exception as e:
+        print(f"Error in text_processor function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
 
 
 def tokenizer(tokenized, model):
-    # Initialize an empty array to store the vectors
-    vectors = []
-    # For each token in the tokenized text, get its vector
-    for token in tokenized:
-        if token in model:
-            vectors.append(model[token])
-    # If no vectors found, return an empty list
-    if not vectors:
-        return {"vectorized_text": []}
-    return vectors
+    """
+    Tokenizes text and retrieves vectors for each token using a provided model.
+
+    Parameters:
+    - tokenized (list): A list of tokens obtained from text processing.
+    - model: The model used for vectorization.
+
+    Returns:
+    - list: A list containing vectors for each token.
+
+    This function tokenizes input tokens and retrieves their vectors using a provided model.
+    :type tokenized: object
+    """
+
+    try:
+        vectors = []
+        for token in tokenized:
+            if token in model:
+                vectors.append(model[token])
+
+        if not vectors:
+            return {"vectorized_text": []}
+
+        return vectors
+
+    except Exception as e:
+        print(f"Error in tokenizer function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
 
 
 def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
-    pinecone_vector = final_text_vector.tolist()
-    pinecone_index.upsert(
-        vectors=[
-            {
-                "id": vector_ids,
-                "values": pinecone_vector,
-                "metadata": {"id": vector_ids, "type": vector_type},
-            }
-        ]
-    )
-    return True
+    """
+    Upserts vectors into a Pinecone index.
+
+    Parameters:
+    - final_text_vector (numpy.ndarray): The vector to be upserted into the index.
+    - pinecone_index: The Pinecone index object.
+    - vector_ids: The ID(s) associated with the vector.
+    - vector_type: The type associated with the vector.
+
+    Returns:
+    - bool: True if the upsert operation is successful.
+
+    This function upserts a vector into a Pinecone index with associated metadata.
+    """
+
+    try:
+        pinecone_vector = final_text_vector.tolist()
+        pinecone_index.upsert(
+            vectors=[
+                {
+                    "id": vector_ids,
+                    "values": pinecone_vector,
+                    "metadata": {"id": vector_ids, "type": vector_type},
+                }
+            ]
+        )
+        return True
+
+    except Exception as e:
+        print(f"Error in upsert function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 def upsert_for_empty_list(final_text_vector, pinecone_index, vector_ids, vector_type):
     pinecone_vector = final_text_vector
@@ -118,18 +178,39 @@ def upsert_for_empty_list(final_text_vector, pinecone_index, vector_ids, vector_
 
 
 def weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector):
-    # convert the lists into a vector, this makes two vectors same shape
-    text_vector_np = np.mean(text_vector, axis=0)
-    tag_vector_np = np.mean(tag_vector, axis=0)
-    # multiply the vectors with its weights
-    weighted_text_vectors = text_weight * text_vector_np
-    weighted_tag_vectors = tag_weight * tag_vector_np
-    # turn vectors to np array
-    weighted_avg_text_vector = np.array(weighted_text_vectors)
-    weighted_avg_tag_vector = np.array(weighted_tag_vectors)
-    # merge two vectors
-    weighted_avg_vector = weighted_avg_text_vector + weighted_avg_tag_vector
-    return weighted_avg_vector
+    """
+    Calculates weighted average vectors from given text and tag vectors.
+
+    Parameters:
+    - text_weight (float): The weight for text vectors.
+    - tag_weight (float): The weight for tag vectors.
+    - text_vector (list): List of text vectors.
+    - tag_vector (list): List of tag vectors.
+
+    Returns:
+    - np.array: Weighted average vector obtained from text and tag vectors.
+
+    This function calculates a weighted average vector using text and tag vectors with respective weights.
+    """
+
+    try:
+        text_vector_np = np.mean(text_vector, axis=0)
+        tag_vector_np = np.mean(tag_vector, axis=0)
+
+        weighted_text_vectors = text_weight * text_vector_np
+        weighted_tag_vectors = tag_weight * tag_vector_np
+
+        weighted_avg_text_vector = np.array(weighted_text_vectors)
+        weighted_avg_tag_vector = np.array(weighted_tag_vectors)
+
+        weighted_avg_vector = weighted_avg_text_vector + weighted_avg_tag_vector
+
+        return weighted_avg_vector
+
+    except Exception as e:
+        print(f"Error in weighted_vectorising function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
 
 
 def update_story_vector(final_text_vector, pinecone_index, vector_ids, vector_type):

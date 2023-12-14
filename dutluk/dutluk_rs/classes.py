@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from gensim.utils import simple_preprocess
 
 
 class Story(BaseModel):
@@ -60,6 +61,7 @@ class Story(BaseModel):
             print(f"Error in list_to_string function: {e}")
             # Re-raise the exception to propagate it further if needed
             raise
+
 
 class UserInteraction(BaseModel):
     type: str
