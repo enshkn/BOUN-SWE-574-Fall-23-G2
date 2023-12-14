@@ -528,6 +528,7 @@ def single_vector_fetcher(pinecone_index, vector_id):
         raise
 
 
+
 def list_to_nparray(story_vector, user_vector):
     """
     Converts lists to NumPy arrays.
@@ -541,27 +542,77 @@ def list_to_nparray(story_vector, user_vector):
 
     This function converts the provided story_vector and user_vector lists into NumPy arrays.
     """
-    np_story_vector = np.array(story_vector)
-    np_user_vector = np.array(user_vector)
-    return np_story_vector, np_user_vector
+
+    try:
+        np_story_vector = np.array(story_vector)
+        np_user_vector = np.array(user_vector)
+        return np_story_vector, np_user_vector
+
+    except Exception as e:
+        print(f"Error in list_to_nparray function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 
 # ------------------------ USER INTERACTION LIKE/UNLIKE --------------------------- #
 def like_story_operations(np_user_vector, np_story_vector, user_weight):
-    if user_weight == 1:
-        updated_user_vector = np_story_vector
-        return updated_user_vector
-    else:
-        updated_user_vector = ((np_user_vector * (user_weight - 1)) + np_story_vector) / user_weight
-        return updated_user_vector
+    """
+    Performs operations for liking a story.
+
+    Parameters:
+    - np_user_vector (numpy.ndarray): NumPy array representing the user vector.
+    - np_story_vector (numpy.ndarray): NumPy array representing the story vector.
+    - user_weight (float): Weight associated with the user's action (like).
+
+    Returns:
+    - numpy.ndarray: Updated user vector after performing like operation.
+
+    This function performs operations for liking a story based on the user's action.
+    """
+
+    try:
+        if user_weight == 1:
+            updated_user_vector = np_story_vector
+            return updated_user_vector
+        else:
+            updated_user_vector = ((np_user_vector * (user_weight - 1)) + np_story_vector) / user_weight
+            return updated_user_vector
+
+    except Exception as e:
+        print(f"Error in like_story_operations function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 
 def unlike_story_operations(np_user_vector, np_story_vector, user_weight):
-    if user_weight != 0:
-        updated_user_vector = ((np_user_vector * (user_weight + 1)) - np_story_vector) / user_weight
-    else:
-        updated_user_vector = np.array(create_empty_float_list())
-    return updated_user_vector
+    """
+    Performs operations for unliking a story.
+
+    Parameters:
+    - np_user_vector (numpy.ndarray): NumPy array representing the user vector.
+    - np_story_vector (numpy.ndarray): NumPy array representing the story vector.
+    - user_weight (float): Weight associated with the user's action (unlike).
+
+    Returns:
+    - numpy.ndarray: Updated user vector after performing unlike operation.
+
+    This function performs operations for unliking a story based on the user's action.
+    """
+
+    try:
+        if user_weight != 0:
+            updated_user_vector = ((np_user_vector * (user_weight + 1)) - np_story_vector) / user_weight
+        else:
+            updated_user_vector = np.array(create_empty_float_list())
+        return updated_user_vector
+
+    except Exception as e:
+        print(f"Error in unlike_story_operations function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 
 # ------------------------ RECOMMENDATION --------------------------- #
