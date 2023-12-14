@@ -18,3 +18,6 @@ class Recommend(BaseModel):
     userId: str
     excludedIds: list
     vector_type: str
+
+class DeleteStory(BaseModel):
+    storyId: str

@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from appconfig import app_initializer
-from classes import Story, UserInteraction, Recommend
+from classes import Story, UserInteraction, Recommend, DeleteStory
 from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising, update_story_vector, \
     update_user_vector, user_like_unlike_parser, story_user_vectors_fetcher, list_to_nparray, like_story_operations, \
     unlike_story_operations, single_vector_fetcher, recommendation_parser, story_and_user_recommender, list_to_string, \
@@ -155,6 +155,13 @@ async def recommend_user(data: Recommend):
         print(f"An error occurred: {str(e)}")
         # Return an HTTP 500 Internal Server Error with a custom error message
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+@app.post('/delete-story')
+async def delete_story(data: DeleteStory):
+    story_id = data.storyId
+    story_id_with_prefix = generate_id_with_prefix(vector_id=story_id, vector_type="story")
+    index.delete(ids=[story_id_with_prefix])
+    return f"the story vector with id : {story_id} is deleted."
 
 
 @app.get("/test")
