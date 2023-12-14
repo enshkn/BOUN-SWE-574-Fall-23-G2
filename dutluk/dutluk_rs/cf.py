@@ -4,43 +4,121 @@ import numpy as np
 
 
 def list_to_string(parameters_list: list):
-    combined_string = ' '.join(map(str, parameters_list))
-    return combined_string
+    """
+    Converts a list of parameters into a string by joining its elements with spaces.
+
+    Parameters:
+    - parameters_list (list): A list containing elements to be joined into a string.
+
+    Returns:
+    - str: A string created by joining the elements of the input list with spaces.
+
+    This function takes a list and converts it into a string by joining its elements with spaces.
+    """
+
+    try:
+        combined_string = ' '.join(map(str, parameters_list))
+        return combined_string
+
+    except Exception as e:
+        print(f"Error in list_to_string function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
 
 
 def generate_id_with_prefix(vector_id, vector_type):
-    if vector_type == "user":
-        prefix = "u"
-    elif vector_type == "story":
-        prefix = "s"
-    else:
-        raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
-    return f"{prefix}{vector_id}"
+    """
+    Generates an ID string with a specific prefix based on the provided parameters.
+
+    Parameters:
+    - vector_id (str or int): The ID value to be combined with the prefix.
+    - vector_type (str): Indicates the type of vector. It should be 'user' or 'story'.
+
+    Returns:
+    - str: The generated ID string that combines the prefix and vector_id.
+
+    Raises:
+    - ValueError: If an invalid vector_type value is provided.
+    """
+
+    try:
+        if vector_type == "user":
+            prefix = "u"
+        elif vector_type == "story":
+            prefix = "s"
+        else:
+            raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+
+        result_id = f"{prefix}{vector_id}"
+        print(result_id)
+        return result_id
+
+    except ValueError as ve:
+        print(f"Error: {ve}")
+        # Re-raise the exception to propagate it further if needed
+        raise
 
 
 def generate_ids_with_prefix(vector_ids, vector_type):
-    if vector_type == "user":
-        prefix = "u"
-    elif vector_type == "story":
-        prefix = "s"
-    else:
-        raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+    """
+    Generates IDs with a specific prefix based on provided IDs and vector type.
 
-    return [f"{prefix}{vector_id}" for vector_id in vector_ids]
+    Parameters:
+    - vector_ids (list): List of IDs to be prefixed.
+    - vector_type (str): Type of the vector, should be 'user' or 'story'.
+
+    Returns:
+    - list: List of IDs with prefixes based on the vector type.
+
+    This function generates IDs with a specific prefix based on the vector type ('user' or 'story').
+    """
+
+    try:
+        if vector_type == "user":
+            prefix = "u"
+        elif vector_type == "story":
+            prefix = "s"
+        else:
+            raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+
+        return [f"{prefix}{vector_id}" for vector_id in vector_ids]
+
+    except ValueError as ve:
+        print(f"Error in generate_ids_with_prefix function: {ve}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 
 def parse_id_with_prefix(vector_id):
-    if vector_id[0] == "u":
-        vector_type = "user"
-    elif vector_id[0] == "s":
-        vector_type = "story"
-    else:
-        raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+    """
+    Parses an ID to extract the ID value and vector type.
+
+    Parameters:
+    - vector_id (str): The ID string to be parsed.
+
+    Returns:
+    - str: The extracted ID value.
+
+    This function parses an ID string to extract the ID value and determine the vector type ('user' or 'story').
+    """
+
     try:
+        if vector_id[0] == "u":
+            vector_type = "user"
+        elif vector_id[0] == "s":
+            vector_type = "story"
+        else:
+            raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
+
         id_value = str(vector_id[1:])
-    except ValueError:
-        raise ValueError("Invalid vector_type value.")
-    return id_value
+        return id_value
+
+    except ValueError as ve:
+        print(f"Error in parse_id_with_prefix function: {ve}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
 
 
 def parse_ids_with_prefix_for_lists(vector_ids):
