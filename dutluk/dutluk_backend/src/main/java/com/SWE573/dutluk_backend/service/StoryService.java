@@ -412,8 +412,15 @@ public class StoryService {
     }
 
     public List<Story> recommendedStories(User foundUser) {
-        List<Long> recommendationList = new ArrayList<>(foundUser.getRecommendedStoriesMap().keySet());
-        if(foundUser.getRecommendedStoriesMap() == null || foundUser.getRecommendedStoriesMap().isEmpty()){
+        Map<Long,String> recommendationMap;
+        if(recService.isRecEngineStatus()){
+            recommendationMap = recService.recommendStory(foundUser);
+        }
+        else{
+            recommendationMap = foundUser.getRecommendedStoriesMap();
+        }
+        List<Long> recommendationList = new ArrayList<>(recommendationMap.keySet());
+        if(foundUser.getRecommendedStoriesMap() == null || recommendationMap.isEmpty()){
             return findRecentStories();
         }
         List<Story> storyList = new ArrayList<>();
