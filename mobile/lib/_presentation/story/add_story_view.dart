@@ -1041,8 +1041,6 @@ class _AddStoryViewState extends State<AddStoryView>
       labels: tagsList,
       season: seasonController.text != '' ? seasonController.text : null,
       decade: decadeController.text != '' ? decadeController.text : null,
-/*       startTimeStamp: !starttimecheck ? null : startTime[0],
-      endTimeStamp: !endtimecheck ? null : endTime[0], */
       startTimeStamp: starttimecheck
           ? exactDateWithTimeSelected
               ? selectedStartDateTime.toString()

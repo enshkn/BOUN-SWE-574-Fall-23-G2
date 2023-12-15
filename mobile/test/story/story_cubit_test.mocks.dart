@@ -227,6 +227,15 @@ class MockIStoryRepository extends _i1.Mock implements _i7.IStoryRepository {
         returnValue: _i8.Future<(_i9.Failure?, bool?)>.value((null, null)),
       ) as _i8.Future<(_i9.Failure?, bool?)>);
   @override
+  _i8.Future<(_i9.Failure?, bool?)> deleteComment(int? storyId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #deleteComment,
+          [storyId],
+        ),
+        returnValue: _i8.Future<(_i9.Failure?, bool?)>.value((null, null)),
+      ) as _i8.Future<(_i9.Failure?, bool?)>);
+  @override
   _i8.Future<(_i9.Failure?, _i2.StoryModel?)> getStoryDetail(int? storyId) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -243,6 +252,22 @@ class MockIStoryRepository extends _i1.Mock implements _i7.IStoryRepository {
         Invocation.method(
           #addStoryModel,
           [model],
+        ),
+        returnValue:
+            _i8.Future<(_i9.Failure?, _i2.StoryModel?)>.value((null, null)),
+      ) as _i8.Future<(_i9.Failure?, _i2.StoryModel?)>);
+  @override
+  _i8.Future<(_i9.Failure?, _i2.StoryModel?)> editStoryModel(
+    _i10.AddStoryModel? model,
+    int? storyId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #editStoryModel,
+          [
+            model,
+            storyId,
+          ],
         ),
         returnValue:
             _i8.Future<(_i9.Failure?, _i2.StoryModel?)>.value((null, null)),

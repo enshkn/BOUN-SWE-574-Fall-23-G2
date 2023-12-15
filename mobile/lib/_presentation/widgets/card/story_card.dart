@@ -30,6 +30,7 @@ class StoryCard extends StatelessWidget {
   final bool isFavoriteLoading;
   final bool showFavouriteButton;
   final bool myStories;
+  final bool isRecommended;
   const StoryCard({
     required this.storyModel,
     this.likeCount = '0',
@@ -46,6 +47,7 @@ class StoryCard extends StatelessWidget {
     this.isSaved = false,
     this.isSavedLoading = false,
     this.onEditTap,
+    this.isRecommended = false,
   });
 
   @override
@@ -99,10 +101,18 @@ class StoryCard extends StatelessWidget {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            if (storyModel.createdAt != null)
-              Text(
-                storyModel.createdAt!,
-              ),
+            Row(
+              children: [
+                if (storyModel.createdAt != null)
+                  Text(
+                    storyModel.createdAt!,
+                  ),
+                if (storyModel.percentage != null)
+                  Text(
+                    storyModel.percentage!,
+                  ),
+              ],
+            ),
             BaseWidgets.lowestGap,
             buildContent(context, imgurl, noImage),
             if (showFavouriteButton) buildFavourite(),

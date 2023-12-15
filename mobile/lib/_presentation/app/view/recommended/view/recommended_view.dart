@@ -116,6 +116,7 @@ class _RecommendedViewState extends State<RecommendedView> {
                                     );
                                   },
                                   child: StoryCard(
+                                    isRecommended: true,
                                     storyModel: item,
                                     showFavouriteButton: false,
                                     onTagSearch: (label) async {
