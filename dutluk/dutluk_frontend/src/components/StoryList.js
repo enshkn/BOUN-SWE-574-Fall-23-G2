@@ -26,12 +26,18 @@ const StoryList = ({ story }) => {
             </div>
             <h2><a href={`/story/${story.id}`} className="story-title">{story.title}</a></h2>
 
+            <div className="location-container">
+                <span className="location-pin">📍</span>
+                <span className="location-text">{story.locations[0].locationName}</span>
+            </div>
+
             {story.picture && <img src={story.picture} alt="Post" />}
 
             <div className="text-container">
                 <p className="main-text">{mainText}</p>
                 <p className="fade-out-text">{fadeText}</p>
             </div>
+
 
             <div className="tag-interaction-container">
                 <div className="tags">
