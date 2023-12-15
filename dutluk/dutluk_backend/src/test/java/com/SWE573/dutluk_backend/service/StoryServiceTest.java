@@ -16,7 +16,6 @@ import org.mockito.MockitoAnnotations;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -492,6 +491,16 @@ class StoryServiceTest {
 
 
         assertNull(editedStory);
+    }
+
+    @Test
+    void removeHtmlFormatting() {
+        String input = "<p>Hello <b>World</b></p>";
+        String expected = "Hello World";
+
+        String result = StoryService.removeHtmlFormatting(input);
+
+        assertEquals(expected, result);
     }
 
 }
