@@ -11,6 +11,10 @@ const truncateText = (text, maxLength) => {
     return { mainText: text, fadeText: '' };
 };
 
+const formatDate = (timestamp) => {
+    return timestamp ? new Date(timestamp).toLocaleDateString() : '';
+  };
+
 
 const StoryList = ({ story }) => {
 
@@ -50,6 +54,16 @@ const StoryList = ({ story }) => {
                     <span>{story.likes ? story.likes.length : 0}❤️</span>
                     <span>{story.comments ? story.comments.length : 0}💬</span>
                 </div>
+            </div>
+
+
+            <div className="date-information">
+                {story.startTimeStamp && <span className="date">Start: {formatDate(story.startTimeStamp)}</span>}
+                {story.endTimeStamp && <span className="date">End: {formatDate(story.endTimeStamp)}</span>}
+                {story.season && <span className="date">Season: {story.season}</span>}
+                {story.decade && <span className="date">Decade: {story.decade}</span>}
+                {story.endDecade && <span className="date">End Decade: {story.endDecade}</span>}
+                {/* You can add more conditional renders for other date fields as needed */}
             </div>
 
         </div>
