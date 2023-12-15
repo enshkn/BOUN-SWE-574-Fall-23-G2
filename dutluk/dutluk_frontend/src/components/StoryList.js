@@ -23,6 +23,8 @@ const StoryList = ({ story }) => {
             {story.picture && <img src={story.picture} alt="Post" />}
 
             <div className="text-container">
+                <p className="main-text">{mainText}</p>
+                <p className="fade-out-text">{fadeText}</p>
             </div>
 
             <div className="dates">
