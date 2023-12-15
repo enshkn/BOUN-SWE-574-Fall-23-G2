@@ -1,122 +1,132 @@
 /* Style for the individual story item */
 .story-item {
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px; /* Add space between items */
-    width: 600px; /* Example: 80% of the container width */
-    max-width: 600px; /* Optional: to ensure it doesn't get too wide on large screens */
-    min-height: 200px; /* Example: Minimum height */
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  /* Add space between items */
+  width: 600px;
+  /* Example: 80% of the container width */
+  max-width: 600px;
+  /* Optional: to ensure it doesn't get too wide on large screens */
+  min-height: 200px;
+  /* Example: Minimum height */
 
-  }
-  
-  /* Larger and bolder font for the post title */
-  .story-item h2 {
-    margin: 0 0 10px 0;
-    font-size: 1.5em;
-  }
-  
-  /* Styling for the interactions (likes and comments) */
-  .interactions span {
-    margin-right: 10px;
-    font-size: 0.9em;
-    color: #333; /* Darker color for better readability */
-  }
-  
-  /* Tags styling */
-  .tags {
-    margin-bottom: 10px;
-  }
-  
-  .tag {
-    background-color: #eee;
-    padding: 5px;
-    border-radius: 5px;
-    margin-right: 5px;
-    font-size: 0.85em;
-    text-align: start;
-  }
-  
-  /* Image styling */
-  .story-item img {
-    width: 100%;
-    height: auto;
-    margin-bottom: 10px;
-    border-radius: 4px; /* Optional: Rounded corners for images */
-  }
-  
-  /* Link styling for the username */
-  .story-item a {
-    color: #007bff; /* Change to your theme color if needed */
-    text-decoration: none;
-    font-weight: bold; /* Optional: Bold username */
-  }
-  
-  /* Date styling */
-  .dates span {
-    display: block;
-    font-size: 0.8em;
-    color: #666;
-    margin-top: 5px;
-  }
-  
-  .interactions {
-    text-align: end;
-  }
+}
 
-  .tag-interaction-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-  }
+/* Larger and bolder font for the post title */
+.story-item h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.5em;
+}
 
-  .text-container {
-    position: relative;
-    max-width: 100%;
-    overflow: hidden;
-  }
-  
-  .main-text, .fade-out-text {
-    display: inline; /* Inline display for continuous text */
-    white-space: nowrap;
-  }
-  
-  .fade-out-text {
-    /* Your existing fade-out styles */
-    -webkit-mask-image: linear-gradient(to left, transparent, black 50%, black 100%);
-    mask-image: linear-gradient(to left, transparent, black 50%, black 100%);
-  }
+.story-header {
+  display: flex;
+  align-items: center;
+}
+
+.story-item .profile-picture {
+  width: 50px;
+  /* Adjust size as needed */
+  height: 50px;
+  /* Adjust size as needed */
+  border-radius: 50%;
+  /* Makes the image round */
+  margin-right: 10px;
+  /* Adds some space between the image and the text */
+}
+
+.story-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
+  font-size: 1em;
+  /* Adjust size as needed */
+  color: #007bff;
+  /* Example color - adjust as needed */
+  text-decoration: none;
+  /* Removes the default underline */
+}
+
+.username:hover {
+  text-decoration: underline;
+  /* Adds underline on hover for better UX */
+}
+
+.story-date {
+  font-size: 0.85em;
+  /* Adjust size as needed */
+  color: #666;
+  /* Adjust color as needed */
+}
 
 
-  .story-header {
-    display: flex;
-    align-items: center;
+/* Tags styling */
+.tags {
+  margin-bottom: 10px;
+}
+
+.tag {
+  background-color: #eee;
+  padding: 5px;
+  border-radius: 5px;
+  margin-right: 5px;
+  font-size: 0.85em;
+  text-align: start;
+}
+
+/* Image styling */
+.story-item img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  /* Optional: Rounded corners for images */
+}
+
+/* Link styling for the username */
+.story-item a {
+  color: #007bff;
+  /* Change to your theme color if needed */
+  text-decoration: none;
+  font-weight: bold;
+  /* Optional: Bold username */
+}
+
+/* Styling for the interactions (likes and comments) */
+.interactions span {
+  margin-right: 10px;
+  font-size: 0.9em;
+  color: #333;
+  /* Darker color for better readability */
+}
+
+.interactions {
+  text-align: end;
+}
+
+.tag-interaction-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.text-container {
+  position: relative;
+  max-width: 100%;
+  overflow: hidden;
   }
-  
-  .story-item .profile-picture {
-    width: 50px; /* Adjust size as needed */
-    height: 50px; /* Adjust size as needed */
-    border-radius: 50%; /* Makes the image round */
-    margin-right: 10px; /* Adds some space between the image and the text */
-  }
-  
-  .story-info {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .username {
-    font-size: 1em; /* Adjust size as needed */
-    color: #007bff; /* Example color - adjust as needed */
-    text-decoration: none; /* Removes the default underline */
-  }
-  
-  .username:hover {
-    text-decoration: underline; /* Adds underline on hover for better UX */
-  }
-  
-  .story-date {
-    font-size: 0.85em; /* Adjust size as needed */
-    color: #666; /* Adjust color as needed */
-  }
+
+.main-text, .fade-out-text {
+  display: inline; /* Inline display for continuous text */
+  white-space: nowrap;
+}
+
+.fade-out-text {
+  /* Your existing fade-out styles */
+  -webkit-mask-image: linear-gradient(to left, transparent, black 50%, black 100%);
+  mask-image: linear-gradient(to left, transparent, black 50%, black 100%);
+}
