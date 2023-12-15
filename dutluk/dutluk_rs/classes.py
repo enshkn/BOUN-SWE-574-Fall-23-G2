@@ -80,6 +80,10 @@ class DeleteStory(BaseModel):
     storyId: str
 
 
+class DeleteAllStory(BaseModel):
+    passWord: str
+
+
 class IdGenerator(BaseModel):
     def generate_id_with_prefix(vector_id, vector_type):
         """
