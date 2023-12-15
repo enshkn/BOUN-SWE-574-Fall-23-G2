@@ -75,6 +75,16 @@ public class StoryController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/editView/{id}")
+    public ResponseEntity<?> getStoryEditViewById(@PathVariable Long id,HttpServletRequest request){
+        User user = userService.validateTokenizedUser(request);
+        Story foundStory = storyService.getStoryByStoryIdWithPercentage(id,user);
+        if (foundStory!=null) {
+            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundStory);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/following")
     public ResponseEntity<?> findAllStoriesfromFollowings(HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
