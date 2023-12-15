@@ -206,10 +206,17 @@ async def process_recommend_user(data: Recommend):
 
 @app.post('/delete-story')
 async def delete_story(data: DeleteStory):
-    story_id = data.storyId
-    story_id_with_prefix = generate_id_with_prefix(vector_id=story_id, vector_type="story")
-    index.delete(ids=[story_id_with_prefix])
-    return f"the story vector with id : {story_id} is deleted."
+    try:
+        story_id = data.storyId
+        story_id_with_prefix = generate_id_with_prefix(vector_id=story_id, vector_type="story")
+        await index.delete(ids=[story_id_with_prefix])
+        return f"the story vector with id : {story_id} is deleted."
+    except Exception as e:
+        # Log the exception for further debugging
+        print(f"An error occurred in 'delete_story': {str(e)}")
+        # Return an HTTP 500 Internal Server Error with a custom error message
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
 
 
 @app.get("/test")
