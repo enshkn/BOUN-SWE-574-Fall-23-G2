@@ -130,3 +130,18 @@
   -webkit-mask-image: linear-gradient(to left, transparent, black 50%, black 100%);
   mask-image: linear-gradient(to left, transparent, black 50%, black 100%);
 }
+
+.location-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px; /* Space before the tags */
+}
+
+.location-pin {
+  margin-right: 5px;
+  font-size: 1em; /* Adjust size as needed */
+}
+
+.location-text {
+  /* Style for the location text */
+}
