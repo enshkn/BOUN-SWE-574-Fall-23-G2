@@ -20,6 +20,16 @@ async def vectorize_edit(data: Story):
     return await process_vectorize_edit(data)
 
 
+@app.post("/story-liked")
+async def story_liked(data: UserInteraction):
+    return await process_story_liked(data)
+
+
+@app.post("/story-unliked")
+async def story_unliked(data: UserInteraction):
+    return await process_story_unliked(data)
+
+
 async def process_vectorize(data: Story):
     try:
         # Extract the text from the JSON object
@@ -73,12 +83,6 @@ async def process_vectorize_edit(data: Story):
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-@app.post("/story-liked")
-async def story_liked(data: UserInteraction):
-    return await process_story_liked(data)
-
-
-# story_liked fonksiyonunun asenkron işlenmesi için bir yardımcı fonksiyon
 async def process_story_liked(data: UserInteraction):
     try:
         """ user weight should be updated then received"""
@@ -119,26 +123,32 @@ async def process_story_liked(data: UserInteraction):
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-@app.post("/story-unliked")
-async def story_unliked(data: UserInteraction):
-    """ user weight should be updated  then received"""
-    # parse the user and story attributes
-    vector_type, story_id, user_id, user_weight = user_like_unlike_parser(data=data)
-    # add prefix to vector_id according to the type
-    story_id = generate_id_with_prefix(vector_id=story_id, vector_type=vector_type)
-    user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
-    # fetch story and user vectors
-    story_vector = vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
-    user_vector = vector_fetcher(pinecone_index=index, vector_id=user_id, vector_type="user")
-    # python list to nparray
-    np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
-    # vector operations for story unliking
-    updated_user_vector = unlike_story_operations(np_story_vector=np_story_vector, np_user_vector=np_user_vector,
-                                                  user_weight=user_weight)
-    # update the vector
-    response = update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index,
-                                  vector_ids=user_id, vector_type=vector_type)
-    return {"return": response, "updated_vector=": updated_user_vector.tolist()}
+async def process_story_unliked(data: UserInteraction):
+    try:
+        """ user weight should be updated then received"""
+        # parse the user and story attributes
+        vector_type, story_id, user_id, user_weight = user_like_unlike_parser(data=data)
+        # add prefix to vector_id according to the type
+        story_id = generate_id_with_prefix(vector_id=story_id, vector_type=vector_type)
+        user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
+        # fetch story and user vectors
+        story_vector = await vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
+        user_vector = await vector_fetcher(pinecone_index=index, vector_id=user_id, vector_type="user")
+        # python list to nparray
+        np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
+        # vector operations for story unliking
+        updated_user_vector = unlike_story_operations(np_story_vector=np_story_vector, np_user_vector=np_user_vector,
+                                                      user_weight=user_weight)
+        # update the vector
+        response = await update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index,
+                                      vector_ids=user_id, vector_type=vector_type)
+        return {"return": response, "updated_vector": updated_user_vector.tolist()}
+    except Exception as e:
+        # Log the exception for further debugging
+        print(f"An error occurred in 'process_story_unliked': {str(e)}")
+        # Return an HTTP 500 Internal Server Error with a custom error message
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
 
 
 @app.post("/recommend-story")
