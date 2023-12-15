@@ -12,24 +12,34 @@ app, index, word2vec_model = app_initializer()
 
 @app.post("/vectorize")
 async def vectorize(data: Story):
-    # Extract the text from the JSON object
-    vector_text, vector_ids, vector_tags, vector_type = Story.story_parser(data)
-    # add prefix to vector_id according to the type ( u if user and s if story)
-    vector_ids = generate_id_with_prefix(vector_id=vector_ids, vector_type=vector_type)
-    # convert tags list to string for tokenization
-    vector_tags = list_to_string(vector_tags)
-    # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
-    tokenized_text, tokenized_tags = text_processor(vector_text=vector_text, vector_tags=vector_tags)
-    # Initialize an empty array to store the vectors
-    text_vectors = tokenizer(tokenized_text, word2vec_model)
-    tag_vectors = tokenizer(tokenized_tags, word2vec_model)
-    # Vector operations with Numpy
-    avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors,
-                                      tag_vector=tag_vectors)
-    # upsert to the vector db
-    is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
-                         vector_type=vector_type)
-    return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
+    return await process_vectorize(data)
+
+
+async def process_vectorize(data: Story):
+    try:
+        # Extract the text from the JSON object
+        vector_text, vector_ids, vector_tags, vector_type = Story.story_parser(data)
+        # add prefix to vector_id according to the type ( u if user and s if story)
+        vector_ids = generate_id_with_prefix(vector_id=vector_ids, vector_type=vector_type)
+        # convert tags list to string for tokenization
+        vector_tags = list_to_string(vector_tags)
+        # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
+        tokenized_text, tokenized_tags = text_processor(vector_text=vector_text, vector_tags=vector_tags)
+        # Initialize an empty array to store the vectors
+        text_vectors = tokenizer(tokenized_text, word2vec_model)
+        tag_vectors = tokenizer(tokenized_tags, word2vec_model)
+        # Vector operations with Numpy
+        avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors,
+                                          tag_vector=tag_vectors)
+        # upsert to the vector db
+        is_upserted = await upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
+                             vector_type=vector_type)
+        return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
+    except Exception as e:
+        # Log the exception for further debugging
+        print(f"An error occurred in 'process_vectorize': {str(e)}")
+        # Return an HTTP 500 Internal Server Error with a custom error message
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 @app.post("/vectorize-edit")
