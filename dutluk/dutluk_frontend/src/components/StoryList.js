@@ -1,62 +1,50 @@
-const StoryList = ({ story, children }) => {
+import "./css/StoryList.css";
+
+
+const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+        return {
+            mainText: text.substring(0, maxLength),
+            fadeText: text.substring(maxLength)
+        };
+    }
+    return { mainText: text, fadeText: '' };
+};
+
+
+const StoryList = ({ story }) => {
+
+    const { mainText, fadeText } = truncateText(story.text, 20); // Adjust 100 to your desired length
     return (
-        <div key={story.id} className="story">
-            <h2 className="story-title">
-                <a href={"/story/" + story.id}>{story.title}</a>
-            </h2>
-            <p className="story-details">
-                <b>Likes:</b> {story.likes ? story.likes.length : 0}
-            </p>
-            <p className="story-details">
-                <b>Labels:</b>{" "}
-                {story.labels.map((label, index) => (
-                    <span key={index}>
-                        <a href={"/story/search/label/" + label}>{label}</a>
-                        {index < story.labels.length - 1 && ", "}
-                    </span>
-                ))}
-            </p>
-            <p className="story-details">
-                <b>Written by:</b>{" "}
-                <a href={"/user/" + story.user.id}>{story.user.username}</a>
-            </p>
+        <div className="story-item">
+            <h2><a href={`/story/${story.id}`} className="story-title">{story.title}</a></h2>
+            <a href={`/user/${story.user.id}`} className="user-ref">@{story.user.username}</a>
 
-            {story.startTimeStamp && (
-                <p className="story-details">
-                    <b>Start Date:</b> {story.startTimeStamp}
-                </p>
-            )}
-            {story.endTimeStamp && (
-                <p className="story-details">
-                    <b>End Date:</b> {story.endTimeStamp}
-                </p>
-            )}
-            {story.season && (
-                <p className="story-details">
-                    <b>Season:</b> {story.season}
-                </p>
-            )}
-            {story.decade && (
-                <p className="story-details">
-                    <b>Decade:</b> {story.decade}
-                </p>
-            )}
+            {story.picture && <img src={story.picture} alt="Post" />}
 
-            <p className="story-details">
-                <b>Published at:</b> {story.createdAt}
-            </p>
+            <div className="text-container">
+            </div>
 
-            <p className="story-details">
-                <b>Locations:</b>
-            </p>
-            <ul className="locations-list">
-                {story.locations.map((location) => (
-                    <li key={location.id}>{location.locationName}</li>
-                ))}
-            </ul>
-         {children}
+            <div className="dates">
+                <span>Posted: {story.createdAt}</span>
+            </div>
+
+            <div className="tag-interaction-container">
+                <div className="tags">
+                    {story.labels.map((tag, idx) => (
+                        <span key={idx} className="tag">{tag}</span>
+                    ))}
+                </div>
+
+                <div className="interactions">
+                    <span>{story.likes ? story.likes.length : 0}❤️</span>
+                    <span>{story.comments ? story.comments.length : 0}💬</span>
+                </div>
+            </div>
+
         </div>
     );
 };
-  
+
+
 export default StoryList;
