@@ -50,7 +50,6 @@ def generate_id_with_prefix(vector_id, vector_type):
             raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
 
         result_id = f"{prefix}{vector_id}"
-        print(result_id)
         return result_id
 
     except ValueError as ve:
@@ -89,7 +88,6 @@ def generate_ids_with_prefix(vector_ids, vector_type):
         raise
 
 
-
 def parse_id_with_prefix(vector_id):
     """
     Parses an ID to extract the ID value and vector type.
@@ -110,7 +108,7 @@ def parse_id_with_prefix(vector_id):
             vector_type = "story"
         else:
             raise ValueError("Invalid vector_type value. Only 'user' or 'story' is accepted.")
-
+        print(vector_type)
         id_value = str(vector_id[1:])
         return id_value
 
@@ -166,7 +164,7 @@ def story_parser(data: Story):
     Returns:
     - tuple: A tuple containing vector_text, vector_ids, vector_tags, and vector_type.
 
-    This method is assumed to be part of a class, where it retrieves specific attributes:
+    This method is assumed to be part of Story class, where it retrieves specific attributes:
     - self.text: The text attribute of the story.
     - self.ids: The ids attribute of the story.
     - self.tags: The tags attribute of the story.
@@ -181,13 +179,10 @@ def story_parser(data: Story):
         vector_tags = data.tags
         vector_type = data.type
 
-        # Print retrieved attributes for verification
-        print(vector_text, vector_ids, vector_tags, vector_type)
-
         return vector_text, vector_ids, vector_tags, vector_type
 
     except Exception as e:
-        print(f"Error occurred: {e}")
+        print(f"Error occurred at story_parser function: {e}")
         # Re-raise the exception to propagate it further if needed
         raise
 
@@ -297,7 +292,8 @@ def upsert_for_empty_list(final_text_vector, pinecone_index, vector_ids, vector_
     Returns:
     - bool: True if the upsert operation is successful.
 
-    This function upserts a vector into a Pinecone index with associated metadata even if the final_text_vector is empty.
+    This function upserts a vector into a Pinecone index with associated metadata even
+    if the final_text_vector is empty.
     """
 
     try:
@@ -360,7 +356,7 @@ def update_story_vector(final_text_vector, pinecone_index, vector_ids, vector_ty
     Updates a story vector in a Pinecone index with new values and metadata.
 
     Parameters:
-    - final_text_vector: The updated vector for the story.
+    - final_text_vector: The updated vector for the story (accepts lists not nparray).
     - pinecone_index: The Pinecone index object.
     - vector_ids: The ID(s) associated with the story vector.
     - vector_type: The type associated with the story vector.
@@ -385,13 +381,12 @@ def update_story_vector(final_text_vector, pinecone_index, vector_ids, vector_ty
         raise
 
 
-
 def update_user_vector(final_user_vector, pinecone_index, vector_ids, vector_type):
     """
     Updates a user vector in a Pinecone index with new values and metadata.
 
     Parameters:
-    - final_user_vector: The updated vector for the user.
+    - final_user_vector: The updated vector for the user (accepts lists not nparray).
     - pinecone_index: The Pinecone index object.
     - vector_ids: The ID(s) associated with the user vector.
     - vector_type: The type associated with the user vector.
@@ -414,7 +409,6 @@ def update_user_vector(final_user_vector, pinecone_index, vector_ids, vector_typ
         print(f"Error in update_user_vector function: {e}")
         # Re-raise the exception to propagate it further if needed
         raise
-
 
 
 def user_like_unlike_parser(data: UserInteraction):
@@ -444,7 +438,6 @@ def user_like_unlike_parser(data: UserInteraction):
         raise
 
 
-
 def vector_fetcher(pinecone_index, vector_id, vector_type):
     """
     Fetches a vector from a Pinecone index.
@@ -469,7 +462,6 @@ def vector_fetcher(pinecone_index, vector_id, vector_type):
         print(f"Error in vector_fetcher function: {e}")
         # Re-raise the exception to propagate it further if needed
         raise
-
 
 
 def story_user_vectors_fetcher(pinecone_index, story_id, user_id):
@@ -502,7 +494,6 @@ def story_user_vectors_fetcher(pinecone_index, story_id, user_id):
         raise
 
 
-
 def single_vector_fetcher(pinecone_index, vector_id):
     """
     Fetches a single vector from a Pinecone index.
@@ -528,7 +519,6 @@ def single_vector_fetcher(pinecone_index, vector_id):
         raise
 
 
-
 def list_to_nparray(story_vector, user_vector):
     """
     Converts lists to NumPy arrays.
@@ -552,7 +542,6 @@ def list_to_nparray(story_vector, user_vector):
         print(f"Error in list_to_nparray function: {e}")
         # Re-raise the exception to propagate it further if needed
         raise
-
 
 
 # ------------------------ USER INTERACTION LIKE/UNLIKE --------------------------- #
@@ -585,7 +574,6 @@ def like_story_operations(np_user_vector, np_story_vector, user_weight):
         raise
 
 
-
 def unlike_story_operations(np_user_vector, np_story_vector, user_weight):
     """
     Performs operations for unliking a story.
@@ -614,7 +602,6 @@ def unlike_story_operations(np_user_vector, np_story_vector, user_weight):
         raise
 
 
-
 # ------------------------ RECOMMENDATION --------------------------- #
 def recommendation_parser(data: Recommend):
     """
@@ -640,7 +627,6 @@ def recommendation_parser(data: Recommend):
         print(f"Error in recommendation_parser function: {e}")
         # Re-raise the exception to propagate it further if needed
         raise
-
 
 
 def story_and_user_recommender(pinecone_index, user_vector, excluded_ids, vector_type):
