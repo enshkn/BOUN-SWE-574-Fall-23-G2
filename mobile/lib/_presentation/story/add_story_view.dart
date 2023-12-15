@@ -1012,21 +1012,6 @@ class _AddStoryViewState extends State<AddStoryView>
     final tagsList = tagController.text.split(',');
     var starttimecheck = false;
     var endtimecheck = false;
-    /* var endTime = <String>[];
-    var startTime = <String>[];
-    if (dateRangeSelected) {
-      if (selectedStartDateTime != DateTime(0)) {
-        final parsedStartTime = selectedStartDateTime.toString();
-        startTime = parsedStartTime.split(':00.000');
-        starttimecheck = true;
-      }
-
-      if (selectedEndDateTime != DateTime(0)) {
-        final parsedEndTime = selectedEndDateTime.toString();
-        endTime = parsedEndTime.split(':00.000');
-        endtimecheck = true;
-      }
-    } */
 
     if (selectedStartDateTime != DateTime(0)) {
       starttimecheck = true;
@@ -1039,8 +1024,12 @@ class _AddStoryViewState extends State<AddStoryView>
       text: htmlText,
       title: titleController.text,
       labels: tagsList,
-      season: seasonController.text != '' ? seasonController.text : null,
-      decade: decadeController.text != '' ? decadeController.text : null,
+      season: (seasonController.text != '' && decadeSelected)
+          ? seasonController.text
+          : null,
+      decade: (decadeController.text != '' && decadeSelected)
+          ? decadeController.text
+          : null,
       startTimeStamp: starttimecheck
           ? exactDateWithTimeSelected
               ? selectedStartDateTime.toString()
