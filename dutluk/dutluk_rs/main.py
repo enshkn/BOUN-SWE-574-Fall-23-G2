@@ -30,6 +30,16 @@ async def story_unliked(data: UserInteraction):
     return await process_story_unliked(data)
 
 
+@app.post("/recommend-story")
+async def recommend_story(data: Recommend):
+    return await process_recommend_story(data)
+
+
+@app.post("/recommend-user")
+async def recommend_user(data: Recommend):
+    return await process_recommend_user(data)
+
+
 async def process_vectorize(data: Story):
     try:
         # Extract the text from the JSON object
@@ -150,9 +160,7 @@ async def process_story_unliked(data: UserInteraction):
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-
-@app.post("/recommend-story")
-async def recommend_story(data: Recommend):
+async def process_recommend_story(data: Recommend):
     try:
         # parse the JSON
         user_id, excluded_ids, vector_type = recommendation_parser(data)
@@ -160,21 +168,21 @@ async def recommend_story(data: Recommend):
         user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
         excluded_ids = generate_ids_with_prefix(vector_ids=excluded_ids, vector_type=vector_type)
         # fetch the user vector with its vector_id
-        vector = single_vector_fetcher(pinecone_index=index, vector_id=user_id)
+        vector = await single_vector_fetcher(pinecone_index=index, vector_id=user_id)
         # parse ids of the recommended story and scores
-        ids, scores = story_and_user_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
+        ids, scores = await story_and_user_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
                                                  vector_type=vector_type)
         ids = parse_ids_with_prefix_for_lists(vector_ids=ids)
         # parse ids for backend
         return {"ids": ids, "scores": scores}
     except Exception as e:
         # Log the exception for further debugging
-        print(f"An error occurred: {str(e)}")
+        print(f"An error occurred in 'process_recommend_story': {str(e)}")
         # Return an HTTP 500 Internal Server Error with a custom error message
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
-@app.post("/recommend-user")
-async def recommend_user(data: Recommend):
+
+async def process_recommend_user(data: Recommend):
     try:
         # parse the JSON
         user_id, excluded_ids, vector_type = recommendation_parser(data)
@@ -182,18 +190,19 @@ async def recommend_user(data: Recommend):
         user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
         excluded_ids = generate_ids_with_prefix(vector_ids=excluded_ids, vector_type=vector_type)
         # fetch the user vector with its vector_id
-        vector = single_vector_fetcher(pinecone_index=index, vector_id=user_id)
+        vector = await single_vector_fetcher(pinecone_index=index, vector_id=user_id)
         # parse ids of the recommended story and scores
-        ids, scores = story_and_user_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
+        ids, scores = await story_and_user_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
                                                  vector_type=vector_type)
         # parse ids for backend
         ids = parse_ids_with_prefix_for_lists(vector_ids=ids)
         return {"ids": ids, "scores": scores}
     except Exception as e:
         # Log the exception for further debugging
-        print(f"An error occurred: {str(e)}")
+        print(f"An error occurred in 'process_recommend_user': {str(e)}")
         # Return an HTTP 500 Internal Server Error with a custom error message
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
 
 @app.post('/delete-story')
 async def delete_story(data: DeleteStory):
