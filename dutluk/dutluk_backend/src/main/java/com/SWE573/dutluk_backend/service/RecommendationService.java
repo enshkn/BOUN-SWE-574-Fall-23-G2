@@ -2,6 +2,7 @@ package com.SWE573.dutluk_backend.service;
 
 import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
+import com.SWE573.dutluk_backend.request.RecStoryDeleteRequest;
 import com.SWE573.dutluk_backend.request.RecStoryLikeOrDislikeRequest;
 import com.SWE573.dutluk_backend.request.RecStoryOrUserRequest;
 import com.SWE573.dutluk_backend.request.RecVectorizeOrEditRequest;
@@ -172,6 +173,13 @@ public class RecommendationService {
         ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/recommend-user", recStoryRequest,String.class);
         //return response.getBody();
         return null;
+    }
+
+    public String deleteStoryRequest(Long storyId){
+        RecStoryDeleteRequest recDeleteStoryRequest  = new RecStoryDeleteRequest();
+        recDeleteStoryRequest.setStoryId(storyId.toString());
+        restTemplate.postForEntity(recUrl + "/delete-story", recDeleteStoryRequest,String.class);
+        return "Story deleted on karadut";
     }
 
 
