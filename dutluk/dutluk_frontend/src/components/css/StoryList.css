@@ -88,12 +88,35 @@
     mask-image: linear-gradient(to left, transparent, black 50%, black 100%);
   }
 
-  .user-ref {
-    font-size: 0.85em; /* Makes the text smaller */
+
+  .story-header {
+    display: flex;
+    align-items: center;
+  }
+  
+  .story-item .profile-picture {
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Adjust size as needed */
+    border-radius: 50%; /* Makes the image round */
+    margin-right: 10px; /* Adds some space between the image and the text */
+  }
+  
+  .story-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .username {
+    font-size: 1em; /* Adjust size as needed */
     color: #007bff; /* Example color - adjust as needed */
     text-decoration: none; /* Removes the default underline */
   }
   
-  .user-ref:hover {
+  .username:hover {
     text-decoration: underline; /* Adds underline on hover for better UX */
+  }
+  
+  .story-date {
+    font-size: 0.85em; /* Adjust size as needed */
+    color: #666; /* Adjust color as needed */
   }

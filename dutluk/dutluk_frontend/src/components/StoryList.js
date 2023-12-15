@@ -17,18 +17,20 @@ const StoryList = ({ story }) => {
     const { mainText, fadeText } = truncateText(story.text, 20); // Adjust 100 to your desired length
     return (
         <div className="story-item">
+            <div className="story-header">
+                <img src={story.user.profilePhoto} className="profile-picture" />
+                <div className="story-info">
+                    <a href={`/user/${story.user.id}`} className="username">@{story.user.username}</a>
+                    <span className="story-date">Posted: {story.createdAt}</span>
+                </div>
+            </div>
             <h2><a href={`/story/${story.id}`} className="story-title">{story.title}</a></h2>
-            <a href={`/user/${story.user.id}`} className="user-ref">@{story.user.username}</a>
 
             {story.picture && <img src={story.picture} alt="Post" />}
 
             <div className="text-container">
                 <p className="main-text">{mainText}</p>
                 <p className="fade-out-text">{fadeText}</p>
-            </div>
-
-            <div className="dates">
-                <span>Posted: {story.createdAt}</span>
             </div>
 
             <div className="tag-interaction-container">
