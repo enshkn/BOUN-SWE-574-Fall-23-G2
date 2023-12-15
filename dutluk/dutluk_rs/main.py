@@ -15,6 +15,11 @@ async def vectorize(data: Story):
     return await process_vectorize(data)
 
 
+@app.post("/vectorize-edit")
+async def vectorize_edit(data: Story):
+    return await process_vectorize_edit(data)
+
+
 async def process_vectorize(data: Story):
     try:
         # Extract the text from the JSON object
@@ -40,11 +45,6 @@ async def process_vectorize(data: Story):
         print(f"An error occurred in 'process_vectorize': {str(e)}")
         # Return an HTTP 500 Internal Server Error with a custom error message
         raise HTTPException(status_code=500, detail="Internal Server Error")
-
-
-@app.post("/vectorize-edit")
-async def vectorize_edit(data: Story):
-    return await process_vectorize_edit(data)
 
 
 async def process_vectorize_edit(data: Story):
@@ -73,34 +73,50 @@ async def process_vectorize_edit(data: Story):
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-
 @app.post("/story-liked")
 async def story_liked(data: UserInteraction):
-    """ user weight should be updated  then received"""
-    # parse the user and story attributes
-    vector_type, story_id, user_id, user_weight = user_like_unlike_parser(data=data)
-    # add prefix to vector_id according to the type
-    story_id = generate_id_with_prefix(vector_id=story_id, vector_type="story")
-    user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
-    if user_weight < 2:  # first like of a user
-        story_vector = vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
-        user_vector = story_vector
-        np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
-        updated_user_vector = np_user_vector
-        response = upsert(final_text_vector=updated_user_vector, pinecone_index=index, vector_ids=user_id, vector_type="user")
-    else:
-        # fetch story and user vectors
-        story_vector = vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
-        user_vector = vector_fetcher(pinecone_index=index, vector_id=user_id, vector_type="user")
-        # python list to nparray
-        np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
-        # vector operations for story liking
-        updated_user_vector = like_story_operations(np_story_vector=np_story_vector, np_user_vector=np_user_vector,
-                                                    user_weight=user_weight)
-        # update the vector
-        response = update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index,
-                                      vector_ids=user_id, vector_type="user")
-    return {"return": response, "updated_vector": updated_user_vector.tolist()}
+    return await process_story_liked(data)
+
+
+# story_liked fonksiyonunun asenkron işlenmesi için bir yardımcı fonksiyon
+async def process_story_liked(data: UserInteraction):
+    try:
+        """ user weight should be updated then received"""
+        # parse the user and story attributes
+        vector_type, story_id, user_id, user_weight = user_like_unlike_parser(data=data)
+        # add prefix to vector_id according to the type
+        story_id = generate_id_with_prefix(vector_id=story_id, vector_type="story")
+        user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
+
+        response = None
+        updated_user_vector = None
+
+        if user_weight < 2:  # first like of a user
+            story_vector = await vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
+            user_vector = story_vector
+            np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
+            updated_user_vector = np_user_vector
+            response = await upsert(final_text_vector=updated_user_vector, pinecone_index=index, vector_ids=user_id,
+                                    vector_type="user")
+        else:
+            # fetch story and user vectors
+            story_vector = await vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
+            user_vector = await vector_fetcher(pinecone_index=index, vector_id=user_id, vector_type="user")
+            # python list to nparray
+            np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
+            # vector operations for story liking
+            updated_user_vector = like_story_operations(np_story_vector=np_story_vector, np_user_vector=np_user_vector,
+                                                        user_weight=user_weight)
+            # update the vector
+            response = await update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index,
+                                                vector_ids=user_id, vector_type="user")
+
+        return {"return": response, "updated_vector": updated_user_vector.tolist()}
+    except Exception as e:
+        # Log the exception for further debugging
+        print(f"An error occurred in 'process_story_liked': {str(e)}")
+        # Return an HTTP 500 Internal Server Error with a custom error message
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 @app.post("/story-unliked")
