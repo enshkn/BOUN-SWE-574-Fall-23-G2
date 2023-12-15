@@ -55,6 +55,14 @@ public class MyStoryListResponse {
 
     private String endDecade;
 
+    private Integer startHourFlag;// if 0, no hour, if 1, hour exists
+
+    private Integer endHourFlag;// if 0, no hour, if 1, hour exists
+
+    private Integer startDateFlag;// if 1 -> yyyy, if 2 -> MM/yyyy, if 3 dd/MM/yyyy
+
+    private Integer endDateFlag;// if 1 -> yyyy, if 2 -> MM/yyyy, if 3 dd/MM/yyyy
+
     public MyStoryListResponse(Story story) {
         this.id = story.getId();
         this.createdAt = story.getCreatedAt();
@@ -72,9 +80,14 @@ public class MyStoryListResponse {
                         story.getEndTimeStamp(),
                         story.getEndHourFlag(),
                         story.getEndDateFlag());
+        this.startHourFlag = story.getStartHourFlag();
+        this.startDateFlag = story.getStartDateFlag();
+        this.endHourFlag  = story.getEndHourFlag();
+        this.endDateFlag = story.getEndDateFlag();
         this.season = story.getSeason();
         this.decade = story.getDecade();
         this.endDecade = story.getEndDecade();
+
     }
 
 
