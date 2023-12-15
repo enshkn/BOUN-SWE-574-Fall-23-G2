@@ -14,7 +14,7 @@ const truncateText = (text, maxLength) => {
 
 const StoryList = ({ story }) => {
 
-    const { mainText, fadeText } = truncateText(story.text, 20); // Adjust 100 to your desired length
+    const { mainText, fadeText } = truncateText(story.text, 95); // Adjust 100 to your desired length
     return (
         <div className="story-item">
             <div className="story-header">
