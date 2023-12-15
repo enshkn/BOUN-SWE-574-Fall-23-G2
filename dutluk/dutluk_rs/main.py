@@ -1,6 +1,9 @@
+from fastapi import FastAPI, Request
+from typing import List, Dict
+import os
 from fastapi import HTTPException
 from appconfig import app_initializer
-from classes import Story, UserInteraction, Recommend, DeleteStory, IdGenerator
+from classes import Story, UserInteraction, Recommend, DeleteStory, DeleteAllStory
 from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectorising, update_story_vector, \
     update_user_vector, user_like_unlike_parser, story_user_vectors_fetcher, list_to_nparray, like_story_operations, \
     unlike_story_operations, single_vector_fetcher, recommendation_parser, story_and_user_recommender, list_to_string, \
@@ -8,6 +11,27 @@ from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectori
     create_empty_float_list, upsert_for_empty_list, vector_fetcher
 
 app, index, word2vec_model = app_initializer()
+
+"""
+requests_list: List[Dict] = []
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    request_details = {
+        "method": request.method,
+        "url": str(request.url),
+        "headers": dict(request.headers),
+    }
+    requests_list.append(request_details)
+
+    response = await call_next(request)
+    return response
+
+
+@app.get("/monitor-requests")
+async def get_requests():
+    return requests_list
+"""
 
 
 @app.post("/vectorize")
@@ -40,6 +64,35 @@ async def recommend_user(data: Recommend):
     return await process_recommend_user(data)
 
 
+@app.post('/delete-story')
+async def delete_story(data: DeleteStory):
+    try:
+        story_id = data.storyId
+        story_id_with_prefix = generate_id_with_prefix(vector_id=story_id, vector_type="story")
+        index.delete(ids=[story_id_with_prefix])
+        return f"the story vector with id : {story_id} is deleted."
+    except Exception as e:
+        # Log the exception for further debugging
+        print(f"An error occurred in 'delete_story': {str(e)}")
+        # Return an HTTP 500 Internal Server Error with a custom error message
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@app.post('/delete-all')
+async def delete_all_story(data: DeleteAllStory):
+    try:
+        pass_word = data.passWord
+        if pass_word == os.getenv('ADMIN_PASS'):
+            index.delete(delete_all=True)
+        else:
+            return "you don't have privileges to delete db"
+    except Exception as e:
+        # Log the exception for further debugging
+        print(f"An error occurred in 'delete_all_story': {str(e)}")
+        # Return an HTTP 500 Internal Server Error with a custom error message
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
 async def process_vectorize(data: Story):
     try:
         # Extract the text from the JSON object
@@ -57,7 +110,7 @@ async def process_vectorize(data: Story):
         avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors,
                                           tag_vector=tag_vectors)
         # upsert to the vector db
-        is_upserted = await upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
+        is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
                              vector_type=vector_type)
         return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
     except Exception as e:
@@ -83,7 +136,7 @@ async def process_vectorize_edit(data: Story):
         avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors,
                                           tag_vector=tag_vectors)
         # upsert to the vector db
-        is_upserted = await upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
+        is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
                              vector_type=vector_type)
         return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
     except Exception as e:
@@ -106,24 +159,24 @@ async def process_story_liked(data: UserInteraction):
         updated_user_vector = None
 
         if user_weight < 2:  # first like of a user
-            story_vector = await vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
+            story_vector = vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
             user_vector = story_vector
             np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
             updated_user_vector = np_user_vector
-            response = await upsert(final_text_vector=updated_user_vector, pinecone_index=index, vector_ids=user_id,
-                                    vector_type="user")
+            response = upsert(final_text_vector=updated_user_vector, pinecone_index=index, vector_ids=user_id,
+                              vector_type="user")
         else:
             # fetch story and user vectors
-            story_vector = await vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
-            user_vector = await vector_fetcher(pinecone_index=index, vector_id=user_id, vector_type="user")
+            story_vector = vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
+            user_vector = vector_fetcher(pinecone_index=index, vector_id=user_id, vector_type="user")
             # python list to nparray
             np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
             # vector operations for story liking
             updated_user_vector = like_story_operations(np_story_vector=np_story_vector, np_user_vector=np_user_vector,
                                                         user_weight=user_weight)
             # update the vector
-            response = await update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index,
-                                                vector_ids=user_id, vector_type="user")
+            response = update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index,
+                                          vector_ids=user_id, vector_type="user")
 
         return {"return": response, "updated_vector": updated_user_vector.tolist()}
     except Exception as e:
@@ -142,15 +195,15 @@ async def process_story_unliked(data: UserInteraction):
         story_id = generate_id_with_prefix(vector_id=story_id, vector_type=vector_type)
         user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
         # fetch story and user vectors
-        story_vector = await vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
-        user_vector = await vector_fetcher(pinecone_index=index, vector_id=user_id, vector_type="user")
+        story_vector = vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
+        user_vector = vector_fetcher(pinecone_index=index, vector_id=user_id, vector_type="user")
         # python list to nparray
         np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
         # vector operations for story unliking
         updated_user_vector = unlike_story_operations(np_story_vector=np_story_vector, np_user_vector=np_user_vector,
                                                       user_weight=user_weight)
         # update the vector
-        response = await update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index,
+        response = update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index,
                                       vector_ids=user_id, vector_type=vector_type)
         return {"return": response, "updated_vector": updated_user_vector.tolist()}
     except Exception as e:
@@ -168,9 +221,9 @@ async def process_recommend_story(data: Recommend):
         user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
         excluded_ids = generate_ids_with_prefix(vector_ids=excluded_ids, vector_type=vector_type)
         # fetch the user vector with its vector_id
-        vector = await single_vector_fetcher(pinecone_index=index, vector_id=user_id)
+        vector = single_vector_fetcher(pinecone_index=index, vector_id=user_id)
         # parse ids of the recommended story and scores
-        ids, scores = await story_and_user_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
+        ids, scores = story_and_user_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
                                                  vector_type=vector_type)
         ids = parse_ids_with_prefix_for_lists(vector_ids=ids)
         # parse ids for backend
@@ -190,9 +243,9 @@ async def process_recommend_user(data: Recommend):
         user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
         excluded_ids = generate_ids_with_prefix(vector_ids=excluded_ids, vector_type=vector_type)
         # fetch the user vector with its vector_id
-        vector = await single_vector_fetcher(pinecone_index=index, vector_id=user_id)
+        vector = single_vector_fetcher(pinecone_index=index, vector_id=user_id)
         # parse ids of the recommended story and scores
-        ids, scores = await story_and_user_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
+        ids, scores = story_and_user_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
                                                  vector_type=vector_type)
         # parse ids for backend
         ids = parse_ids_with_prefix_for_lists(vector_ids=ids)
@@ -202,21 +255,6 @@ async def process_recommend_user(data: Recommend):
         print(f"An error occurred in 'process_recommend_user': {str(e)}")
         # Return an HTTP 500 Internal Server Error with a custom error message
         raise HTTPException(status_code=500, detail="Internal Server Error")
-
-
-@app.post('/delete-story')
-async def delete_story(data: DeleteStory):
-    try:
-        story_id = data.storyId
-        story_id_with_prefix = generate_id_with_prefix(vector_id=story_id, vector_type="story")
-        await index.delete(ids=[story_id_with_prefix])
-        return f"the story vector with id : {story_id} is deleted."
-    except Exception as e:
-        # Log the exception for further debugging
-        print(f"An error occurred in 'delete_story': {str(e)}")
-        # Return an HTTP 500 Internal Server Error with a custom error message
-        raise HTTPException(status_code=500, detail="Internal Server Error")
-
 
 
 @app.get("/test")
