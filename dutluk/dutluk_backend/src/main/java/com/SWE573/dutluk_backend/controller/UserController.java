@@ -39,17 +39,32 @@ public class UserController {
     @GetMapping("/test")
     public String helloWorld(){ return "<h1>Hello world!</h1>";}
 
+    @GetMapping("/all")
+    public ResponseEntity<?> findAllUsers(HttpServletRequest request){
+        return IntegrationService.mobileCheck(request,userService.findAll());
+    }
 
+    @PostMapping("/follow")
+    public ResponseEntity<?> followUser(@RequestBody FollowRequest followRequest, HttpServletRequest request){
+        User foundUser = userService.validateTokenizedUser(request);
+        User followingUser = userService.followUser(foundUser, followRequest.getUserId());
+        return IntegrationService.mobileCheck(request,followingUser);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id,HttpServletRequest request) throws AccountNotFoundException {
         User user = userService.findByUserId(id);
         if(user != null){
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),user);
+            return IntegrationService.mobileCheck(request,user);
         }
         else{
             throw new AccountNotFoundException();
         }
+    }
+
+    @GetMapping("/isTokenValid")
+    public ResponseEntity<?> showTokenValidation(HttpServletRequest request){
+        return IntegrationService.mobileCheck(request,userService.validateTokenByRequest(request));
     }
 
     @PostMapping("/login")
@@ -57,7 +72,7 @@ public class UserController {
                                    HttpServletRequest request,
                                    HttpServletResponse response){
         if(!userService.existsByEmail(loginRequest.getIdentifier()) && !userService.existsByUsername(loginRequest.getIdentifier())){
-                return IntegrationService.mobileCheck(request.getHeader("User-Agent"),"User with identifier "+loginRequest.getIdentifier()+" not found",HttpStatus.NOT_FOUND);
+            return IntegrationService.mobileCheck(request,"User with identifier "+loginRequest.getIdentifier()+" not found",HttpStatus.NOT_FOUND);
         }
         try {
             User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
@@ -66,12 +81,12 @@ public class UserController {
             cookie.setPath("/api");
             response.addCookie(cookie);
             foundUser.setToken(token);
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
+            return IntegrationService.mobileCheck(request,foundUser);
         } catch (AccountNotFoundException e) {
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),"Wrong password",HttpStatus.NOT_FOUND);
+            return IntegrationService.mobileCheck(request,"Wrong password",HttpStatus.NOT_FOUND);
         }
         catch (Exception e) {
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),"An error occurred on dutluk backend", HttpStatus.INTERNAL_SERVER_ERROR);
+            return IntegrationService.mobileCheck(request,"An error occurred on dutluk backend", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -80,7 +95,13 @@ public class UserController {
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request,HttpServletResponse response) {
         response = userService.logout(response);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),"Logged out");
+        return IntegrationService.mobileCheck(request,"Logged out");
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> showUserProfile(HttpServletRequest request){
+        User foundUser = userService.validateTokenizedUser(request);
+        return IntegrationService.mobileCheck(request,foundUser);
     }
 
 
@@ -89,7 +110,7 @@ public class UserController {
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest, HttpServletRequest request) throws Exception{
         try {
             if(!userService.validateRegistrationInput(registerRequest)){
-                return new ResponseEntity<>("Username or Email already exists.", HttpStatus.BAD_REQUEST);
+                return IntegrationService.mobileCheck(request,"Username or email already exists!",HttpStatus.NOT_FOUND);
             }
             User newUser = User.builder()
                     .email(registerRequest.getEmail())
@@ -97,17 +118,10 @@ public class UserController {
                     .password(registerRequest.getPassword())
                     .build();
             User registeredUser = userService.addUser(newUser);
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"), registeredUser);
+            return IntegrationService.mobileCheck(request, registeredUser);
         } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred during registration.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return IntegrationService.mobileCheck(request,"An error occurred during registeration!",HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @PostMapping("/update")
-    public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequest updateRequest, HttpServletRequest request){
-        User user = userService.validateTokenizedUser(request);
-        User updatedUser =userService.updateUser(user,updateRequest);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),updatedUser);
     }
 
     @PostMapping(value= "/photo", consumes = "multipart/form-data")
@@ -118,35 +132,17 @@ public class UserController {
         try {
             User foundUser = userService.validateTokenizedUser(request);
             User updatedUser = userService.updateUserPhoto(foundUser,file);
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),updatedUser);
+            return IntegrationService.mobileCheck(request,updatedUser);
         } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return IntegrationService.mobileCheck(request,"Photo could not be updated!",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-
-    @GetMapping("/all")
-    public ResponseEntity<?> findAllUsers(HttpServletRequest request){
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),userService.findAll());
-    }
-
-    @PostMapping("/follow")
-    public ResponseEntity<?> followUser(@RequestBody FollowRequest followRequest, HttpServletRequest request){
-        User foundUser = userService.validateTokenizedUser(request);
-        User followingUser = userService.followUser(foundUser, followRequest.getUserId());
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),followingUser);
-    }
-
-    @GetMapping("/profile")
-    public ResponseEntity<?> showUserProfile(HttpServletRequest request){
-        User foundUser = userService.validateTokenizedUser(request);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundUser);
-    }
-
-    @GetMapping("/isTokenValid")
-    public ResponseEntity<?> showTokenValidation(HttpServletRequest request){
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),userService.validateTokenByRequest(request));
+    @PostMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequest updateRequest, HttpServletRequest request){
+        User user = userService.validateTokenizedUser(request);
+        User updatedUser =userService.updateUser(user,updateRequest);
+        return IntegrationService.mobileCheck(request,updatedUser);
     }
 
 
