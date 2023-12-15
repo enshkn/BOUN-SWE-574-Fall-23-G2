@@ -254,6 +254,11 @@ public class StoryService {
         for (Comment comment: commentList) {
             commentService.deleteComment(comment);
         }
+        if(recService.isRecEngineStatus()){
+            storyRepository.deleteById(story.getId());
+            recService.deleteStoryRequest(story.getId());
+            return "deleted";
+        }
         storyRepository.deleteById(story.getId());
         return "deleted";
     }
