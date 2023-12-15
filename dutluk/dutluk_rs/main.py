@@ -15,9 +15,9 @@ async def vectorize(data: Story):
     # Extract the text from the JSON object
     vector_text, vector_ids, vector_tags, vector_type = Story.story_parser(data)
     # add prefix to vector_id according to the type ( u if user and s if story)
-    vector_ids = IdGenerator.generate_id_with_prefix(vector_id=vector_ids, vector_type=vector_type)
+    vector_ids = generate_id_with_prefix(vector_id=vector_ids, vector_type=vector_type)
     # convert tags list to string for tokenization
-    vector_tags = Story.list_to_string(vector_tags)
+    vector_tags = list_to_string(vector_tags)
     # Tokenize the text, NLP pre-process techniques are implemented with simple process function.
     tokenized_text, tokenized_tags = text_processor(vector_text=vector_text, vector_tags=vector_tags)
     # Initialize an empty array to store the vectors
@@ -61,7 +61,7 @@ async def story_liked(data: UserInteraction):
     # add prefix to vector_id according to the type
     story_id = generate_id_with_prefix(vector_id=story_id, vector_type="story")
     user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
-    if user_weight < 2:
+    if user_weight < 2:  # first like of a user
         story_vector = vector_fetcher(pinecone_index=index, vector_id=story_id, vector_type="story")
         user_vector = story_vector
         np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
@@ -78,7 +78,7 @@ async def story_liked(data: UserInteraction):
                                                     user_weight=user_weight)
         # update the vector
         response = update_user_vector(final_user_vector=updated_user_vector.tolist(), pinecone_index=index,
-                                      vector_ids=user_id, vector_type=vector_type)
+                                      vector_ids=user_id, vector_type="user")
     return {"return": response, "updated_vector": updated_user_vector.tolist()}
 
 
@@ -112,8 +112,6 @@ async def recommend_story(data: Recommend):
         # add prefix to vector_id according to the type
         user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
         excluded_ids = generate_ids_with_prefix(vector_ids=excluded_ids, vector_type=vector_type)
-        print(excluded_ids)
-        print(type(excluded_ids))
         # fetch the user vector with its vector_id
         vector = single_vector_fetcher(pinecone_index=index, vector_id=user_id)
         # parse ids of the recommended story and scores
@@ -121,8 +119,6 @@ async def recommend_story(data: Recommend):
                                                  vector_type=vector_type)
         ids = parse_ids_with_prefix_for_lists(vector_ids=ids)
         # parse ids for backend
-        print(ids)
-        print(type(ids))
         return {"ids": ids, "scores": scores}
     except Exception as e:
         # Log the exception for further debugging
@@ -138,8 +134,6 @@ async def recommend_user(data: Recommend):
         # add prefix to vector_id according to the type
         user_id = generate_id_with_prefix(vector_id=user_id, vector_type="user")
         excluded_ids = generate_ids_with_prefix(vector_ids=excluded_ids, vector_type=vector_type)
-        print(excluded_ids)
-        print(type(excluded_ids))
         # fetch the user vector with its vector_id
         vector = single_vector_fetcher(pinecone_index=index, vector_id=user_id)
         # parse ids of the recommended story and scores
@@ -147,8 +141,6 @@ async def recommend_user(data: Recommend):
                                                  vector_type=vector_type)
         # parse ids for backend
         ids = parse_ids_with_prefix_for_lists(vector_ids=ids)
-        print(ids)
-        print(type(ids))
         return {"ids": ids, "scores": scores}
     except Exception as e:
         # Log the exception for further debugging
