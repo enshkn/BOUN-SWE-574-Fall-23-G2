@@ -53,6 +53,8 @@ public class MyStoryListResponse {
 
     private String decade;
 
+    private String endDecade;
+
     public MyStoryListResponse(Story story) {
         this.id = story.getId();
         this.createdAt = story.getCreatedAt();
@@ -72,6 +74,7 @@ public class MyStoryListResponse {
                         story.getEndDateFlag());
         this.season = story.getSeason();
         this.decade = story.getDecade();
+        this.endDecade = story.getEndDecade();
     }
 
 

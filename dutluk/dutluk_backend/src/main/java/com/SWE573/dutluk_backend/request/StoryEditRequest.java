@@ -29,6 +29,8 @@ public class StoryEditRequest {
 
     private String decade;
 
+    private String endDecade;
+
     private Integer startHourFlag = -1;// if 0, no hour, if 1, hour exists
 
     private Integer endHourFlag = -1;// if 0, no hour, if 1, hour exists

@@ -101,6 +101,7 @@ public class StoryController {
             @RequestParam(required = false) String startTimeStamp,
             @RequestParam(required = false) String endTimeStamp,
             @RequestParam(required = false) String decade,
+            @RequestParam(required = false) String endDecade,
             @RequestParam(required = false) String season,
             HttpServletRequest request) throws ParseException {
         List<Story> storyList = storyService.searchStoriesWithCombination(
@@ -111,6 +112,7 @@ public class StoryController {
                 startTimeStamp,
                 endTimeStamp,
                 decade,
+                endDecade,
                 season);
         List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyList);
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyListResponse, "[]"));
@@ -143,6 +145,7 @@ public class StoryController {
             @RequestParam(required = false) String startTimeStamp,
             @RequestParam(required = false) String endTimeStamp,
             @RequestParam(required = false) String decade,
+            @RequestParam(required = false) String endDecade,
             @RequestParam(required = false) String season,
             HttpServletRequest request) throws ParseException {
         List<Story> storyList = storyService.searchStoriesWithIntersection(
@@ -154,6 +157,7 @@ public class StoryController {
                 startTimeStamp,
                 endTimeStamp,
                 decade,
+                endDecade,
                 season);
         List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyList);
         return IntegrationService.mobileCheck(request.getHeader("User-Agent"),Objects.requireNonNullElse(storyListResponse, "No stories with this search is found!"));

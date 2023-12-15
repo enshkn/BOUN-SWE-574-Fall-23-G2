@@ -48,6 +48,8 @@ public class StoryListResponse {
 
     private String decade;
 
+    private String endDecade;
+
     private String percentage;
 
     public StoryListResponse(Story story) {
@@ -74,6 +76,7 @@ public class StoryListResponse {
                         story.getEndDateFlag());
         this.season = story.getSeason();
         this.decade = StoryService.getDecadeString(story);
+        this.endDecade = StoryService.getEndDecadeString(story);
         this.percentage = story.getPercentage();
     }
 }
