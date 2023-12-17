@@ -52,6 +52,7 @@ function App() {
         document.cookie =
           "Bearer=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/api;";
         setLoggedIn(false);
+        sessionStorage.removeItem('currentUser');
       })
       .catch((error) => {
         console.log(error);
