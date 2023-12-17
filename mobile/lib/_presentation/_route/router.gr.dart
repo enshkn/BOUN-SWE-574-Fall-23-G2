@@ -16,9 +16,15 @@ abstract class _$AppRouter extends RootStackRouter {
   @override
   final Map<String, PageFactory> pagesMap = {
     AddStoryRoute.name: (routeData) {
+      final args = routeData.argsAs<AddStoryRouteArgs>(
+          orElse: () => const AddStoryRouteArgs());
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const AddStoryView(),
+        child: AddStoryView(
+          key: args.key,
+          myStories: args.myStories,
+          storyModel: args.storyModel,
+        ),
       );
     },
     AppRoute.name: (routeData) {
@@ -189,16 +195,45 @@ abstract class _$AppRouter extends RootStackRouter {
 
 /// generated route for
 /// [AddStoryView]
-class AddStoryRoute extends PageRouteInfo<void> {
-  const AddStoryRoute({List<PageRouteInfo>? children})
-      : super(
+class AddStoryRoute extends PageRouteInfo<AddStoryRouteArgs> {
+  AddStoryRoute({
+    Key? key,
+    bool myStories = false,
+    StoryModel? storyModel,
+    List<PageRouteInfo>? children,
+  }) : super(
           AddStoryRoute.name,
+          args: AddStoryRouteArgs(
+            key: key,
+            myStories: myStories,
+            storyModel: storyModel,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'AddStoryRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<AddStoryRouteArgs> page =
+      PageInfo<AddStoryRouteArgs>(name);
+}
+
+class AddStoryRouteArgs {
+  const AddStoryRouteArgs({
+    this.key,
+    this.myStories = false,
+    this.storyModel,
+  });
+
+  final Key? key;
+
+  final bool myStories;
+
+  final StoryModel? storyModel;
+
+  @override
+  String toString() {
+    return 'AddStoryRouteArgs{key: $key, myStories: $myStories, storyModel: $storyModel}';
+  }
 }
 
 /// generated route for

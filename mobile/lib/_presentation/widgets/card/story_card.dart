@@ -21,6 +21,8 @@ class StoryCard extends StatelessWidget {
   final void Function()? onFavouriteTap;
   final void Function()? onSavedTap;
   final VoidCallback? onDeleteTap;
+  final VoidCallback? onEditTap;
+
   final bool isFavorite;
   final bool isSaved;
   final bool isSavedLoading;
@@ -43,35 +45,44 @@ class StoryCard extends StatelessWidget {
     this.onSavedTap,
     this.isSaved = false,
     this.isSavedLoading = false,
+    this.onEditTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final text = storyModel.text;
-
-    final document = parse(text);
     String? imgurl;
     var noImage = true;
+    if (myStories) {
+      final text = storyModel.text;
 
-    if (document.outerHtml.contains('<img>')) {
-      final parsedImage = text.split('<img>');
-      final secondParse = parsedImage[1].split('/>');
-      final finalParse = secondParse[0];
-      imgurl = finalParse;
-      noImage = false;
-    }
-    if (document.outerHtml.contains('<img src=')) {
-      final parsedImage = text.split('img src="');
-      final secondParse = parsedImage[1].split('">');
-      final finalParse = secondParse[0];
-      imgurl = finalParse;
-      noImage = false;
+      final document = parse(text);
+
+      if (document.outerHtml.contains('<img>')) {
+        final parsedImage = text.split('<img>');
+        final secondParse = parsedImage[1].split('/>');
+        final finalParse = secondParse[0];
+        imgurl = finalParse;
+        noImage = false;
+      }
+      if (document.outerHtml.contains('<img src=')) {
+        final parsedImage = text.split('img src="');
+        final secondParse = parsedImage[1].split('">');
+        final finalParse = secondParse[0];
+        imgurl = finalParse;
+        noImage = false;
+      }
+    } else {
+      imgurl = storyModel.picture;
+      if (imgurl != null) {
+        noImage = false;
+      }
     }
 
     return Material(
       borderRadius: BorderRadius.circular(12),
       elevation: 6,
       child: Container(
+        width: MediaQuery.of(context).size.width * 0.8,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: Colors.white,
@@ -84,15 +95,21 @@ class StoryCard extends StatelessWidget {
             ),
           ],
         ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 18),
         child: Stack(
           clipBehavior: Clip.none,
           children: [
+            if (storyModel.createdAt != null)
+              Text(
+                storyModel.createdAt!,
+              ),
+            BaseWidgets.lowestGap,
             buildContent(context, imgurl, noImage),
             if (showFavouriteButton) buildFavourite(),
             if (myStories == false) buildSaved(),
             buildUser(context),
             if (myStories) buildDelete(),
+            if (myStories) buildEdit(),
           ],
         ),
       ),
@@ -105,6 +122,7 @@ class StoryCard extends StatelessWidget {
     bool noImage,
   ) {
     return Card(
+      margin: const EdgeInsets.fromLTRB(0, 16, 0, 16),
       elevation: 0,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -112,25 +130,31 @@ class StoryCard extends StatelessWidget {
         ),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            child: Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: noImage
-                      ? Image.asset(
-                          'assets/images/dutluk_logo.png',
-                        )
-                      : Image.network(
-                          imgUrl!,
-                        ),
+          if (noImage)
+            SizedBox(
+              width: 100,
+              height: 100,
+              child: Image.asset(
+                'assets/images/dutluk_logo.png',
+              ),
+            )
+          else
+            SizedBox(
+              child: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Image.network(
+                      imgUrl!,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-          BaseWidgets.lowerGap,
+          BaseWidgets.lowestGap,
           Text(
             storyModel.title,
             style: const TextStyles.title().copyWith(
@@ -139,7 +163,7 @@ class StoryCard extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 2,
           ),
-          BaseWidgets.lowerGap,
+          BaseWidgets.lowestGap,
           if (storyModel.locations != null && storyModel.locations!.isNotEmpty)
             Text(
               storyModel.locations![0].locationName!.toLocation() ?? '',
@@ -149,7 +173,7 @@ class StoryCard extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-          BaseWidgets.lowerGap,
+          BaseWidgets.lowestGap,
           if (storyModel.labels != null)
             SizedBox(
               height: 60,
@@ -229,7 +253,7 @@ class StoryCard extends StatelessWidget {
 
   Widget buildSaved() {
     return Positioned(
-      top: 0,
+      bottom: 0,
       right: 0,
       child: SizedBox(
         width: 50,
@@ -259,7 +283,7 @@ class StoryCard extends StatelessWidget {
 
   Widget buildUser(BuildContext context) {
     return Positioned(
-      bottom: 8,
+      bottom: 0,
       left: 4,
       child: GestureDetector(
         onTap: () {
@@ -272,8 +296,8 @@ class StoryCard extends StatelessWidget {
             child: Row(
               children: [
                 const Icon(
-                  Icons.star,
-                  color: Colors.yellow,
+                  Icons.person,
+                  color: Colors.grey,
                   size: 32,
                 ),
                 const SizedBox(
@@ -306,6 +330,36 @@ class StoryCard extends StatelessWidget {
                   Icons.delete,
                   size: 32,
                   color: Colors.red,
+                ),
+              ),
+              const SizedBox(
+                width: 4,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildEdit() {
+    return Positioned(
+      top: 8,
+      left: 0,
+      child: SizedBox(
+        width: 52,
+        height: 30,
+        child: Center(
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  onEditTap?.call();
+                },
+                icon: const Icon(
+                  Icons.edit,
+                  size: 32,
+                  color: Colors.grey,
                 ),
               ),
               const SizedBox(

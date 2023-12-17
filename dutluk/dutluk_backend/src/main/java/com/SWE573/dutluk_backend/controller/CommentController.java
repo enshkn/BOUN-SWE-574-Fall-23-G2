@@ -33,33 +33,41 @@ public class CommentController {
 
 
     @PostMapping("/add")
-    public ResponseEntity<?> addComment(@RequestBody CommentRequest commentRequest, HttpServletRequest request){
+    public ResponseEntity<?> addComment(@RequestBody CommentRequest commentRequest, HttpServletRequest request) {
         User user = userService.validateTokenizedUser(request);
         Story story = storyService.getStoryByStoryId(commentRequest.getStoryId());
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),commentService.createComment(commentRequest,user,story));
+        return IntegrationService.mobileCheck(request, commentService.createComment(commentRequest, user, story));
+    }
+
+    @GetMapping("/byStory/{storyId}")
+    public ResponseEntity<?> getCommentsByStoryId(@PathVariable Long storyId, HttpServletRequest request) {
+        List<Comment> foundComments = commentService.getCommentsByStoryId(storyId);
+        if (foundComments != null) {
+            return IntegrationService.mobileCheck(request, foundComments);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{commentId}")
-    public ResponseEntity<?> getCommentsId(@PathVariable Long commentId,HttpServletRequest request){
+    public ResponseEntity<?> getByCommentId(@PathVariable Long commentId, HttpServletRequest request) {
         Comment foundComment = commentService.getCommentById(commentId);
-        if (foundComment!=null) {
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundComment);
+        if (foundComment != null) {
+            return IntegrationService.mobileCheck(request, foundComment);
         }
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/delete/{commentId}")
+    public ResponseEntity<?> deleteByCommentId(@PathVariable Long commentId, HttpServletRequest request) {
+        Comment foundComment = commentService.getCommentById(commentId);
+        String deletionStatus = commentService.deleteComment(foundComment);
+        return IntegrationService.mobileCheck(request, deletionStatus);
+    }
+
     @PostMapping("/like")
-    public ResponseEntity<?> likeComment(@RequestBody LikeRequest likeRequest, HttpServletRequest request){
+    public ResponseEntity<?> likeComment(@RequestBody LikeRequest likeRequest, HttpServletRequest request) {
         User tokenizedUser = userService.validateTokenizedUser(request);
-        return IntegrationService.mobileCheck(request.getHeader("User-Agent"),commentService.likeComment(likeRequest.getLikedEntityId(),tokenizedUser.getId()));
-
+        return IntegrationService.mobileCheck(request, commentService.likeComment(likeRequest.getLikedEntityId(), tokenizedUser.getId()));
     }
 
-    @GetMapping("/{storyId}")
-    public ResponseEntity<?> getCommentsByStoryId(@PathVariable Long storyId,HttpServletRequest request){
-        List<Comment> foundComments = commentService.getCommentsByStoryId(storyId);
-        if (foundComments!=null) {
-            return IntegrationService.mobileCheck(request.getHeader("User-Agent"),foundComments);
-        }
-        return ResponseEntity.notFound().build();
-    }
 }

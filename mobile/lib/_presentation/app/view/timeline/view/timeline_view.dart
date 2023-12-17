@@ -1,11 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:google_map_location_picker/map_location_picker.dart'
+    hide Location;
+import 'package:location/location.dart';
 import 'package:swe/_application/profile/profile_cubit.dart';
 import 'package:swe/_application/profile/profile_state.dart';
 import 'package:swe/_application/session/session_cubit.dart';
 import 'package:swe/_application/session/session_state.dart';
 import 'package:swe/_application/story/story_cubit.dart';
 import 'package:swe/_application/story/story_state.dart';
+import 'package:swe/_core/widgets/base_loader.dart';
 import 'package:swe/_core/widgets/base_scroll_view.dart';
 import 'package:swe/_core/widgets/debouncer.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
@@ -31,6 +35,30 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
   final FocusNode _focusNode = FocusNode();
   final debouncer = Debouncer(milliseconds: 500);
   TextEditingController? _searchController;
+  late LatLng? _currentPosition = const LatLng(0, 0);
+  final Location _locationController = Location();
+  bool locationLoading = true;
+
+  @override
+  void initState() {
+    getCurrentLocation();
+    super.initState();
+  }
+
+  Future<void> getCurrentLocation() async {
+    LocationData currentLocation;
+    Future.delayed(const Duration(seconds: 15), () async {
+      currentLocation = await _locationController.getLocation();
+      if (currentLocation.latitude != null &&
+          currentLocation.longitude != null) {
+        setState(() {
+          _currentPosition =
+              LatLng(currentLocation.latitude!, currentLocation.longitude!);
+          locationLoading = false;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,22 +74,12 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: AppBar(
-                leading: SizedBox(
-                  child: Center(
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(24),
-                      ),
-                      child: Image.asset(
-                        'assets/images/dutlukfinal_1.jpg',
-                        fit: BoxFit.fill,
-                      ),
-                    ),
+                title: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  child: Image.asset(
+                    'assets/images/2dutlukfinal.png',
+                    fit: BoxFit.contain,
                   ),
-                ),
-                title: Text(
-                  'DutlukApp',
-                  style: const TextStyle().copyWith(color: Colors.black),
                 ),
                 backgroundColor: Colors.white,
                 elevation: 0,
@@ -77,120 +95,165 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
                         ),
                         onPressed: () {
                           _focusNode.unfocus();
-                          context.router.push(const AddStoryRoute());
+                          context.router.push(AddStoryRoute());
                         },
                       ),
                     ),
                   ),
                 ],
               ),
-              body: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: AppSearchBar(
-                      searchTerm: state.search,
-                      onSearchControllerReady: (controller) {
-                        _searchController = controller;
-                      },
-                      hintText: 'Search',
-                      onChanged: (val) {
-                        debouncer.run(() async {
-                          setState(() {
-                            isVisible = true;
+              body: BaseLoader(
+                isLoading: state.isLoading,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: AppSearchBar(
+                        searchTerm: state.search,
+                        onSearchControllerReady: (controller) {
+                          _searchController = controller;
+                        },
+                        hintText: 'Search',
+                        onChanged: (val) {
+                          debouncer.run(() async {
+                            setState(() {
+                              isVisible = true;
+                            });
+                            _searchController?.text = val!;
+
+                            await cubit.getTimelineSearchResult(
+                              searchTerm: val,
+                            );
                           });
-                          _searchController?.text = val!;
-
-                          await cubit.getTimelineSearchResult(
-                            searchTerm: val,
+                        },
+                        onPressedFilter: () async {
+                          _focusNode.unfocus();
+                          await getCurrentLocation();
+                          final filter = await showTimelineFilterModal(
+                            context,
+                            currentFilter: state.filter,
+                            currentPosition: _currentPosition,
                           );
-                        });
-                      },
-                      onPressedFilter: () async {
-                        _focusNode.unfocus();
+                          if (filter == null || filter.isEmpty) return;
 
-                        final filter = await showTimelineFilterModal(
-                          context,
-                          currentFilter: state.filter,
-                        );
-                        if (filter == null || filter.isEmpty) return;
-
-                        //_searchController?.clear();
-                        await cubit.getTimelineSearchResult(
-                          filter: filter,
-                          searchTerm: _searchController?.text,
-                        );
-                      },
-                    ),
-                  ),
-                  if (user != null)
-                    Expanded(
-                      child: BaseListView<StoryModel>(
-                        controller: scrollController,
-                        items: state.timelineResultStories,
-                        itemBuilder: (item) {
-                          return FavoriteWrapper(
-                            userId: user.id!,
-                            initialStateSave: item.savedBy!.contains(user.id),
-                            storyId: item.id,
-                            builder: (
-                              context,
-                              addFavorite,
-                              addSave,
-                              isfavorite,
-                              isSaved,
-                              isLoading,
-                              likeCount,
-                            ) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 8,
-                                ),
-                                height: 450,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    context.router.push(
-                                      StoryDetailsRoute(
-                                        model: item,
-                                      ),
-                                    );
-                                  },
-                                  child: StoryCard(
-                                    storyModel: item,
-                                    showFavouriteButton: false,
-                                    onTagSearch: (label) async {
-                                      await context.router.push(
-                                        TagSearchRoute(
-                                          tag: label,
-                                        ),
-                                      );
-                                    },
-                                    isSaved: isSaved,
-                                    isSavedLoading: isLoading,
-                                    onSavedTap: () async {
-                                      await addSave(
-                                        storyId: item.id,
-                                      );
-                                    },
-                                    /*  likeCount: likeCount,
-                                                        isFavorite: isfavorite,
-                                                        isFavoriteLoading:
-                                                            isLoading,
-                                                        onFavouriteTap: () async {
-                                                          await addFavorite(
-                                                            storyId: item.id,
-                                                          );
-                                                        }, */
-                                  ),
-                                ),
-                              );
-                            },
+                          //_searchController?.clear();
+                          await cubit.getTimelineSearchResult(
+                            filter: filter,
+                            searchTerm: _searchController?.text,
                           );
                         },
                       ),
                     ),
-                ],
+                    if (user != null)
+                      Expanded(
+                        child: BaseListView<StoryModel>(
+                          controller: scrollController,
+                          items: state.timelineResultStories,
+                          itemBuilder: (item) {
+                            return Stack(
+                              alignment: AlignmentDirectional.topEnd,
+                              children: <Widget>[
+                                FavoriteWrapper(
+                                  userId: user.id!,
+                                  initialStateSave: item.savedBy != null
+                                      ? item.savedBy!.contains(user.id)
+                                      : false,
+                                  storyId: item.id,
+                                  builder: (
+                                    context,
+                                    addFavorite,
+                                    addSave,
+                                    isfavorite,
+                                    isSaved,
+                                    isLoading,
+                                    likeCount,
+                                  ) {
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 8,
+                                      ),
+                                      height: 450,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          context.router.push(
+                                            StoryDetailsRoute(
+                                              model: item,
+                                            ),
+                                          );
+                                        },
+                                        child: StoryCard(
+                                          storyModel: item,
+                                          showFavouriteButton: false,
+                                          onTagSearch: (label) async {
+                                            await context.router.push(
+                                              TagSearchRoute(
+                                                tag: label,
+                                              ),
+                                            );
+                                          },
+                                          isSaved: isSaved,
+                                          isSavedLoading: isLoading,
+                                          onSavedTap: () async {
+                                            await addSave(
+                                              storyId: item.id,
+                                            );
+                                          },
+                                          /*  likeCount: likeCount,
+                                                              isFavorite: isfavorite,
+                                                              isFavoriteLoading:
+                                                                  isLoading,
+                                                              onFavouriteTap: () async {
+                                                                await addFavorite(
+                                                                  storyId: item.id,
+                                                                );
+                                                              }, */
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                Positioned(
+                                  top: 10,
+                                  bottom: 0,
+                                  left: 30,
+                                  child: Container(
+                                    height: double.infinity,
+                                    width: 1,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 200,
+                                  left: 0,
+                                  child: Container(
+                                    height: 60,
+                                    width: 60,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                    ),
+                                    child: Container(
+                                      margin: const EdgeInsets.all(5),
+                                      height: 40,
+                                      width: 40,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.orange,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Center(
+                                        child: Text(item.decade ?? ''),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                  ],
+                ),
               ),
             );
           },

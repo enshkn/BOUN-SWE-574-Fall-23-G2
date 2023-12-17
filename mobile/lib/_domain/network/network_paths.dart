@@ -18,6 +18,8 @@ class NetworkPaths {
   static const String getActivityFeed = '/api/story/recommended';
   static const String getFallowedStories = '/api/story/following';
   static const String addStory = '/api/story/add';
+  static const String editStory = '/api/story/edit';
+
   static const String myStories = '/api/story/fromUser';
   static const String deleteStory = '/api/story/delete';
   static const String getStoryDetail = '/api/story';

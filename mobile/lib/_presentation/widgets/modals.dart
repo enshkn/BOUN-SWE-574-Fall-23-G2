@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:google_map_location_picker/map_location_picker.dart';
 import 'package:swe/_common/style/text_styles.dart';
 import 'package:swe/_core/extensions/context_extensions.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
@@ -104,6 +105,7 @@ Future<void> showLogoutModal(
 Future<StoryFilter?> showFilterModal(
   BuildContext context, {
   StoryFilter? currentFilter,
+  LatLng? currentPosition,
 }) {
   return showModalBottomSheet<StoryFilter>(
     context: context,
@@ -114,7 +116,10 @@ Future<StoryFilter?> showFilterModal(
     ),
     isScrollControlled: true,
     builder: (context) {
-      return StoryFilterModal(currentFilter: currentFilter);
+      return StoryFilterModal(
+        currentFilter: currentFilter,
+        currentposition: currentPosition,
+      );
     },
   );
 }
@@ -122,6 +127,7 @@ Future<StoryFilter?> showFilterModal(
 Future<StoryFilter?> showTimelineFilterModal(
   BuildContext context, {
   StoryFilter? currentFilter,
+  LatLng? currentPosition,
 }) {
   return showModalBottomSheet<StoryFilter>(
     context: context,
@@ -132,7 +138,10 @@ Future<StoryFilter?> showTimelineFilterModal(
     ),
     isScrollControlled: true,
     builder: (context) {
-      return StoryTimelineFilterModal(currentFilter: currentFilter);
+      return StoryTimelineFilterModal(
+        currentFilter: currentFilter,
+        currentposition: currentPosition,
+      );
     },
   );
 }

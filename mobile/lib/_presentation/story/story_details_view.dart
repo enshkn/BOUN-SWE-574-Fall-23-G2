@@ -107,10 +107,12 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
     }
 
     for (var i = 0; i < pointLocations.length; i++) {
-      additionalMarkers['$i'] = LatLng(
-        pointLocations[i].latitude!,
-        pointLocations[i].longitude!,
-      );
+      if (pointLocations[i].latitude != null) {
+        additionalMarkers['$i'] = LatLng(
+          pointLocations[i].latitude!,
+          pointLocations[i].longitude!,
+        );
+      }
     }
     for (var k = 0; k <= polygoneCount; k++) {
       if (k != 0) {
@@ -164,7 +166,6 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    final text = widget.model.text;
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
       appBar: AppBar(
@@ -198,57 +199,18 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               await cubit.getStoryDetail(widget.model.id);
             },
             builder: (context, cubit, state) {
-              pushBackModel = state.storyModel;
               return BaseLoader(
                 isLoading: state.isLoading,
                 child: BaseScrollView(
                   children: [
-                    buildContent(
-                      context,
-                      text,
-                      user!,
-                    ),
-                    BaseWidgets.lowerGap,
-                    if (state.storyModel != null &&
-                        state.storyModel!.comments != null)
-                      GestureDetector(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(
-                            'Show Comments',
-                            style: const TextStyles.body()
-                                .copyWith(color: context.appBarColor),
-                          ),
-                        ),
-                        onTap: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CommentsView(
-                                storyId: widget.model.id,
-                              ),
-                            ),
-                          );
-                        },
+                    if (state.storyModel != null)
+                      buildContent(
+                        context,
+                        state.storyModel!.text,
+                        user!,
+                        state,
                       ),
-                    BaseWidgets.lowerGap,
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                      child: CommentCard(
-                        user: user,
-                        storyId: widget.model.id,
-                        onTapSend: (comment) {
-                          setState(() {
-                            cubit.addComment(comment);
-                            _focusnode.unfocus();
-
-                            context.replaceRoute(
-                              StoryDetailsRoute(model: widget.model),
-                            );
-                          });
-                        },
-                      ),
-                    ),
+                    commentBuild(state, user!),
                     BaseWidgets.normalGap,
                   ],
                 ),
@@ -260,14 +222,64 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
     );
   }
 
+  Widget commentBuild(StoryState state, User user) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (state.storyModel != null && state.storyModel!.comments != null)
+          GestureDetector(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                'Show Comments',
+                style: const TextStyles.body()
+                    .copyWith(color: context.appBarColor),
+              ),
+            ),
+            onTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CommentsView(
+                    storyId: widget.model.id,
+                  ),
+                ),
+              );
+            },
+          ),
+        BaseWidgets.lowestGap,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+          child: CommentCard(
+            user: user,
+            storyId: widget.model.id,
+            onTapSend: (comment) {
+              setState(() {
+                cubit.addComment(comment);
+                _focusnode.unfocus();
+
+                context.replaceRoute(
+                  StoryDetailsRoute(model: widget.model),
+                );
+              });
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget buildContent(
     BuildContext context,
     String text,
     User user,
+    StoryState state,
   ) {
     return FavoriteWrapper(
       userId: user.id!,
-      initialState: widget.model.likes!.contains(user.id),
+      initialState: state.storyModel!.likes != null
+          ? state.storyModel!.likes!.contains(user.id)
+          : false,
       storyId: widget.model.id,
       builder: (
         context,
@@ -287,7 +299,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (widget.model.likes != null)
+                    if (state.storyModel!.likes != null)
                       SizedBox(
                         width: 50,
                         height: 30,
@@ -297,7 +309,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                               ButtonCard(
                                 minScale: 0.8,
                                 onPressed: () async {
-                                  await addFavorite(storyId: widget.model.id);
+                                  await addFavorite(
+                                      storyId: state.storyModel!.id);
                                 },
                                 child: Icon(
                                   Icons.favorite,
@@ -318,7 +331,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                     GestureDetector(
                       onTap: () {
                         context.router.push(
-                          OtherProfileRoute(profile: widget.model.user!),
+                          OtherProfileRoute(profile: state.storyModel!.user!),
                         );
                       },
                       child: IconWithLabel(
@@ -327,14 +340,83 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           Icons.star,
                           color: Colors.yellow,
                         ),
-                        label: widget.model.user!.username!,
+                        label: state.storyModel!.user!.username!,
                       ),
                     ),
                   ],
                 ),
               ),
-              BaseWidgets.normalGap,
+              BaseWidgets.lowerGap,
               Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.orange),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Time Variants',
+                        style: TextStyle(color: Colors.orange.shade800),
+                      ),
+                      if (state.storyModel!.startTimeStamp != null)
+                        Text(
+                          'Start Time: ${state.storyModel!.startTimeStamp}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                      if (state.storyModel!.endTimeStamp != null)
+                        BaseWidgets.lowestGap,
+                      if (state.storyModel!.endTimeStamp != null)
+                        Text(
+                          'End Time: ${state.storyModel!.endTimeStamp}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                      if (state.storyModel!.decade != '' &&
+                          state.storyModel!.decade != null)
+                        BaseWidgets.lowestGap,
+                      if (state.storyModel!.decade != '' &&
+                          state.storyModel!.decade != null)
+                        Text(
+                          'Decade: ${state.storyModel!.decade!}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                      if (state.storyModel!.season != '' &&
+                          state.storyModel!.season != null)
+                        BaseWidgets.lowestGap,
+                      if (state.storyModel!.season != '' &&
+                          state.storyModel!.season != null)
+                        Text(
+                          'Season: ${state.storyModel!.season!}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              /*  Container(
+                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.orange),
                   borderRadius: BorderRadius.circular(12),
@@ -358,7 +440,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.start,
                       ),
-                    BaseWidgets.lowerGap,
+                    if (widget.model.endTimeStamp != null) BaseWidgets.lowerGap,
                     if (widget.model.endTimeStamp != null)
                       Text(
                         'End Time: ${widget.model.endTimeStamp}',
@@ -400,30 +482,39 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                     BaseWidgets.lowerGap,
                   ],
                 ),
-              ),
-              BaseWidgets.lowerGap,
-              if (widget.model.locations != null)
+              ), */
+
+              BaseWidgets.lowestGap,
+              if (state.storyModel!.locations != null)
                 Container(
+                  width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.orange),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: ExpansionTile(
-                    iconColor: Colors.orange.shade800,
-                    controller: controller2,
+                  child: Column(
+                    /*  iconColor: Colors.orange.shade800,
+                    controller: controller2
                     title: Text(
                       'Locations',
                       style: TextStyle(color: Colors.orange.shade800),
                     ),
-                    initiallyExpanded: true,
+                    initiallyExpanded: true, */
                     children: <Widget>[
-                      BaseWidgets.lowerGap,
+                      BaseWidgets.dynamicGap(4),
+                      Text(
+                        'Locations',
+                        style: TextStyle(color: Colors.orange.shade800),
+                      ),
                       if (polylineLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
                           title: Text(
                             'Polyline Locations',
-                            style: TextStyle(color: Colors.orange.shade800),
+                            style: TextStyle(
+                              color: Colors.orange.shade800,
+                              fontSize: 14,
+                            ),
                           ),
                           controller: controller3,
                           children: [
@@ -438,7 +529,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                     return Row(
                                       children: [
                                         SizedBox(
-                                          width: 300,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.75,
                                           child: Text(
                                             item.locationName!.toLocation(),
                                             style: const TextStyles.body()
@@ -485,13 +579,17 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                             ),
                           ],
                         ),
-                      if (polygonLocations.isNotEmpty) BaseWidgets.lowerGap,
+                      if (polygonLocations.isNotEmpty)
+                        BaseWidgets.dynamicGap(4),
                       if (polygonLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
                           title: Text(
                             'Polygon Locations',
-                            style: TextStyle(color: Colors.orange.shade800),
+                            style: TextStyle(
+                              color: Colors.orange.shade800,
+                              fontSize: 14,
+                            ),
                           ),
                           controller: controller4,
                           children: [
@@ -506,7 +604,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                     return Row(
                                       children: [
                                         SizedBox(
-                                          width: 300,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.75,
                                           child: Text(
                                             item.locationName!.toLocation(),
                                             style: const TextStyles.body()
@@ -553,13 +654,16 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                             ),
                           ],
                         ),
-                      if (circleLocations.isNotEmpty) BaseWidgets.lowerGap,
+                      if (circleLocations.isNotEmpty) BaseWidgets.dynamicGap(4),
                       if (circleLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
                           title: Text(
                             'Circle Locations',
-                            style: TextStyle(color: Colors.orange.shade800),
+                            style: TextStyle(
+                              color: Colors.orange.shade800,
+                              fontSize: 14,
+                            ),
                           ),
                           controller: controller5,
                           children: [
@@ -574,7 +678,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                     return Row(
                                       children: [
                                         SizedBox(
-                                          width: 300,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.75,
                                           child: Text(
                                             item.locationName!.toLocation(),
                                             style: const TextStyles.body()
@@ -624,13 +731,15 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                             ),
                           ],
                         ),
-                      if (pointLocations.isNotEmpty) BaseWidgets.lowerGap,
                       if (pointLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
                           title: Text(
                             'Point Locations',
-                            style: TextStyle(color: Colors.orange.shade800),
+                            style: TextStyle(
+                              color: Colors.orange.shade800,
+                              fontSize: 14,
+                            ),
                           ),
                           controller: controller6,
                           children: [
@@ -645,7 +754,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                     return Row(
                                       children: [
                                         SizedBox(
-                                          width: 300,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.75,
                                           child: Text(
                                             item.locationName!.toLocation(),
                                             style: const TextStyles.body()
@@ -695,15 +807,15 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                     ],
                   ),
                 ),
-              BaseWidgets.lowerGap,
-              if (widget.model.labels != null)
+              BaseWidgets.lowestGap,
+              if (state.storyModel!.labels != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: SizedBox(
                     height: 60,
                     child: BaseListView(
                       scrollDirection: Axis.horizontal,
-                      items: widget.model.labels!,
+                      items: state.storyModel!.labels!,
                       itemBuilder: (item) {
                         return GestureDetector(
                           onTap: () async {
@@ -734,18 +846,19 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               ),
               BaseWidgets.lowerGap,
               Text(
-                widget.model.title,
+                state.storyModel!.title,
                 style: const TextStyles.title().copyWith(
                   letterSpacing: 0.016,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
               ),
-              BaseWidgets.lowerGap,
+              BaseWidgets.lowestGap,
               SingleChildScrollView(
                 child: Html(data: text),
               ),
-              BaseWidgets.highGap,
+
+              //comments
             ],
           ),
         );

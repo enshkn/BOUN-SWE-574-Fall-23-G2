@@ -77,243 +77,278 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                   padding: const EdgeInsets.only(left: 24),
                   child: BaseScrollView(
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        child: state.otherProfile != null &&
-                                state.otherProfile!.profilePhoto != null
-                            ? CircleAvatar(
-                                radius: 36,
-                                backgroundImage: NetworkImage(
-                                  state.otherProfile!.profilePhoto!,
+                    children: (state.otherProfile != null)
+                        ? [
+                            SizedBox(
+                              child: state.otherProfile != null &&
+                                      state.otherProfile!.profilePhoto != null
+                                  ? CircleAvatar(
+                                      radius: 36,
+                                      backgroundImage: NetworkImage(
+                                        state.otherProfile!.profilePhoto!,
+                                      ),
+                                    )
+                                  : const CircleAvatar(
+                                      radius: 36,
+                                      backgroundImage: AssetImage(
+                                        'assets/images/profilePic.jpg',
+                                      ),
+                                    ),
+                            ),
+                            BaseWidgets.normalGap,
+                            Row(
+                              children: [
+                                Text(
+                                  'Username: ',
+                                  style: const TextStyles.title().copyWith(),
                                 ),
-                              )
-                            : const CircleAvatar(
-                                radius: 36,
-                                backgroundImage: AssetImage(
-                                  'assets/images/profilePic.jpg',
+                                Text(
+                                  widget.profile.username!,
+                                  style: const TextStyles.body().copyWith(),
+                                ),
+                              ],
+                            ),
+                            BaseWidgets.lowerGap,
+                            Row(
+                              children: [
+                                Text(
+                                  'Biography: ',
+                                  style: const TextStyles.title().copyWith(),
+                                ),
+                                Text(
+                                  state.otherProfile!.biography != null
+                                      ? state.otherProfile!.biography!
+                                      : '',
+                                  style: const TextStyles.body().copyWith(),
+                                ),
+                              ],
+                            ),
+                            BaseWidgets.lowerGap,
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 8, 24, 8),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.orange),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: ExpansionTile(
+                                  controller: followerController,
+                                  iconColor: Colors.orange.shade800,
+                                  title: Text(
+                                    'Followers',
+                                    style: TextStyle(
+                                      color: Colors.orange.shade800,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  children: [
+                                    if (state.otherProfile != null)
+                                      SizedBox(
+                                        child: BaseListView<User>(
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          items: state.otherProfile!.followers!,
+                                          shrinkWrap: true,
+                                          itemBuilder: (item) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  BaseWidgets.lowerGap,
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      context.router.push(
+                                                        OtherProfileRoute(
+                                                          profile: item,
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Text(
+                                                      state.otherProfile!
+                                                                  .followers !=
+                                                              null
+                                                          ? item.username
+                                                              .toString()
+                                                          : '',
+                                                      style: const TextStyles
+                                                              .body()
+                                                          .copyWith(),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      )
+                                    else
+                                      const SizedBox(),
+                                  ],
                                 ),
                               ),
-                      ),
-                      BaseWidgets.normalGap,
-                      Row(
-                        children: [
-                          Text(
-                            'Username: ',
-                            style: const TextStyles.title().copyWith(),
-                          ),
-                          Text(
-                            widget.profile.username!,
-                            style: const TextStyles.body().copyWith(),
-                          ),
-                        ],
-                      ),
-                      BaseWidgets.lowerGap,
-                      Row(
-                        children: [
-                          Text(
-                            'Biography: ',
-                            style: const TextStyles.title().copyWith(),
-                          ),
-                          Text(
-                            widget.profile.biography != null
-                                ? widget.profile.biography!
-                                : '',
-                            style: const TextStyles.body().copyWith(),
-                          ),
-                        ],
-                      ),
-                      BaseWidgets.lowerGap,
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 8, 24, 8),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.orange),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ExpansionTile(
-                            controller: followerController,
-                            title: const Text('Followers'),
-                            children: [
-                              if (state.otherProfile != null)
-                                SizedBox(
-                                  child: BaseListView<User>(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    items: state.otherProfile!.followers!,
-                                    shrinkWrap: true,
-                                    itemBuilder: (item) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(left: 8),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            BaseWidgets.lowerGap,
-                                            GestureDetector(
-                                              onTap: () {
-                                                context.router.push(
-                                                  OtherProfileRoute(
-                                                    profile: item,
-                                                  ),
-                                                );
-                                              },
-                                              child: Text(
-                                                state.otherProfile!.followers !=
-                                                        null
-                                                    ? item.username.toString()
-                                                    : '',
-                                                style: const TextStyles.body()
-                                                    .copyWith(),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
+                            ),
+                            BaseWidgets.lowerGap,
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 8, 24, 8),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.orange),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: ExpansionTile(
+                                  controller: followingController,
+                                  iconColor: Colors.orange.shade800,
+                                  title: Text(
+                                    'Following',
+                                    style: TextStyle(
+                                      color: Colors.orange.shade800,
+                                      fontSize: 14,
+                                    ),
                                   ),
-                                )
-                              else
-                                const SizedBox(),
-                            ],
-                          ),
-                        ),
-                      ),
-                      BaseWidgets.lowerGap,
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 8, 24, 8),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.orange),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ExpansionTile(
-                            controller: followingController,
-                            title: const Text('Following'),
-                            children: [
-                              if (state.otherProfile != null)
-                                SizedBox(
-                                  child: BaseListView<User>(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    items: state.otherProfile!.following!,
-                                    shrinkWrap: true,
-                                    itemBuilder: (item) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(left: 8),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            BaseWidgets.lowerGap,
-                                            GestureDetector(
-                                              onTap: () {
-                                                context.router.push(
-                                                  OtherProfileRoute(
-                                                    profile: item,
+                                  children: [
+                                    if (state.otherProfile != null)
+                                      SizedBox(
+                                        child: BaseListView<User>(
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          items: state.otherProfile!.following!,
+                                          shrinkWrap: true,
+                                          itemBuilder: (item) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  BaseWidgets.lowerGap,
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      context.router.push(
+                                                        OtherProfileRoute(
+                                                          profile: item,
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Text(
+                                                      state.otherProfile!
+                                                                  .following !=
+                                                              null
+                                                          ? item.username
+                                                              .toString()
+                                                          : '',
+                                                      style: const TextStyles
+                                                              .body()
+                                                          .copyWith(),
+                                                    ),
                                                   ),
-                                                );
-                                              },
-                                              child: Text(
-                                                state.otherProfile!.following !=
-                                                        null
-                                                    ? item.username.toString()
-                                                    : '',
-                                                style: const TextStyles.body()
-                                                    .copyWith(),
+                                                ],
                                               ),
-                                            ),
-                                          ],
+                                            );
+                                          },
                                         ),
-                                      );
-                                    },
+                                      )
+                                    else
+                                      const SizedBox(),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            BaseWidgets.lowerGap,
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 8, 24, 8),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.orange),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: ExpansionTile(
+                                  controller: storyController,
+                                  iconColor: Colors.orange.shade800,
+                                  title: Text(
+                                    'Stories',
+                                    style: TextStyle(
+                                      color: Colors.orange.shade800,
+                                      fontSize: 14,
+                                    ),
                                   ),
-                                )
-                              else
-                                const SizedBox(),
-                            ],
-                          ),
-                        ),
-                      ),
-                      BaseWidgets.lowerGap,
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 8, 24, 8),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.orange),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ExpansionTile(
-                            controller: storyController,
-                            title: const Text('Stories'),
-                            children: [
-                              if (state.otherProfile != null)
-                                SizedBox(
-                                  child: BaseListView<StoryModel>(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    items: state.otherProfile!.stories!,
-                                    shrinkWrap: true,
-                                    itemBuilder: (item) {
-                                      return Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 12),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            BaseWidgets.lowerGap,
-                                            GestureDetector(
-                                              onTap: () {
-                                                /*  context.router.push(
+                                  children: [
+                                    if (state.otherProfile != null &&
+                                        state.otherProfile!.stories != null)
+                                      SizedBox(
+                                        child: BaseListView<StoryModel>(
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          items: state.otherProfile!.stories!,
+                                          shrinkWrap: true,
+                                          itemBuilder: (item) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 12),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  BaseWidgets.lowerGap,
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      /*  context.router.push(
                                                   StoryDetailsRoute(
                                                     model: item,
                                                   ),
                                                 ); */
-                                              },
-                                              child: Text(
-                                                state.otherProfile!.stories !=
-                                                        null
-                                                    ? item.title
-                                                    : '',
-                                                style: const TextStyles.body()
-                                                    .copyWith(),
+                                                    },
+                                                    child: Text(
+                                                      state.otherProfile!
+                                                                  .stories !=
+                                                              null
+                                                          ? item.title
+                                                          : '',
+                                                      style: const TextStyles
+                                                              .body()
+                                                          .copyWith(),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                          ],
+                                            );
+                                          },
                                         ),
-                                      );
-                                    },
-                                  ),
-                                )
-                              else
-                                const SizedBox(),
-                            ],
-                          ),
-                        ),
-                      ),
-                      BaseWidgets.lowerGap,
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(56, 8, 64, 8),
-                        child: AppButton(
-                          label: isfollowed ? 'Unfollow' : 'Follow',
-                          noIcon: true,
-                          backgroundColor:
-                              isfollowed ? Colors.grey : context.appBarColor,
-                          onPressed: () async {
-                            final model = FollowUserModel(
-                              userId: widget.profile.id!.toString(),
-                            );
-                            await cubit.followUser(model).then((value) {
-                              if (value) {
-                                setState(() {
-                                  isfollowed = !isfollowed;
-                                });
-                              }
-                            });
-                          },
-                        ),
-                      ),
-                    ],
+                                      )
+                                    else
+                                      const SizedBox(),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            BaseWidgets.lowerGap,
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(56, 8, 64, 8),
+                              child: AppButton(
+                                label: isfollowed ? 'Unfollow' : 'Follow',
+                                noIcon: true,
+                                backgroundColor: isfollowed
+                                    ? Colors.grey
+                                    : context.appBarColor,
+                                onPressed: () async {
+                                  final model = FollowUserModel(
+                                    userId: widget.profile.id!.toString(),
+                                  );
+                                  await cubit.followUser(model).then((value) {
+                                    if (value) {
+                                      setState(() {
+                                        isfollowed = !isfollowed;
+                                      });
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                          ]
+                        : [],
                   ),
                 ),
               ),

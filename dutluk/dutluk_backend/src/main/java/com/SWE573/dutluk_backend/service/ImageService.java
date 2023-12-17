@@ -1,9 +1,21 @@
 package com.SWE573.dutluk_backend.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -12,19 +24,6 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.core.io.ByteArrayResource;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.imageio.ImageIO;
 
 @Service
 public class ImageService {
@@ -55,7 +54,7 @@ public class ImageService {
         return uploadImageToImgur(uploadedPhotoBytes,imgurClientId);
     }
 
-    private byte[] resizeImage(byte[] imageBytes, int targetFileSizeKB) throws IOException {
+    protected byte[] resizeImage(byte[] imageBytes, int targetFileSizeKB) throws IOException {
         ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
         BufferedImage bufferedImage = ImageIO.read(bis);
 
@@ -75,7 +74,7 @@ public class ImageService {
         return bos.toByteArray();
     }
 
-    private String uploadImageToImgur(byte[] imageBytes, String imgurClientId) throws IOException {
+    protected String uploadImageToImgur(byte[] imageBytes, String imgurClientId) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -103,11 +102,26 @@ public class ImageService {
         return imgurUrl;
     }
 
-    private String extractImgurImageUrl(String response) throws IOException{
+    protected String extractImgurImageUrl(String response) throws IOException{
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(response);
         JsonNode dataNode = rootNode.get("data");
         String imgUrl = dataNode.get("link").asText();
         return imgUrl;
+    }
+
+    public static String extractImageLinks(String html) {
+        String imageLink = null;
+
+        Document doc = Jsoup.parse(html);
+        Elements images = doc.select("img");
+
+        for (Element img : images) {
+            String src = img.attr("src");
+            imageLink = src;
+            break;
+        }
+
+        return imageLink;
     }
 }

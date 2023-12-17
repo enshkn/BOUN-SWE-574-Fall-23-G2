@@ -19,6 +19,7 @@ import 'package:swe/_core/widgets/base_loader.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_domain/story/model/addStory_model.dart';
 import 'package:swe/_domain/story/model/location_model.dart';
+import 'package:swe/_domain/story/model/story_model.dart';
 import 'package:swe/_presentation/_core/base_view.dart';
 import 'package:swe/_presentation/widgets/appBar/customAppBar.dart';
 import 'package:swe/_presentation/widgets/app_button.dart';
@@ -53,7 +54,9 @@ enum TimeResolutionType {
 
 @RoutePage()
 class AddStoryView extends StatefulWidget {
-  const AddStoryView({super.key});
+  final bool myStories;
+  final StoryModel? storyModel;
+  const AddStoryView({super.key, this.myStories = false, this.storyModel});
 
   @override
   State<AddStoryView> createState() => _AddStoryViewState();
@@ -137,6 +140,8 @@ class _AddStoryViewState extends State<AddStoryView>
   bool locationLoading = true;
   bool hasPermission = false;
   String? formattedStartDate;
+  String? formattedStartDateTime;
+
   String? formattedEndDate;
   LocationModel? selectedLocation;
   late List<LocationModel> locations = [];
@@ -193,24 +198,84 @@ class _AddStoryViewState extends State<AddStoryView>
     selectedEndDateTime = DateTime(0);
     selectedStartDate = DateTime(0);
     selectedEndDate = DateTime(0);
+    if (widget.myStories) {
+      story = widget.storyModel!.text;
+
+      for (var i = 0; i < widget.storyModel!.locations!.length; i++) {
+        locations.add(widget.storyModel!.locations![i]);
+      }
+      for (var i = 0; i < widget.storyModel!.locations!.length; i++) {
+        selectedLocationsforMap.add(widget.storyModel!.locations![i]);
+      }
+      seasonController.text = widget.storyModel!.season ?? '';
+      if (widget.storyModel!.decade != null) {
+        decadeSelected = true;
+        decadeController.text = widget.storyModel!.decade ?? '';
+      }
+
+      titleController.text = widget.storyModel!.title ?? '';
+      if (widget.storyModel!.labels != null) {
+        for (var i = 0; i < widget.storyModel!.labels!.length; i++) {
+          if (i == 0) {
+            tagController.text += widget.storyModel!.labels![i];
+          } else {
+            tagController.text += ',${widget.storyModel!.labels![i]}';
+          }
+        }
+      }
+      if (widget.storyModel!.startHourFlag != 0 &&
+          widget.storyModel!.startHourFlag != null &&
+          widget.storyModel!.startTimeStamp != null) {
+        exactDateWithTimeSelected = true;
+        final newTime = widget.storyModel!.startTimeStamp!.replaceAll('/', '-');
+        final newTimeFormat = '$newTime:00';
+        selectedStartDateTime =
+            DateFormat('dd-MM-yyyy hh:mm:ss').parse(newTimeFormat);
+        formattedStartDateTime = widget.storyModel!.startTimeStamp ?? '';
+      } else if (widget.storyModel!.startHourFlag != null &&
+          widget.storyModel!.startHourFlag == 0 &&
+          widget.storyModel!.startTimeStamp != null) {
+        exatDateSelected = true;
+        final newTime = widget.storyModel!.startTimeStamp!.replaceAll('/', '-');
+        selectedStartDate = DateFormat('dd-MM-yyyy').parse(newTime);
+        formattedStartDate = widget.storyModel!.startTimeStamp ?? '';
+      }
+      if (widget.storyModel!.endHourFlag != 0 &&
+          widget.storyModel!.endHourFlag != null &&
+          widget.storyModel!.endTimeStamp != null) {
+        exactDateWithTimeSelected = true;
+        final newTime = widget.storyModel!.endTimeStamp!.replaceAll('/', '-');
+        final newTimeFormat = '$newTime:00';
+        selectedEndDateTime =
+            DateFormat('dd-MM-yyyy hh:mm:ss').parse(newTimeFormat);
+        formattedEndDate = widget.storyModel!.endTimeStamp ?? '';
+      } else if (widget.storyModel!.endHourFlag != null &&
+          widget.storyModel!.endHourFlag == 0 &&
+          widget.storyModel!.endTimeStamp != null) {
+        exatDateSelected = true;
+        final newTime = widget.storyModel!.endTimeStamp!.replaceAll('/', '-');
+        selectedEndDate = DateFormat('dd-MM-yyyy').parse(newTime);
+        formattedEndDate = widget.storyModel!.endTimeStamp ?? '';
+      }
+    }
   }
 
   @override
   void dispose() {
     titleController.clear();
-    titleController.dispose();
+    //titleController.dispose();
     radiusController.clear();
-    radiusController.dispose();
+    //radiusController.dispose();
     controller.clear();
-    controller.dispose();
+    //controller.dispose();
     tagController.clear();
     textController.clear();
-    decadeController.dispose();
+    //decadeController.dispose();
     decadeController.clear();
-    seasonController.dispose();
+    //seasonController.dispose();
     seasonController.clear();
     timeResolutionController.clear();
-    timeResolutionController.dispose();
+    //timeResolutionController.dispose();
 
     super.dispose();
   }
@@ -230,11 +295,7 @@ class _AddStoryViewState extends State<AddStoryView>
   }
 
   void onPressed() {
-    FocusScope.of(context).unfocus();
-
-    if (isLastPage) {
-      return;
-    }
+    // FocusScope.of(context).unfocus();
 
     final step = AddStoryStepType.fromValue(pageController.page!.toInt());
 
@@ -320,7 +381,12 @@ class _AddStoryViewState extends State<AddStoryView>
               });
             },
             apiKey: AppEnv.apiKey,
-            currentLatLng: _currentPosition,
+            currentLatLng: widget.myStories
+                ? LatLng(
+                    selectedLocationsforMap[0].latitude!,
+                    selectedLocationsforMap[0].longitude!,
+                  )
+                : _currentPosition,
             bottomCardMargin: const EdgeInsets.fromLTRB(
               8,
               0,
@@ -707,16 +773,16 @@ class _AddStoryViewState extends State<AddStoryView>
                 border: Border.all(color: context.appBarColor),
                 backgroundColor: Colors.white,
                 labelStyle: const TextStyle(color: Colors.black),
-                label: formattedStartDate ?? 'Choose Date and Time',
+                label: formattedStartDateTime ?? 'Choose Date and Time',
                 onPressed: () async {
                   final dateTime = await dateTimePicker(
-                    formattedStartDate,
+                    formattedStartDateTime,
                     selectedStartDateTime,
                     OmniDateTimePickerType.dateAndTime,
                   );
                   setState(() {
                     selectedStartDateTime = dateTime!;
-                    formattedStartDate =
+                    formattedStartDateTime =
                         DateFormat.yMd().add_jm().format(selectedStartDateTime);
                   });
                 },
@@ -828,6 +894,7 @@ class _AddStoryViewState extends State<AddStoryView>
         ),
       ),
       onSelected: (String? value) {
+        selectedItem = value;
         setState(() {
           selectedItem = value;
           if (timeResolutions) {
@@ -935,40 +1002,9 @@ class _AddStoryViewState extends State<AddStoryView>
               label: 'Continue',
               onPressed: onPressed,
             ),
-            //BaseWidgets.lowerGap,
-            //numberOfSection(),
           ],
         ),
       ),
-    );
-  }
-
-  Widget numberOfSection() {
-    const widthSize = 15.0;
-    const textStyle = TextStyle(
-      color: Colors.black,
-      fontSize: 15,
-      fontWeight: FontWeight.bold,
-    );
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: widthSize,
-          child: Center(child: Text('${currentPage + 1}', style: textStyle)),
-        ),
-        const SizedBox(
-          width: widthSize,
-          child: Center(child: Text('/', style: textStyle)),
-        ),
-        SizedBox(
-          width: widthSize,
-          child: Center(
-            child: Text('$maxPageCount', style: textStyle),
-          ),
-        ),
-      ],
     );
   }
 
@@ -1003,20 +1039,24 @@ class _AddStoryViewState extends State<AddStoryView>
       text: htmlText,
       title: titleController.text,
       labels: tagsList,
-      season: selectedSeason,
-      decade: selectedDecade,
+      season: seasonController.text != '' ? seasonController.text : null,
+      decade: decadeController.text != '' ? decadeController.text : null,
 /*       startTimeStamp: !starttimecheck ? null : startTime[0],
       endTimeStamp: !endtimecheck ? null : endTime[0], */
       startTimeStamp: starttimecheck
           ? exactDateWithTimeSelected
               ? selectedStartDateTime.toString()
               : selectedStartDate.toString()
-          : null,
+          : selectedStartDate != DateTime(0)
+              ? selectedStartDate.toString()
+              : null,
       endTimeStamp: endtimecheck
           ? exactDateWithTimeSelected
               ? selectedEndDateTime.toString()
               : selectedEndDate.toString()
-          : null,
+          : selectedEndDate != DateTime(0)
+              ? selectedStartDate.toString()
+              : null,
       startHourFlag: exactDateWithTimeSelected ? 1 : 0,
       endHourFlag:
           exactDateWithTimeSelected && selectedEndDateTime != DateTime(0)
@@ -1024,11 +1064,19 @@ class _AddStoryViewState extends State<AddStoryView>
               : 0,
       locations: locations,
     );
-    await cubit.addStory(model).then((value) {
-      if (value) {
-        Navigator.of(_scaffoldKey.currentContext!).pop();
-      }
-    });
+    if (widget.myStories) {
+      await cubit.editStory(model, widget.storyModel!.id).then((value) {
+        if (value) {
+          Navigator.of(context).pop();
+        }
+      });
+    } else {
+      await cubit.addStory(model).then((value) {
+        if (value) {
+          Navigator.of(context).pop();
+        }
+      });
+    }
   }
 
   Future<String> getHtmlText() async {

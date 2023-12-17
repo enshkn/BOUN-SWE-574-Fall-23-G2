@@ -1,12 +1,12 @@
 package com.SWE573.dutluk_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -57,21 +57,29 @@ public class Story extends BaseEntity{
     private List<Location> locations = new ArrayList<>();
 
     @Column(name = "start_time_stamp")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Europe/Istanbul")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm",timezone = "Europe/Istanbul")
     private Date startTimeStamp;
 
     @Column(name = "end_time_stamp")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Europe/Istanbul")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm",timezone = "Europe/Istanbul")
     private Date endTimeStamp;
 
     private String season;
 
     private String decade;
 
-    private Integer startHourFlag;
+    private String endDecade;
 
-    private Integer endHourFlag;
+    private Integer startHourFlag = -1;// if 0, no hour, if 1, hour exists
 
+    private Integer endHourFlag = -1;// if 0, no hour, if 1, hour exists
 
+    private Integer startDateFlag = -1;// if 1 -> yyyy, if 2 -> MM/yyyy, if 3 dd/MM/yyyy
+
+    private Integer endDateFlag = -1;// if 1 -> yyyy, if 2 -> MM/yyyy, if 3 dd/MM/yyyy
+
+    @Transient
+    @JsonIgnore
+    private String percentage;
 
 }

@@ -18,9 +18,11 @@ import 'package:swe/_presentation/widgets/textformfield/app_text_form_field.dart
 class StoryFilterModal extends StatefulWidget {
   const StoryFilterModal({
     this.currentFilter,
+    this.currentposition,
     super.key,
   });
   final StoryFilter? currentFilter;
+  final LatLng? currentposition;
 
   @override
   State<StoryFilterModal> createState() => _StoryFilterModalState();
@@ -47,6 +49,22 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
   String? decade;
   String? season;
 
+  String? selectedSeason;
+  String? selectedDecade;
+
+  List<String> seasonList = <String>['Winter', 'Spring', 'Summer', 'Fall'];
+  List<String> decadeList = <String>[
+    '1940s',
+    '1950s',
+    '1960s',
+    '1970s',
+    '1980s',
+    '1990s',
+    '2000s',
+    '2010s',
+    '2020s',
+  ];
+
   int index = 0;
   late TextEditingController radiusMapController;
 
@@ -55,7 +73,7 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
   List<LocationModel> selectedLocationsforMap = [];
   List<int> radiusList = [];
   final FocusNode _focusNode = FocusNode();
-  late LatLng? _currentPosition;
+
   final Location _locationController = Location();
   bool showRadiusSelection = false;
   double selectedLat = 0;
@@ -70,8 +88,6 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
 
   @override
   void initState() {
-    getLocationMemory();
-    getCurrentLocation();
     filter = const StoryFilter();
     radiusController = TextEditingController();
     latitudeController = TextEditingController();
@@ -84,15 +100,6 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
     setFilter(widget.currentFilter);
 
     super.initState();
-  }
-
-  Future<void> getLocationMemory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final latitude = prefs.getDouble('latitude');
-    final longitude = prefs.getDouble('longitude');
-    if (latitude != null && longitude != null) {
-      _currentPosition = LatLng(latitude, longitude);
-    }
   }
 
   void setFilter(StoryFilter? filter) {
@@ -189,25 +196,24 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
                         children: [
                           BaseWidgets.normalGap,
                           SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.8,
+                            height: MediaQuery.of(context).size.height * 0.6,
                             child: MapLocationPicker(
                               hideAreasList: true,
                               radiusList: radiusList,
                               apiKey: AppEnv.apiKey,
-                              getLocation: () {
-                                getCurrentLocation();
-                              },
                               currentLatLng: filter.isEmpty
-                                  ? _currentPosition
+                                  ? widget.currentposition
                                   : latitudeController.text == '' &&
                                           longitudeController.text != ''
                                       ? LatLng(
-                                          double.parse(latitudeController.text),
+                                          double.parse(
+                                            latitudeController.text,
+                                          ),
                                           double.parse(
                                             longitudeController.text,
                                           ),
                                         )
-                                      : _currentPosition,
+                                      : widget.currentposition,
                               bottomCardMargin: const EdgeInsets.fromLTRB(
                                 8,
                                 0,
@@ -286,14 +292,18 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
                             hintText: 'Write end time',
                           ),
                           BaseWidgets.normalGap,
-                          AppTextFormField(
-                            controller: decadeController,
-                            hintText: 'Write decade',
+                          dropDownMenu(
+                            selectedSeason,
+                            seasonList,
+                            'Choose Season',
+                            seasonController,
                           ),
-                          BaseWidgets.normalGap,
-                          AppTextFormField(
-                            controller: seasonController,
-                            hintText: 'Write season',
+                          BaseWidgets.lowerGap,
+                          dropDownMenu(
+                            selectedDecade,
+                            decadeList,
+                            'Choose Decade',
+                            decadeController,
                           ),
                           BaseWidgets.normalGap,
                           AppButton.primary(
@@ -316,39 +326,54 @@ class _StoryFilterModalState extends State<StoryFilterModal> {
     );
   }
 
-  /* Future<void> getCurrentLocation() async {
-    LocationData currentLocation;
-    currentLocation = await _locationController.getLocation();
-    if (currentLocation.latitude != null && currentLocation.longitude != null) {
-      setState(() {
-        _currentPosition =
-            LatLng(currentLocation.latitude!, currentLocation.longitude!);
-        locationLoading = false;
-      });
-    }
-  } */
-
-  /* Future<void> getCurrentLocation() async {
-    currentLocation = await _locationController.getLocation();
-    if (currentLocation.latitude != null && currentLocation.longitude != null) {
-      setState(() {
-        _currentPosition =
-            LatLng(currentLocation.latitude!, currentLocation.longitude!);
-        locationLoading = false;
-      });
-    }
-  } */
-
-  Future<void> getCurrentLocation() async {
-    LocationData currentLocation;
-    currentLocation = await _locationController.getLocation();
-    if (currentLocation.latitude != null && currentLocation.longitude != null) {
-      setState(() {
-        _currentPosition =
-            LatLng(currentLocation.latitude!, currentLocation.longitude!);
-        locationLoading = false;
-      });
-    }
+  Widget dropDownMenu(
+    String? selectedItem,
+    List<String> menu,
+    String title,
+    TextEditingController controller, {
+    bool timeResolutions = false,
+  }) {
+    return DropdownMenu<String>(
+      controller: controller,
+      hintText: title,
+      width: MediaQuery.of(context).size.width * 0.96,
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.orange),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.orange),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.orange),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red.shade900),
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      menuStyle: MenuStyle(
+        side: MaterialStateProperty.all(
+          const BorderSide(
+            color: Colors.orange,
+          ),
+        ),
+      ),
+      onSelected: (String? value) {
+        setState(() {
+          selectedItem = value;
+        });
+      },
+      dropdownMenuEntries: menu.map<DropdownMenuEntry<String>>((String value) {
+        return DropdownMenuEntry<String>(
+          value: value,
+          label: value,
+        );
+      }).toList(),
+    );
   }
 
   Future<void> onPressSubmit() async {

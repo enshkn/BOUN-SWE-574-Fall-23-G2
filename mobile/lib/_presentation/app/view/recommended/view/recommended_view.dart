@@ -41,22 +41,12 @@ class _RecommendedViewState extends State<RecommendedView> {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: AppBar(
-                leading: SizedBox(
-                  child: Center(
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(24),
-                      ),
-                      child: Image.asset(
-                        'assets/images/dutlukfinal_1.jpg',
-                        fit: BoxFit.fill,
-                      ),
-                    ),
+                title: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  child: Image.asset(
+                    'assets/images/2dutlukfinal.png',
+                    fit: BoxFit.contain,
                   ),
-                ),
-                title: Text(
-                  'DutlukApp',
-                  style: const TextStyle().copyWith(color: Colors.black),
                 ),
                 backgroundColor: Colors.white,
                 elevation: 0,
@@ -72,7 +62,7 @@ class _RecommendedViewState extends State<RecommendedView> {
                         ),
                         onPressed: () {
                           _focusNode.unfocus();
-                          context.router.push(const AddStoryRoute());
+                          context.router.push(AddStoryRoute());
                         },
                       ),
                     ),
@@ -98,7 +88,9 @@ class _RecommendedViewState extends State<RecommendedView> {
                         itemBuilder: (item) {
                           return FavoriteWrapper(
                             userId: user.id!,
-                            initialStateSave: item.savedBy!.contains(user.id),
+                            initialStateSave: item.savedBy != null
+                                ? item.savedBy!.contains(user.id)
+                                : false,
                             storyId: item.id,
                             builder: (
                               context,

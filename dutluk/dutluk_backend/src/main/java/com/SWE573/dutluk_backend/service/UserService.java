@@ -3,24 +3,22 @@ package com.SWE573.dutluk_backend.service;
 import com.SWE573.dutluk_backend.configuration.JwtUtil;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.UserRepository;
+import com.SWE573.dutluk_backend.request.RegisterRequest;
 import com.SWE573.dutluk_backend.request.UserUpdateRequest;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpServletResponseWrapper;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService{
@@ -170,6 +168,37 @@ public class UserService{
         cookie.setMaxAge(0);
         response.addCookie(cookie);
         return response;
+    }
+
+    public Boolean existsByUsername(String username){
+        return userRepository.existsByUsername(username);
+    }
+
+    public Boolean existsByEmail(String email){
+        return userRepository.existsByEmail(email);
+    }
+
+    public Boolean existsByIdentifierAndPassword(String identifier, String password) throws AccountNotFoundException {
+        if (emailValidator.isValid(identifier)) {
+            return existsByEmailAndPassword(identifier,password);
+        }
+        return existsByUsernameAndPassword(identifier,password);
+    }
+
+    private Boolean existsByUsernameAndPassword(String identifier, String password) {
+        return userRepository.existsByUsernameAndPassword(identifier,password);
+    }
+
+    private Boolean existsByEmailAndPassword(String identifier, String password) {
+        return userRepository.existsByEmailAndPassword(identifier,password);
+    }
+
+    public boolean validateRegistrationInput(RegisterRequest registerRequest) {
+        if(existsByEmail(registerRequest.getEmail())){
+            return false;
+        }
+        return !existsByUsername(registerRequest.getUsername());
+
     }
 }
 
