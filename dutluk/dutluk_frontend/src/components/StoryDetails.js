@@ -166,7 +166,7 @@ function StoryDetails() {
   const handleLikeComment = async (commentId) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/comment/like/`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/comment/like`,
         { likedEntityId: commentId },
         {
           withCredentials: true,
