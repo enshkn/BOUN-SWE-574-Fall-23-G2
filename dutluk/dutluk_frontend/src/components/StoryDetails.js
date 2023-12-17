@@ -62,7 +62,7 @@ function StoryDetails() {
       }
       return acc;
     }, {});
-   
+
     // Extract polylines by polyline id
     Object.keys(groupedPolylines).forEach(key => {
       setPolylines(prevPolylines => [
@@ -88,7 +88,7 @@ function StoryDetails() {
       }
       return acc;
     }, {});
-   
+
     // Extract polygons by polygons id
     Object.keys(groupedPolygons).forEach(key => {
       setPolygons(prevPolygons => [
@@ -225,27 +225,27 @@ function StoryDetails() {
           <b>Published at: </b>
           {story.createdAt}
         </p>
-          {story.season && (
-           <p>
+        {story.season && (
+          <p>
             <b>Season:</b> {story.season}
-           </p>
-          )}
-          {story.decade && (
-        <p>
-          <b>Decade:</b> {story.decade}
-        </p>
+          </p>
         )}
-         {story.startTimeStamp && (
-         <p>
-           <b>Start Date:</b> {story.startTimeStamp}
+        {story.decade && (
+          <p>
+            <b>Decade:</b> {story.decade}
+          </p>
+        )}
+        {story.startTimeStamp && (
+          <p>
+            <b>Start Date:</b> {story.startTimeStamp}
           </p>
         )}
         {story.endTimeStamp && (
-      <p>
-        <b>End Date:</b> {story.endTimeStamp}
-      </p>
-)}
-      
+          <p>
+            <b>End Date:</b> {story.endTimeStamp}
+          </p>
+        )}
+
         <label>
           <b>Selected Locations:</b>
           <ul className="locations-list">
@@ -307,23 +307,29 @@ function StoryDetails() {
               </p>
               <p>
                 <b>Likes:</b> {comment.likes ? comment.likes.length : 0}
-                <button  className="btn btn-primary" onClick={() => handleLikeComment(comment.id)}>
+                <button className="btn btn-primary" onClick={() => handleLikeComment(comment.id)}>
                   Like
                 </button>
               </p>
             </li>
           ))}
         </ul>
-        <form onSubmit={handleCommentSubmit}>
-          <label>
-            Add Comment:
-            <textarea
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-            ></textarea>
-          </label>
-          <button type="submit" className="btn btn-primary mb-2" >Submit</button>
-        </form>
+        <form onSubmit={handleCommentSubmit} style={{ width: "80%" }}>
+  <div>
+    <textarea
+      label="Add Comment"
+      value={commentText}
+      placeholder="Add Comment"
+      style={{ width: "100%", height: "100px" }}
+      onChange={(e) => setCommentText(e.target.value)}
+    ></textarea>
+  </div>
+  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+    <button type="submit" className="btn btn-primary">Submit</button>
+  </div>
+</form>
+
+
       </div>
     </Space>
   );
