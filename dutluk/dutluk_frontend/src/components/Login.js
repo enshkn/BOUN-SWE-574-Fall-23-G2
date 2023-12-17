@@ -23,7 +23,7 @@ function LoginComponent({ onLogin }) {
       .then((response) => {
         const cookieValue = response.headers["bearer"];
         localStorage.setItem("authToken", cookieValue);
-        sessionStorage.setItem('currentUser', response.data.id);
+        sessionStorage.setItem('currentUserId', response.data.id.toString());
         onLogin();
         Navigate("/story/all-stories");
         messageApi.open({
