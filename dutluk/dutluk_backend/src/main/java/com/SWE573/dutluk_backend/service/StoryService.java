@@ -718,7 +718,7 @@ public class StoryService {
         if(removeHtmlFormatting(text).length() < 100){
             return removeHtmlFormatting(text);
         }
-        return removeHtmlFormatting(text).substring(0,100);
+        return removeHtmlFormatting(text).substring(0,100)+"...";
     }
 
 
