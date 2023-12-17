@@ -185,6 +185,31 @@ function StoryDetails() {
     }
   };
 
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/comment/delete/${commentId}`,
+        {
+          withCredentials: true,
+        });
+      if (response.status === 200) {
+        messageApi.open({ type: "success", content: "Comment deleted." });
+          // Filter out the comment with the given id from the current comments array
+        const updatedComments = story.comments.filter(comment => comment.id !== commentId);
+        // Update the state with the new comments array
+        setStory({ ...story, comments: updatedComments });
+      }
+      else {
+        messageApi.open({ type: "error", content: "Error occured while trying to delete comment!" });
+      }
+    } catch (error) {
+      console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while trying to delete comment!" });
+    }
+  }
+  
+
+
   if (!story) {
     messageApi.open({ type: "error", content: "Story Not Found!" });
     return <div>Story Not Found!</div>;
@@ -310,24 +335,32 @@ function StoryDetails() {
                 <button className="btn btn-primary" onClick={() => handleLikeComment(comment.id)}>
                   Like
                 </button>
+                {/* Add a Delete button next to the Like button */}
+                <button
+                  className="btn btn-danger"
+                  style={{ marginLeft: '10px' }} // Add some space between the buttons
+                  onClick={() => handleDeleteComment(comment.id)}
+                >
+                  Delete
+                </button>
               </p>
             </li>
           ))}
         </ul>
         <form onSubmit={handleCommentSubmit} style={{ width: "80%" }}>
-  <div>
-    <textarea
-      label="Add Comment"
-      value={commentText}
-      placeholder="Add Comment"
-      style={{ width: "100%", height: "100px" }}
-      onChange={(e) => setCommentText(e.target.value)}
-    ></textarea>
-  </div>
-  <div style={{ display: "flex", justifyContent: "flex-end" }}>
-    <button type="submit" className="btn btn-primary">Submit</button>
-  </div>
-</form>
+          <div>
+            <textarea
+              label="Add Comment"
+              value={commentText}
+              placeholder="Add Comment"
+              style={{ width: "100%", height: "100px" }}
+              onChange={(e) => setCommentText(e.target.value)}
+            ></textarea>
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button type="submit" className="btn btn-primary">Submit</button>
+          </div>
+        </form>
 
 
       </div>
