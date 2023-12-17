@@ -17,6 +17,9 @@ function StoryDetails() {
   const [circles, setCircles] = useState([]);
   const [polygons, setPolygons] = useState([]);
   const [polylines, setPolylines] = useState([]);
+
+  const currentUserId = sessionStorage.getItem('currentUserId');
+
   const convertLocations = (story) => {
 
     const tempMarkers = story.locations.filter(location => location.isPoint !== null);
@@ -41,7 +44,7 @@ function StoryDetails() {
       setCircles(prevCircles => [
         ...prevCircles,
         {
-          center: { lat: location.latitude, lng: location.longitude, name: location.locationName},
+          center: { lat: location.latitude, lng: location.longitude, name: location.locationName },
           radius: location.circleRadius,
           id: location.id,
           name: location.locationName,
@@ -194,7 +197,7 @@ function StoryDetails() {
         });
       if (response.status === 200) {
         messageApi.open({ type: "success", content: "Comment deleted." });
-          // Filter out the comment with the given id from the current comments array
+        // Filter out the comment with the given id from the current comments array
         const updatedComments = story.comments.filter(comment => comment.id !== commentId);
         // Update the state with the new comments array
         setStory({ ...story, comments: updatedComments });
@@ -207,7 +210,7 @@ function StoryDetails() {
       messageApi.open({ type: "error", content: "Error occured while trying to delete comment!" });
     }
   }
-  
+
 
 
   if (!story) {
@@ -335,14 +338,13 @@ function StoryDetails() {
                 <button className="btn btn-primary" onClick={() => handleLikeComment(comment.id)}>
                   Like
                 </button>
-                {/* Add a Delete button next to the Like button */}
-                <button
-                  className="btn btn-danger"
-                  style={{ marginLeft: '10px' }} // Add some space between the buttons
-                  onClick={() => handleDeleteComment(comment.id)}
-                >
-                  Delete
-                </button>
+                {comment.user.id == currentUserId && (
+                  <button
+                    className="btn btn-danger"
+                    style={{ marginLeft: '10px' }} // Add some space between the buttons
+                    onClick={() => handleDeleteComment(comment.id)}
+                  >Delete</button>)
+                }
               </p>
             </li>
           ))}
