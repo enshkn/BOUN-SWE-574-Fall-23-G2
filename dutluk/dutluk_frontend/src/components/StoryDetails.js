@@ -208,7 +208,7 @@ function StoryDetails() {
         <p>
           <b>Likes:</b> {story.likes ? story.likes.length : 0}
         </p>
-        <button onClick={handleLikeStory}>Like!</button>
+        <button onClick={handleLikeStory} className="btn btn-primary mb-2">Like!</button>
         <p className="story-details">
           <b>Labels:</b>{" "}
           {story.labels.map((label, index) => (
@@ -307,7 +307,7 @@ function StoryDetails() {
               </p>
               <p>
                 <b>Likes:</b> {comment.likes ? comment.likes.length : 0}
-                <button onClick={() => handleLikeComment(comment.id)}>
+                <button  className="btn btn-primary" onClick={() => handleLikeComment(comment.id)}>
                   Like
                 </button>
               </p>
@@ -322,7 +322,7 @@ function StoryDetails() {
               onChange={(e) => setCommentText(e.target.value)}
             ></textarea>
           </label>
-          <button type="submit">Submit</button>
+          <button type="submit" className="btn btn-primary mb-2" >Submit</button>
         </form>
       </div>
     </Space>
