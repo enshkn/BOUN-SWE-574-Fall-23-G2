@@ -32,14 +32,14 @@ function App() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile`, {
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/isTokenValid`, {
         withCredentials: true,
       })
-      .then((response) => {
+      .then((response = true) => {
         setLoggedIn(true);
       })
       .catch((error) => {
-        setLoggedIn(false);
+        console.log(error);
       });
   }, []);
 
