@@ -365,6 +365,7 @@ class StoryRepository implements IStoryRepository {
     final response = await manager.fetch<StoryModel, List<StoryModel>>(
       NetworkPaths.getActivityFeed,
       type: HttpTypes.get,
+      cachePolicy: CachePolicy.noCache,
       parserModel: StoryModel(),
     );
 

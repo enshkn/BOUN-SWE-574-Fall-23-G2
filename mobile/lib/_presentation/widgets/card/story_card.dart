@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:html/parser.dart';
 import 'package:swe/_common/constants/default_image.dart';
 import 'package:swe/_common/style/text_styles.dart';
@@ -219,14 +220,15 @@ class StoryCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                 ),
-                Text(
-                  storyModel.text,
-                  style: const TextStyles.body().copyWith(
-                    letterSpacing: 0.016,
+                if (!myStories)
+                  Text(
+                    storyModel.text,
+                    style: const TextStyles.body().copyWith(
+                      letterSpacing: 0.016,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
                   ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                ),
                 BaseWidgets.lowestGap,
                 if (storyModel.locations != null &&
                     storyModel.locations!.isNotEmpty)
