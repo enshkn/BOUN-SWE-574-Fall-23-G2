@@ -32,10 +32,10 @@ function LoginComponent({ onLogin }) {
         });
       })
       .catch((error) => {
-        if (error.response && error.response.status === 401) {
+        if (error.response) {
           messageApi.open({
             type: "error",
-            content: "Invalid username or password.",
+            content: error.response.data,
           });
         } else {
           messageApi.open({
