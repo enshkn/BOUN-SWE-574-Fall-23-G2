@@ -9,11 +9,4 @@ import lombok.Setter;
 public class RecDeleteAllRequest {
 
     private String passWord;
-
-    @Override
-    public String toString() {
-        return "RecDeleteAllRequest{" +
-                "passWord='" + passWord + '\'' +
-                '}';
-    }
 }

@@ -180,8 +180,6 @@ public class RecommendationService {
         RecDeleteAllRequest recDeleteAllRequest = new RecDeleteAllRequest();
         recDeleteAllRequest.setPassWord(password);
         ResponseEntity<?> response = restTemplate.postForEntity(recUrl + "/delete-all", recDeleteAllRequest,String.class);
-        System.out.println(recDeleteAllRequest.toString());
-        System.out.println(response);
         return Objects.requireNonNull(response.getBody()).toString();
     }
 
