@@ -28,8 +28,8 @@ const StoryList = ({ story }) => {
                     <span className="story-date">Posted: {story.createdAt}</span>
                 </div>
                 <div className="percentage">
-                    {story.percentage == !null && (
-                    <p>{`Recommendation Percentage: ${story.percentage}%`}</p>
+                    {story.percentage && (
+                    <p>{`Recommended ${story.percentage}`}</p>
                     )}
                 </div>
             </div>
