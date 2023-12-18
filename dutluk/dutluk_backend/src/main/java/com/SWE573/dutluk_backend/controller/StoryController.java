@@ -55,6 +55,11 @@ public class StoryController {
 
     }
 
+    @PostMapping("delete/all/RecEngine")
+    public ResponseEntity<?> deleteAllStoriesOnRecEngine(@RequestBody String password,HttpServletRequest request){
+        return IntegrationService.mobileCheck(request,recService.deleteAllOnRecEngine(password));
+    }
+
     @PostMapping("/edit/{storyId}")
     public ResponseEntity<?> editStory(@PathVariable Long storyId, @RequestBody StoryEditRequest storyEditRequest, HttpServletRequest request) throws ParseException, IOException {
         User tokenizedUser = userService.validateTokenizedUser(request);

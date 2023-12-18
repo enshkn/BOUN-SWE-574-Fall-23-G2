@@ -2,10 +2,7 @@ package com.SWE573.dutluk_backend.service;
 
 import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
-import com.SWE573.dutluk_backend.request.RecStoryDeleteRequest;
-import com.SWE573.dutluk_backend.request.RecStoryLikeOrDislikeRequest;
-import com.SWE573.dutluk_backend.request.RecStoryOrUserRequest;
-import com.SWE573.dutluk_backend.request.RecVectorizeOrEditRequest;
+import com.SWE573.dutluk_backend.request.*;
 import com.SWE573.dutluk_backend.response.RecResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,10 +17,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Getter
@@ -180,6 +174,13 @@ public class RecommendationService {
         recDeleteStoryRequest.setStoryId(storyId.toString());
         restTemplate.postForEntity(recUrl + "/delete-story", recDeleteStoryRequest,String.class);
         return "Story deleted on karadut";
+    }
+
+    public String deleteAllOnRecEngine(String password){
+        RecDeleteAllRequest recDeleteAllRequest = new RecDeleteAllRequest();
+        recDeleteAllRequest.setPassWord(password);
+        ResponseEntity<?> response = restTemplate.postForEntity(recUrl + "/delete-all", recDeleteAllRequest,String.class);
+        return Objects.requireNonNull(response.getBody()).toString();
     }
 
 
