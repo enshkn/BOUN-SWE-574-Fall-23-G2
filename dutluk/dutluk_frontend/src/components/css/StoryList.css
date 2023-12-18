@@ -36,6 +36,12 @@
   /* Adds some space between the image and the text */
 }
 
+.percentage {
+  font-size: 0.85em;
+  color: rgba(0, 128, 0, 0.5);
+  margin-left: 100px;
+}
+
 .story-info {
   display: flex;
   flex-direction: column;
