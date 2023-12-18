@@ -29,7 +29,7 @@ const StoryList = ({ story }) => {
                 </div>
                 <div className="percentage">
                     {story.percentage && (
-                    <p>{`Recommended ${story.percentage}`}</p>
+                    <p>{`Recommended: ${story.percentage}`}</p>
                     )}
                 </div>
             </div>

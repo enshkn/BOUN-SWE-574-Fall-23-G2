@@ -38,8 +38,9 @@
 
 .percentage {
   font-size: 0.85em;
-  color: rgba(0, 128, 0, 0.5);
-  margin-left: 100px;
+  font-weight: bold;
+  color: rgba(103, 0, 187, 0.63);
+  margin-left: auto;
 }
 
 .story-info {

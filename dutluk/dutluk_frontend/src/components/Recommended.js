@@ -32,7 +32,7 @@ function RecommendedStories() {
     >
     {contextHolder}
     <div className="all-stories">
-      <h1>Recommended Strories</h1>
+      <h1>Recommended Stories</h1>
       {recommendedStories.map((story) => (
         StoryList(story={story})
       ))}
