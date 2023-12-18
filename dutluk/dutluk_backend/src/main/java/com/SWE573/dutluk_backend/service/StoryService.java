@@ -467,7 +467,12 @@ public class StoryService {
                 Story storyWithPercentage = addPercentageToStory(story, foundUser.getRecommendedStoriesMap().get(storyId));
                 storyList.add(storyWithPercentage);
             }
+            else{
+                recommendationMap.remove(storyId);
+            }
         }
+        foundUser.setRecommendedStoriesMap(recommendationMap);
+        userService.editUser(foundUser);
         return sortStoriesByDescending(storyList);
     }
 
