@@ -27,6 +27,11 @@ const StoryList = ({ story }) => {
                     <a href={`/user/${story.user.id}`} className="username">@{story.user.username}</a>
                     <span className="story-date">Posted: {story.createdAt}</span>
                 </div>
+                <div className="percentage">
+                    {story.percentage && (
+                    <p>{`Recommended: ${story.percentage}`}</p>
+                    )}
+                </div>
             </div>
             <h2><a href={`/story/${story.id}`} className="story-title">{story.title}</a></h2>
 
