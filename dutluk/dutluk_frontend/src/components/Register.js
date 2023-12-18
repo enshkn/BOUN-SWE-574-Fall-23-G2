@@ -37,8 +37,17 @@ const RegisterComponent = () => {
       await messageApi.open({ type: "success", content: "Registered successfully!"});
       navigate("/login")
     } catch (error) {
-      console.error(error);
-      messageApi.open({ type: "error", content: "Error occurred during registration!"});
+      if (error.response) {
+        messageApi.open({
+          type: "error",
+          content: error.response.data,
+        });
+      } else {
+        messageApi.open({
+          type: "error",
+          content: "An error occurred while logging in.",
+        });
+      }
     }
   };
 
