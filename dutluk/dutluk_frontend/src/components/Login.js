@@ -24,12 +24,13 @@ function LoginComponent({ onLogin }) {
         const cookieValue = response.headers["bearer"];
         localStorage.setItem("authToken", cookieValue);
         sessionStorage.setItem('currentUserId', response.data.id.toString());
-        onLogin();
-        Navigate("/story/all-stories");
         messageApi.open({
           type: "success",
           content: "You logged in successfully!",
         });
+        onLogin();
+        Navigate("/story/all-stories");
+
       })
       .catch((error) => {
         if (error.response) {
