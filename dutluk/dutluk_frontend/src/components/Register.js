@@ -62,6 +62,7 @@ const RegisterComponent = () => {
           <label className="register-label">Email:</label>
           <input
             type="email"
+            data-testid="email-input"
             className="register-input"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -71,6 +72,7 @@ const RegisterComponent = () => {
         <div className="register-input-group">
           <label className="register-label">Username:</label>
           <input
+          data-testid="username-input"
             type="text"
             className="register-input"
             value={username}
@@ -81,6 +83,7 @@ const RegisterComponent = () => {
         <div className="register-input-group">
           <label className="register-label">Password:</label>
           <input
+           data-testid="password-input"
             type="password"
             className="register-input"
             value={password}
@@ -91,6 +94,7 @@ const RegisterComponent = () => {
         <div className="register-input-group">
           <label className="register-label">Retype Password:</label>
           <input
+           data-testid="retype-password-input"
             type="password"
             className="register-input"
             value={retypePassword}
