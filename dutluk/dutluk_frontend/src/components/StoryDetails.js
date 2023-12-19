@@ -17,6 +17,9 @@ function StoryDetails() {
   const [circles, setCircles] = useState([]);
   const [polygons, setPolygons] = useState([]);
   const [polylines, setPolylines] = useState([]);
+
+  const currentUserId = sessionStorage.getItem('currentUserId');
+
   const convertLocations = (story) => {
 
     const tempMarkers = story.locations.filter(location => location.isPoint !== null);
@@ -41,7 +44,7 @@ function StoryDetails() {
       setCircles(prevCircles => [
         ...prevCircles,
         {
-          center: { lat: location.latitude, lng: location.longitude, name: location.locationName},
+          center: { lat: location.latitude, lng: location.longitude, name: location.locationName },
           radius: location.circleRadius,
           id: location.id,
           name: location.locationName,
@@ -62,7 +65,7 @@ function StoryDetails() {
       }
       return acc;
     }, {});
-   
+
     // Extract polylines by polyline id
     Object.keys(groupedPolylines).forEach(key => {
       setPolylines(prevPolylines => [
@@ -88,7 +91,7 @@ function StoryDetails() {
       }
       return acc;
     }, {});
-   
+
     // Extract polygons by polygons id
     Object.keys(groupedPolygons).forEach(key => {
       setPolygons(prevPolygons => [
@@ -163,7 +166,7 @@ function StoryDetails() {
   const handleLikeComment = async (commentId) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/comment/like/`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/comment/like`,
         { likedEntityId: commentId },
         {
           withCredentials: true,
@@ -184,6 +187,31 @@ function StoryDetails() {
       messageApi.open({ type: "error", content: "Error occured while liking the comment!" });
     }
   };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/comment/delete/${commentId}`,
+        {
+          withCredentials: true,
+        });
+      if (response.status === 200) {
+        messageApi.open({ type: "success", content: "Comment deleted." });
+        // Filter out the comment with the given id from the current comments array
+        const updatedComments = story.comments.filter(comment => comment.id !== commentId);
+        // Update the state with the new comments array
+        setStory({ ...story, comments: updatedComments });
+      }
+      else {
+        messageApi.open({ type: "error", content: "Error occured while trying to delete comment!" });
+      }
+    } catch (error) {
+      console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while trying to delete comment!" });
+    }
+  }
+
+
 
   if (!story) {
     messageApi.open({ type: "error", content: "Story Not Found!" });
@@ -208,7 +236,7 @@ function StoryDetails() {
         <p>
           <b>Likes:</b> {story.likes ? story.likes.length : 0}
         </p>
-        <button onClick={handleLikeStory}>Like!</button>
+        <button onClick={handleLikeStory} className="btn btn-primary mb-2">Like!</button>
         <p className="story-details">
           <b>Labels:</b>{" "}
           {story.labels.map((label, index) => (
@@ -225,27 +253,27 @@ function StoryDetails() {
           <b>Published at: </b>
           {story.createdAt}
         </p>
-          {story.season && (
-           <p>
+        {story.season && (
+          <p>
             <b>Season:</b> {story.season}
-           </p>
-          )}
-          {story.decade && (
-        <p>
-          <b>Decade:</b> {story.decade}
-        </p>
+          </p>
         )}
-         {story.startTimeStamp && (
-         <p>
-           <b>Start Date:</b> {story.startTimeStamp}
+        {story.decade && (
+          <p>
+            <b>Decade:</b> {story.decade}
+          </p>
+        )}
+        {story.startTimeStamp && (
+          <p>
+            <b>Start Date:</b> {story.startTimeStamp}
           </p>
         )}
         {story.endTimeStamp && (
-      <p>
-        <b>End Date:</b> {story.endTimeStamp}
-      </p>
-)}
-      
+          <p>
+            <b>End Date:</b> {story.endTimeStamp}
+          </p>
+        )}
+
         <label>
           <b>Selected Locations:</b>
           <ul className="locations-list">
@@ -307,23 +335,36 @@ function StoryDetails() {
               </p>
               <p>
                 <b>Likes:</b> {comment.likes ? comment.likes.length : 0}
-                <button onClick={() => handleLikeComment(comment.id)}>
+                <button className="btn btn-primary" onClick={() => handleLikeComment(comment.id)}>
                   Like
                 </button>
+                {comment.user.id == currentUserId && (
+                  <button
+                    className="btn btn-danger"
+                    style={{ marginLeft: '10px' }} // Add some space between the buttons
+                    onClick={() => handleDeleteComment(comment.id)}
+                  >Delete</button>)
+                }
               </p>
             </li>
           ))}
         </ul>
-        <form onSubmit={handleCommentSubmit}>
-          <label>
-            Add Comment:
+        <form onSubmit={handleCommentSubmit} style={{ width: "80%" }}>
+          <div>
             <textarea
+              label="Add Comment"
               value={commentText}
+              placeholder="Add Comment"
+              style={{ width: "100%", height: "100px" }}
               onChange={(e) => setCommentText(e.target.value)}
             ></textarea>
-          </label>
-          <button type="submit">Submit</button>
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button type="submit" className="btn btn-primary">Submit</button>
+          </div>
         </form>
+
+
       </div>
     </Space>
   );

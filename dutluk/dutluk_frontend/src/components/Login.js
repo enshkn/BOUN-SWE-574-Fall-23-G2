@@ -23,18 +23,20 @@ function LoginComponent({ onLogin }) {
       .then((response) => {
         const cookieValue = response.headers["bearer"];
         localStorage.setItem("authToken", cookieValue);
-        onLogin();
-        Navigate("/story/all-stories");
+        sessionStorage.setItem('currentUserId', response.data.id.toString());
         messageApi.open({
           type: "success",
           content: "You logged in successfully!",
         });
+        onLogin();
+        Navigate("/story/all-stories");
+
       })
       .catch((error) => {
-        if (error.response && error.response.status === 401) {
+        if (error.response) {
           messageApi.open({
             type: "error",
-            content: "Invalid username or password.",
+            content: error.response.data,
           });
         } else {
           messageApi.open({
