@@ -13,32 +13,25 @@ function TimeExpression({ onTimeExpressionChange}) {
     // Perform operations based on the selected value
     switch (eventKey) {
       case 'Moment':
-        timeExpression = 'moment';
-        console.log( timeExpression,'value selected');
+        onTimeExpressionChange('moment')
         break;
       case 'Day':
-        timeExpression = 'day';
-        console.log( timeExpression,'value selected');
+        onTimeExpressionChange('day')
         break;
       case 'Month with Year':
-        timeExpression = 'month';
-        console.log( timeExpression,'value selected');
+        onTimeExpressionChange('month')
         break;
       case 'Season with Year':
-        timeExpression = 'season';
-        console.log( timeExpression,'value selected');
+        onTimeExpressionChange('season')
         break;
       case 'Year':
-        timeExpression = 'year';
-        console.log( timeExpression,'value selected');
+        onTimeExpressionChange('year')
         break;
       case 'Decade':
-        timeExpression = 'decade';
-        console.log( timeExpression,'value selected');
+        onTimeExpressionChange('decade')
         break;
       case 'Decade with Season':
-        timeExpression = 'decade+season';
-        console.log( timeExpression,'value selected');
+        onTimeExpressionChange('decade+season')
         break;
       default:
         break;

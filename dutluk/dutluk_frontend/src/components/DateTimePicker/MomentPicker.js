@@ -1,23 +1,27 @@
-import React from 'react'
-import { useState } from 'react'
-import ReactDatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
+import React, { useState } from 'react';
+import ReactDatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
+function MomentPicker({ onDateTimeChange }) {
+  const [startDate, setStartDate] = useState(new Date());
 
-function MomentPicker() {
-const [startDate, setStartDate] = useState(new Date());
+  // export selected value with onChange function
+  const handleDateTimeChange = (date) => {
+    setStartDate(date);
+    onDateTimeChange(date);
+  };
 
   return (
     <div>
-        <ReactDatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              timeInputLabel="Time:"
-              dateFormat="dd/MM/yyyy h:mm aa"
-              showTimeInput
-        />
+      <ReactDatePicker
+        selected={startDate}
+        onChange={handleDateTimeChange}
+        timeInputLabel="Time:"
+        dateFormat="dd/MM/yyyy h:mm aa"
+        showTimeInput
+      />
     </div>
-  )
+  );
 }
 
-export default MomentPicker
+export default MomentPicker;

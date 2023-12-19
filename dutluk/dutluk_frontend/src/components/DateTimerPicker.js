@@ -13,12 +13,29 @@ function DateTimerPicker() {
   const handleTimeExpressionChange = (selectedTimeExpression) => {
     setSelectedTimeExpression(selectedTimeExpression);
   };
+  const [selectedDateTimeStart, setSelectedDateTimeStart] = useState(new Date());
+  const [selectedDateTimeEnd, setSelectedDateTimeEnd] = useState(new Date());
+
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+  
+    return `${year} ${month}.${day} ${hours}:${minutes}`;
+  }
+
+  let showStartMomentPicker = false;
+  let showEndMomentPicker = false;
 
   switch (selectedTimeType) {
     case 'timePoint':
       switch (selectedTimeExpression) {
         case 'moment':
-          console.log(selectedTimeType, 'moment selected with switch');
+          showStartMomentPicker = true;
+          let formattedDateTimeStart = formatDate(selectedDateTimeStart);
+          console.log(formattedDateTimeStart);
           break;
         case 'day':
           console.log(selectedTimeType, 'day selected with switch');
@@ -43,7 +60,12 @@ function DateTimerPicker() {
     case 'timeInterval':
       switch (selectedTimeExpression) {
         case 'moment':
-          console.log(selectedTimeType, 'moment selected with switch');
+          showStartMomentPicker = true;
+          showEndMomentPicker = true;
+          let formattedDateTimeStart = formatDate(selectedDateTimeStart);
+          let formattedDateTimeEnd = formatDate(selectedDateTimeEnd);
+          console.log(formattedDateTimeStart);
+          console.log(formattedDateTimeEnd);
           break;
         case 'day':
           console.log(selectedTimeType, 'day selected with switch');
@@ -73,7 +95,10 @@ function DateTimerPicker() {
     <div>DateTimerPicker
       <TimeTypeMenu onTimeTypeChange={handleTimeTypeChange}/>
       <TimeExpression onTimeExpressionChange={handleTimeExpressionChange}/>
-      <MomentPicker />
+      <div style={{ display: 'flex' }}>
+      {showStartMomentPicker && <MomentPicker onDateTimeChange={setSelectedDateTimeStart}/>}
+      {showEndMomentPicker && (<MomentPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
+      </div>
 
     </div>
     
