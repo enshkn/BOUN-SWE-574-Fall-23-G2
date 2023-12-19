@@ -1,23 +1,20 @@
 import React, { useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 
-function TimeTypeMenu() {
+function TimeTypeMenu({ onTimeTypeChange}) {
 
   const [selectedTimeType, setSelectedTimeType] = useState('');
-  let timeType = '';
 
-  const handleSelect = (eventKey) => {
+  const handleSelect = (eventKey) => {  
     setSelectedTimeType(eventKey);
 
     // Perform operations based on the selected value
     switch (eventKey) {
       case 'Time Point':
-        timeType = 'timePoint';
-        console.log(timeType, 'value selected');
+        onTimeTypeChange('timePoint')
         break;
       case 'Time Interval':
-        timeType = 'timeInterval';
-        console.log(timeType, 'value selected');
+        onTimeTypeChange('timeInterval')
         break;
       default:
         break;

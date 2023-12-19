@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 
-function TimeExpression() {
+function TimeExpression({ onTimeExpressionChange}) {
 
   let timeExpression = '';
   const [selectedExpression, setSelectedExpression] = useState('');
@@ -14,27 +14,27 @@ function TimeExpression() {
     switch (eventKey) {
       case 'Moment':
         timeExpression = 'moment';
-        console.log( timeExpression,' value selected');
+        console.log( timeExpression,'value selected');
         break;
       case 'Day':
         timeExpression = 'day';
-        console.log( timeExpression,' value selected');
+        console.log( timeExpression,'value selected');
         break;
       case 'Month with Year':
         timeExpression = 'month';
-        console.log( timeExpression,' value selected');
+        console.log( timeExpression,'value selected');
         break;
       case 'Season with Year':
         timeExpression = 'season';
-        console.log( timeExpression,' value selected');
+        console.log( timeExpression,'value selected');
         break;
       case 'Year':
         timeExpression = 'year';
-        console.log( timeExpression,' value selected');
+        console.log( timeExpression,'value selected');
         break;
       case 'Decade':
         timeExpression = 'decade';
-        console.log( timeExpression,' value selected');
+        console.log( timeExpression,'value selected');
         break;
       case 'Decade with Season':
         timeExpression = 'decade+season';
