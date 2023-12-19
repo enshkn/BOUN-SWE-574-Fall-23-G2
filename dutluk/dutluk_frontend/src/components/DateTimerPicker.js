@@ -3,6 +3,7 @@ import { useState } from 'react'
 import TimeTypeMenu from './DateTimePicker/TimeTypeMenu'
 import TimeExpression from './DateTimePicker/TimeExpression'
 import MomentPicker from './DateTimePicker/MomentPicker'
+import DayPicker from './DateTimePicker/DayPicker'
 
 function DateTimerPicker() {
   const [selectedTimeType, setSelectedTimeType] = useState('');
@@ -28,16 +29,23 @@ function DateTimerPicker() {
 
   let showStartMomentPicker = false;
   let showEndMomentPicker = false;
+  let showStartDayPicker = false;
+  let showEndDayPicker = false;
+
+  let formattedDateTimeStart = '';
+  let formattedDateTimeEnd = '';
 
   switch (selectedTimeType) {
     case 'timePoint':
       switch (selectedTimeExpression) {
         case 'moment':
           showStartMomentPicker = true;
-          let formattedDateTimeStart = formatDate(selectedDateTimeStart);
+          formattedDateTimeStart = formatDate(selectedDateTimeStart);
           console.log(formattedDateTimeStart);
           break;
         case 'day':
+          showStartDayPicker = true;
+          formattedDateTimeStart = formatDate(selectedDateTimeStart);
           console.log(selectedTimeType, 'day selected with switch');
           break;
         case 'month':
@@ -62,13 +70,18 @@ function DateTimerPicker() {
         case 'moment':
           showStartMomentPicker = true;
           showEndMomentPicker = true;
-          let formattedDateTimeStart = formatDate(selectedDateTimeStart);
-          let formattedDateTimeEnd = formatDate(selectedDateTimeEnd);
+          formattedDateTimeStart = formatDate(selectedDateTimeStart);
+          formattedDateTimeEnd = formatDate(selectedDateTimeEnd);
           console.log(formattedDateTimeStart);
           console.log(formattedDateTimeEnd);
           break;
         case 'day':
-          console.log(selectedTimeType, 'day selected with switch');
+          showStartDayPicker = true;
+          showEndDayPicker = true;
+          formattedDateTimeStart = formatDate(selectedDateTimeStart);
+          formattedDateTimeEnd = formatDate(selectedDateTimeEnd);
+          console.log(formattedDateTimeStart);
+          console.log(formattedDateTimeEnd);
           break;
         case 'month':
           console.log(selectedTimeType, 'month selected with switch');
@@ -96,10 +109,11 @@ function DateTimerPicker() {
       <TimeTypeMenu onTimeTypeChange={handleTimeTypeChange}/>
       <TimeExpression onTimeExpressionChange={handleTimeExpressionChange}/>
       <div style={{ display: 'flex' }}>
-      {showStartMomentPicker && <MomentPicker onDateTimeChange={setSelectedDateTimeStart}/>}
+      {showStartMomentPicker && (<MomentPicker onDateTimeChange={setSelectedDateTimeStart}/>)}
       {showEndMomentPicker && (<MomentPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
+      {showStartDayPicker && (<DayPicker onDateTimeChange={setSelectedDateTimeStart}/>)}
+      {showEndDayPicker && (<DayPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
       </div>
-
     </div>
     
   )
