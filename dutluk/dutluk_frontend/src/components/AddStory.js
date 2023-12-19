@@ -12,6 +12,7 @@ import { Space, message, Input, Tag, Tooltip} from 'antd';
 import "./css/AddStory.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-quill/dist/quill.snow.css'; // Örnek olarak Quill editörünün varsayılan stillerini ekliyoruz
+import DateTimerPicker from "./DateTimerPicker";
 
 
 const AddStoryForm = () => {
@@ -633,8 +634,8 @@ const AddStoryForm = () => {
       </label>
       
         
-        
-      <label className="add-story-label">
+      <DateTimerPicker />  
+      {/* <label className="add-story-label">
 
 
 Time Resolution:
@@ -747,7 +748,7 @@ Time Resolution:
       </select>
     </label>
   </>
-)}
+)} */}
 
 
 <div className="d-flex justify-content-center mt-3">
