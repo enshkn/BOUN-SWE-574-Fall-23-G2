@@ -8,6 +8,7 @@ import MonthPicker from './DateTimePicker/MonthPicker'
 import SeasonPicker from './DateTimePicker/SeasonPicker'
 import YearPicker from './DateTimePicker/YearPicker'
 import DecadePicker from './DateTimePicker/DecadePicker'
+import SeasonMenu from './DateTimePicker/SeasonMenu'
 
 function DateTimerPicker() {
   const [selectedTimeType, setSelectedTimeType] = useState('');
@@ -18,6 +19,7 @@ function DateTimerPicker() {
   const handleTimeExpressionChange = (selectedTimeExpression) => {
     setSelectedTimeExpression(selectedTimeExpression);
   };
+
   const [selectedDateTimeStart, setSelectedDateTimeStart] = useState(new Date());
   const [selectedDateTimeEnd, setSelectedDateTimeEnd] = useState(new Date());
 
@@ -148,12 +150,22 @@ function DateTimerPicker() {
     const startYear = decade;
     const endYear = decade + 9;
   
-    // Decade'in başlangıç ve bitiş tarihlerini oluşturma
-    const startDate = new Date(startYear, 0, 1, 0, 0, 0); // Decade'in ilk günü 00:00 saatleri
-    const endDate = new Date(endYear, 11, 31, 23, 59, 59); // Decade'in son günü 23:59 saatleri
+    const startDate = new Date(startYear, 0, 1, 0, 0, 0);
+    const endDate = new Date(endYear, 11, 31, 23, 59, 59);
   
     return { startDate, endDate };
   }
+
+  function getDecadeRangeInterval(startDecade, endDecade) {
+    const startYear = startDecade;
+    const endYear = endDecade + 9;
+  
+    const startDate = new Date(startYear, 0, 1, 0, 0, 0); 
+    const endDate = new Date(endYear, 11, 31, 23, 59, 59); 
+  
+    return { startDate, endDate };
+  }
+  
   
 
   
@@ -176,6 +188,9 @@ function DateTimerPicker() {
 
   let formattedDateTimeStart = '';
   let formattedDateTimeEnd = '';
+
+  let decade_start = 0
+  let decade_end = 0
 
   switch (selectedTimeType) {
     case 'timePoint':
@@ -212,14 +227,21 @@ function DateTimerPicker() {
         case 'decade':
           showStartDecadePicker = true;
           const decade_result = getDecadeRangePoint(selectedDecadeStart);
-          let decade_start = decade_result.startDate;
-          let decade_end = decade_result.endDate;
+          decade_start = decade_result.startDate;
+          decade_end = decade_result.endDate;
           formattedDateTimeStart = formatDate(decade_start);
           formattedDateTimeEnd = formatDate(decade_end)
           console.log(formattedDateTimeStart, formattedDateTimeEnd)
           break;
         case 'decade+season':
-          showStartDecadeSeasonPicker = true;
+        showStartDecadeSeasonPicker = true;  
+        const decade_season_result = getDecadeRangePoint(selectedDecadeStart);
+          decade_start = decade_season_result.startDate;
+          decade_end = decade_season_result.endDate;
+          formattedDateTimeStart = formatDate(decade_start);
+          formattedDateTimeEnd = formatDate(decade_end)
+          console.log(formattedDateTimeStart, formattedDateTimeEnd)
+          console.log(selectedSeasonStart, selectedSeasonEnd)
           break;
       }
       break;
@@ -277,11 +299,23 @@ function DateTimerPicker() {
         case 'decade':
           showStartDecadePicker = true;
           showEndDecadePicker = true;
-          console.log(selectedDecadeStart, selectedDecadeEnd)
+          const decade_result = getDecadeRangeInterval(selectedDecadeStart, selectedDecadeEnd);
+          decade_start = decade_result.startDate;
+          decade_end = decade_result.endDate;
+          formattedDateTimeStart = formatDate(decade_start);
+          formattedDateTimeEnd = formatDate(decade_end)
+          console.log(formattedDateTimeStart, formattedDateTimeEnd)
           break;
         case 'decade+season':
           showStartDecadeSeasonPicker = true;
           showEndDecadeSeasonPicker = true;
+          const decade_season_result = getDecadeRangeInterval(selectedDecadeStart, selectedDecadeEnd);
+          decade_start = decade_season_result.startDate;
+          decade_end = decade_season_result.endDate;
+          formattedDateTimeStart = formatDate(decade_start);
+          formattedDateTimeEnd = formatDate(decade_end)
+          console.log(formattedDateTimeStart, formattedDateTimeEnd)
+          console.log(selectedSeasonStart, selectedSeasonEnd)
           break;
       }
       break;
@@ -310,7 +344,7 @@ function DateTimerPicker() {
       )}
       {showEndSeasonPicker && (
         <SeasonPicker 
-          onDateTimeChange={(date, season) => {
+            onDateTimeChange={(date, season) => {
             setSelectedDateTimeEnd(date);
             setSelectedSeasonEnd(season);
           }}
@@ -320,6 +354,18 @@ function DateTimerPicker() {
       {showEndYearPicker && (<YearPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
       {showStartDecadePicker && (<DecadePicker onDateTimeChange={setSelectedDecadeStart} />)}
       {showEndDecadePicker && (<DecadePicker onDateTimeChange={setSelectedDecadeEnd} />)}
+      {showStartDecadeSeasonPicker && (
+        <div>
+          <DecadePicker onDateTimeChange={setSelectedDecadeStart} />
+          <SeasonMenu onSeasonSelect={setSelectedSeasonStart} />
+        </div>
+      )}
+      {showEndDecadeSeasonPicker && (
+        <div>
+          <DecadePicker onDateTimeChange={setSelectedDecadeEnd} />
+          <SeasonMenu onSeasonSelect={setSelectedSeasonEnd} />
+        </div>
+      )}
       </div>
     </div>  
     
