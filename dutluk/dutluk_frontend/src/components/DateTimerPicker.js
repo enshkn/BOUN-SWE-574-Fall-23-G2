@@ -38,6 +38,18 @@ function DateTimerPicker() {
     return `${year} ${month}.${day} ${hours}:${minutes}`;
   }
 
+  function monthEndFormatter(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const lastDay = new Date(year, month, 0).getDate();
+    const formattedMonth = String(month).padStart(2, '0');
+    const formattedLastDay = String(lastDay).padStart(2, '0');
+    const hours = '23';
+    const minutes = '59';
+  
+    return `${year}-${formattedMonth}-${formattedLastDay} ${hours}:${minutes}`;
+  }
+
   let showStartMomentPicker = false;
   let showEndMomentPicker = false;
   let showStartDayPicker = false;
@@ -99,7 +111,12 @@ function DateTimerPicker() {
           console.log(formattedDateTimeEnd);
           break;
         case 'month':
-          console.log(selectedTimeType, 'month selected with switch');
+          showStartMonthPicker = true;
+          showEndMonthPicker = true;
+          formattedDateTimeStart = monthStartFormatter(selectedDateTimeStart);
+          formattedDateTimeEnd = monthEndFormatter(selectedDateTimeEnd);
+          console.log(formattedDateTimeStart);
+          console.log(formattedDateTimeEnd);
           break;
         case 'season':
           console.log(selectedTimeType, 'season selected with switch');
@@ -129,6 +146,7 @@ function DateTimerPicker() {
       {showStartDayPicker && (<DayPicker onDateTimeChange={setSelectedDateTimeStart}/>)}
       {showEndDayPicker && (<DayPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
       {showStartMonthPicker && (<MonthPicker onDateTimeChange={setSelectedDateTimeStart} />)}
+      {showEndMonthPicker && (<MonthPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
       </div>
     </div>
     
