@@ -375,7 +375,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         'Time Variants',
                         style: TextStyle(color: Colors.orange.shade800),
                       ),
-                      if (state.storyModel!.startTimeStamp != null)
+                      if (state.storyModel!.startTimeStamp != null &&
+                          state.storyModel!.startDateFlag != 1)
                         Text(
                           'Start Time: ${state.storyModel!.startTimeStamp}',
                           style: const TextStyles.body().copyWith(
@@ -404,6 +405,20 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           state.storyModel!.decade != null)
                         Text(
                           'Decade: ${state.storyModel!.decade!}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                      if (state.storyModel!.endDecade != '' &&
+                          state.storyModel!.endDecade != null)
+                        BaseWidgets.lowestGap,
+                      if (state.storyModel!.endDecade != '' &&
+                          state.storyModel!.endDecade != null)
+                        Text(
+                          'End Decade: ${state.storyModel!.endDecade!}',
                           style: const TextStyles.body().copyWith(
                             letterSpacing: 0.016,
                           ),
