@@ -282,7 +282,7 @@ public class StoryService {
             int decadeStart = year - (year % 10);
             return decadeStart + "s";
         }
-        return story.getDecade();
+        return story.getEndDecade();
     }
 
     public String deleteByStoryId(Story story) {
@@ -450,7 +450,7 @@ public class StoryService {
 
     public List<Story> recommendedStories(User foundUser) {
         Map<Long,String> recommendationMap;
-        if(recService.isRecEngineStatus()){
+        if(recService.isRecEngineStatus() && foundUser.getRecommendedStoriesMap().isEmpty()){
             recommendationMap = recService.recommendStory(foundUser);
         }
         else{

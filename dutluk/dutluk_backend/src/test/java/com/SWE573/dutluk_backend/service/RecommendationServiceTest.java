@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -70,7 +72,8 @@ class RecommendationServiceTest {
         assertEquals("Karadut implementation is offline", result);
     }
     @Test
-    void vectorizeRequest_Successful() {
+    void vectorizeRequest_Successful() throws Exception {
+        // Arrange
         User foundUser = User.builder()
                 .username("testUser")
                 .build();
@@ -82,14 +85,21 @@ class RecommendationServiceTest {
                 .build();
         savedStory.setId(1L);
 
-        // When
-        String result = recommendationService.vectorizeRequest(savedStory);
-        // Then
-        assertEquals("Data sent to karadut", result);
+        String expectedResponse = "Data sent to karadut";
+
+        // Act
+        CompletableFuture<String> resultFuture = recommendationService.vectorizeRequest(savedStory);
+
+        // Wait for the asynchronous operation to complete and then get the result
+        String actualResponse = resultFuture.get(); // This blocks the thread until the future is complete
+
+        // Now compare the actual result with the expected result
+        assertEquals(expectedResponse, actualResponse);
     }
 
+
     @Test
-    void vectorizeEditRequest_Successful() {
+    void vectorizeEditRequest_Successful() throws ExecutionException, InterruptedException {
         User foundUser = User.builder()
                 .username("testUser")
                 .build();
@@ -101,55 +111,77 @@ class RecommendationServiceTest {
                 .build();
         savedStory.setId(1L);
 
-        String result = recommendationService.vectorizeRequest(savedStory);
+        String expectedResponse = "Data sent to karadut";
 
-        assertEquals("Data sent to karadut", result);
+        // Act
+        CompletableFuture<String> resultFuture = recommendationService.vectorizeEditRequest(savedStory);
+
+        // Wait for the asynchronous operation to complete and then get the result
+        String actualResponse = resultFuture.get(); // This blocks the thread until the future is complete
+
+        // Now compare the actual result with the expected result
+        assertEquals(expectedResponse, actualResponse);
     }
 
     @Test
-    void likedStory_Successful() throws JsonProcessingException {
-
+    void likedStory_Successful() throws Exception {
+        // Arrange
         User foundUser = User.builder()
                 .username("testUser")
-                .build();
-        Story savedStory = Story.builder()
-                .title("title")
-                .labels(Arrays.asList("label1", "label2"))
-                .text("Test story text")
-                .user(foundUser)
                 .build();
         foundUser.setId(1L);
-        savedStory.setId(1L);
-        Integer likedStorySize = 5;
 
-        // When
-        String result = recommendationService.likedStory(savedStory, foundUser, likedStorySize);
-
-        // Then
-        assertEquals("Recommendation complete", result);
-    }
-
-    @Test
-    void dislikedStory_Successful() throws JsonProcessingException {
-
-        User foundUser = User.builder()
-                .username("testUser")
-                .build();
         Story savedStory = Story.builder()
                 .title("title")
                 .labels(Arrays.asList("label1", "label2"))
                 .text("Test story text")
                 .user(foundUser)
                 .build();
-        foundUser.setId(1L);
         savedStory.setId(1L);
+
         Integer likedStorySize = 5;
+        String expectedResponse = "Recommendation complete";
 
-        // When
-        String result = recommendationService.likedStory(savedStory, foundUser, likedStorySize);
+        // Act
+        CompletableFuture<String> resultFuture = recommendationService.likedStory(savedStory, foundUser, likedStorySize);
 
-        // Then
-        assertEquals("Recommendation complete", result);
+        // Assert
+        // Wait for the asynchronous operation to complete and then get the result
+        String actualResponse = resultFuture.get(); // This blocks the thread until the future is complete
+
+        // Now compare the actual result with the expected result
+        assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    void dislikedStory_Successful() throws JsonProcessingException, ExecutionException, InterruptedException {
+
+        // Arrange
+        User foundUser = User.builder()
+                .username("testUser")
+                .build();
+        foundUser.setId(1L);
+
+        Story savedStory = Story.builder()
+                .title("title")
+                .labels(Arrays.asList("label1", "label2"))
+                .text("Test story text")
+                .user(foundUser)
+                .build();
+        savedStory.setId(1L);
+
+        Integer likedStorySize = 5;
+        String expectedResponse = "Recommendation complete";
+
+        // Act
+        CompletableFuture<String> resultFuture = recommendationService.likedStory(savedStory, foundUser, likedStorySize);
+
+        // Assert
+        // Wait for the asynchronous operation to complete and then get the result
+        String actualResponse = resultFuture.get(); // This blocks the thread until the future is complete
+
+        // Now compare the actual result with the expected result
+        assertEquals(expectedResponse, actualResponse);
     }
 
     @Test

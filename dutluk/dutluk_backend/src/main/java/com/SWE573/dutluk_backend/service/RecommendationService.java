@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -18,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Getter
@@ -43,8 +45,8 @@ public class RecommendationService {
         return "Karadut implementation is offline";
     }
 
-
-    public String vectorizeRequest(Story story){
+    @Async
+    public CompletableFuture<String> vectorizeRequest(Story story){
         RecVectorizeOrEditRequest vectorizeRequest =
                 RecVectorizeOrEditRequest.builder()
                         .type("story")
@@ -53,10 +55,11 @@ public class RecommendationService {
                         .text(StoryService.removeHtmlFormatting(story.getText()))
                         .build();
         restTemplate.postForEntity(recUrl + "/vectorize", vectorizeRequest,String.class);
-        return "Data sent to karadut";
+        return CompletableFuture.completedFuture("Data sent to karadut");
     }
 
-    public void vectorizeEditRequest(Story story){
+    @Async
+    public CompletableFuture<String> vectorizeEditRequest(Story story){
         RecVectorizeOrEditRequest vectorizeRequest =
                 RecVectorizeOrEditRequest.builder()
                         .type("story")
@@ -65,9 +68,11 @@ public class RecommendationService {
                         .text(StoryService.removeHtmlFormatting(story.getText()))
                         .build();
         ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/vectorize-edit", vectorizeRequest,String.class);
+        return CompletableFuture.completedFuture("Data sent to karadut");
     }
 
-    public String likedStory(Story story, User user, Integer likedStorySize) throws JsonProcessingException {
+    @Async
+    public CompletableFuture<String> likedStory(Story story, User user, Integer likedStorySize) throws JsonProcessingException {
         RecStoryLikeOrDislikeRequest likedRequest =
                 RecStoryLikeOrDislikeRequest.builder()
                         .type("story")
@@ -79,15 +84,16 @@ public class RecommendationService {
             ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-liked", likedRequest,String.class);
             user.setRecommendedStoriesMap(recommendStory(user));
             if(user.getRecommendedStoriesMap() != null){
-                return "Karadut has sent the relevant stories";
+                return CompletableFuture.completedFuture("Karadut has sent the relevant stories");
             }
-            return "No stories recommended";
+            return CompletableFuture.completedFuture("No stories recommended");
         }catch (NullPointerException e){
-            return "Recommendation complete";
+            return CompletableFuture.completedFuture("Recommendation complete");
         }
     }
 
-    public String dislikedStory(Story story, User user,Integer likedStorySize) throws JsonProcessingException {
+    @Async
+    public CompletableFuture<String> dislikedStory(Story story, User user, Integer likedStorySize) throws JsonProcessingException {
         RecStoryLikeOrDislikeRequest dislikedRequest =
                 RecStoryLikeOrDislikeRequest.builder()
                         .type("story")
@@ -99,11 +105,11 @@ public class RecommendationService {
             ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-liked", dislikedRequest,String.class);
             user.setRecommendedStoriesMap(recommendStory(user));
             if(user.getRecommendedStoriesMap()!= null){
-                return "Karadut has sent the relevant stories";
+                return CompletableFuture.completedFuture("Karadut has sent the relevant stories");
             }
-            return "No stories recommended";
+            return CompletableFuture.completedFuture("No stories recommended");
         }catch (NullPointerException e){
-            return "Recommendation complete";
+            return CompletableFuture.completedFuture("Recommendation complete");
         }
     }
 
@@ -169,18 +175,19 @@ public class RecommendationService {
         return null;
     }
 
-    public String deleteStoryRequest(Long storyId){
+    @Async
+    public CompletableFuture<String> deleteStoryRequest(Long storyId){
         RecStoryDeleteRequest recDeleteStoryRequest  = new RecStoryDeleteRequest();
         recDeleteStoryRequest.setStoryId(storyId.toString());
         restTemplate.postForEntity(recUrl + "/delete-story", recDeleteStoryRequest,String.class);
-        return "Story deleted on karadut";
+        return CompletableFuture.completedFuture("Story deleted on karadut");
     }
 
-    public String deleteAllOnRecEngine(String password){
+    public CompletableFuture<String> deleteAllOnRecEngine(String password){
         RecDeleteAllRequest recDeleteAllRequest = new RecDeleteAllRequest();
         recDeleteAllRequest.setPassWord(password);
         ResponseEntity<?> response = restTemplate.postForEntity(recUrl + "/delete-all", recDeleteAllRequest,String.class);
-        return Objects.requireNonNull(response.getBody()).toString();
+        return CompletableFuture.completedFuture(Objects.requireNonNull(response.getBody()).toString());
     }
 
 
