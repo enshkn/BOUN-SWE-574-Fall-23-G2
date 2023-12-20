@@ -52,6 +52,26 @@ function DateTimerPicker() {
     return `${year}-${formattedMonth}-${formattedLastDay} ${hours}:${minutes}`;
   }
 
+  function yearStartFormatter(date) {
+    const year = date.getFullYear();
+    const month = '01';
+    const day = '01';
+    const hours = '00';
+    const minutes = '00';
+  
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  }
+
+  function yearEndFormatter(date) {
+    const year = date.getFullYear();
+    const month = '12';
+    const day = '31';
+    const hours = '23';
+    const minutes = '59';
+  
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  }
+
   let showStartMomentPicker = false;
   let showEndMomentPicker = false;
   let showStartDayPicker = false;
