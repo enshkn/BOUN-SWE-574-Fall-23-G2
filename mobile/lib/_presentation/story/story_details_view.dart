@@ -242,6 +242,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                 MaterialPageRoute(
                   builder: (context) => CommentsView(
                     storyId: widget.model.id,
+                    authUser: user,
                   ),
                 ),
               );
@@ -310,7 +311,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                 minScale: 0.8,
                                 onPressed: () async {
                                   await addFavorite(
-                                      storyId: state.storyModel!.id);
+                                    storyId: state.storyModel!.id,
+                                  );
                                 },
                                 child: Icon(
                                   Icons.favorite,
@@ -335,10 +337,22 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         );
                       },
                       child: IconWithLabel(
+                        specialIcon: true,
                         spacing: 8,
-                        icon: const Icon(
-                          Icons.star,
-                          color: Colors.yellow,
+                        icon: SizedBox(
+                          child: state.storyModel!.user!.profilePhoto != null
+                              ? CircleAvatar(
+                                  radius: 36,
+                                  backgroundImage: NetworkImage(
+                                    state.storyModel!.user!.profilePhoto!,
+                                  ),
+                                )
+                              : const CircleAvatar(
+                                  radius: 36,
+                                  backgroundImage: AssetImage(
+                                    'assets/images/profilePic.jpg',
+                                  ),
+                                ),
                         ),
                         label: state.storyModel!.user!.username!,
                       ),
@@ -361,7 +375,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         'Time Variants',
                         style: TextStyle(color: Colors.orange.shade800),
                       ),
-                      if (state.storyModel!.startTimeStamp != null)
+                      if (state.storyModel!.startTimeStamp != null &&
+                          state.storyModel!.startDateFlag != 1)
                         Text(
                           'Start Time: ${state.storyModel!.startTimeStamp}',
                           style: const TextStyles.body().copyWith(
@@ -390,6 +405,20 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           state.storyModel!.decade != null)
                         Text(
                           'Decade: ${state.storyModel!.decade!}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                      if (state.storyModel!.endDecade != '' &&
+                          state.storyModel!.endDecade != null)
+                        BaseWidgets.lowestGap,
+                      if (state.storyModel!.endDecade != '' &&
+                          state.storyModel!.endDecade != null)
+                        Text(
+                          'End Decade: ${state.storyModel!.endDecade!}',
                           style: const TextStyles.body().copyWith(
                             letterSpacing: 0.016,
                           ),
@@ -884,8 +913,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
 
 class CommentsView extends StatefulWidget {
   final int storyId;
+  final User authUser;
   const CommentsView({
     required this.storyId,
+    required this.authUser,
     super.key,
   });
 
@@ -907,41 +938,52 @@ class _CommentsViewState extends State<CommentsView> {
             context,
             title: 'Comments',
           ),
-          body: BaseLoader(
-            isLoading: state.isLoading,
-            child: BaseScrollView(
-              children: [
-                BaseWidgets.lowerGap,
-                if (state.storyModel == null ||
-                    state.storyModel!.comments == null ||
-                    state.storyModel!.comments!.isEmpty)
-                  const Center(
-                    child: Text(
-                      'No comment yet',
-                      style: TextStyles.title(),
+          body: RefreshIndicator(
+            onRefresh: () async {
+              await cubit.getStoryDetail(widget.storyId);
+            },
+            child: BaseLoader(
+              isLoading: state.isLoading,
+              child: BaseScrollView(
+                children: [
+                  BaseWidgets.lowerGap,
+                  if (state.storyModel == null ||
+                      state.storyModel!.comments == null ||
+                      state.storyModel!.comments!.isEmpty)
+                    const Center(
+                      child: Text(
+                        'No comment yet',
+                        style: TextStyles.title(),
+                      ),
+                    )
+                  else
+                    SizedBox(
+                      child: BaseListView(
+                        shrinkWrap: true,
+                        items: state.storyModel!.comments!,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (item) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 16,
+                            ),
+                            child: CommentCard(
+                              myComment: widget.authUser.id == item.user!.id
+                                  ? true
+                                  : false,
+                              user: item.user,
+                              content: item.text,
+                              onDeleteTap: () async {
+                                await cubit.deleteComment(item.id!);
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  )
-                else
-                  SizedBox(
-                    child: BaseListView(
-                      shrinkWrap: true,
-                      items: state.storyModel!.comments!,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (item) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 16,
-                          ),
-                          child: CommentCard(
-                            user: item.user,
-                            content: item.text,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         );
