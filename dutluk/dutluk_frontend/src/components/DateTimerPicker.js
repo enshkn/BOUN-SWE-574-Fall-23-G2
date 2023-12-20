@@ -7,6 +7,7 @@ import DayPicker from './DateTimePicker/DayPicker'
 import MonthPicker from './DateTimePicker/MonthPicker'
 import SeasonPicker from './DateTimePicker/SeasonPicker'
 import YearPicker from './DateTimePicker/YearPicker'
+import DecadePicker from './DateTimePicker/DecadePicker'
 
 function DateTimerPicker() {
   const [selectedTimeType, setSelectedTimeType] = useState('');
@@ -198,6 +199,7 @@ function DateTimerPicker() {
           break;
         case 'decade':
           showStartDecadePicker = true;
+          console.log(selectedDecadeStart)
           break;
         case 'decade+season':
           showStartDecadeSeasonPicker = true;
@@ -258,6 +260,7 @@ function DateTimerPicker() {
         case 'decade':
           showStartDecadePicker = true;
           showEndDecadePicker = true;
+          console.log(selectedDecadeStart, selectedDecadeEnd)
           break;
         case 'decade+season':
           showStartDecadeSeasonPicker = true;
@@ -298,6 +301,8 @@ function DateTimerPicker() {
     )}
       {showStartYearPicker && (<YearPicker onDateTimeChange={setSelectedDateTimeStart} />)}
       {showEndYearPicker && (<YearPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
+      {showStartDecadePicker && (<DecadePicker onDateTimeChange={setSelectedDecadeStart} />)}
+      {showEndDecadePicker && (<DecadePicker onDateTimeChange={setSelectedDecadeEnd} />)}
       </div>
     </div>  
     
