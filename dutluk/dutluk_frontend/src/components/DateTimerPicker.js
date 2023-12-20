@@ -144,6 +144,18 @@ function DateTimerPicker() {
     return "Invalid timeType or insufficient parameters!";
   }
 
+  function getDecadeRangePoint(decade) {
+    const startYear = decade;
+    const endYear = decade + 9;
+  
+    // Decade'in başlangıç ve bitiş tarihlerini oluşturma
+    const startDate = new Date(startYear, 0, 1, 0, 0, 0); // Decade'in ilk günü 00:00 saatleri
+    const endDate = new Date(endYear, 11, 31, 23, 59, 59); // Decade'in son günü 23:59 saatleri
+  
+    return { startDate, endDate };
+  }
+  
+
   
 
   let showStartMomentPicker = false;
@@ -199,7 +211,12 @@ function DateTimerPicker() {
           break;
         case 'decade':
           showStartDecadePicker = true;
-          console.log(selectedDecadeStart)
+          const decade_result = getDecadeRangePoint(selectedDecadeStart);
+          let decade_start = decade_result.startDate;
+          let decade_end = decade_result.endDate;
+          formattedDateTimeStart = formatDate(decade_start);
+          formattedDateTimeEnd = formatDate(decade_end)
+          console.log(formattedDateTimeStart, formattedDateTimeEnd)
           break;
         case 'decade+season':
           showStartDecadeSeasonPicker = true;
