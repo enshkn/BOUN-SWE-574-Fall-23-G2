@@ -4,6 +4,7 @@ import TimeTypeMenu from './DateTimePicker/TimeTypeMenu'
 import TimeExpression from './DateTimePicker/TimeExpression'
 import MomentPicker from './DateTimePicker/MomentPicker'
 import DayPicker from './DateTimePicker/DayPicker'
+import MonthPicker from './DateTimePicker/MonthPicker'
 
 function DateTimerPicker() {
   const [selectedTimeType, setSelectedTimeType] = useState('');
@@ -27,10 +28,22 @@ function DateTimerPicker() {
     return `${year} ${month}.${day} ${hours}:${minutes}`;
   }
 
+  function monthStartFormatter(date) {
+    const year = date.getFullYear();
+    const month  = String(date.getMonth() + 1).padStart(2, '0');
+    const day = '01';
+    const hours = '00';
+    const minutes = '00';
+
+    return `${year} ${month}.${day} ${hours}:${minutes}`;
+  }
+
   let showStartMomentPicker = false;
   let showEndMomentPicker = false;
   let showStartDayPicker = false;
   let showEndDayPicker = false;
+  let showStartMonthPicker = false;
+  let showEndMonthPicker = false;
 
   let formattedDateTimeStart = '';
   let formattedDateTimeEnd = '';
@@ -46,10 +59,12 @@ function DateTimerPicker() {
         case 'day':
           showStartDayPicker = true;
           formattedDateTimeStart = formatDate(selectedDateTimeStart);
-          console.log(selectedTimeType, 'day selected with switch');
+          console.log(selectedDateTimeStart);
           break;
         case 'month':
-          console.log(selectedTimeType, 'month selected with switch');
+          showStartMonthPicker = true;
+          formattedDateTimeStart = monthStartFormatter(selectedDateTimeStart);
+          console.log(formattedDateTimeStart);
           break;
         case 'season':
           console.log(selectedTimeType, 'season selected with switch');
@@ -113,6 +128,7 @@ function DateTimerPicker() {
       {showEndMomentPicker && (<MomentPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
       {showStartDayPicker && (<DayPicker onDateTimeChange={setSelectedDateTimeStart}/>)}
       {showEndDayPicker && (<DayPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
+      {showStartMonthPicker && (<MonthPicker onDateTimeChange={setSelectedDateTimeStart} />)}
       </div>
     </div>
     

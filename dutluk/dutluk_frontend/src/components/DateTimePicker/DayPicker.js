@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-function MomentPicker({ onDateTimeChange }) {
+function DayPicker({ onDateTimeChange }) {
   const [startDate, setStartDate] = useState(new Date());
 
   // export selected value with onChange function
@@ -24,4 +24,4 @@ function MomentPicker({ onDateTimeChange }) {
   );
 }
 
-export default MomentPicker;
+export default DayPicker;
