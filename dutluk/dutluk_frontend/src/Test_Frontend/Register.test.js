@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import { MemoryRouter } from "react-router-dom";
-import Register from "./components/Register"; 
+import Register from "../components/Register"; 
 
 jest.mock('axios');
 
