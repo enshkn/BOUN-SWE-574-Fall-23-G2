@@ -3,7 +3,7 @@ import { useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-function SeasonPicker({onDateTimeChange}) {
+function YearPicker({onDateTimeChange}) {
   const handleDateTimeChange = (date) => {
     setStartDate(date);
     onDateTimeChange(date);
@@ -14,10 +14,10 @@ function SeasonPicker({onDateTimeChange}) {
         <ReactDatePicker
         selected={startDate}
         onChange={handleDateTimeChange}
-        dateFormat="yyyy, QQQ"
-        showQuarterYearPicker
+        showYearPicker
+        dateFormat="yyyy"
         />
       );
 }
 
-export default SeasonPicker
+export default YearPicker

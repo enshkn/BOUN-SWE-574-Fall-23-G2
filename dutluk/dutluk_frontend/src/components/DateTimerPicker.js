@@ -5,6 +5,8 @@ import TimeExpression from './DateTimePicker/TimeExpression'
 import MomentPicker from './DateTimePicker/MomentPicker'
 import DayPicker from './DateTimePicker/DayPicker'
 import MonthPicker from './DateTimePicker/MonthPicker'
+import SeasonPicker from './DateTimePicker/SeasonPicker'
+import YearPicker from './DateTimePicker/YearPicker'
 
 function DateTimerPicker() {
   const [selectedTimeType, setSelectedTimeType] = useState('');
@@ -56,6 +58,11 @@ function DateTimerPicker() {
   let showEndDayPicker = false;
   let showStartMonthPicker = false;
   let showEndMonthPicker = false;
+  let showStartSeasonPicker = false;
+  let showEndSeasonPicker = false;
+  let showStartYearPicker = false;
+  let showEndYearPicker = false;
+
 
   let formattedDateTimeStart = '';
   let formattedDateTimeEnd = '';
@@ -79,10 +86,12 @@ function DateTimerPicker() {
           console.log(formattedDateTimeStart);
           break;
         case 'season':
-          console.log(selectedTimeType, 'season selected with switch');
+          showStartSeasonPicker = true;
+          console.log(setSelectedDateTimeStart);
           break;
         case 'year':
-          console.log(selectedTimeType, 'year selected with switch');
+          showStartYearPicker = true;
+          console.log(selectedDateTimeStart);
           break;
         case 'decade':
           console.log(selectedTimeType ,'decade selected with switch');
@@ -119,10 +128,16 @@ function DateTimerPicker() {
           console.log(formattedDateTimeEnd);
           break;
         case 'season':
-          console.log(selectedTimeType, 'season selected with switch');
+          showStartSeasonPicker = true;
+          showEndSeasonPicker = true;
+          console.log(setSelectedDateTimeStart);
+          console.log(setSelectedDateTimeEnd);
           break;
         case 'year':
-          console.log(selectedTimeType, 'year selected with switch');
+          showStartYearPicker = true;
+          showEndYearPicker = true;
+          console.log(selectedDateTimeStart);
+          console.log(selectedDateTimeEnd);
           break;
         case 'decade':
           console.log(selectedTimeType, 'decade selected with switch');
@@ -147,6 +162,10 @@ function DateTimerPicker() {
       {showEndDayPicker && (<DayPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
       {showStartMonthPicker && (<MonthPicker onDateTimeChange={setSelectedDateTimeStart} />)}
       {showEndMonthPicker && (<MonthPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
+      {showStartSeasonPicker && (<SeasonPicker onDateTimeChange={setSelectedDateTimeStart} />)}
+      {showEndSeasonPicker && (<SeasonPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
+      {showStartYearPicker && (<YearPicker onDateTimeChange={setSelectedDateTimeStart} />)}
+      {showEndYearPicker && (<YearPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
       </div>
     </div>
     
