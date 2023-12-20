@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Add Bootstrap CSS file
 
 function MomentPicker({ onDateTimeChange }) {
   const [startDate, setStartDate] = useState(new Date());
@@ -12,13 +13,14 @@ function MomentPicker({ onDateTimeChange }) {
   };
 
   return (
-    <div>
+    <div className="mb-3">
       <ReactDatePicker
         selected={startDate}
         onChange={handleDateTimeChange}
         timeInputLabel="Time:"
         dateFormat="dd/MM/yyyy h:mm aa"
         showTimeInput
+        className='form-control'
       />
     </div>
   );

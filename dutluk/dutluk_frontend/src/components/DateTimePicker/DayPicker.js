@@ -18,6 +18,7 @@ function DayPicker({ onDateTimeChange }) {
         onChange={handleDateTimeChange}
         timeInputLabel="Time:"
         dateFormat="dd/MM/yyyy"
+        className='form-control'
         
       />
     </div>

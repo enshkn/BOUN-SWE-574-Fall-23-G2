@@ -16,6 +16,9 @@ import DateTimerPicker from "./DateTimerPicker";
 
 
 const AddStoryForm = () => {
+  // new date time picker
+  const dateTimePickerValues = DateTimerPicker();
+  // existing code
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [startTimeStamp, setStartTimeStamp] = useState(null);
@@ -634,8 +637,10 @@ const AddStoryForm = () => {
       </label>
       
         
-      <DateTimerPicker />  
-      {/* <label className="add-story-label">
+      <DateTimerPicker />
+      
+
+{/* <label className="add-story-label">
 
 
 Time Resolution:
