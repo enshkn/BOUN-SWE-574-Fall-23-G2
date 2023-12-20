@@ -21,7 +21,11 @@ function DateTimerPicker() {
   const [selectedDateTimeEnd, setSelectedDateTimeEnd] = useState(new Date());
 
   const [selectedSeasonStart, setSelectedSeasonStart] = useState('');
-  const [selectedSeasonEnd, setSelectedSeasonEnd] = useState(''); 
+  const [selectedSeasonEnd, setSelectedSeasonEnd] = useState('');
+
+  const [selectedDecadeStart, setSelectedDecadeStart] = useState('');
+  const [selectedDecadeEnd, setSelectedDecadeEnd] = useState('');
+
 
   function formatDate(date) {
     const year = date.getFullYear();
@@ -151,6 +155,10 @@ function DateTimerPicker() {
   let showEndSeasonPicker = false;
   let showStartYearPicker = false;
   let showEndYearPicker = false;
+  let showStartDecadePicker = false;
+  let showEndDecadePicker = false;
+  let showStartDecadeSeasonPicker = false;
+  let showEndDecadeSeasonPicker = false;
 
 
   let formattedDateTimeStart = '';
@@ -189,10 +197,10 @@ function DateTimerPicker() {
           console.log(formattedDateTimeStart);
           break;
         case 'decade':
-          console.log(selectedTimeType ,'decade selected with switch');
+          showStartDecadePicker = true;
           break;
         case 'decade+season':
-          console.log(selectedTimeType, 'decade+season selected with switch');
+          showStartDecadeSeasonPicker = true;
           break;
       }
       break;
@@ -248,10 +256,12 @@ function DateTimerPicker() {
           console.log(formattedDateTimeEnd);
           break;
         case 'decade':
-          console.log(selectedTimeType, 'decade selected with switch');
+          showStartDecadePicker = true;
+          showEndDecadePicker = true;
           break;
         case 'decade+season':
-          console.log(selectedTimeType, 'decade+season selected with switch');
+          showStartDecadeSeasonPicker = true;
+          showEndDecadeSeasonPicker = true;
           break;
       }
       break;
@@ -281,7 +291,7 @@ function DateTimerPicker() {
       {showEndSeasonPicker && (
         <SeasonPicker 
           onDateTimeChange={(date, season) => {
-            setSelectedDateTimeStart(date);
+            setSelectedDateTimeEnd(date);
             setSelectedSeasonEnd(season);
           }}
         />
