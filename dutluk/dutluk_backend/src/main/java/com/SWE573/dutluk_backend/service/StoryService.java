@@ -450,7 +450,7 @@ public class StoryService {
 
     public List<Story> recommendedStories(User foundUser) {
         Map<Long,String> recommendationMap;
-        if(recService.isRecEngineStatus()){
+        if(recService.isRecEngineStatus() && foundUser.getRecommendedStoriesMap().isEmpty()){
             recommendationMap = recService.recommendStory(foundUser);
         }
         else{
