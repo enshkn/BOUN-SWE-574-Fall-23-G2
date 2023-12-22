@@ -7,6 +7,7 @@ import com.SWE573.dutluk_backend.request.FollowRequest;
 import com.SWE573.dutluk_backend.request.LoginRequest;
 import com.SWE573.dutluk_backend.request.RegisterRequest;
 import com.SWE573.dutluk_backend.request.UserUpdateRequest;
+import com.SWE573.dutluk_backend.response.LoginResponse;
 import com.SWE573.dutluk_backend.service.IntegrationService;
 import com.SWE573.dutluk_backend.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -80,10 +81,8 @@ public class UserController {
             Cookie cookie = new Cookie("Bearer", token);
             cookie.setPath("/api");
             response.addCookie(cookie);
-            foundUser.setToken(token);
-            return IntegrationService.mobileCheck(request,foundUser);
-            /*LoginResponse loginResponse = new LoginResponse(foundUser,token);
-            return IntegrationService.mobileCheck(request,loginResponse);*/
+            LoginResponse loginResponse = new LoginResponse(foundUser,token);
+            return IntegrationService.mobileCheck(request,loginResponse);
         } catch (AccountNotFoundException e) {
             return IntegrationService.mobileCheck(request,"Wrong password",HttpStatus.NOT_FOUND);
         }
