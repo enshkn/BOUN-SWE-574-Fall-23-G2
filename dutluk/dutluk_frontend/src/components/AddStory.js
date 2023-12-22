@@ -369,6 +369,41 @@ const AddStoryForm = () => {
     setEditInputValue('');
   };
 
+  // state handlers for DateTimerPicker component
+  const handleTimeTypeChange = (selectedTimeType) => {
+    console.log('Selected Time Type:', selectedTimeType);
+  };
+
+  const handleTimeExpressionChange = (selectedTimeExpression) => {
+    console.log('Selected Time Expression:', selectedTimeExpression);
+  };
+
+  const handleHourFlagChange = (hourFlag) => {
+    console.log('Selected Hour Flag:', hourFlag);
+  }
+
+  const handleDateFlagChange = (dateFlag) => {
+    console.log('Selected Date Flag:', dateFlag);
+  }
+  const handleTimeStampStartChange = (timeStampStart) => {
+    console.log('Selected TimeStamp Start:', timeStampStart);
+  }
+  const handleTimeStampEndChange = (timeStampEnd) => {
+    console.log('Selected TimeStamp End:', timeStampEnd);
+  }
+  const handleSelectedSeasonStart = (selectedSeasonStart) => {
+    console.log('Selected Season Start:', selectedSeasonStart);
+  }
+  const handleSelectedSeasonEnd = (selectedSeasonEnd) => {
+    console.log('Selected Season End:', selectedSeasonEnd);
+  }
+  const handleSelectedDecadeStart = (selectedDecadeStart) => {
+    console.log('Selected Decade Start:', selectedDecadeStart);
+  }
+  const handleSelectedDecadeEnd = (selectedDecadeEnd) => {
+    console.log('Selected Decade End:', selectedDecadeEnd);
+  }
+
   return (
     <Space
     direction="vertical"
@@ -634,7 +669,18 @@ const AddStoryForm = () => {
       </label>
       
         
-      <DateTimerPicker />  
+      <DateTimerPicker 
+      onTimeTypeSelect={handleTimeTypeChange}
+      onTimeExpressionSelect = {handleTimeExpressionChange}
+      onHourFlagSelect = {handleHourFlagChange}
+      onDateFlagSelect = {handleDateFlagChange}
+      onTimeStampStartSelect = {handleTimeStampStartChange}
+      onTimeStampEndSelect = {handleTimeStampEndChange}
+      onSelectedSeasonStart = {handleSelectedSeasonStart}
+      onSelectedSeasonEnd = {handleSelectedSeasonEnd}
+      onSelectedDecadeStart = {handleSelectedDecadeStart}
+      onSelectedDecadeEnd = {handleSelectedDecadeEnd}
+      />  
       {/* <label className="add-story-label">
 
 

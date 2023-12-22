@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect} from 'react'
 import TimeTypeMenu from './DateTimePicker/TimeTypeMenu'
 import TimeExpression from './DateTimePicker/TimeExpression'
 import MomentPicker from './DateTimePicker/MomentPicker'
@@ -8,26 +8,47 @@ import MonthPicker from './DateTimePicker/MonthPicker'
 import SeasonPicker from './DateTimePicker/SeasonPicker'
 import YearPicker from './DateTimePicker/YearPicker'
 import DecadePicker from './DateTimePicker/DecadePicker'
+import SeasonMenu from './DateTimePicker/SeasonMenu'
 
-function DateTimerPicker() {
+function DateTimerPicker({
+  onTimeTypeSelect,
+  onTimeExpressionSelect, 
+  onHourFlagSelect, 
+  onDateFlagSelect, 
+  onTimeStampStartSelect, 
+  onTimeStampEndSelect, 
+  onSelectedSeasonStart, 
+  onSelectedSeasonEnd, 
+  onSelectedDecadeStart, 
+  onSelectedDecadeEnd}) {
+  
+  // time type
   const [selectedTimeType, setSelectedTimeType] = useState('');
   const handleTimeTypeChange = (selectedTimeType) => {
     setSelectedTimeType(selectedTimeType);
   };
+  // time expression
   const [selectedTimeExpression, setSelectedTimeExpression] = useState('');
   const handleTimeExpressionChange = (selectedTimeExpression) => {
     setSelectedTimeExpression(selectedTimeExpression);
   };
+  // date time start end
   const [selectedDateTimeStart, setSelectedDateTimeStart] = useState(new Date());
   const [selectedDateTimeEnd, setSelectedDateTimeEnd] = useState(new Date());
-
+  // season
   const [selectedSeasonStart, setSelectedSeasonStart] = useState('');
   const [selectedSeasonEnd, setSelectedSeasonEnd] = useState('');
-
+  // decade
   const [selectedDecadeStart, setSelectedDecadeStart] = useState('');
   const [selectedDecadeEnd, setSelectedDecadeEnd] = useState('');
+  // timestamp
+  const [timeStampStart, setTimeStampStart] = useState('');
+  const [timeStampEnd, setTimeStampEnd] = useState('');
+  // date and hour flag
+  const [dateFlag, setDateFlag] = useState(-1);
+  const [hourFlag, setHourFlag] = useState(-1);
 
-
+ // moment formatter
   function formatDate(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -37,7 +58,27 @@ function DateTimerPicker() {
   
     return `${year} ${month}.${day} ${hours}:${minutes}`;
   }
+// day formatter
+  function dayFormatter_start(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = '00';
+    const minutes = '00';
+  
+    return `${year} ${month}.${day} ${hours}:${minutes}`;
+  }
 
+  function dayFormatter_end(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = '23';
+    const minutes = '59';
+  
+    return `${year} ${month}.${day} ${hours}:${minutes}`;
+  }  
+// month formatter
   function monthStartFormatter(date) {
     const year = date.getFullYear();
     const month  = String(date.getMonth() + 1).padStart(2, '0');
@@ -59,7 +100,7 @@ function DateTimerPicker() {
   
     return `${year}-${formattedMonth}-${formattedLastDay} ${hours}:${minutes}`;
   }
-
+// year formatter
   function yearStartFormatter(date) {
     const year = date.getFullYear();
     const month = '01';
@@ -79,6 +120,7 @@ function DateTimerPicker() {
   
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
+// season formatter
   function calculateSeasonDates(startYear, startSeason, timeType, endYear = null, endSeason = null) {
     let seasonStartMonth = 0;
     let seasonEndMonth = 0;
@@ -105,8 +147,6 @@ function DateTimerPicker() {
     }
   
     const parsedStartYear = startYear;
-    const startTime = new Date(parsedStartYear, seasonStartMonth, 1, 0, 0, 0); // Start of the season
-    const endTimePoint = new Date(parsedStartYear, seasonEndMonth + 1, 0, 23, 59, 59); // End of the season
   
     const formattedStartTime = `${parsedStartYear}-${seasonStartMonth + 1}-01 00:00:00`;
     const formattedEndTimePoint = `${parsedStartYear}-${seasonEndMonth + 1}-${new Date(parsedStartYear, seasonEndMonth + 1, 0).getDate()} 23:59:59`;
@@ -135,7 +175,6 @@ function DateTimerPicker() {
           return "Invalid endSeason value!";
       }
   
-      const endTimeInterval = new Date(parsedEndYear, seasonEndMonth + 1, 0, 23, 59, 59);
       const formattedEndTimeInterval = `${endYear}-${seasonEndMonth + 1}-${new Date(parsedEndYear, seasonEndMonth + 1, 0).getDate()} 23:59:59`;
   
       return { formattedStartTime, formattedEndTime: formattedEndTimeInterval };
@@ -143,21 +182,19 @@ function DateTimerPicker() {
   
     return "Invalid timeType or insufficient parameters!";
   }
-
+// decade formatter
   function getDecadeRangePoint(decade) {
     const startYear = decade;
     const endYear = decade + 9;
   
-    // Decade'in başlangıç ve bitiş tarihlerini oluşturma
-    const startDate = new Date(startYear, 0, 1, 0, 0, 0); // Decade'in ilk günü 00:00 saatleri
-    const endDate = new Date(endYear, 11, 31, 23, 59, 59); // Decade'in son günü 23:59 saatleri
+    
+    const startDate = new Date(startYear, 0, 1, 0, 0, 0); 
+    const endDate = new Date(endYear, 11, 31, 23, 59, 59);
   
     return { startDate, endDate };
   }
-  
 
-  
-
+//showing relevant picker  
   let showStartMomentPicker = false;
   let showEndMomentPicker = false;
   let showStartDayPicker = false;
@@ -173,111 +210,271 @@ function DateTimerPicker() {
   let showStartDecadeSeasonPicker = false;
   let showEndDecadeSeasonPicker = false;
 
-
+// variables for formatted date
   let formattedDateTimeStart = '';
   let formattedDateTimeEnd = '';
+  let var_dateFlag = -1;
+  let var_hourFlag = -1;
+
+// reset form
+  const resetForm = () => {
+    setSelectedTimeExpression('');
+    setSelectedDateTimeStart(new Date());
+    setSelectedDateTimeEnd(new Date());
+    setSelectedSeasonStart('');
+    setSelectedSeasonEnd('');
+    setSelectedDecadeStart('');
+    setSelectedDecadeEnd('');
+    setTimeStampStart('');
+    setTimeStampEnd('');
+    setDateFlag(-1);
+    setHourFlag(-1);
+  };
+    // Reset the form when the selectedTimeType changes
+    useEffect(() => {
+      resetForm();
+    }, [selectedTimeType]);
+
+  const resetFormExpression = () => {
+      setSelectedDateTimeStart(new Date());
+      setSelectedDateTimeEnd(new Date());
+      setSelectedSeasonStart('');
+      setSelectedSeasonEnd('');
+      setSelectedDecadeStart('');
+      setSelectedDecadeEnd('');
+      setTimeStampStart('');
+      setTimeStampEnd('');
+      setDateFlag(-1);
+      setHourFlag(-1);
+    };
+    
+    // Reset the form when the selectedTimeType changes
+    useEffect(() => {
+      resetFormExpression();
+    }, [selectedTimeExpression]);
+
+    // update timestamp when selectedDateTimeStart and selectedDateTimeEnd changes
+    useEffect(() => {
+    setTimeStampStart(formattedDateTimeStart);
+    setTimeStampEnd(formattedDateTimeEnd);
+    setDateFlag(var_dateFlag);
+    setHourFlag(var_hourFlag);
+    })
+
+    // log timestamp when selectedDateTimeStart and selectedDateTimeEnd changes
+    useEffect(() => {
+      console.log("date flag: ", dateFlag, "hour flag: ", hourFlag, "time stamp end:", timeStampEnd, "time stamp start: ", timeStampStart);
+    }, [dateFlag, hourFlag, timeStampEnd, timeStampStart]);
+
+  // props 
+  
+  { 
+   // single props example 
+  /*
+  useEffect(() => {
+    onTimeTypeSelect(selectedTimeType);
+  }, [selectedTimeType, onTimeTypeSelect]);
+  */
+ }
+  // multi props
+  useEffect(() => {
+    onTimeTypeSelect(selectedTimeType);
+    onTimeExpressionSelect(selectedTimeExpression);
+    onHourFlagSelect(hourFlag);
+    onDateFlagSelect(dateFlag);
+    onTimeStampStartSelect(timeStampStart);
+    onTimeStampEndSelect(timeStampEnd);
+    onSelectedSeasonStart(selectedSeasonStart);
+    onSelectedSeasonEnd(selectedSeasonEnd);
+    onSelectedDecadeStart(selectedDecadeStart);
+    onSelectedDecadeEnd(selectedDecadeEnd);
+  }, [
+    selectedTimeType,
+    selectedTimeExpression,
+    hourFlag,
+    dateFlag,
+    timeStampStart,
+    timeStampEnd,
+    selectedSeasonStart,
+    selectedSeasonEnd,
+    selectedDecadeStart,
+    selectedDecadeEnd,
+    onTimeTypeSelect,
+    onTimeExpressionSelect,
+    onHourFlagSelect,
+    onDateFlagSelect,
+    onTimeStampStartSelect,
+    onTimeStampEndSelect,
+    onSelectedSeasonStart,
+    onSelectedSeasonEnd,
+    onSelectedDecadeStart,
+    onSelectedDecadeEnd,
+  ]);
+  
+
+    
+  
 
   switch (selectedTimeType) {
+
     case 'timePoint':
       switch (selectedTimeExpression) {
         case 'moment':
+          // showing relevant picker
           showStartMomentPicker = true;
+          // formatting date
           formattedDateTimeStart = formatDate(selectedDateTimeStart);
-          console.log(formattedDateTimeStart);
+          formattedDateTimeEnd = formattedDateTimeStart;
+          // flags
+          var_dateFlag = 3;
+          var_hourFlag = 1;
+          // showing dates
           break;
         case 'day':
+          // showing relevant picker
           showStartDayPicker = true;
-          formattedDateTimeStart = formatDate(selectedDateTimeStart);
-          console.log(selectedDateTimeStart);
+          // formatting date
+          formattedDateTimeStart = dayFormatter_start(selectedDateTimeStart);
+          formattedDateTimeEnd = dayFormatter_end(selectedDateTimeStart);
+          // flags
+          var_dateFlag = 3;
+          var_hourFlag = 0;
+          // showing dates
           break;
         case 'month':
+          // showing relevant picker
           showStartMonthPicker = true;
+          // formatting date
           formattedDateTimeStart = monthStartFormatter(selectedDateTimeStart);
-          console.log(formattedDateTimeStart);
+          formattedDateTimeEnd = monthEndFormatter(selectedDateTimeStart);
+          // flags
+          var_dateFlag = 2;
+          var_hourFlag = 0;
+          // showing dates
           break;
         case 'season':
           showStartSeasonPicker = true;
-          let formattedDate = formatDate(selectedDateTimeStart);
-          let startYear = new Date(formattedDate).getFullYear();
+          formattedDateTimeStart = formatDate(selectedDateTimeStart);
+          // parsing year
+          let startYear = new Date(formattedDateTimeStart).getFullYear();
           let intSeasonStart = parseInt(selectedSeasonStart, 10);
+          // calculating season dates
           const result = calculateSeasonDates(startYear, intSeasonStart, selectedTimeType);
           formattedDateTimeStart = result.formattedStartTime;
           formattedDateTimeEnd = result.formattedEndTime;
+          // showing dates
           break;
         case 'year':
+          // showing relevant picker
           showStartYearPicker = true;
+          // formatting date
           formattedDateTimeStart = yearStartFormatter(selectedDateTimeStart);
-          console.log(formattedDateTimeStart);
+          formattedDateTimeEnd = yearEndFormatter(selectedDateTimeStart);
+          // flags
+          var_dateFlag = 1;
+          var_hourFlag = 0;
+          // showing dates
           break;
         case 'decade':
+          // showing relevant picker
           showStartDecadePicker = true;
+          // obtain decade range
           const decade_result = getDecadeRangePoint(selectedDecadeStart);
           let decade_start = decade_result.startDate;
           let decade_end = decade_result.endDate;
+          // formatting date
           formattedDateTimeStart = formatDate(decade_start);
           formattedDateTimeEnd = formatDate(decade_end)
-          console.log(formattedDateTimeStart, formattedDateTimeEnd)
+          // showing dates
           break;
         case 'decade+season':
-          showStartDecadeSeasonPicker = true;
+          // showing relevant picker
           break;
       }
       break;
     case 'timeInterval':
       switch (selectedTimeExpression) {
         case 'moment':
+          // showing relevant picker
           showStartMomentPicker = true;
           showEndMomentPicker = true;
+          // formatting date
           formattedDateTimeStart = formatDate(selectedDateTimeStart);
           formattedDateTimeEnd = formatDate(selectedDateTimeEnd);
-          console.log(formattedDateTimeStart);
-          console.log(formattedDateTimeEnd);
+          // flags
+          var_dateFlag = 3;
+          var_hourFlag = 1;
+          // showing dates
           break;
         case 'day':
+          // showing relevant picker
           showStartDayPicker = true;
           showEndDayPicker = true;
-          formattedDateTimeStart = formatDate(selectedDateTimeStart);
-          formattedDateTimeEnd = formatDate(selectedDateTimeEnd);
-          console.log(formattedDateTimeStart);
-          console.log(formattedDateTimeEnd);
+          // formatting date
+          formattedDateTimeStart = dayFormatter_start(selectedDateTimeStart);
+          formattedDateTimeEnd = dayFormatter_end(selectedDateTimeEnd);
+          // flags
+          var_dateFlag = 3;
+          var_hourFlag = 0;
+          // showing dates
           break;
         case 'month':
+          // showing relevant picker
           showStartMonthPicker = true;
           showEndMonthPicker = true;
+          // formatting date
           formattedDateTimeStart = monthStartFormatter(selectedDateTimeStart);
           formattedDateTimeEnd = monthEndFormatter(selectedDateTimeEnd);
-          console.log(formattedDateTimeStart);
-          console.log(formattedDateTimeEnd);
+          // flags
+          var_dateFlag = 2;
+          var_hourFlag = 0;          
+          // showing dates
           break;
         case 'season':
+          // showing relevant picker
           showStartSeasonPicker = true;
           showEndSeasonPicker = true;
+          // formatting date
           formattedDateTimeStart = formatDate(selectedDateTimeStart);
           formattedDateTimeEnd = formatDate(selectedDateTimeEnd);
-          
+          // parsing year
           let startYear = new Date(formattedDateTimeStart).getFullYear();
           let endYear = new Date(formattedDateTimeEnd).getFullYear();
-
+          // parsing season
           let intSeasonStart = parseInt(selectedSeasonStart, 10);
           let intSeasonEnd = parseInt(selectedSeasonEnd, 10);
-
+          // calculating season dates
           const result = calculateSeasonDates(startYear, intSeasonStart, selectedTimeType, endYear, intSeasonEnd);
+          // formatting date
           formattedDateTimeStart = result.formattedStartTime;
           formattedDateTimeEnd = result.formattedEndTime;
-          console.log(formattedDateTimeStart, formattedDateTimeEnd)
+          // showing dates
           break;
         case 'year':
+          // showing relevant picker
           showStartYearPicker = true;
           showEndYearPicker = true;
+          // formatting date
           formattedDateTimeStart = yearStartFormatter(selectedDateTimeStart)
           formattedDateTimeEnd = yearEndFormatter(selectedDateTimeEnd)
-          console.log(formattedDateTimeStart);
-          console.log(formattedDateTimeEnd);
+          // flags
+          var_dateFlag = 1;
+          var_hourFlag = 0;
+          // showing dates
           break;
         case 'decade':
+          // showing relevant picker
           showStartDecadePicker = true;
           showEndDecadePicker = true;
-          console.log(selectedDecadeStart, selectedDecadeEnd)
+          // obtain decade range
+          let decade_result_start = getDecadeRangePoint(selectedDecadeStart);
+          let decade_result_end = getDecadeRangePoint(selectedDecadeEnd);
+          let decade_start = decade_result_start.startDate;
+          let decade_end = decade_result_end.endDate;
+          // formatting date
+          formattedDateTimeStart = formatDate(decade_start);
+          formattedDateTimeEnd = formatDate(decade_end)
+          // showing dates
           break;
         case 'decade+season':
           showStartDecadeSeasonPicker = true;
@@ -285,7 +482,7 @@ function DateTimerPicker() {
           break;
       }
       break;
-    default:
+      default:
       break;
   }
 
@@ -320,6 +517,22 @@ function DateTimerPicker() {
       {showEndYearPicker && (<YearPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
       {showStartDecadePicker && (<DecadePicker onDateTimeChange={setSelectedDecadeStart} />)}
       {showEndDecadePicker && (<DecadePicker onDateTimeChange={setSelectedDecadeEnd} />)}
+
+      { 
+      /*
+      {showStartDecadeSeasonPicker && 
+      (<div>
+        <DecadePicker onDateTimeChange={setSelectedDecadeStart} />
+        <SeasonMenu onSeasonSelect={setSelectedSeasonStart} />
+      </div>)}
+      {showEndDecadeSeasonPicker && 
+      (<div>
+        <DecadePicker onDateTimeChange={setSelectedDecadeEnd} />
+        <SeasonMenu onSeasonSelect={setSelectedSeasonEnd} />
+      </div>)}
+      */
+      }
+
       </div>
     </div>  
     
