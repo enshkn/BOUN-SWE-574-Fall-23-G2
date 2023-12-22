@@ -82,6 +82,8 @@ public class UserController {
             response.addCookie(cookie);
             foundUser.setToken(token);
             return IntegrationService.mobileCheck(request,foundUser);
+            /*LoginResponse loginResponse = new LoginResponse(foundUser,token);
+            return IntegrationService.mobileCheck(request,loginResponse);*/
         } catch (AccountNotFoundException e) {
             return IntegrationService.mobileCheck(request,"Wrong password",HttpStatus.NOT_FOUND);
         }

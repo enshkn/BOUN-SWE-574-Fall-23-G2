@@ -66,6 +66,8 @@ public class Story extends BaseEntity{
 
     private String season;
 
+    private String endSeason;
+
     private String decade;
 
     private String endDecade;
@@ -81,5 +83,7 @@ public class Story extends BaseEntity{
     @Transient
     @JsonIgnore
     private String percentage;
+
+
 
 }

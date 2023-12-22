@@ -32,4 +32,6 @@ public interface StoryRepository extends JpaRepository<Story,Long> {
     List<Story> findByEndTimeStampBetween(Date startDecadeDate, Date endDecadeDate);
 
     List<Story> findByCreatedAtAfterOrderByIdDesc(Date date);
+
+    List<Story> findByEndSeasonContainingIgnoreCase(String endSeason);
 }

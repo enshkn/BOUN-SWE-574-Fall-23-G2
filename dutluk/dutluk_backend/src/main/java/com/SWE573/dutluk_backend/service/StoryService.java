@@ -5,8 +5,7 @@ import com.SWE573.dutluk_backend.model.Location;
 import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.StoryRepository;
-import com.SWE573.dutluk_backend.request.StoryCreateRequest;
-import com.SWE573.dutluk_backend.request.StoryEditRequest;
+import com.SWE573.dutluk_backend.request.StoryEnterRequest;
 import com.SWE573.dutluk_backend.response.MyStoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryResponse;
@@ -49,24 +48,25 @@ public class StoryService {
         return (!storyList.isEmpty()) ? storyList : Collections.emptyList();
     }
 
-    public Story createStory(User foundUser, StoryCreateRequest storyCreateRequest) throws ParseException, IOException {
+    public Story createStory(User foundUser, StoryEnterRequest storyEnterRequest) throws ParseException, IOException {
         Story createdStory = Story.builder()
-                .title(storyCreateRequest.getTitle())
-                .labels(storyCreateRequest.getLabels())
-                .text(imageService.parseAndSaveImages(storyCreateRequest.getText()))
-                .startTimeStamp(storyCreateRequest.getStartTimeStamp())
-                .endTimeStamp(storyCreateRequest.getEndTimeStamp())
-                .season(storyCreateRequest.getSeason())
-                .startHourFlag(storyCreateRequest.getStartHourFlag())
-                .endHourFlag(storyCreateRequest.getEndHourFlag())
-                .startDateFlag(storyCreateRequest.getStartDateFlag())
-                .endDateFlag(storyCreateRequest.getEndDateFlag())
+                .title(storyEnterRequest.getTitle())
+                .labels(storyEnterRequest.getLabels())
+                .text(imageService.parseAndSaveImages(storyEnterRequest.getText()))
+                .startTimeStamp(storyEnterRequest.getStartTimeStamp())
+                .endTimeStamp(storyEnterRequest.getEndTimeStamp())
+                .season(storyEnterRequest.getSeason())
+                .endSeason(storyEnterRequest.getEndSeason())
+                .startHourFlag(storyEnterRequest.getStartHourFlag())
+                .endHourFlag(storyEnterRequest.getEndHourFlag())
+                .startDateFlag(storyEnterRequest.getStartDateFlag())
+                .endDateFlag(storyEnterRequest.getEndDateFlag())
                 .user(foundUser)
-                .decade(storyCreateRequest.getDecade())
-                .endDecade(storyCreateRequest.getEndDecade())
+                .decade(storyEnterRequest.getDecade())
+                .endDecade(storyEnterRequest.getEndDecade())
                 .likes(new HashSet<>())
                 .build();
-        ArrayList<Location> allLocations = storyCreateRequest.getLocations();
+        ArrayList<Location> allLocations = storyEnterRequest.getLocations();
         for (Location location : allLocations) {
             location.setStory(createdStory);
         }
@@ -239,6 +239,12 @@ public class StoryService {
         return storyRepository.findBySeasonContainingIgnoreCase(season);
     }
 
+    public List<Story> searchStoriesWithMultipleSeasons(String season,String endSeason){
+        List<Story> storyList = storyRepository.findBySeasonContainingIgnoreCase(season);
+        storyList.retainAll(storyRepository.findByEndSeasonContainingIgnoreCase(endSeason));
+        return storyList;
+    }
+
     public List<Story> searchStoriesWithSingleDate(String startTimeStamp) throws ParseException {
         Date formattedStartDate = stringToDate(startTimeStamp);
         Date formattedEndDate;
@@ -311,7 +317,7 @@ public class StoryService {
         return dateFormat.parse(timeStamp);
     }
 
-    public Story enterStory(StoryEditRequest storyEditRequest,Story foundStory) throws ParseException, IOException {
+    public Story enterStory(StoryEnterRequest storyEditRequest,Story foundStory) throws ParseException, IOException {
 
         foundStory.setLabels(storyEditRequest.getLabels());
         foundStory.setTitle(storyEditRequest.getTitle());
@@ -322,6 +328,7 @@ public class StoryService {
         foundStory.setDecade(storyEditRequest.getDecade());
         foundStory.setEndDecade(storyEditRequest.getEndDecade());
         foundStory.setSeason(storyEditRequest.getSeason());
+        foundStory.setEndSeason(storyEditRequest.getEndSeason());
         foundStory.setLocations(storyEditRequest.getLocations());
         foundStory.setStartHourFlag(storyEditRequest.getStartHourFlag());
         foundStory.setEndHourFlag(storyEditRequest.getEndHourFlag());
@@ -336,7 +343,7 @@ public class StoryService {
         return foundStory;
     }
 
-    public Story editStory(StoryEditRequest request, User user, Long storyId) throws ParseException, IOException {
+    public Story editStory(StoryEnterRequest request, User user, Long storyId) throws ParseException, IOException {
         Story story = getStoryByStoryId(storyId);
         if(Objects.equals(story.getUser().getId(),user.getId())){
             Story enteredStory = enterStory(request,story);
@@ -593,7 +600,8 @@ public class StoryService {
             String endTimeStamp,
             String decade,
             String endDecade,
-            String season) throws ParseException {
+            String season,
+            String endSeason) throws ParseException {
         Set<Story> storySet = new HashSet<>();
         if(query != null){
             if(!query.equalsIgnoreCase("") && !query.equalsIgnoreCase("null")){
@@ -626,8 +634,15 @@ public class StoryService {
 
         }
         if(season != null && !season.equalsIgnoreCase("null")){
-            storySet.addAll(searchStoriesWithSeason(season));
+            if(endSeason != null && !endSeason.equalsIgnoreCase("null")){
+                storySet.addAll(searchStoriesWithMultipleSeasons(season,endSeason));
+            }
+            else{
+                storySet.addAll(searchStoriesWithSeason(season));
+            }
+
         }
+
         if(storySet.isEmpty()){
             return new ArrayList<>();
         }
@@ -644,7 +659,8 @@ public class StoryService {
             String endTimeStamp,
             String decade,
             String endDecade,
-            String season) throws ParseException {
+            String season,
+            String endSeason) throws ParseException {
         Set<Story> titleSet = new HashSet<>();
         Set<Story> labelsSet = new HashSet<>();
         Set<Story> locationSet = new HashSet<>();
@@ -702,8 +718,13 @@ public class StoryService {
 
         }
         if(season != null && !season.equalsIgnoreCase("null")){
-            seasonSet.addAll(searchStoriesWithSeason(season));
-            if(searchStoriesWithSeason(season) != null){
+            if(endSeason != null && !endSeason.equalsIgnoreCase("null")){
+                seasonSet.addAll(searchStoriesWithMultipleSeasons(season,endSeason));
+            }
+            else{
+                seasonSet.addAll(searchStoriesWithSeason(season));
+            }
+            if(!seasonSet.isEmpty()){
                 storySet.retainAll(seasonSet);
             }
         }

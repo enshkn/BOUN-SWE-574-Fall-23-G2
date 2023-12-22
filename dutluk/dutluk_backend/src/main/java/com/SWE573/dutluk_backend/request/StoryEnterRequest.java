@@ -10,22 +10,27 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class StoryEditRequest {
+public class StoryEnterRequest {
     private String text;
 
-    private String title;
 
+    private String title;
     private ArrayList<String> labels = new ArrayList<>();
 
     private ArrayList<Location> locations = new ArrayList<>();
 
+
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Europe/Istanbul")
     private Date startTimeStamp;
+
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Europe/Istanbul")
     private Date endTimeStamp;
 
     private String season;
+
+    private String endSeason;
 
     private String decade;
 
