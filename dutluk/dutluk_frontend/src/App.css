@@ -23,6 +23,15 @@ body {
   text-decoration: none;
 }
 
+a:link.nav-link {
+  color: rgb(255, 255, 255);
+}
+
+/* visited link */
+a:visited.nav-link {
+  color: rgb(255, 255, 255);
+}
+
 .dutluk-container {
   display: flex;
   justify-content: center;
