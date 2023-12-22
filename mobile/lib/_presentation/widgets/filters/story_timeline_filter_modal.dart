@@ -1,11 +1,14 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_map_location_picker/map_location_picker.dart'
     hide Location;
 import 'package:location/location.dart';
+import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swe/_application/story/story_cubit.dart';
 import 'package:swe/_application/story/story_state.dart';
 import 'package:swe/_core/env/env.dart';
+import 'package:swe/_core/extensions/context_extensions.dart';
 import 'package:swe/_core/widgets/base_scroll_view.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_domain/story/model/location_model.dart';
@@ -44,6 +47,12 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
   late TextEditingController labelController;
   String? selectedSeason;
   String? selectedDecade;
+
+  String? formattedStartDateTime;
+  String? formattedEndDateTime;
+
+  late DateTime selectedStartDateTime;
+  late DateTime selectedEndDateTime;
 
   List<String> seasonList = <String>['Winter', 'Spring', 'Summer', 'Fall'];
   List<String> decadeList = <String>[
@@ -100,7 +109,8 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
     seasonController = TextEditingController();
     titleController = TextEditingController();
     labelController = TextEditingController();
-
+    selectedStartDateTime = DateTime(0);
+    selectedEndDateTime = DateTime(0);
     setFilter(widget.currentFilter);
 
     super.initState();
@@ -301,14 +311,49 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
                             hintText: 'Write radius',
                           ),
                           BaseWidgets.normalGap,
-                          AppTextFormField(
-                            controller: startTimeStampController,
-                            hintText: 'Write start time',
+                          AppButton(
+                            border: Border.all(color: context.appBarColor),
+                            backgroundColor: Colors.white,
+                            labelStyle: const TextStyle(color: Colors.black),
+                            label: formattedStartDateTime ??
+                                'Choose Date and Time',
+                            onPressed: () async {
+                              final dateTime = await dateTimePicker(
+                                formattedStartDateTime,
+                                selectedStartDateTime,
+                                OmniDateTimePickerType.date,
+                              );
+                              setState(() {
+                                selectedStartDateTime = dateTime!;
+                                formattedStartDateTime = DateFormat.yMd()
+                                    .format(selectedStartDateTime);
+                              });
+                            },
                           ),
                           BaseWidgets.normalGap,
-                          AppTextFormField(
+                          /*   AppTextFormField(
                             controller: endTimeStampController,
                             hintText: 'Write end time',
+                          ), */
+
+                          AppButton(
+                            border: Border.all(color: context.appBarColor),
+                            backgroundColor: Colors.white,
+                            labelStyle: const TextStyle(color: Colors.black),
+                            label: formattedEndDateTime ??
+                                'Choose End Date and Time',
+                            onPressed: () async {
+                              final dateTime = await dateTimePicker(
+                                formattedEndDateTime,
+                                selectedEndDateTime,
+                                OmniDateTimePickerType.date,
+                              );
+                              setState(() {
+                                selectedEndDateTime = dateTime!;
+                                formattedEndDateTime = DateFormat.yMd()
+                                    .format(selectedEndDateTime);
+                              });
+                            },
                           ),
                           BaseWidgets.normalGap,
                           dropDownMenu(
@@ -367,6 +412,42 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
       });
     }
   } */
+
+  Future<DateTime?> dateTimePicker(
+    String? formattedStartDate,
+    DateTime selectedDateTime,
+    OmniDateTimePickerType type,
+  ) {
+    return showOmniDateTimePicker(
+      context: context,
+      initialDate:
+          formattedStartDate == null ? DateTime.now() : selectedDateTime,
+      firstDate: DateTime(1940),
+      lastDate: DateTime.now(),
+      is24HourMode: true,
+      minutesInterval: 1,
+      isForce2Digits: false,
+      borderRadius: const BorderRadius.all(Radius.circular(16)),
+      constraints: const BoxConstraints(
+        maxWidth: 350,
+        maxHeight: 650,
+      ),
+      type: type,
+      transitionBuilder: (context, anim1, anim2, child) {
+        return FadeTransition(
+          opacity: anim1.drive(
+            Tween(
+              begin: 0,
+              end: 1,
+            ),
+          ),
+          child: child,
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 200),
+      barrierDismissible: true,
+    );
+  }
 
   Widget dropDownMenu(
     String? selectedItem,
@@ -429,11 +510,11 @@ class _StoryTimelineFilterModalState extends State<StoryTimelineFilterModal> {
       longitude: longitudeController.text != ''
           ? double.parse(longitudeController.text)
           : null,
-      startTimeStamp: startTimeStampController.text != ''
-          ? startTimeStampController.text
+      startTimeStamp: selectedStartDateTime != DateTime(0)
+          ? selectedStartDateTime.toString()
           : null,
-      endTimeStamp: endTimeStampController.text != ''
-          ? endTimeStampController.text
+      endTimeStamp: selectedEndDateTime != DateTime(0)
+          ? selectedEndDateTime.toString()
           : null,
       decade: decadeController.text != '' ? decadeController.text : null,
       season: seasonController.text != '' ? seasonController.text : null,
