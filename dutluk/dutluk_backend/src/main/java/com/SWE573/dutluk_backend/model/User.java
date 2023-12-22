@@ -95,7 +95,4 @@ public class User extends BaseEntity{
     @ManyToMany(mappedBy = "followers", fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JsonIncludeProperties({"id","username"})
     private Set<User> following = new HashSet<>();
-
-    @Transient
-    private String token;
 }
