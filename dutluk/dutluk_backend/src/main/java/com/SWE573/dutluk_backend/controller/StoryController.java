@@ -54,8 +54,8 @@ public class StoryController {
 
     }
 
-    @PostMapping("delete/all/RecEngine")
-    public ResponseEntity<?> deleteAllStoriesOnRecEngine(@RequestBody String password,HttpServletRequest request){
+    @PostMapping("delete/all/RecEngine/{password}")
+    public ResponseEntity<?> deleteAllStoriesOnRecEngine(@PathVariable String password, HttpServletRequest request){
         return IntegrationService.mobileCheck(request,recService.deleteAllOnRecEngine(password));
     }
 

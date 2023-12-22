@@ -456,7 +456,7 @@ public class StoryService {
     }
 
     public List<Story> recommendedStories(User foundUser) {
-        Map<Long,String> recommendationMap;
+        Map<Long,Integer> recommendationMap;
         if(recService.isRecEngineStatus() && foundUser.getRecommendedStoriesMap().isEmpty()){
             recommendationMap = recService.recommendStory(foundUser);
         }
@@ -483,7 +483,7 @@ public class StoryService {
         return sortStoriesByDescending(storyList);
     }
 
-    public Story addPercentageToStory(Story story, String percentage) {
+    public Story addPercentageToStory(Story story, Integer percentage) {
         if(percentage != null){
             story.setPercentage(percentage);
         }

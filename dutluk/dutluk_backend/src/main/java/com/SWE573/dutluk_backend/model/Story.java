@@ -82,7 +82,7 @@ public class Story extends BaseEntity{
 
     @Transient
     @JsonIgnore
-    private String percentage;
+    private Integer percentage;
 
 
 

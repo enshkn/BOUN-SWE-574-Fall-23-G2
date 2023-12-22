@@ -75,9 +75,9 @@ public class User extends BaseEntity{
     }
 
     @ElementCollection
-    private Map<Long, String> recommendedStoriesMap = new HashMap<>();
+    private Map<Long, Integer> recommendedStoriesMap = new HashMap<>();
 
-    public Map<Long, String> getRecommendedStoriesMap() {
+    public Map<Long, Integer> getRecommendedStoriesMap() {
         if(recommendedStoriesMap == null){
             recommendedStoriesMap = new HashMap<>();
         }

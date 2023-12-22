@@ -53,7 +53,7 @@ public class StoryResponse{
 
     private String endDecade;
 
-    private String percentage;
+    private Integer percentage;
 
     public StoryResponse(Story story) {
         this.id = story.getId();

@@ -32,7 +32,7 @@ public class LoginResponse {
     @JsonIgnore
     private Set<Long> savedStories;
 
-    private Map<Long, String> recommendedStoriesMap;
+    private Map<Long, Integer> recommendedStoriesMap;
 
     @JsonIncludeProperties({"id","username"})
     private Set<User> followers;

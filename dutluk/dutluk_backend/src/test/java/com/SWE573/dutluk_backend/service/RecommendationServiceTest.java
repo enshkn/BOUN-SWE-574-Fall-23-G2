@@ -199,7 +199,7 @@ class RecommendationServiceTest {
                 .thenReturn(ResponseEntity.ok(mockResponse));
 
         // When
-        Map<Long, String> result = recommendationService.recommendStory(user);
+        Map<Long, Integer> result = recommendationService.recommendStory(user);
 
         // Then
         assertNotNull(result);
