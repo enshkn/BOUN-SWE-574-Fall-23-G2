@@ -7,6 +7,24 @@ const StoryList = ({ story }) => {
     const [isSaved, setIsSaved] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
 
+    const fetchSaveStatus = useCallback(async () => {
+        try {
+            const response = await axios.get(
+                `${process.env.REACT_APP_BACKEND_URL}/api/story/isSavedByUser/${story.id}`,
+                {
+                  withCredentials: true,
+                }
+            );
+            setIsSaved(response.data);
+        } catch (error) {
+            console.error('Save status API error:', error.message);
+            messageApi.open({ type: "error", content: "Error occurred while fetching saved story data!" });
+        }
+    }, [story.id, messageApi]);
+
+    useEffect(() => {
+        fetchSaveStatus();
+    }, [fetchSaveStatus]);
 
 const truncateText = (text, maxLength) => {
     if (text.length > maxLength) {
