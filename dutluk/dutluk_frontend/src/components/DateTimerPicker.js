@@ -20,7 +20,11 @@ function DateTimerPicker({
   onSelectedSeasonStart, 
   onSelectedSeasonEnd, 
   onSelectedDecadeStart, 
-  onSelectedDecadeEnd}) {
+  onSelectedDecadeEnd,
+  onSelectedDateTimeStart,
+  onSelectedDateTimeEnd,
+  
+}) {
   
   // time type
   const [selectedTimeType, setSelectedTimeType] = useState('');
@@ -56,7 +60,7 @@ function DateTimerPicker({
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
   
-    return `${year} ${month}.${day} ${hours}:${minutes}`;
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
 // day formatter
   function dayFormatter_start(date) {
@@ -66,7 +70,7 @@ function DateTimerPicker({
     const hours = '00';
     const minutes = '00';
   
-    return `${year} ${month}.${day} ${hours}:${minutes}`;
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
 
   function dayFormatter_end(date) {
@@ -76,7 +80,7 @@ function DateTimerPicker({
     const hours = '23';
     const minutes = '59';
   
-    return `${year} ${month}.${day} ${hours}:${minutes}`;
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   }  
 // month formatter
   function monthStartFormatter(date) {
@@ -86,7 +90,7 @@ function DateTimerPicker({
     const hours = '00';
     const minutes = '00';
 
-    return `${year} ${month}.${day} ${hours}:${minutes}`;
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
 
   function monthEndFormatter(date) {
@@ -221,12 +225,12 @@ function DateTimerPicker({
     setSelectedTimeExpression('');
     setSelectedDateTimeStart(new Date());
     setSelectedDateTimeEnd(new Date());
-    setSelectedSeasonStart('');
-    setSelectedSeasonEnd('');
-    setSelectedDecadeStart('');
-    setSelectedDecadeEnd('');
-    setTimeStampStart('');
-    setTimeStampEnd('');
+    setSelectedSeasonStart(null);
+    setSelectedSeasonEnd(null);
+    setSelectedDecadeStart(null);
+    setSelectedDecadeEnd(null);
+    setTimeStampStart(null);
+    setTimeStampEnd(null);
     setDateFlag(-1);
     setHourFlag(-1);
   };
@@ -238,12 +242,12 @@ function DateTimerPicker({
   const resetFormExpression = () => {
       setSelectedDateTimeStart(new Date());
       setSelectedDateTimeEnd(new Date());
-      setSelectedSeasonStart('');
-      setSelectedSeasonEnd('');
-      setSelectedDecadeStart('');
-      setSelectedDecadeEnd('');
-      setTimeStampStart('');
-      setTimeStampEnd('');
+      setSelectedSeasonStart(null);
+      setSelectedSeasonEnd(null);
+      setSelectedDecadeStart(null);
+      setSelectedDecadeEnd(null);
+      setTimeStampStart(null);
+      setTimeStampEnd(null);
       setDateFlag(-1);
       setHourFlag(-1);
     };
@@ -288,9 +292,13 @@ function DateTimerPicker({
     onSelectedSeasonEnd(selectedSeasonEnd);
     onSelectedDecadeStart(selectedDecadeStart);
     onSelectedDecadeEnd(selectedDecadeEnd);
+    onSelectedDateTimeStart(selectedDateTimeStart);
+    onSelectedDateTimeEnd(selectedDateTimeEnd);
   }, [
     selectedTimeType,
     selectedTimeExpression,
+    selectedDateTimeStart,
+    selectedDateTimeEnd,
     hourFlag,
     dateFlag,
     timeStampStart,
@@ -309,6 +317,8 @@ function DateTimerPicker({
     onSelectedSeasonEnd,
     onSelectedDecadeStart,
     onSelectedDecadeEnd,
+    onSelectedDateTimeStart,
+    onSelectedDateTimeEnd,
   ]);
   
 

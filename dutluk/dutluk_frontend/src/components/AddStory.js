@@ -6,7 +6,7 @@ import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
 import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
-import { format, getYear } from "date-fns";
+import { format, getYear, set } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Space, message, Input, Tag, Tooltip} from 'antd';
 import "./css/AddStory.css";
@@ -18,10 +18,21 @@ import DateTimerPicker from "./DateTimerPicker";
 const AddStoryForm = () => {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
-  const [startTimeStamp, setStartTimeStamp] = useState(null);
-  const [endTimeStamp, setEndTimeStamp] = useState(null);
-  const [season, setSeason] = useState("");
-  const [decade, setDecade] = useState("");
+  // time resolution states
+  const [startTimeStamp, setStartTimeStamp] = useState(new Date());
+  const [endTimeStamp, setEndTimeStamp] = useState(new Date());
+  // timeType and timeExpression are used for time resolution
+  const [timeType, setTimeType] = useState(null);
+  const [timeExpression, setTimeExpression] = useState(null);
+  // hourFlag and dateFlag are used for time resolution
+  const [hourFlag, setHourFlag] = useState(null);
+  const [dateFlag, setDateFlag] = useState(null);
+  // season and decade are used for time resolution
+  const [season, setSeason] = useState(null);
+  const [endSeason, setEndSeason] = useState(null);
+  const [decade, setDecade] = useState(null);
+  const [endDecade, setEndDecade] = useState(null);
+  // existing states
   const [searchBox, setSearchBox] = useState(null);
   const [currentShape, setCurrentShape] = useState(null);
   const [tempPoints, setTempPoints] = useState([]);
@@ -103,12 +114,12 @@ const AddStoryForm = () => {
     let formattedStartTimeStamp = null;
     let formattedEndTimeStamp = null;
 
-    if(startTimeStamp !== null){
+    if(startTimeStamp !== null) {
       if (startTimeStamp && startTimeStamp > currentDateTime) {
         return;
       }
 
-      if(endTimeStamp !== null){
+    if(endTimeStamp !== null) {
         if (endTimeStamp && endTimeStamp > currentDateTime) {
           return;
         }
@@ -179,10 +190,17 @@ const AddStoryForm = () => {
           }))
         )
       ],
-      startTimeStamp: formattedStartTimeStamp,
-      endTimeStamp: formattedEndTimeStamp,
+      formattedStartTimeStamp,
+      formattedEndTimeStamp,
       season,
+      endSeason,
       decade,
+      endDecade,
+      timeType,
+      timeExpression,
+      hourFlag,
+      dateFlag,
+
     };
 
     try {
@@ -371,37 +389,57 @@ const AddStoryForm = () => {
 
   // state handlers for DateTimerPicker component
   const handleTimeTypeChange = (selectedTimeType) => {
-    console.log('Selected Time Type:', selectedTimeType);
+    setTimeType(selectedTimeType);
+    console.log('Selected Time Type:', timeType);
   };
 
   const handleTimeExpressionChange = (selectedTimeExpression) => {
-    console.log('Selected Time Expression:', selectedTimeExpression);
+    setTimeExpression(selectedTimeExpression);
+    console.log('Selected Time Expression:', timeExpression);
   };
 
   const handleHourFlagChange = (hourFlag) => {
+    setHourFlag(hourFlag);
     console.log('Selected Hour Flag:', hourFlag);
   }
 
   const handleDateFlagChange = (dateFlag) => {
+    setDateFlag(dateFlag);
     console.log('Selected Date Flag:', dateFlag);
   }
   const handleTimeStampStartChange = (timeStampStart) => {
-    console.log('Selected TimeStamp Start:', timeStampStart);
+    //setStartTimeStamp(timeStampStart);
+    console.log('Selected TimeStamp Start String:', timeStampStart);
   }
   const handleTimeStampEndChange = (timeStampEnd) => {
-    console.log('Selected TimeStamp End:', timeStampEnd);
+    // setEndTimeStamp(timeStampEnd);
+    console.log('Selected TimeStamp End String:', timeStampEnd);
   }
   const handleSelectedSeasonStart = (selectedSeasonStart) => {
-    console.log('Selected Season Start:', selectedSeasonStart);
+    setSeason(selectedSeasonStart);
+    console.log('Selected Season Start:', season);
   }
   const handleSelectedSeasonEnd = (selectedSeasonEnd) => {
-    console.log('Selected Season End:', selectedSeasonEnd);
+    setEndSeason(selectedSeasonEnd);
+    console.log('Selected Season End:', endSeason);
   }
   const handleSelectedDecadeStart = (selectedDecadeStart) => {
-    console.log('Selected Decade Start:', selectedDecadeStart);
+    setDecade(selectedDecadeStart);
+    console.log('Selected Decade Start:', decade);
   }
   const handleSelectedDecadeEnd = (selectedDecadeEnd) => {
-    console.log('Selected Decade End:', selectedDecadeEnd);
+    setEndDecade(selectedDecadeEnd);
+    console.log('Selected Decade End:', endDecade);
+  }
+  const handleSelectedDateTimeStart = (selectedDateTimeStart) => {
+    setStartTimeStamp(selectedDateTimeStart);
+    console.log(typeof startTimeStamp)
+    console.log('Selected DateTime Start Object:', startTimeStamp);
+  }
+  const handleSelectedDateTimeEnd = (selectedDateTimeEnd) => {
+    setEndTimeStamp(selectedDateTimeEnd);
+    console.log(typeof endTimeStamp)
+    console.log('Selected DateTime End Object:', endTimeStamp);
   }
 
   return (
@@ -680,6 +718,8 @@ const AddStoryForm = () => {
       onSelectedSeasonEnd = {handleSelectedSeasonEnd}
       onSelectedDecadeStart = {handleSelectedDecadeStart}
       onSelectedDecadeEnd = {handleSelectedDecadeEnd}
+      onSelectedDateTimeStart={handleSelectedDateTimeStart}
+      onSelectedDateTimeEnd={handleSelectedDateTimeEnd}
       />  
       {/* <label className="add-story-label">
 
