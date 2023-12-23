@@ -1,4 +1,11 @@
 import "./css/StoryList.css";
+import axios from "axios";
+import { useState, useEffect, useCallback } from "react";
+import { Space, message } from 'antd';
+
+const StoryList = ({ story }) => {
+    const [isSaved, setIsSaved] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
 
 
 const truncateText = (text, maxLength) => {
@@ -20,6 +27,14 @@ const StoryList = ({ story }) => {
 
     const { mainText, fadeText } = truncateText(story.text, 95); // Adjust 100 to your desired length
     return (
+        <Space
+        direction="vertical"
+        align="center"
+        style={{
+          width: '100%',
+        }}
+        >
+        {contextHolder}
         <div className="story-item">
             <div className="story-header">
                 <img src={story.user.profilePhoto} className="profile-picture" />
