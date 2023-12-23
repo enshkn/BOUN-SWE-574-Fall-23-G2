@@ -107,6 +107,12 @@ function App() {
                   My Stories
                 </NavDropdown.Item>
                 <NavDropdown.Item
+                  href="/story/saved-stories"
+                  className="justify-content-end"
+                >
+                  Saved Stories
+                </NavDropdown.Item>
+                <NavDropdown.Item
                   href="/story/add-story"
                   className="justify-content-end"
                 >
