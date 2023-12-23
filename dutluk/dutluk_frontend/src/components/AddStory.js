@@ -57,6 +57,7 @@ const AddStoryForm = () => {
   };
 
   const seasonsDict = {
+    null: null,
     1: 'Winter',
     2: 'Spring',
     3: 'Summer',
@@ -116,6 +117,8 @@ const AddStoryForm = () => {
       messageApi.open({ type: "error", content: "Please pick at least one location."});
       return; // Prevent form submission if no location is set
     }
+
+    {/* 
     const currentDateTime = new Date();
     let formattedStartTimeStamp = null;
     let formattedEndTimeStamp = null;
@@ -141,7 +144,7 @@ const AddStoryForm = () => {
         }
       }
     }
-    
+    */}
 
    
 
@@ -196,19 +199,18 @@ const AddStoryForm = () => {
           }))
         )
       ],
-      formattedStartTimeStamp,
-      formattedEndTimeStamp,
+      startTimeStamp,
+      endTimeStamp,
       season,
       endSeason,
       decade,
       endDecade,
+      startHourFlag,
+      endHourFlag,
+      startDateFlag,
+      endDateFlag,
       timeType,
       timeExpression,
-      startHourFlag,
-      startDateFlag,
-      endHourFlag: endHourFlag,
-      endDateFlag: endDateFlag
-
     };
 
     try {
@@ -437,15 +439,17 @@ const AddStoryForm = () => {
   }
 
   const handleTimeStampStartChange = (timeStampStart) => {
-    //setStartTimeStamp(timeStampStart);
-    console.log('Selected TimeStamp Start String:', timeStampStart);
+    setStartTimeStamp(timeStampStart);
+    console.log('Selected TimeStamp Start String:', startTimeStamp);
   }
   const handleTimeStampEndChange = (timeStampEnd) => {
-    // setEndTimeStamp(timeStampEnd);
-    console.log('Selected TimeStamp End String:', timeStampEnd);
+    setEndTimeStamp(timeStampEnd);
+    console.log('Selected TimeStamp End String:', endTimeStamp);
   }
   const handleSelectedSeasonStart = (selectedSeasonStart) => {
+    if (selectedSeasonStart !== '') {
     setSeason(seasonsDict[selectedSeasonStart]);
+    }
     console.log('Selected Season Start:', season);
   }
   const handleSelectedSeasonEnd = (selectedSeasonEnd) => {
@@ -465,13 +469,12 @@ const AddStoryForm = () => {
     console.log('Selected Decade End:', endDecade);
   }
   const handleSelectedDateTimeStart = (selectedDateTimeStart) => {
+
     setStartTimeStamp(selectedDateTimeStart);
-    console.log(typeof startTimeStamp)
     console.log('Selected DateTime Start Object:', startTimeStamp);
   }
   const handleSelectedDateTimeEnd = (selectedDateTimeEnd) => {
     setEndTimeStamp(selectedDateTimeEnd);
-    console.log(typeof endTimeStamp)
     console.log('Selected DateTime End Object:', endTimeStamp);
   }
 

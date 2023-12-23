@@ -44,8 +44,8 @@ function DateTimerPicker({
   const [endHourFlag, setEndHourFlag] = useState(-1);
   const [endDateFlag, setEndDateFlag] = useState(-1);
   // timestamp
-  const [timeStampStart, setTimeStampStart] = useState('');
-  const [timeStampEnd, setTimeStampEnd] = useState('');  
+  const [timeStampStart, setTimeStampStart] = useState(null);
+  const [timeStampEnd, setTimeStampEnd] = useState(null);  
   // date time start end
   const [selectedDateTimeStart, setSelectedDateTimeStart] = useState(new Date());
   const [selectedDateTimeEnd, setSelectedDateTimeEnd] = useState(new Date());
