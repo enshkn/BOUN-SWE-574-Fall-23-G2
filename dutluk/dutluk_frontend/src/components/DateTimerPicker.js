@@ -53,8 +53,8 @@ function DateTimerPicker({
   const [selectedSeasonStart, setSelectedSeasonStart] = useState('');
   const [selectedSeasonEnd, setSelectedSeasonEnd] = useState('');
   // decade
-  const [selectedDecadeStart, setSelectedDecadeStart] = useState('');
-  const [selectedDecadeEnd, setSelectedDecadeEnd] = useState('');
+  const [selectedDecadeStart, setSelectedDecadeStart] = useState(null);
+  const [selectedDecadeEnd, setSelectedDecadeEnd] = useState(null);
 
   {/* -------------------------------------------------- FORMATTERS -------------------------------------------------- */}
 

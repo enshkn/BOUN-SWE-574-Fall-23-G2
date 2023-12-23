@@ -39,15 +39,12 @@ const AddStoryForm = () => {
   const [currentShape, setCurrentShape] = useState(null);
   const [tempPoints, setTempPoints] = useState([]);
   const [circleRadius, setCircleRadius] = useState(5000);
-
   const [markers, setMarkers] = useState([]);
   const [circles, setCircles] = useState([]);
   const [polygons, setPolygons] = useState([]);
   const [polylines, setPolylines] = useState([]);
   const [timeResolution, setTimeResolution] = useState("");
- 
   const [messageApi, contextHolder] = message.useMessage();
-
   const [tags, setTags] = useState([]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -55,12 +52,18 @@ const AddStoryForm = () => {
   const [editInputValue, setEditInputValue] = useState('');
   const inputRef = useRef(null);
   const editInputRef = useRef(null);
-
   const onSearchBoxLoad = (ref) => {
     setSearchBox(ref);
   };
 
-  // Location related event handlers
+  const seasonsDict = {
+    1: 'Winter',
+    2: 'Spring',
+    3: 'Summer',
+    4: 'Fall'
+  };
+
+  //  ----------------------------------- Location and Editor related event handlers ----------------------------------- //
   const onPlacesChanged = () => {
     const places = searchBox.getPlaces();
     const place = places[0];
@@ -89,6 +92,7 @@ const AddStoryForm = () => {
     }
   };
 
+  //  ----------------------------------- Editor and Location related event handlers ----------------------------------- //
 
   const handleEditorChange = (value) => {
     setText(value);
@@ -400,7 +404,8 @@ const AddStoryForm = () => {
     setEditInputValue('');
   };
 
-  // state handlers for DateTimerPicker component
+  //  ----------------------------------------- TIME PICKER COMPONENT ----------------------------------------- //
+  
   const handleTimeTypeChange = (selectedTimeType) => {
     setTimeType(selectedTimeType);
     console.log('Selected Time Type:', timeType);
@@ -440,19 +445,23 @@ const AddStoryForm = () => {
     console.log('Selected TimeStamp End String:', timeStampEnd);
   }
   const handleSelectedSeasonStart = (selectedSeasonStart) => {
-    setSeason(selectedSeasonStart);
+    setSeason(seasonsDict[selectedSeasonStart]);
     console.log('Selected Season Start:', season);
   }
   const handleSelectedSeasonEnd = (selectedSeasonEnd) => {
-    setEndSeason(selectedSeasonEnd);
+    setEndSeason(seasonsDict[selectedSeasonEnd]);
     console.log('Selected Season End:', endSeason);
   }
   const handleSelectedDecadeStart = (selectedDecadeStart) => {
+    if (selectedDecadeStart !== null) {
     setDecade(`${selectedDecadeStart}s`);
+    }
     console.log('Selected Decade Start:', decade);
   }
   const handleSelectedDecadeEnd = (selectedDecadeEnd) => {
+    if (selectedDecadeEnd !== null) {
     setEndDecade(`${selectedDecadeEnd}s`);
+    }
     console.log('Selected Decade End:', endDecade);
   }
   const handleSelectedDateTimeStart = (selectedDateTimeStart) => {
@@ -746,8 +755,10 @@ const AddStoryForm = () => {
       onSelectedDateTimeEnd = {handleSelectedDateTimeEnd}
       onEndHourFlagSelect = {handleEndHourFlagChange}
       onEndDateFlagSelect = {handleEndDateFlagChange}
-      />  
-      {/* <label className="add-story-label">
+      />
+
+{/* 
+      <label className="add-story-label">
 
 
 Time Resolution:
@@ -860,7 +871,8 @@ Time Resolution:
       </select>
     </label>
   </>
-)} */}
+)} 
+*/}
 
 
 <div className="d-flex justify-content-center mt-3">
