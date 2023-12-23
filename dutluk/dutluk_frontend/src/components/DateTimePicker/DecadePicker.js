@@ -9,7 +9,7 @@ function DecadePicker({ onDateTimeChange }) {
   const startDecade = Math.floor(currentYear / 10) * 10; // Start year of the current decade
 
   // Adding decades from the past to the beginning of the current decade to the list
-  for (let decadeStart = startDecade; decadeStart >= 1900; decadeStart -= 10) {
+  for (let decadeStart = startDecade; decadeStart >= 1940; decadeStart -= 10) {
     decades.push(decadeStart);
   }
 

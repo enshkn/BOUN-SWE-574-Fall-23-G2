@@ -360,13 +360,13 @@ function DateTimerPicker({
           // formatting date
           formattedDateTimeStart = formatDate(selectedDateTimeStart);
           formattedDateTimeEnd = formattedDateTimeStart;
+          // for backend timestamp configuration
           formattedDateTimeEnd = null;
           // flags
           var_dateFlag = 3;
           var_hourFlag = 1;
           var_endHourFlag = -1;
           var_endDateFlag = -1;
-          // showing dates
           break;
         case 'day':
           // showing relevant picker
@@ -374,13 +374,13 @@ function DateTimerPicker({
           // formatting date
           formattedDateTimeStart = dayFormatter_start(selectedDateTimeStart);
           formattedDateTimeEnd = dayFormatter_end(selectedDateTimeStart);
+          // for backend timestamp configuration
           formattedDateTimeEnd = null;
           // flags
           var_dateFlag = 3;
           var_hourFlag = 0;
           var_endHourFlag = -1;
           var_endDateFlag = -1;
-          // showing dates
           break;
         case 'month':
           // showing relevant picker
@@ -388,17 +388,18 @@ function DateTimerPicker({
           // formatting date
           formattedDateTimeStart = monthStartFormatter(selectedDateTimeStart);
           formattedDateTimeEnd = monthEndFormatter(selectedDateTimeStart);
+          // for backend timestamp configuration
           formattedDateTimeEnd = null;
           // flags
           var_dateFlag = 2;
           var_hourFlag = 0;
           var_endHourFlag = -1;
           var_endDateFlag = -1;
-          // showing dates
           break;
         case 'season':
           showStartSeasonPicker = true;
           formattedDateTimeStart = formatDate(selectedDateTimeStart);
+          formattedDateTimeEnd = null;
           // parsing year
           let startYear = new Date(formattedDateTimeStart).getFullYear();
           let intSeasonStart = parseInt(selectedSeasonStart, 10);
@@ -406,12 +407,12 @@ function DateTimerPicker({
           const result = calculateSeasonDates(startYear, intSeasonStart, selectedTimeType);
           formattedDateTimeStart = result.formattedStartTime;
           formattedDateTimeEnd = result.formattedEndTime;
+          // for backend timestamp configuration
           formattedDateTimeEnd = null;
           var_dateFlag = 1;
           var_endDateFlag = -1;
           var_hourFlag = 0;
           var_endHourFlag = -1;
-          // showing dates
           break;
         case 'year':
           // showing relevant picker
@@ -419,13 +420,13 @@ function DateTimerPicker({
           // formatting date
           formattedDateTimeStart = yearStartFormatter(selectedDateTimeStart);
           formattedDateTimeEnd = yearEndFormatter(selectedDateTimeStart);
+          // for backend timestamp configuration
           formattedDateTimeEnd = null;
           // flags
           var_dateFlag = 1;
           var_hourFlag = 0;
           var_endHourFlag = -1;
           var_endDateFlag = -1;
-          // showing dates
           break;
         case 'decade':
           // showing relevant picker
@@ -437,9 +438,9 @@ function DateTimerPicker({
           // formatting date
           formattedDateTimeStart = formatDate(decade_start);
           formattedDateTimeEnd = formatDate(decade_end)
+          // for backend timestamp configuration
           formattedDateTimeStart = null;
           formattedDateTimeEnd = null;
-          // showing dates
           break;
         case 'decade+season':
           // showing relevant picker
@@ -460,7 +461,6 @@ function DateTimerPicker({
           var_hourFlag = 1;
           var_endDateFlag = 3;
           var_endHourFlag = 1;
-          // showing dates
           break;
         case 'day':
           // showing relevant picker
@@ -474,7 +474,6 @@ function DateTimerPicker({
           var_hourFlag = 0;
           var_endDateFlag = 3;
           var_endHourFlag = 0;
-          // showing dates
           break;
         case 'month':
           // showing relevant picker
@@ -488,7 +487,6 @@ function DateTimerPicker({
           var_hourFlag = 0;
           var_endDateFlag = 2;      
           var_endHourFlag = 0; 
-          // showing dates
           break;
         case 'season':
           // showing relevant picker
@@ -512,7 +510,6 @@ function DateTimerPicker({
           var_endDateFlag = 1;
           var_hourFlag = 0;
           var_endHourFlag = 0;
-          // showing dates
           break;
         case 'year':
           // showing relevant picker
@@ -526,7 +523,6 @@ function DateTimerPicker({
           var_hourFlag = 0;
           var_endDateFlag = 1;
           var_endHourFlag = 0;
-          // showing dates
           break;
         case 'decade':
           // showing relevant picker
@@ -542,7 +538,6 @@ function DateTimerPicker({
           formattedDateTimeEnd = formatDate(decade_end)
           formattedDateTimeStart = null;
           formattedDateTimeEnd = null;
-          // showing dates
           break;
         case 'decade+season':
           showStartDecadeSeasonPicker = false;
