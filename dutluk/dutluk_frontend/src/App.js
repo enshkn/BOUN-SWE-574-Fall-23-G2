@@ -10,6 +10,7 @@ import Register from "./components/Register";
 import AddStoryForm from "./components/AddStory";
 import EditStoryForm from "./components/EditStory";
 import MyStories from "./components/MyStories";
+import SavedStories from "./components/SavedStories";
 import StoryDetails from "./components/StoryDetails";
 import Recommended from "./components/Recommended";
 import AllStories from "./components/AllStories";
@@ -159,6 +160,7 @@ function App() {
         <Route path="/story/add-story" element={<AddStoryForm />} />
         <Route path="/story/edit/:id" element={<EditStoryForm />} />
         <Route path="/story/my-stories" element={<MyStories />} />
+        <Route path="/story/saved-stories" element={<SavedStories />} />
         <Route path="/story/followings" element={<FollowedUserStories />} />
         <Route path="/story/all-stories" element={<AllStories />} />
         <Route path="/story/:id" element={<StoryDetails />} />
