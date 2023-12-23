@@ -25,8 +25,10 @@ const AddStoryForm = () => {
   const [timeType, setTimeType] = useState(null);
   const [timeExpression, setTimeExpression] = useState(null);
   // hourFlag and dateFlag are used for time resolution
-  const [hourFlag, setHourFlag] = useState(null);
-  const [dateFlag, setDateFlag] = useState(null);
+  const [startHourFlag, setStartHourFlag] = useState(null);
+  const [startDateFlag, setStartDateFlag] = useState(null);
+  const [endHourFlag, setEndHourFlag] = useState(null);
+  const [endDateFlag, setEndDateFlag] = useState(null);
   // season and decade are used for time resolution
   const [season, setSeason] = useState(null);
   const [endSeason, setEndSeason] = useState(null);
@@ -198,8 +200,10 @@ const AddStoryForm = () => {
       endDecade,
       timeType,
       timeExpression,
-      hourFlag,
-      dateFlag,
+      startHourFlag,
+      startDateFlag,
+      endHourFlag: endHourFlag,
+      endDateFlag: endDateFlag
 
     };
 
@@ -399,14 +403,25 @@ const AddStoryForm = () => {
   };
 
   const handleHourFlagChange = (hourFlag) => {
-    setHourFlag(hourFlag);
-    console.log('Selected Hour Flag:', hourFlag);
+    setStartHourFlag(hourFlag);
+    console.log('Selected Hour Flag:', startHourFlag);
   }
 
   const handleDateFlagChange = (dateFlag) => {
-    setDateFlag(dateFlag);
-    console.log('Selected Date Flag:', dateFlag);
+    setStartDateFlag(dateFlag);
+    console.log('Selected Date Flag:', startDateFlag);
   }
+
+  const handleEndHourFlagChange = (endHourFlag) => {
+    setEndHourFlag(endHourFlag);
+    console.log('Selected End Hour Flag:', endHourFlag);
+  }
+
+  const handleEndDateFlagChange = (endDateFlag) => {
+    setEndDateFlag(endDateFlag);
+    console.log('Selected End Date Flag:', endDateFlag);
+  }
+
   const handleTimeStampStartChange = (timeStampStart) => {
     //setStartTimeStamp(timeStampStart);
     console.log('Selected TimeStamp Start String:', timeStampStart);
@@ -708,7 +723,7 @@ const AddStoryForm = () => {
       
         
       <DateTimerPicker 
-      onTimeTypeSelect={handleTimeTypeChange}
+      onTimeTypeSelect = {handleTimeTypeChange}
       onTimeExpressionSelect = {handleTimeExpressionChange}
       onHourFlagSelect = {handleHourFlagChange}
       onDateFlagSelect = {handleDateFlagChange}
@@ -718,8 +733,10 @@ const AddStoryForm = () => {
       onSelectedSeasonEnd = {handleSelectedSeasonEnd}
       onSelectedDecadeStart = {handleSelectedDecadeStart}
       onSelectedDecadeEnd = {handleSelectedDecadeEnd}
-      onSelectedDateTimeStart={handleSelectedDateTimeStart}
-      onSelectedDateTimeEnd={handleSelectedDateTimeEnd}
+      onSelectedDateTimeStart = {handleSelectedDateTimeStart}
+      onSelectedDateTimeEnd = {handleSelectedDateTimeEnd}
+      onEndHourFlagSelect = {handleEndHourFlagChange}
+      onEndDateFlagSelect = {handleEndDateFlagChange}
       />  
       {/* <label className="add-story-label">
 

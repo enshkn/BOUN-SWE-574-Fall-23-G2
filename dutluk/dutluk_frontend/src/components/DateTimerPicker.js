@@ -9,12 +9,15 @@ import SeasonPicker from './DateTimePicker/SeasonPicker'
 import YearPicker from './DateTimePicker/YearPicker'
 import DecadePicker from './DateTimePicker/DecadePicker'
 import SeasonMenu from './DateTimePicker/SeasonMenu'
+import { set } from 'date-fns'
 
 function DateTimerPicker({
   onTimeTypeSelect,
   onTimeExpressionSelect, 
   onHourFlagSelect, 
-  onDateFlagSelect, 
+  onDateFlagSelect,
+  onEndHourFlagSelect,
+  onEndDateFlagSelect,
   onTimeStampStartSelect, 
   onTimeStampEndSelect, 
   onSelectedSeasonStart, 
@@ -51,6 +54,8 @@ function DateTimerPicker({
   // date and hour flag
   const [dateFlag, setDateFlag] = useState(-1);
   const [hourFlag, setHourFlag] = useState(-1);
+  const [endHourFlag, setEndHourFlag] = useState(-1);
+  const [endDateFlag, setEndDateFlag] = useState(-1);
 
  // moment formatter
   function formatDate(date) {
@@ -219,6 +224,8 @@ function DateTimerPicker({
   let formattedDateTimeEnd = '';
   let var_dateFlag = -1;
   let var_hourFlag = -1;
+  let var_endHourFlag = -1;
+  let var_endDateFlag = -1;
 
 // reset form
   const resetForm = () => {
@@ -233,6 +240,8 @@ function DateTimerPicker({
     setTimeStampEnd(null);
     setDateFlag(-1);
     setHourFlag(-1);
+    setEndHourFlag(-1);
+    setEndDateFlag(-1);
   };
     // Reset the form when the selectedTimeType changes
     useEffect(() => {
@@ -250,6 +259,8 @@ function DateTimerPicker({
       setTimeStampEnd(null);
       setDateFlag(-1);
       setHourFlag(-1);
+      setEndHourFlag(-1);
+      setEndDateFlag(-1);
     };
     
     // Reset the form when the selectedTimeType changes
@@ -263,12 +274,14 @@ function DateTimerPicker({
     setTimeStampEnd(formattedDateTimeEnd);
     setDateFlag(var_dateFlag);
     setHourFlag(var_hourFlag);
+    setEndHourFlag(var_endHourFlag);
+    setEndDateFlag(var_endDateFlag);
     })
 
     // log timestamp when selectedDateTimeStart and selectedDateTimeEnd changes
     useEffect(() => {
-      console.log("date flag: ", dateFlag, "hour flag: ", hourFlag, "time stamp end:", timeStampEnd, "time stamp start: ", timeStampStart);
-    }, [dateFlag, hourFlag, timeStampEnd, timeStampStart]);
+      console.log("date flag: ", dateFlag, "hour flag: ", hourFlag, "time stamp end:", timeStampEnd, "time stamp start: ", timeStampStart, "end hour flag: ", endHourFlag, "end date flag: ", endDateFlag);
+    }, [dateFlag, hourFlag, timeStampEnd, timeStampStart, endHourFlag, endDateFlag]);
 
   // props 
   
@@ -286,6 +299,8 @@ function DateTimerPicker({
     onTimeExpressionSelect(selectedTimeExpression);
     onHourFlagSelect(hourFlag);
     onDateFlagSelect(dateFlag);
+    onEndHourFlagSelect(endHourFlag);
+    onEndDateFlagSelect(endDateFlag);
     onTimeStampStartSelect(timeStampStart);
     onTimeStampEndSelect(timeStampEnd);
     onSelectedSeasonStart(selectedSeasonStart);
@@ -301,6 +316,8 @@ function DateTimerPicker({
     selectedDateTimeEnd,
     hourFlag,
     dateFlag,
+    endHourFlag,
+    endDateFlag,
     timeStampStart,
     timeStampEnd,
     selectedSeasonStart,
@@ -311,6 +328,8 @@ function DateTimerPicker({
     onTimeExpressionSelect,
     onHourFlagSelect,
     onDateFlagSelect,
+    onEndHourFlagSelect,
+    onEndDateFlagSelect,
     onTimeStampStartSelect,
     onTimeStampEndSelect,
     onSelectedSeasonStart,
@@ -338,6 +357,8 @@ function DateTimerPicker({
           // flags
           var_dateFlag = 3;
           var_hourFlag = 1;
+          var_endHourFlag = -1;
+          var_endDateFlag = -1;
           // showing dates
           break;
         case 'day':
@@ -349,6 +370,8 @@ function DateTimerPicker({
           // flags
           var_dateFlag = 3;
           var_hourFlag = 0;
+          var_endHourFlag = -1;
+          var_endDateFlag = -1;
           // showing dates
           break;
         case 'month':
@@ -360,6 +383,8 @@ function DateTimerPicker({
           // flags
           var_dateFlag = 2;
           var_hourFlag = 0;
+          var_endHourFlag = -1;
+          var_endDateFlag = -1;
           // showing dates
           break;
         case 'season':
@@ -383,6 +408,8 @@ function DateTimerPicker({
           // flags
           var_dateFlag = 1;
           var_hourFlag = 0;
+          var_endHourFlag = -1;
+          var_endDateFlag = -1;
           // showing dates
           break;
         case 'decade':
@@ -414,6 +441,8 @@ function DateTimerPicker({
           // flags
           var_dateFlag = 3;
           var_hourFlag = 1;
+          var_endHourFlag = 3;
+          var_endDateFlag = 1;
           // showing dates
           break;
         case 'day':
@@ -426,6 +455,8 @@ function DateTimerPicker({
           // flags
           var_dateFlag = 3;
           var_hourFlag = 0;
+          var_endHourFlag = 3;
+          var_endDateFlag = 0;
           // showing dates
           break;
         case 'month':
@@ -437,7 +468,9 @@ function DateTimerPicker({
           formattedDateTimeEnd = monthEndFormatter(selectedDateTimeEnd);
           // flags
           var_dateFlag = 2;
-          var_hourFlag = 0;          
+          var_hourFlag = 0;
+          var_endHourFlag = 2;
+          var_endDateFlag = 0;          
           // showing dates
           break;
         case 'season':
@@ -470,6 +503,8 @@ function DateTimerPicker({
           // flags
           var_dateFlag = 1;
           var_hourFlag = 0;
+          var_endHourFlag = 1;
+          var_endDateFlag = 0;
           // showing dates
           break;
         case 'decade':
