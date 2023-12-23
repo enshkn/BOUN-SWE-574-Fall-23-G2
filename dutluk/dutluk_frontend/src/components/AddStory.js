@@ -8,7 +8,7 @@ import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import { format, getYear, set } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { Space, message, Input, Tag, Tooltip} from 'antd';
+import { Space, message, Input, Tag, Tooltip, Segmented} from 'antd';
 import "./css/AddStory.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-quill/dist/quill.snow.css'; // Örnek olarak Quill editörünün varsayılan stillerini ekliyoruz
@@ -36,7 +36,7 @@ const AddStoryForm = () => {
   const [endDecade, setEndDecade] = useState(null);
   // existing states
   const [searchBox, setSearchBox] = useState(null);
-  const [currentShape, setCurrentShape] = useState(null);
+  const [currentShape, setCurrentShape] = useState('marker');
   const [tempPoints, setTempPoints] = useState([]);
   const [circleRadius, setCircleRadius] = useState(5000);
   const [markers, setMarkers] = useState([]);
@@ -500,6 +500,34 @@ const AddStoryForm = () => {
     <form className="add-story-form" onSubmit={handleSubmit}>
       <div className="d-flex">
         <div style={{ flexGrow: 3, minWidth: 800, minHeight: 600 }}> {/* Allow map container to grow and take available space */}
+          <center>
+            Select Location Type (You can add multiple!):<br/>
+            <Segmented className="me-auto" size="large" options={[{label: 'Marker', value: 'marker'}, {label: 'Circle', value: 'circle'}, {label: 'Polygon', value: 'polygon'}, {label: 'Polyline', value: 'polyline'}]} value={currentShape} onChange={setCurrentShape} />
+            {currentShape === 'circle' && (
+              <div className="align-items-center mb-2">
+                <input type="number" className="form-control"
+                  style={{ width: "150px", margin: "10px" }}
+                  onChange={(e) => setCircleRadius(Number(e.target.value))}
+                  placeholder="Set Radius (m)"
+                />
+              </div>
+            )}
+            {(currentShape === 'polygon' || currentShape === 'polyline') && (
+              <div className="align-items-center mb-2">
+              Please select points and approve after finished
+              <button
+                type="button"
+                className="btn btn-primary"
+                style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white",  border: "none", margin: "10px" }}
+                onClick={finishShape}
+                disabled={(currentShape === 'polyline' && tempPoints.length < 2) || (currentShape === 'polygon' && tempPoints.length < 3)}
+              >
+                Approve
+              </button>
+              </div>
+            )}
+          </center>
+
           <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
             libraries={["places"]}>
                       <div style={{
@@ -579,33 +607,6 @@ const AddStoryForm = () => {
               <input type="text" placeholder="Search" style={{ width: "100%", height: "40px" }} className="form-control"/>
             </StandaloneSearchBox>
           </LoadScript>
-        </div>
-        <div className="map-controls d-flex flex-column align-items-left-b"
-          style={{ width: 'auto', height: 'auto', marginLeft: '5px' }}> {/* Added margin here */}
-          <button type="button" className="btn btn-primary mb-2" style={{ width: "50px" }} onClick={() => setCurrentShape('marker')}>
-            <i class="bi bi-geo-alt-fill"></i> {/* Marker Icon */}
-          </button>
-          <div class="d-flex align-items-center mb-2">
-            <button type="button" className="btn btn-primary " style={{ width: "50px" }} onClick={() => setCurrentShape('circle')}>
-              <i class="bi bi-circle"></i> {/* Circle Icon */}
-            </button>
-            <input type="number" className="form-control"
-              style={{ width: "150px", marginLeft: "5px" }}
-              onChange={(e) => setCircleRadius(Number(e.target.value))}
-              placeholder="Radius (m)"
-            >
-            </input>
-          </div>
-
-          <button type="button" className="btn btn-primary mb-2" style={{ width: "50px" }} onClick={() => setCurrentShape('polygon')}>
-            <i className="bi bi-hexagon"></i> {/* Polygon Icon */}
-          </button>
-          <button type="button" className="btn btn-primary mb-2" style={{ width: "50px" }} onClick={() => setCurrentShape('polyline')}>
-            <i className="bi bi-arrow-right"></i> {/* Polyline Icon */}
-          </button>
-          <button type="button" className="btn btn-primary mb-2" style={{ width: "50px" }} onClick={finishShape} disabled={tempPoints.length < 2}>
-            <i className="bi bi-check-lg"></i> {/* Finish Icon */}
-          </button>
         </div>
       </div>
 
