@@ -89,6 +89,9 @@ const StoryList = ({ story }) => {
                 </div>
 
                 <div className="interactions">
+                    <button onClick={handleSaveClick} style={{backgroundColor: "#ff5500ca", color: "white",   border: "none", margin: "20px"}} type="submit" className="btn btn-primary">
+                        {isSaved ? 'Unsave' : 'Save'}
+                    </button>
                     <span>{story.likes ? story.likes.length : 0}❤️</span>
                     <span>{story.comments ? story.comments.length : 0}💬</span>
                 </div>
