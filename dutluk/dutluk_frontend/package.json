@@ -25,7 +25,7 @@
     "quill-emoji": "^0.2.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.1",
-    "react-datepicker": "^4.11.0",
+    "react-datepicker": "^4.24.0",
     "react-datetime-picker": "^5.5.2",
     "react-dom": "^18.2.0",
     "react-google-places-autocomplete": "^4.0.1",
