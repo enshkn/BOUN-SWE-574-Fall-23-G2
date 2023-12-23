@@ -174,8 +174,8 @@ function DateTimerPicker({
   
     const parsedStartYear = startYear;
   
-    const formattedStartTime = `${parsedStartYear}-${seasonStartMonth + 1}-01 00:00:00`;
-    const formattedEndTimePoint = `${parsedStartYear}-${seasonEndMonth + 1}-${new Date(parsedStartYear, seasonEndMonth + 1, 0).getDate()} 23:59:59`;
+    const formattedStartTime = `${parsedStartYear}-${seasonStartMonth + 1}-01 00:00`;
+    const formattedEndTimePoint = `${parsedStartYear}-${seasonEndMonth + 1}-${new Date(parsedStartYear, seasonEndMonth + 1, 0).getDate()} 23:59 `;
   
     if (timeType === "timePoint") {
       return { formattedStartTime, formattedEndTime: formattedEndTimePoint };
@@ -415,15 +415,15 @@ function DateTimerPicker({
           showStartSeasonPicker = true;
           formattedDateTimeStart = formatDate(selectedDateTimeStart);
           // parsing year
-          let startYear = new Date(formattedDateTimeStart).getFullYear();
-          let startMonth = new Date(formattedDateTimeStart).getMonth();
-          let intSeasonStart = seasonDict[startMonth];
-          console.log(intSeasonStart, typeof intSeasonStart);
+          // let startYear = new Date(formattedDateTimeStart).getFullYear();
+          //let startMonth = new Date(formattedDateTimeStart).getMonth();
+          // let intSeasonStart = seasonDict[startMonth];
           // calculating season dates
-          const result = calculateSeasonDates(startYear, intSeasonStart, selectedTimeType);
-          formattedDateTimeStart = result.formattedStartTime;
-          formattedDateTimeEnd = result.formattedEndTime;
+          //const result = calculateSeasonDates(startYear, intSeasonStart, selectedTimeType);
+          //formattedDateTimeStart = result.formattedStartTime;
+          // formattedDateTimeEnd = result.formattedEndTime;
           // for backend timestamp configuration
+          formattedDateTimeStart = yearStartFormatter(selectedDateTimeStart);
           formattedDateTimeEnd = null;
           var_dateFlag = 1;
           var_endDateFlag = -1;
@@ -509,22 +509,23 @@ function DateTimerPicker({
           showStartSeasonPicker = true;
           showEndSeasonPicker = true;
           // formatting date
-          formattedDateTimeStart = formatDate(selectedDateTimeStart);
-          formattedDateTimeEnd = formatDate(selectedDateTimeEnd);
+          //formattedDateTimeStart = formatDate(selectedDateTimeStart);
+          //formattedDateTimeEnd = formatDate(selectedDateTimeEnd);
           // parsing year
-          let startYear = new Date(formattedDateTimeStart).getFullYear();
-          let endYear = new Date(formattedDateTimeEnd).getFullYear();
-          let startMonth = new Date(formattedDateTimeStart).getMonth();
-          let endMonth = new Date(formattedDateTimeEnd).getMonth();
+          //let startYear = new Date(formattedDateTimeStart).getFullYear();
+          //let endYear = new Date(formattedDateTimeEnd).getFullYear();
+          //let startMonth = new Date(formattedDateTimeStart).getMonth();
+          //let endMonth = new Date(formattedDateTimeEnd).getMonth();
           // parsing season
-          let intSeasonStart = seasonDict[startMonth];
-          let intSeasonEnd = seasonDict[endMonth];
-          console.log(intSeasonStart, typeof intSeasonStart, intSeasonEnd, typeof intSeasonEnd);
+          //let intSeasonStart = seasonDict[startMonth];
+          //let intSeasonEnd = seasonDict[endMonth];
           // calculating season dates
-          const result = calculateSeasonDates(startYear, intSeasonStart, selectedTimeType, endYear, intSeasonEnd);
+          //const result = calculateSeasonDates(startYear, intSeasonStart, selectedTimeType, endYear, intSeasonEnd);
           // formatting date
-          formattedDateTimeStart = result.formattedStartTime;
-          formattedDateTimeEnd = result.formattedEndTime;
+          //formattedDateTimeStart = result.formattedStartTime;
+          //formattedDateTimeEnd = result.formattedEndTime;
+          formattedDateTimeStart = yearStartFormatter(selectedDateTimeStart);
+          formattedDateTimeEnd = yearEndFormatter(selectedDateTimeEnd);
           var_dateFlag = 1;
           var_endDateFlag = 1;
           var_hourFlag = 0;

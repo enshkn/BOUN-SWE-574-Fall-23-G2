@@ -58,6 +58,7 @@ const AddStoryForm = () => {
 
   const seasonsDict = {
     null: null,
+    "": null,
     1: 'Winter',
     2: 'Spring',
     3: 'Summer',
@@ -449,23 +450,19 @@ const AddStoryForm = () => {
   const handleSelectedSeasonStart = (selectedSeasonStart) => {
     if (selectedSeasonStart !== '') {
     setSeason(seasonsDict[selectedSeasonStart]);
-    }
     console.log('Selected Season Start:', season);
+    }
+  
+    
   }
   const handleSelectedSeasonEnd = (selectedSeasonEnd) => {
     if (selectedSeasonEnd !== '') {
     setEndSeason(seasonsDict[selectedSeasonEnd]);
-    }
     console.log('Selected Season End:', endSeason);
+    }
+    
   }
 
-  useEffect(() => {
-    console.log('Selected Season Start:', season);
-  }, [season]);
-  
-  useEffect(() => {
-    console.log('Selected Season End:', endSeason);
-  }, [endSeason]);
 
   const handleSelectedDecadeStart = (selectedDecadeStart) => {
     if (selectedDecadeStart !== null) {
