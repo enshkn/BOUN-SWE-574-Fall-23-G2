@@ -9,7 +9,7 @@ import SeasonPicker from './DateTimePicker/SeasonPicker'
 import YearPicker from './DateTimePicker/YearPicker'
 import DecadePicker from './DateTimePicker/DecadePicker'
 import SeasonMenu from './DateTimePicker/SeasonMenu'
-import { format } from 'date-fns'
+import { format, set } from 'date-fns'
 
 function DateTimerPicker({
   onTimeTypeSelect,
@@ -56,6 +56,21 @@ function DateTimerPicker({
   // decade
   const [selectedDecadeStart, setSelectedDecadeStart] = useState(null);
   const [selectedDecadeEnd, setSelectedDecadeEnd] = useState(null);
+
+  const seasonDict = { 12:1,
+    1:1,
+    2:1,
+    3:2,
+    4:2,
+    5:2,
+    6:3,
+    7:3,
+    8:3,
+    9:4,
+    10:4,
+    11:4,
+  }
+
 
   {/* -------------------------------------------------- FORMATTERS -------------------------------------------------- */}
 
@@ -232,7 +247,7 @@ function DateTimerPicker({
 {/* -------------------------------------------------- RESET FORMS -------------------------------------------------- */}
 
 
-// reset form
+  // reset form
   const resetForm = () => {
     setSelectedTimeExpression('');
     setSelectedDateTimeStart(new Date());
@@ -399,10 +414,11 @@ function DateTimerPicker({
         case 'season':
           showStartSeasonPicker = true;
           formattedDateTimeStart = formatDate(selectedDateTimeStart);
-          formattedDateTimeEnd = null;
           // parsing year
           let startYear = new Date(formattedDateTimeStart).getFullYear();
-          let intSeasonStart = parseInt(selectedSeasonStart, 10);
+          let startMonth = new Date(formattedDateTimeStart).getMonth();
+          let intSeasonStart = seasonDict[startMonth];
+          console.log(intSeasonStart, typeof intSeasonStart);
           // calculating season dates
           const result = calculateSeasonDates(startYear, intSeasonStart, selectedTimeType);
           formattedDateTimeStart = result.formattedStartTime;
@@ -498,9 +514,12 @@ function DateTimerPicker({
           // parsing year
           let startYear = new Date(formattedDateTimeStart).getFullYear();
           let endYear = new Date(formattedDateTimeEnd).getFullYear();
+          let startMonth = new Date(formattedDateTimeStart).getMonth();
+          let endMonth = new Date(formattedDateTimeEnd).getMonth();
           // parsing season
-          let intSeasonStart = parseInt(selectedSeasonStart, 10);
-          let intSeasonEnd = parseInt(selectedSeasonEnd, 10);
+          let intSeasonStart = seasonDict[startMonth];
+          let intSeasonEnd = seasonDict[endMonth];
+          console.log(intSeasonStart, typeof intSeasonStart, intSeasonEnd, typeof intSeasonEnd);
           // calculating season dates
           const result = calculateSeasonDates(startYear, intSeasonStart, selectedTimeType, endYear, intSeasonEnd);
           // formatting date

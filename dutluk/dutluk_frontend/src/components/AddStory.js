@@ -453,20 +453,33 @@ const AddStoryForm = () => {
     console.log('Selected Season Start:', season);
   }
   const handleSelectedSeasonEnd = (selectedSeasonEnd) => {
+    if (selectedSeasonEnd !== '') {
     setEndSeason(seasonsDict[selectedSeasonEnd]);
+    }
     console.log('Selected Season End:', endSeason);
   }
+
+  useEffect(() => {
+    console.log('Selected Season Start:', season);
+  }, [season]);
+  
+  useEffect(() => {
+    console.log('Selected Season End:', endSeason);
+  }, [endSeason]);
+
   const handleSelectedDecadeStart = (selectedDecadeStart) => {
     if (selectedDecadeStart !== null) {
     setDecade(`${selectedDecadeStart}s`);
-    }
     console.log('Selected Decade Start:', decade);
+    }
+    
   }
   const handleSelectedDecadeEnd = (selectedDecadeEnd) => {
     if (selectedDecadeEnd !== null) {
     setEndDecade(`${selectedDecadeEnd}s`);
-    }
     console.log('Selected Decade End:', endDecade);
+    }
+    
   }
   const handleSelectedDateTimeStart = (selectedDateTimeStart) => {
 
