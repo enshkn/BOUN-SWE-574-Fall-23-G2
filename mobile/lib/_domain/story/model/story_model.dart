@@ -31,6 +31,10 @@ class StoryModel extends BaseEntity<StoryModel> with _$StoryModel {
     String? endDecade,
     int? startDateFlag,
     int? endDateFlag,
+    String? timeType, //takes the value "time_point" or "time_interval";
+    String?
+        timeExpression, // takes the value "moment","day","month+season","year","decade" or "decade+season"
+    String? verbalExpression,
   }) = _StoryModel;
   StoryModel._();
   factory StoryModel.initial() => StoryModel();
