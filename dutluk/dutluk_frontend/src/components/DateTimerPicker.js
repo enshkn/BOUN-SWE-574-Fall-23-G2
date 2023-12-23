@@ -9,6 +9,7 @@ import SeasonPicker from './DateTimePicker/SeasonPicker'
 import YearPicker from './DateTimePicker/YearPicker'
 import DecadePicker from './DateTimePicker/DecadePicker'
 import SeasonMenu from './DateTimePicker/SeasonMenu'
+import { format } from 'date-fns'
 
 function DateTimerPicker({
   onTimeTypeSelect,
@@ -359,6 +360,7 @@ function DateTimerPicker({
           // formatting date
           formattedDateTimeStart = formatDate(selectedDateTimeStart);
           formattedDateTimeEnd = formattedDateTimeStart;
+          formattedDateTimeEnd = null;
           // flags
           var_dateFlag = 3;
           var_hourFlag = 1;
@@ -372,6 +374,7 @@ function DateTimerPicker({
           // formatting date
           formattedDateTimeStart = dayFormatter_start(selectedDateTimeStart);
           formattedDateTimeEnd = dayFormatter_end(selectedDateTimeStart);
+          formattedDateTimeEnd = null;
           // flags
           var_dateFlag = 3;
           var_hourFlag = 0;
@@ -385,6 +388,7 @@ function DateTimerPicker({
           // formatting date
           formattedDateTimeStart = monthStartFormatter(selectedDateTimeStart);
           formattedDateTimeEnd = monthEndFormatter(selectedDateTimeStart);
+          formattedDateTimeEnd = null;
           // flags
           var_dateFlag = 2;
           var_hourFlag = 0;
@@ -402,6 +406,11 @@ function DateTimerPicker({
           const result = calculateSeasonDates(startYear, intSeasonStart, selectedTimeType);
           formattedDateTimeStart = result.formattedStartTime;
           formattedDateTimeEnd = result.formattedEndTime;
+          formattedDateTimeEnd = null;
+          var_dateFlag = 1;
+          var_endDateFlag = -1;
+          var_hourFlag = 0;
+          var_endHourFlag = -1;
           // showing dates
           break;
         case 'year':
@@ -410,6 +419,7 @@ function DateTimerPicker({
           // formatting date
           formattedDateTimeStart = yearStartFormatter(selectedDateTimeStart);
           formattedDateTimeEnd = yearEndFormatter(selectedDateTimeStart);
+          formattedDateTimeEnd = null;
           // flags
           var_dateFlag = 1;
           var_hourFlag = 0;
@@ -498,6 +508,10 @@ function DateTimerPicker({
           // formatting date
           formattedDateTimeStart = result.formattedStartTime;
           formattedDateTimeEnd = result.formattedEndTime;
+          var_dateFlag = 1;
+          var_endDateFlag = 1;
+          var_hourFlag = 0;
+          var_endHourFlag = 0;
           // showing dates
           break;
         case 'year':
