@@ -322,13 +322,17 @@ const AddStoryForm = () => {
 
 
   // TimeResolution Handlers
+  {/* 
   const handleStartDateChange = (date) => {
     setStartTimeStamp(date);
     const startYear = getYear(date);
     const startDecade = startYear - (startYear % 10);
     setDecade(`${startDecade}s`);
   };
+  */}
 
+
+  {/* 
   const handleDecadeChange = (e) => {
     setDecade(e.target.value);
   };
@@ -337,8 +341,11 @@ const AddStoryForm = () => {
   const handleEndDateChange = (date) => {
     setEndTimeStamp(date);
   };
+
+  */}
   
 
+  {/*
   useEffect(() => {
     if (startTimeStamp) {
       const startYear = getYear(startTimeStamp);
@@ -348,6 +355,8 @@ const AddStoryForm = () => {
       setDecade("");
     }
   }, [startTimeStamp]);
+  
+  */}
 
   useEffect(() => {
     if (inputVisible) {
@@ -439,11 +448,11 @@ const AddStoryForm = () => {
     console.log('Selected Season End:', endSeason);
   }
   const handleSelectedDecadeStart = (selectedDecadeStart) => {
-    setDecade(selectedDecadeStart);
+    setDecade(`${selectedDecadeStart}s`);
     console.log('Selected Decade Start:', decade);
   }
   const handleSelectedDecadeEnd = (selectedDecadeEnd) => {
-    setEndDecade(selectedDecadeEnd);
+    setEndDecade(`${selectedDecadeEnd}s`);
     console.log('Selected Decade End:', endDecade);
   }
   const handleSelectedDateTimeStart = (selectedDateTimeStart) => {

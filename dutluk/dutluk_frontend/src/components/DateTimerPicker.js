@@ -9,7 +9,6 @@ import SeasonPicker from './DateTimePicker/SeasonPicker'
 import YearPicker from './DateTimePicker/YearPicker'
 import DecadePicker from './DateTimePicker/DecadePicker'
 import SeasonMenu from './DateTimePicker/SeasonMenu'
-import { set } from 'date-fns'
 
 function DateTimerPicker({
   onTimeTypeSelect,
@@ -28,7 +27,7 @@ function DateTimerPicker({
   onSelectedDateTimeEnd,
   
 }) {
-  
+  {/* -------------------------------------------------- STATES -------------------------------------------------- */}
   // time type
   const [selectedTimeType, setSelectedTimeType] = useState('');
   const handleTimeTypeChange = (selectedTimeType) => {
@@ -39,6 +38,14 @@ function DateTimerPicker({
   const handleTimeExpressionChange = (selectedTimeExpression) => {
     setSelectedTimeExpression(selectedTimeExpression);
   };
+  // date and hour flag
+  const [dateFlag, setDateFlag] = useState(-1);
+  const [hourFlag, setHourFlag] = useState(-1);
+  const [endHourFlag, setEndHourFlag] = useState(-1);
+  const [endDateFlag, setEndDateFlag] = useState(-1);
+  // timestamp
+  const [timeStampStart, setTimeStampStart] = useState('');
+  const [timeStampEnd, setTimeStampEnd] = useState('');  
   // date time start end
   const [selectedDateTimeStart, setSelectedDateTimeStart] = useState(new Date());
   const [selectedDateTimeEnd, setSelectedDateTimeEnd] = useState(new Date());
@@ -48,14 +55,8 @@ function DateTimerPicker({
   // decade
   const [selectedDecadeStart, setSelectedDecadeStart] = useState('');
   const [selectedDecadeEnd, setSelectedDecadeEnd] = useState('');
-  // timestamp
-  const [timeStampStart, setTimeStampStart] = useState('');
-  const [timeStampEnd, setTimeStampEnd] = useState('');
-  // date and hour flag
-  const [dateFlag, setDateFlag] = useState(-1);
-  const [hourFlag, setHourFlag] = useState(-1);
-  const [endHourFlag, setEndHourFlag] = useState(-1);
-  const [endDateFlag, setEndDateFlag] = useState(-1);
+
+  {/* -------------------------------------------------- FORMATTERS -------------------------------------------------- */}
 
  // moment formatter
   function formatDate(date) {
@@ -203,7 +204,7 @@ function DateTimerPicker({
     return { startDate, endDate };
   }
 
-//showing relevant picker  
+{/* -------------------------------------------------- SHOWING ELEMENTS AND VARIABLES -------------------------------------------------- */}
   let showStartMomentPicker = false;
   let showEndMomentPicker = false;
   let showStartDayPicker = false;
@@ -226,6 +227,9 @@ function DateTimerPicker({
   let var_hourFlag = -1;
   let var_endHourFlag = -1;
   let var_endDateFlag = -1;
+
+{/* -------------------------------------------------- RESET FORMS -------------------------------------------------- */}
+
 
 // reset form
   const resetForm = () => {
@@ -293,10 +297,12 @@ function DateTimerPicker({
   }, [selectedTimeType, onTimeTypeSelect]);
   */
  }
-  // multi props
+{/* -------------------------------------------------- PROPS  -------------------------------------------------- */}
   useEffect(() => {
     onTimeTypeSelect(selectedTimeType);
     onTimeExpressionSelect(selectedTimeExpression);
+    onSelectedDateTimeStart(selectedDateTimeStart);
+    onSelectedDateTimeEnd(selectedDateTimeEnd);
     onHourFlagSelect(hourFlag);
     onDateFlagSelect(dateFlag);
     onEndHourFlagSelect(endHourFlag);
@@ -307,8 +313,7 @@ function DateTimerPicker({
     onSelectedSeasonEnd(selectedSeasonEnd);
     onSelectedDecadeStart(selectedDecadeStart);
     onSelectedDecadeEnd(selectedDecadeEnd);
-    onSelectedDateTimeStart(selectedDateTimeStart);
-    onSelectedDateTimeEnd(selectedDateTimeEnd);
+
   }, [
     selectedTimeType,
     selectedTimeExpression,
@@ -326,6 +331,8 @@ function DateTimerPicker({
     selectedDecadeEnd,
     onTimeTypeSelect,
     onTimeExpressionSelect,
+    onSelectedDateTimeStart,
+    onSelectedDateTimeEnd,
     onHourFlagSelect,
     onDateFlagSelect,
     onEndHourFlagSelect,
@@ -336,12 +343,10 @@ function DateTimerPicker({
     onSelectedSeasonEnd,
     onSelectedDecadeStart,
     onSelectedDecadeEnd,
-    onSelectedDateTimeStart,
-    onSelectedDateTimeEnd,
   ]);
   
 
-    
+    {/* -------------------------------------------------- PICKER LOGIC  -------------------------------------------------- */}
   
 
   switch (selectedTimeType) {
