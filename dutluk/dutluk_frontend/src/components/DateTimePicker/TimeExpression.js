@@ -51,7 +51,9 @@ function TimeExpression({ onTimeExpressionChange}) {
         <Dropdown.Item eventKey="Season with Year">Season with Year</Dropdown.Item>
         <Dropdown.Item eventKey="Year">Year</Dropdown.Item>
         <Dropdown.Item eventKey="Decade">Decade</Dropdown.Item>
+        {/* 
         <Dropdown.Item eventKey="Decade with Season">Decade with Season</Dropdown.Item>
+        */}
       </Dropdown.Menu>
     </Dropdown>
   );

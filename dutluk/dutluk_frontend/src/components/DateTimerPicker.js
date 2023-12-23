@@ -427,6 +427,8 @@ function DateTimerPicker({
           // formatting date
           formattedDateTimeStart = formatDate(decade_start);
           formattedDateTimeEnd = formatDate(decade_end)
+          formattedDateTimeStart = null;
+          formattedDateTimeEnd = null;
           // showing dates
           break;
         case 'decade+season':
@@ -524,11 +526,13 @@ function DateTimerPicker({
           // formatting date
           formattedDateTimeStart = formatDate(decade_start);
           formattedDateTimeEnd = formatDate(decade_end)
+          formattedDateTimeStart = null;
+          formattedDateTimeEnd = null;
           // showing dates
           break;
         case 'decade+season':
-          showStartDecadeSeasonPicker = true;
-          showEndDecadeSeasonPicker = true;
+          showStartDecadeSeasonPicker = false;
+          showEndDecadeSeasonPicker = false;
           break;
       }
       break;
