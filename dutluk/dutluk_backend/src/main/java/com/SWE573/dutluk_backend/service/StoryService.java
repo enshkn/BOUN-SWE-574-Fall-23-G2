@@ -64,6 +64,8 @@ public class StoryService {
                 .user(foundUser)
                 .decade(storyEnterRequest.getDecade())
                 .endDecade(storyEnterRequest.getEndDecade())
+                .timeType(storyEnterRequest.getTimeType())
+                .timeExpression(storyEnterRequest.getTimeExpression())
                 .likes(new HashSet<>())
                 .build();
         ArrayList<Location> allLocations = storyEnterRequest.getLocations();

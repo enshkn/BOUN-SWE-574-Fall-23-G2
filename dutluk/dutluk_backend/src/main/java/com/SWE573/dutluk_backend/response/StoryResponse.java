@@ -41,9 +41,7 @@ public class StoryResponse{
     @JsonIgnoreProperties({"createdAt"})
     private List<Location> locations;
 
-
     private String startTimeStamp;
-
 
     private String endTimeStamp;
 
@@ -54,6 +52,12 @@ public class StoryResponse{
     private String endDecade;
 
     private Integer percentage;
+
+    private String timeType;
+
+    private String timeExpression;
+
+    //private String verbalExpression;
 
     public StoryResponse(Story story) {
         this.id = story.getId();
@@ -66,7 +70,11 @@ public class StoryResponse{
         this.likes = story.getLikes();
         this.savedBy = story.getSavedBy();
         this.locations = story.getLocations();
-        this.startTimeStamp = StoryService.dateToStringBasedOnFlags(story.getStartTimeStamp(),story.getStartHourFlag(),story.getStartDateFlag());
+        this.startTimeStamp = StoryService
+                .dateToStringBasedOnFlags(
+                        story.getStartTimeStamp(),
+                        story.getStartHourFlag(),
+                        story.getStartDateFlag());
         this.endTimeStamp = StoryService
                 .dateToStringBasedOnFlags(
                         story.getEndTimeStamp(),
@@ -74,8 +82,12 @@ public class StoryResponse{
                         story.getEndDateFlag());
         this.season = story.getSeason();
         this.decade = story.getDecade();
-        this.endDecade = StoryService.getEndDecadeString(story);
+        this.endDecade = StoryService
+                .getEndDecadeString(story);
         this.percentage = story.getPercentage();
+        this.timeType = story.getTimeType();
+        this.timeExpression = story.getTimeExpression();
+        //this.verbalExpression  = story.getVerbalExpression();
     }
 }
 

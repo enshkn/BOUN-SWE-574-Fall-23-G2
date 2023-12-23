@@ -52,6 +52,12 @@ public class StoryListResponse {
 
     private Integer percentage;
 
+    private String timeType;
+
+    private String timeExpression;
+
+    //private String verbalExpression;
+
     public StoryListResponse(Story story) {
         this.id = story.getId();
         this.createdAt = story.getCreatedAt();
@@ -78,5 +84,8 @@ public class StoryListResponse {
         this.decade = StoryService.getDecadeString(story);
         this.endDecade = StoryService.getEndDecadeString(story);
         this.percentage = story.getPercentage();
+        this.timeType = story.getTimeType();
+        this.timeExpression = story.getTimeExpression();
+        //this.verbalExpression  = story.getVerbalExpression();
     }
 }

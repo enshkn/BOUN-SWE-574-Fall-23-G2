@@ -72,6 +72,12 @@ public class Story extends BaseEntity{
 
     private String endDecade;
 
+    private String timeType;
+
+    private String timeExpression;
+
+    private String verbalExpression;
+
     private Integer startHourFlag = -1;// if 0, no hour, if 1, hour exists
 
     private Integer endHourFlag = -1;// if 0, no hour, if 1, hour exists

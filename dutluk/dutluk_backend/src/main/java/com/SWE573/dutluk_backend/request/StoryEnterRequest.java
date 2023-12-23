@@ -36,6 +36,7 @@ public class StoryEnterRequest {
 
     private String endDecade;
 
+
     private Integer startHourFlag = -1;// if 0, no hour, if 1, hour exists
 
     private Integer endHourFlag = -1;// if 0, no hour, if 1, hour exists
@@ -43,4 +44,8 @@ public class StoryEnterRequest {
     private Integer startDateFlag = -1;// if 1 -> yyyy, if 2 -> MM/yyyy, if 3 dd/MM/yyyy
 
     private Integer endDateFlag = -1;;// if 1 -> yyyy, if 2 -> MM/yyyy, if 3 dd/MM/yyyy
+
+    private String timeType; //takes the value "time_point" or "time_interval";
+
+    private String timeExpression;// takes the value "moment","day","month+season","year","decade" or "decade+season"
 }

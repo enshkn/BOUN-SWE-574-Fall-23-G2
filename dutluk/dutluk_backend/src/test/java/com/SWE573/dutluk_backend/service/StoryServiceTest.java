@@ -61,6 +61,10 @@ class StoryServiceTest {
         storyEnterRequest.setEndTimeStamp(date);
         storyEnterRequest.setSeason("Summer");
         storyEnterRequest.setDecade("2020s");
+        storyEnterRequest.setStartHourFlag(1);
+        storyEnterRequest.setEndHourFlag(1);
+        storyEnterRequest.setStartDateFlag(3);
+        storyEnterRequest.setEndDateFlag(3);
         List<Location> locations = new ArrayList<>();
         locations.add(Location.builder()
                 .latitude(41.085064)
