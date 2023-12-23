@@ -26,24 +26,43 @@ const StoryList = ({ story }) => {
         fetchSaveStatus();
     }, [fetchSaveStatus]);
 
-const truncateText = (text, maxLength) => {
-    if (text.length > maxLength) {
-        return {
-            mainText: text.substring(0, maxLength),
-            fadeText: text.substring(maxLength)
-        };
-    }
-    return { mainText: text, fadeText: '' };
-};
-
-const formatDate = (timestamp) => {
-    return timestamp ? new Date(timestamp).toLocaleDateString() : '';
-  };
-
-
-const StoryList = ({ story }) => {
-
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return {
+                mainText: text.substring(0, maxLength),
+                fadeText: text.substring(maxLength)
+            };
+        }
+        return { mainText: text, fadeText: '' };
+    };
+    
+    const formatDate = (timestamp) => {
+        return timestamp ? new Date(timestamp).toLocaleDateString() : '';
+      };
+      
     const { mainText, fadeText } = truncateText(story.text, 95); // Adjust 100 to your desired length
+
+    const handleSaveClick = async () => {
+        try {
+            const response = await axios.post(
+                `${process.env.REACT_APP_BACKEND_URL}/api/story/save`,
+                { savedEntityId: story.id },
+                {
+                    withCredentials: true,
+                }
+            );
+            setIsSaved(!isSaved); // Toggle the save status
+            console.log(response); // Log the response to check if it's as expected
+            if (isSaved === true) {
+                messageApi.open({ type: "success", content: "You unsaved the story" });
+            } else if (isSaved === false) {
+                messageApi.open({ type: "success", content: "You saved the story" });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <Space
         direction="vertical"
@@ -55,7 +74,7 @@ const StoryList = ({ story }) => {
         {contextHolder}
         <div className="story-item">
             <div className="story-header">
-                <img src={story.user.profilePhoto} className="profile-picture" />
+                <img src={story.user.profilePhoto} className="profile-picture" alt="profile-pic"/>
                 <div className="story-info">
                     <a href={`/user/${story.user.id}`} className="username">@{story.user.username}</a>
                     <span className="story-date">Posted: {story.createdAt}</span>
@@ -108,6 +127,7 @@ const StoryList = ({ story }) => {
             </div>
 
         </div>
+        </Space>
     );
 };
 
