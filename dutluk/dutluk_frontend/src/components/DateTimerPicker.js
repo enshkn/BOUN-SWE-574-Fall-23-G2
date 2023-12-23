@@ -446,8 +446,8 @@ function DateTimerPicker({
           // flags
           var_dateFlag = 3;
           var_hourFlag = 1;
-          var_endHourFlag = 3;
-          var_endDateFlag = 1;
+          var_endDateFlag = 3;
+          var_endHourFlag = 1;
           // showing dates
           break;
         case 'day':
@@ -460,8 +460,8 @@ function DateTimerPicker({
           // flags
           var_dateFlag = 3;
           var_hourFlag = 0;
-          var_endHourFlag = 3;
-          var_endDateFlag = 0;
+          var_endDateFlag = 3;
+          var_endHourFlag = 0;
           // showing dates
           break;
         case 'month':
@@ -474,8 +474,8 @@ function DateTimerPicker({
           // flags
           var_dateFlag = 2;
           var_hourFlag = 0;
-          var_endHourFlag = 2;
-          var_endDateFlag = 0;          
+          var_endDateFlag = 2;      
+          var_endHourFlag = 0; 
           // showing dates
           break;
         case 'season':
@@ -508,8 +508,8 @@ function DateTimerPicker({
           // flags
           var_dateFlag = 1;
           var_hourFlag = 0;
-          var_endHourFlag = 1;
-          var_endDateFlag = 0;
+          var_endDateFlag = 1;
+          var_endHourFlag = 0;
           // showing dates
           break;
         case 'decade':
