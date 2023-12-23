@@ -68,9 +68,9 @@
     "react-test-renderer": "^18.2.0"
   },
   "jest": {
-    
     "transformIgnorePatterns": ["node_modules\/(?!axios)"],
     "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy",
       "axios": "axios/dist/node/axios.cjs"
     }
   }
