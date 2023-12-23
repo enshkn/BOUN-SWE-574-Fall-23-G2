@@ -32,10 +32,10 @@ function SavedStories() {
     >
     {contextHolder}
     <div className="all-stories">
-      <h1>Your saved stories</h1>
-      {savedStories.map((story) => (
-        StoryList(story = { story })
-      ))}
+        <h1>Your saved stories</h1>
+        {savedStories.map((story) => (
+          <StoryList key={story.id} story={story} />
+        ))}
     </div>
     </Space>
   );

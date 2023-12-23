@@ -34,7 +34,7 @@ function RecommendedStories() {
     <div className="all-stories">
       <h1>Recommended Stories</h1>
       {recommendedStories.map((story) => (
-        StoryList(story={story})
+        <StoryList story={story} key={story.id} />
       ))}
     </div>
     </Space>
