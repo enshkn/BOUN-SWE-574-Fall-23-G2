@@ -68,6 +68,7 @@ public class StoryService {
                 .timeExpression(storyEnterRequest.getTimeExpression())
                 .likes(new HashSet<>())
                 .build();
+        createdStory.setVerbalExpression(generateVerbalExpression(createdStory));
         ArrayList<Location> allLocations = storyEnterRequest.getLocations();
         for (Location location : allLocations) {
             location.setStory(createdStory);
@@ -336,6 +337,7 @@ public class StoryService {
         foundStory.setEndHourFlag(storyEditRequest.getEndHourFlag());
         foundStory.setStartDateFlag(storyEditRequest.getStartDateFlag());
         foundStory.setEndDateFlag(storyEditRequest.getEndDateFlag());
+        foundStory.setVerbalExpression(generateVerbalExpression(foundStory));
         List<Location> storyLocations = foundStory.getLocations();
         storyLocations.clear();
         foundStory.setLocations(storyLocations);
@@ -749,6 +751,8 @@ public class StoryService {
         return removeHtmlFormatting(text).substring(0,100)+"...";
     }
 
-
-
+    // to be updated based on the verbal expression logic
+    public static String generateVerbalExpression(Story story) {
+        return story.getVerbalExpression();
+    }
 }

@@ -57,7 +57,7 @@ public class StoryResponse{
 
     private String timeExpression;
 
-    //private String verbalExpression;
+    private String verbalExpression;
 
     public StoryResponse(Story story) {
         this.id = story.getId();
@@ -87,7 +87,7 @@ public class StoryResponse{
         this.percentage = story.getPercentage();
         this.timeType = story.getTimeType();
         this.timeExpression = story.getTimeExpression();
-        //this.verbalExpression  = story.getVerbalExpression();
+        this.verbalExpression = story.getVerbalExpression();
     }
 }
 
