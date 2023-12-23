@@ -1220,12 +1220,14 @@ class _AddStoryViewState extends State<AddStoryView>
       await cubit.editStory(model, widget.storyModel!.id).then((value) {
         if (value) {
           Navigator.of(context).pop();
+          cubit.showNotification('Your Story is edited.');
         }
       });
     } else {
       await cubit.addStory(model).then((value) {
         if (value) {
           Navigator.of(context).pop();
+          cubit.showNotification('Your Story is added.');
         }
       });
     }
