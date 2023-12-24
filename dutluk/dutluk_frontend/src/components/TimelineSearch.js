@@ -76,6 +76,10 @@ const TimelineSearch = () => {
     setSelectedLocation({ lat: clickedLat, lng: clickedLng });
   };
 
+  const handleMarkerReClick = () => {
+    setSelectedLocation(null);
+  };
+
   useEffect(() => {
     handleSearch();
   }, [handleSearch, searchDate, searchSeason, searchDecade]);
@@ -282,6 +286,7 @@ const TimelineSearch = () => {
                   lat: selectedLocation.lat,
                   lng: selectedLocation.lng,
                 }}
+                onClick={handleMarkerReClick}
               />
             )}
           </GoogleMap>
