@@ -38,7 +38,7 @@ const AddStoryForm = () => {
   const [searchBox, setSearchBox] = useState(null);
   const [currentShape, setCurrentShape] = useState('marker');
   const [tempPoints, setTempPoints] = useState([]);
-  const [circleRadius, setCircleRadius] = useState(5000);
+  const [circleRadius, setCircleRadius] = useState(5);
   const [markers, setMarkers] = useState([]);
   const [circles, setCircles] = useState([]);
   const [polygons, setPolygons] = useState([]);
@@ -295,7 +295,7 @@ const AddStoryForm = () => {
     } else if (currentShape === 'circle') {
       const newCircle = {
         center: { lat: clickedLat, lng: clickedLng, name: locationName },
-        radius: circleRadius,
+        radius: circleRadius*1000,
         name: locationName,
         id: circles.length // Unique identifier based on the current length of the array
       };
