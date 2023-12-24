@@ -61,176 +61,177 @@ void main() {
       verify(mockStoryRepository.getRecentStories());
       expect(storyCubit.state.recentStories, isNotEmpty);
     });
-  });
 
-  test('activityFeed returns a list of StoryModel on successful response',
-      () async {
-    final storyListModel = List.generate(3, (index) => StoryModel());
-    when(mockStoryRepository.getActivityFeed()).thenAnswer(
-      (_) async => right(
-        storyListModel,
-      ),
-    );
-    // Act
-    await storyCubit.getActivityFeeed();
+    test('activityFeed returns a list of StoryModel on successful response',
+        () async {
+      final storyListModel = List.generate(3, (index) => StoryModel());
+      when(mockStoryRepository.getActivityFeed()).thenAnswer(
+        (_) async => right(
+          storyListModel,
+        ),
+      );
+      // Act
+      await storyCubit.getActivityFeeed();
 
-    // Assert
-    verify(mockStoryRepository.getActivityFeed());
-    expect(storyCubit.state.activityFeedStories, isNotEmpty);
-  });
+      // Assert
+      verify(mockStoryRepository.getActivityFeed());
+      expect(storyCubit.state.activityFeedStories, isNotEmpty);
+    });
 
-  test('getFallowedStories returns a list of StoryModel on successful response',
-      () async {
-    final storyListModel = List.generate(3, (index) => StoryModel());
-    when(mockStoryRepository.getFallowedStories()).thenAnswer(
-      (_) async => right(
-        storyListModel,
-      ),
-    );
-    // Act
-    await storyCubit.getFallowedStories();
+    test(
+        'getFallowedStories returns a list of StoryModel on successful response',
+        () async {
+      final storyListModel = List.generate(3, (index) => StoryModel());
+      when(mockStoryRepository.getFallowedStories()).thenAnswer(
+        (_) async => right(
+          storyListModel,
+        ),
+      );
+      // Act
+      await storyCubit.getFallowedStories();
 
-    // Assert
-    verify(mockStoryRepository.getFallowedStories());
-    expect(storyCubit.state.fallowedStories, isNotEmpty);
-  });
+      // Assert
+      verify(mockStoryRepository.getFallowedStories());
+      expect(storyCubit.state.fallowedStories, isNotEmpty);
+    });
 
-  test('myStories returns a list of StoryModel on successful response',
-      () async {
-    final storyListModel = List.generate(3, (index) => StoryModel());
-    when(mockStoryRepository.myStories()).thenAnswer(
-      (_) async => right(
-        storyListModel,
-      ),
-    );
-    // Act
-    await storyCubit.getMyStories();
+    test('myStories returns a list of StoryModel on successful response',
+        () async {
+      final storyListModel = List.generate(3, (index) => StoryModel());
+      when(mockStoryRepository.myStories()).thenAnswer(
+        (_) async => right(
+          storyListModel,
+        ),
+      );
+      // Act
+      await storyCubit.getMyStories();
 
-    // Assert
-    verify(mockStoryRepository.myStories());
-    expect(storyCubit.state.myStories, isNotEmpty);
-  });
+      // Assert
+      verify(mockStoryRepository.myStories());
+      expect(storyCubit.state.myStories, isNotEmpty);
+    });
 
-  test('getNearbyStories returns a list of StoryModel on successful response',
-      () async {
-    final storyListModel = List.generate(3, (index) => StoryModel());
-    final nearbyStories =
-        List.generate(1, (index) => const GetNearbyStoriesModel());
-    when(mockStoryRepository.getNearbyStories(nearbyStories[0])).thenAnswer(
-      (_) async => right(
-        storyListModel,
-      ),
-    );
-    // Act
-    await storyCubit.getNearbyStories(nearbyStories[0]);
+    test('getNearbyStories returns a list of StoryModel on successful response',
+        () async {
+      final storyListModel = List.generate(3, (index) => StoryModel());
+      final nearbyStories =
+          List.generate(1, (index) => const GetNearbyStoriesModel());
+      when(mockStoryRepository.getNearbyStories(nearbyStories[0])).thenAnswer(
+        (_) async => right(
+          storyListModel,
+        ),
+      );
+      // Act
+      await storyCubit.getNearbyStories(nearbyStories[0]);
 
-    // Assert
-    verify(mockStoryRepository.getNearbyStories(nearbyStories[0]));
-    expect(storyCubit.state.nearbyStories, isNotEmpty);
-  });
+      // Assert
+      verify(mockStoryRepository.getNearbyStories(nearbyStories[0]));
+      expect(storyCubit.state.nearbyStories, isNotEmpty);
+    });
 
-  test('recommended returns a list of StoryModel on successful response',
-      () async {
-    final storyListModel = List.generate(3, (index) => StoryModel());
-    when(mockStoryRepository.getRecommendedStories()).thenAnswer(
-      (_) async => right(
-        storyListModel,
-      ),
-    );
-    // Act
-    await storyCubit.getRecommendedStories();
+    test('recommended returns a list of StoryModel on successful response',
+        () async {
+      final storyListModel = List.generate(3, (index) => StoryModel());
+      when(mockStoryRepository.getRecommendedStories()).thenAnswer(
+        (_) async => right(
+          storyListModel,
+        ),
+      );
+      // Act
+      await storyCubit.getRecommendedStories();
 
-    // Assert
-    verify(mockStoryRepository.getRecommendedStories());
-    expect(storyCubit.state.recommendedStories, isNotEmpty);
-  });
+      // Assert
+      verify(mockStoryRepository.getRecommendedStories());
+      expect(storyCubit.state.recommendedStories, isNotEmpty);
+    });
 
-  test('set Context', () async {
-    // final context = MockBuildContext();
+    test('set Context', () async {
+      // final context = MockBuildContext();
 
-    final mockBuildContext = MockBuildContext();
+      final mockBuildContext = MockBuildContext();
 
-    // Act
-    final result = storyCubit.setContext(mockBuildContext);
+      // Act
+      final result = storyCubit.setContext(mockBuildContext);
 
-    // Assert
-    expect(result, mockBuildContext);
-    expect(storyCubit.context, mockBuildContext);
-  });
+      // Assert
+      expect(result, mockBuildContext);
+      expect(storyCubit.context, mockBuildContext);
+    });
 
-  test('addStory returns true on successful response', () async {
-    // Arrange
-    const addStoryModel = AddStoryModel(
-      text: '',
-      title: '',
-    );
+    test('addStory returns true on successful response', () async {
+      // Arrange
+      const addStoryModel = AddStoryModel(
+        text: '',
+        title: '',
+      );
 
-    final storyModel = StoryModel();
+      final storyModel = StoryModel();
 
-    when(mockStoryRepository.addStoryModel(addStoryModel)).thenAnswer(
-      (_) async => right(storyModel),
-    );
-    // Act
-    final result = await storyCubit.addStory(addStoryModel);
+      when(mockStoryRepository.addStoryModel(addStoryModel)).thenAnswer(
+        (_) async => right(storyModel),
+      );
+      // Act
+      final result = await storyCubit.addStory(addStoryModel);
 
-    // Assert
-    verify(
-      mockStoryRepository.addStoryModel(
-        addStoryModel,
-      ),
-    );
-    expect(result, true);
-  });
+      // Assert
+      verify(
+        mockStoryRepository.addStoryModel(
+          addStoryModel,
+        ),
+      );
+      expect(result, true);
+    });
 
-  test('storyDetail returns a story on successful response', () async {
-    // Arrange
+    test('storyDetail returns a story on successful response', () async {
+      // Arrange
 
-    final storyModel = StoryModel();
+      final storyModel = StoryModel();
 
-    when(mockStoryRepository.getStoryDetail(0)).thenAnswer(
-      (_) async => right(storyModel),
-    );
-    // Act
-    await storyCubit.getStoryDetail(0);
+      when(mockStoryRepository.getStoryDetail(0)).thenAnswer(
+        (_) async => right(storyModel),
+      );
+      // Act
+      await storyCubit.getStoryDetail(0);
 
-    // Assert
-    verify(
-      mockStoryRepository.getStoryDetail(
-        0,
-      ),
-    );
-    expect(storyCubit.state.storyModel, StoryModel());
-  });
+      // Assert
+      verify(
+        mockStoryRepository.getStoryDetail(
+          0,
+        ),
+      );
+      expect(storyCubit.state.storyModel, StoryModel());
+    });
 
-  test('getliked returns a list of StoryModel on successful response',
-      () async {
-    final storyListModel = List.generate(3, (index) => StoryModel());
-    when(mockStoryRepository.getLikedStories()).thenAnswer(
-      (_) async => right(
-        storyListModel,
-      ),
-    );
-    // Act
-    await storyCubit.getLikedStories();
+    test('getliked returns a list of StoryModel on successful response',
+        () async {
+      final storyListModel = List.generate(3, (index) => StoryModel());
+      when(mockStoryRepository.getLikedStories()).thenAnswer(
+        (_) async => right(
+          storyListModel,
+        ),
+      );
+      // Act
+      await storyCubit.getLikedStories();
 
-    // Assert
-    verify(mockStoryRepository.getLikedStories());
-    expect(storyCubit.state.likedStories, isNotEmpty);
-  });
+      // Assert
+      verify(mockStoryRepository.getLikedStories());
+      expect(storyCubit.state.likedStories, isNotEmpty);
+    });
 
-  test('recommended returns a list of StoryModel on successful response',
-      () async {
-    final storyListModel = List.generate(3, (index) => StoryModel());
-    when(mockStoryRepository.getRecommendedStories()).thenAnswer(
-      (_) async => right(
-        storyListModel,
-      ),
-    );
-    // Act
-    await storyCubit.getRecommendedStories();
+    test('recommended returns a list of StoryModel on successful response',
+        () async {
+      final storyListModel = List.generate(3, (index) => StoryModel());
+      when(mockStoryRepository.getRecommendedStories()).thenAnswer(
+        (_) async => right(
+          storyListModel,
+        ),
+      );
+      // Act
+      await storyCubit.getRecommendedStories();
 
-    // Assert
-    verify(mockStoryRepository.getRecommendedStories());
-    expect(storyCubit.state.recommendedStories, isNotEmpty);
+      // Assert
+      verify(mockStoryRepository.getRecommendedStories());
+      expect(storyCubit.state.recommendedStories, isNotEmpty);
+    });
   });
 }

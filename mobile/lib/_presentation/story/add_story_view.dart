@@ -1153,6 +1153,23 @@ class _AddStoryViewState extends State<AddStoryView>
     if (selectedEndDateTime != DateTime(0)) {
       endtimecheck = true;
     }
+    String? timeExpression;
+// takes the value "moment","day","month+season","year","decade" or "decade+season"
+    if (exactDateWithTimeSelected) {
+      timeExpression = 'moment';
+    } else if (exatDateSelected) {
+      timeExpression = 'day';
+    } else if (yearSelected) {
+      timeExpression = 'year';
+    } else if (decadeRangeSelected && seasonController.text == '') {
+      timeExpression = 'decade';
+    } else if (decadeSelected && seasonController.text == '') {
+      timeExpression = 'decade';
+    } else if (decadeRangeSelected && seasonController.text != '') {
+      timeExpression = 'decade+season';
+    } else if (decadeSelected && seasonController.text != '') {
+      timeExpression = 'decade+season';
+    }
 
     final model = AddStoryModel(
       text: htmlText,
@@ -1194,17 +1211,23 @@ class _AddStoryViewState extends State<AddStoryView>
               ? 1
               : -1,
       endDateFlag: selectedEndDate != DateTime(0) ? 3 : -1,
+      timeType: (endtimecheck || decadeRangeSelected)
+          ? 'time_interval'
+          : 'time_point',
+      timeExpression: timeExpression,
     );
     if (widget.myStories) {
       await cubit.editStory(model, widget.storyModel!.id).then((value) {
         if (value) {
           Navigator.of(context).pop();
+          cubit.showNotification('Your Story is edited.');
         }
       });
     } else {
       await cubit.addStory(model).then((value) {
         if (value) {
           Navigator.of(context).pop();
+          cubit.showNotification('Your Story is added.');
         }
       });
     }

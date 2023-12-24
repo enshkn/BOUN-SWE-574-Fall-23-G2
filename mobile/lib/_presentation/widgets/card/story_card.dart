@@ -110,7 +110,7 @@ class StoryCard extends StatelessWidget {
                   ),
                 if (storyModel.percentage != null)
                   Text(
-                    storyModel.percentage!,
+                    '${storyModel.percentage!}%',
                   ),
               ],
             ),

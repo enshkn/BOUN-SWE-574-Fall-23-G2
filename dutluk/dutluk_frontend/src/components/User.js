@@ -85,9 +85,13 @@ function UserComponent({ userId }) {
         setLoading(false);
         messageApi.open({ type: "success", content: "Your photo uploaded!"});
       })
-      .catch((error) => 
-      console.log(error));
-      messageApi.open({ type: "error", content: "Error occured while uploading photo!"});
+      .catch((error) => {
+        console.error(error);
+        messageApi.open({
+          type: "error",
+          content: "Error occurred while uploading photo!",
+        });
+      });
   };
 
   if (!user) {

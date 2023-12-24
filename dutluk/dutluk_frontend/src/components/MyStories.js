@@ -63,7 +63,7 @@ function MyStories() {
     <div className="all-stories">
       <h1>My Stories</h1>
       {myStories.map((story) => (
-        <StoryList story={story}>
+        <StoryList story={story} key={story.id} isMyStoriesPage={true}>
           {/* <button
             className="edit-button"
             onClick={() => handleEdit(story.id)}

@@ -118,7 +118,7 @@ final class StoryCubit extends BaseCubit<StoryState> {
         return false;
       },
       (data) {
-        showNotification('Your Story is added.');
+        //showNotification('Your Story is added.');
         return true;
       },
     );
@@ -137,7 +137,7 @@ final class StoryCubit extends BaseCubit<StoryState> {
         return false;
       },
       (data) {
-        showNotification('Your Story is edited.');
+        //showNotification('Your Story is edited.');
         return true;
       },
     );

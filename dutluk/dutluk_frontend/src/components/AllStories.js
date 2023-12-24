@@ -35,7 +35,7 @@ function AllStories() {
     <div className="all-stories">
       <h1>All Stories</h1>
       {allStories.map((story) => (
-        StoryList(story={story})
+        <StoryList story={story} key={story.id} />
       ))}
     </div>
     </Space>

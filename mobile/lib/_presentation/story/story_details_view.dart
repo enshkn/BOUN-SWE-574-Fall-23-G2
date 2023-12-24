@@ -81,87 +81,90 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
     controller4 = ExpansionTileController();
     controller5 = ExpansionTileController();
     controller6 = ExpansionTileController();
-
-    final storyLocations = widget.model.locations;
-
-    for (var i = 0; i < storyLocations!.length; i++) {
-      if (storyLocations[i].isCircle != null &&
-          storyLocations[i].circleRadius != null) {
-        radiusList.add(storyLocations[i].circleRadius!);
-      }
-    }
-
-    for (var i = 0; i < storyLocations.length; i++) {
-      if (storyLocations[i].isPolygon != null) {
-        polygonLocations.add(storyLocations[i]);
-        polygoneCount = storyLocations[i].isPolygon!;
-      } else if (storyLocations[i].isPolyline != null) {
-        polylineLocations.add(storyLocations[i]);
-        polylineCount = storyLocations[i].isPolyline!;
-      } else if (storyLocations[i].isCircle != null) {
-        circleLocations.add(storyLocations[i]);
-        circleCount = storyLocations[i].isCircle!;
-      } else {
-        pointLocations.add(storyLocations[i]);
-      }
-    }
-
-    for (var i = 0; i < pointLocations.length; i++) {
-      if (pointLocations[i].latitude != null) {
-        additionalMarkers['$i'] = LatLng(
-          pointLocations[i].latitude!,
-          pointLocations[i].longitude!,
-        );
-      }
-    }
-    for (var k = 0; k <= polygoneCount; k++) {
-      if (k != 0) {
-        final list = <LatLng>[];
-        polygonLatLng.add(list);
-      }
-      for (var j = 0; j < polygonLocations.length; j++) {
-        if (polygonLocations[j].isPolygon == k) {
-          polygonLatLng[k].add(
-            LatLng(
-              polygonLocations[j].latitude!,
-              polygonLocations[j].longitude!,
-            ),
-          );
-          additionalPolygones?['$k'] = polygonLatLng[k];
-        }
-      }
-    }
-    for (var k = 0; k <= polylineCount; k++) {
-      if (k != 0) {
-        final list = <LatLng>[];
-        polylineLatLng.add(list);
-      }
-      for (var j = 0; j < polylineLocations.length; j++) {
-        if (polylineLocations[j].isPolygon == k) {
-          polylineLatLng[k].add(
-            LatLng(
-              polylineLocations[j].latitude!,
-              polylineLocations[j].longitude!,
-            ),
-          );
-          additionalPolylines?['$k'] = polylineLatLng[k];
-        }
-      }
-    }
-
-    for (var k = 0; k < circleCount; k++) {
-      for (var j = 0; j < circleLocations.length; j++) {
-        circleLatLng.add(
-          LatLng(
-            circleLocations[j].latitude!,
-            circleLocations[j].longitude!,
-          ),
-        );
-        additionalCircles?['$j'] = circleLatLng[j];
-      }
-    }
-
+    //locationCheck(widget.model);
     super.initState();
+  }
+
+  void locationCheck(StoryModel? storyModel) {
+    final storyLocations = storyModel?.locations;
+    if (storyModel?.locations != null) {
+      for (var i = 0; i < storyLocations!.length; i++) {
+        if (storyLocations[i].isCircle != null &&
+            storyLocations[i].circleRadius != null) {
+          radiusList.add(storyLocations[i].circleRadius!);
+        }
+      }
+
+      for (var i = 0; i < storyLocations.length; i++) {
+        if (storyLocations[i].isPolygon != null) {
+          polygonLocations.add(storyLocations[i]);
+          polygoneCount = storyLocations[i].isPolygon!;
+        } else if (storyLocations[i].isPolyline != null) {
+          polylineLocations.add(storyLocations[i]);
+          polylineCount = storyLocations[i].isPolyline!;
+        } else if (storyLocations[i].isCircle != null) {
+          circleLocations.add(storyLocations[i]);
+          circleCount = storyLocations[i].isCircle!;
+        } else {
+          pointLocations.add(storyLocations[i]);
+        }
+      }
+
+      for (var i = 0; i < pointLocations.length; i++) {
+        if (pointLocations[i].latitude != null) {
+          additionalMarkers['$i'] = LatLng(
+            pointLocations[i].latitude!,
+            pointLocations[i].longitude!,
+          );
+        }
+      }
+      for (var k = 0; k <= polygoneCount; k++) {
+        if (k != 0) {
+          final list = <LatLng>[];
+          polygonLatLng.add(list);
+        }
+        for (var j = 0; j < polygonLocations.length; j++) {
+          if (polygonLocations[j].isPolygon == k) {
+            polygonLatLng[k].add(
+              LatLng(
+                polygonLocations[j].latitude!,
+                polygonLocations[j].longitude!,
+              ),
+            );
+            additionalPolygones?['$k'] = polygonLatLng[k];
+          }
+        }
+      }
+      for (var k = 0; k <= polylineCount; k++) {
+        if (k != 0) {
+          final list = <LatLng>[];
+          polylineLatLng.add(list);
+        }
+        for (var j = 0; j < polylineLocations.length; j++) {
+          if (polylineLocations[j].isPolygon == k) {
+            polylineLatLng[k].add(
+              LatLng(
+                polylineLocations[j].latitude!,
+                polylineLocations[j].longitude!,
+              ),
+            );
+            additionalPolylines?['$k'] = polylineLatLng[k];
+          }
+        }
+      }
+
+      for (var k = 0; k < circleCount; k++) {
+        for (var j = 0; j < circleLocations.length; j++) {
+          circleLatLng.add(
+            LatLng(
+              circleLocations[j].latitude!,
+              circleLocations[j].longitude!,
+            ),
+          );
+          additionalCircles?['$j'] = circleLatLng[j];
+        }
+      }
+    }
   }
 
   @override
@@ -199,6 +202,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               await cubit.getStoryDetail(widget.model.id);
             },
             builder: (context, cubit, state) {
+              locationCheck(state.storyModel);
               return BaseLoader(
                 isLoading: state.isLoading,
                 child: BaseScrollView(
