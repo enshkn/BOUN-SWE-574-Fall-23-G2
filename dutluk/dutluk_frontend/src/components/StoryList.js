@@ -2,11 +2,13 @@ import "./css/StoryList.css";
 import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
 import { Space, message } from 'antd';
+import { useNavigate } from "react-router-dom";
 
 const StoryList = ({ story }) => {
     const [isSaved, setIsSaved] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const currentUserId = sessionStorage.getItem('currentUserId');
+    const navigate = useNavigate();
 
     const fetchSaveStatus = useCallback(async () => {
         try {
@@ -77,6 +79,10 @@ const StoryList = ({ story }) => {
           });
     };
 
+    const handleEditStory = (storyId) => {
+            navigate(`/story/edit/${storyId}`);
+    };
+
     return (
         <Space
             direction="vertical"
@@ -122,13 +128,20 @@ const StoryList = ({ story }) => {
                     </div>
 
                     <div className="interactions">
-                        <button onClick={handleSaveClick} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", margin: "20px" }} type="submit" className="btn btn-primary">
+                        <button onClick={handleSaveClick} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none"}} type="submit" className="btn btn-primary">
                             {isSaved ? 'Unsave' : 'Save'}
                         </button>
                         {story.user.id == currentUserId && (
                             <button
+                                style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", margin: "10px" }}
+                                className="btn btn-primary"
+                                onClick={() => handleEditStory(story.id)}
+                            >Edit</button>)
+                        }
+                        {story.user.id == currentUserId && (
+                            <button
                                 className="btn btn-danger"
-                                style={{ marginRight: '10px' }} // Add some space between the buttons
+                                style={{ marginRight: '10px' }}
                                 onClick={() => handleDeleteStory(story.id)}
                             >Delete</button>)
                         }

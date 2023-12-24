@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Space, message } from 'antd';
 import "./css/AllStories.css";
 import StoryList from "./StoryList";
@@ -8,7 +7,6 @@ import StoryList from "./StoryList";
 function MyStories() {
   const [myStories, setMyStories] = useState([]);
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
@@ -28,10 +26,6 @@ function MyStories() {
       });
   }, [BACKEND_URL, messageApi]);
 
-
-  const handleEdit = (storyId) => {
-    navigate(`/story/edit/${storyId}`);
-  };
 
   return (
     <Space
