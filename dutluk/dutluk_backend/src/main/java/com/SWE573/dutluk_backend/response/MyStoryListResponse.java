@@ -36,7 +36,7 @@ public class MyStoryListResponse {
     private List<String> labels;
 
 
-    @JsonIncludeProperties(value = {"id" , "username"})
+    @JsonIncludeProperties(value = {"id", "username", "profilePhoto"})
     private User user;
 
     @OneToMany(mappedBy = "story")
