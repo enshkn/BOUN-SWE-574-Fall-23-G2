@@ -61,6 +61,20 @@ const StoryList = ({ story }) => {
     };
 
     const handleDeleteStory = async (storyId) => {
+        axios
+        .get(
+            `${process.env.REACT_APP_BACKEND_URL}/api/story/delete/${storyId}`,
+            {
+              withCredentials: true,
+            }
+          )
+          .then(() => {
+            window.location.reload(); 
+          })
+          .catch((error) => {
+            console.log(error);
+            messageApi.open({ type: "error", content: "Error occured while deleting the story!"});
+          });
     };
 
     return (
