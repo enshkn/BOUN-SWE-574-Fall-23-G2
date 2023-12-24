@@ -4,12 +4,19 @@ import { useNavigate } from "react-router-dom";
 import { Space, message } from 'antd';
 import "./css/AllStories.css";
 import StoryList from "./StoryList";
+import parse from "html-react-parser";
 
 function MyStories() {
   const [myStories, setMyStories] = useState([]);
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
+
+  const sanitizeStoryTexts = (stories) => {
+    stories.forEach((story) => {
+      story.text = parse(story.text);
+    });
+  }
 
   useEffect(() => {
     axios
@@ -20,6 +27,7 @@ function MyStories() {
         }
       )
       .then((response) => {
+        sanitizeStoryTexts(response.data);
         setMyStories(response.data);
       })
       .catch((error) => {
