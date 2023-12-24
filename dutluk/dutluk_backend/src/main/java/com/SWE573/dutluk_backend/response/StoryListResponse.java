@@ -46,6 +46,8 @@ public class StoryListResponse {
 
     private String season;
 
+    private String endSeason;
+
     private String decade;
 
     private String endDecade;
@@ -81,11 +83,10 @@ public class StoryListResponse {
                         story.getEndHourFlag(),
                         story.getEndDateFlag());
         this.season = story.getSeason();
+        this.endSeason = story.getEndSeason();
         this.decade = StoryService.getDecadeString(story);
         this.endDecade = StoryService.getEndDecadeString(story);
         this.percentage = story.getPercentage();
-        this.timeType = story.getTimeType();
-        this.timeExpression = story.getTimeExpression();
         this.verbalExpression = story.getVerbalExpression();
     }
 }
