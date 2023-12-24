@@ -1,28 +1,80 @@
 import "./css/StoryList.css";
-
-
-const truncateText = (text, maxLength) => {
-    if (text.length > maxLength) {
-        return {
-            mainText: text.substring(0, maxLength),
-            fadeText: text.substring(maxLength)
-        };
-    }
-    return { mainText: text, fadeText: '' };
-};
-
-const formatDate = (timestamp) => {
-    return timestamp ? new Date(timestamp).toLocaleDateString() : '';
-  };
-
+import axios from "axios";
+import { useState, useEffect, useCallback } from "react";
+import { Space, message } from 'antd';
 
 const StoryList = ({ story }) => {
+    const [isSaved, setIsSaved] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
 
+    const fetchSaveStatus = useCallback(async () => {
+        try {
+            const response = await axios.get(
+                `${process.env.REACT_APP_BACKEND_URL}/api/story/isSavedByUser/${story.id}`,
+                {
+                  withCredentials: true,
+                }
+            );
+            setIsSaved(response.data);
+        } catch (error) {
+            console.error('Save status API error:', error.message);
+            messageApi.open({ type: "error", content: "Error occurred while fetching saved story data!" });
+        }
+    }, [story.id, messageApi]);
+
+    useEffect(() => {
+        fetchSaveStatus();
+    }, [fetchSaveStatus]);
+
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return {
+                mainText: text.substring(0, maxLength),
+                fadeText: text.substring(maxLength)
+            };
+        }
+        return { mainText: text, fadeText: '' };
+    };
+    
+    const formatDate = (timestamp) => {
+        return timestamp ? new Date(timestamp).toLocaleDateString() : '';
+      };
+      
     const { mainText, fadeText } = truncateText(story.text, 95); // Adjust 100 to your desired length
+
+    const handleSaveClick = async () => {
+        try {
+            const response = await axios.post(
+                `${process.env.REACT_APP_BACKEND_URL}/api/story/save`,
+                { savedEntityId: story.id },
+                {
+                    withCredentials: true,
+                }
+            );
+            setIsSaved(!isSaved); // Toggle the save status
+            console.log(response); // Log the response to check if it's as expected
+            if (isSaved === true) {
+                messageApi.open({ type: "success", content: "You unsaved the story" });
+            } else if (isSaved === false) {
+                messageApi.open({ type: "success", content: "You saved the story" });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
+        <Space
+        direction="vertical"
+        align="center"
+        style={{
+          width: '100%',
+        }}
+        >
+        {contextHolder}
         <div className="story-item">
             <div className="story-header">
-                <img src={story.user.profilePhoto} className="profile-picture" />
+                <img src={story.user.profilePhoto} className="profile-picture" alt="profile-pic"/>
                 <div className="story-info">
                     <a href={`/user/${story.user.id}`} className="username">@{story.user.username}</a>
                     <span className="story-date">Posted: {story.createdAt}</span>
@@ -56,6 +108,9 @@ const StoryList = ({ story }) => {
                 </div>
 
                 <div className="interactions">
+                    <button onClick={handleSaveClick} style={{backgroundColor: "#ff5500ca", color: "white",   border: "none", margin: "20px"}} type="submit" className="btn btn-primary">
+                        {isSaved ? 'Unsave' : 'Save'}
+                    </button>
                     <span>{story.likes ? story.likes.length : 0}❤️</span>
                     <span>{story.comments ? story.comments.length : 0}💬</span>
                 </div>
@@ -72,6 +127,7 @@ const StoryList = ({ story }) => {
             </div>
 
         </div>
+        </Space>
     );
 };
 

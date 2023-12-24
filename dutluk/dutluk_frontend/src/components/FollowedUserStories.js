@@ -34,7 +34,7 @@ function FollowedUserStories() {
     <div className="all-stories">
       <h1>Story Feed</h1>
       {followedUserStories.map((story) => (
-        StoryList(story = { story })
+        <StoryList story={story} key={story.id} />
       ))}
     </div>
     </Space>
