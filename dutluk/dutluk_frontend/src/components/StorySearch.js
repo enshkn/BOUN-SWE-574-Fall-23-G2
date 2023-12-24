@@ -85,6 +85,10 @@ const StorySearch = () => {
     setSelectedLocation({ lat: clickedLat, lng: clickedLng });
   };
 
+  const handleMarkerReClick = () => {
+    setSelectedLocation(null);
+  };
+
   const handleDateTypeChange = (event) => {
     const type = event.target.value;
     setSearchDate({ type, value: null });
@@ -291,29 +295,30 @@ const StorySearch = () => {
             </button>
           </div>
 
-        </div>
-        <div className="search-results">
-          <LoadScript
-            googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+      </div>
+      <div className="search-results">
+        <LoadScript
+          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+        >
+          <GoogleMap
+            mapContainerStyle={{ width: "80%", height: "400px" , margin: "0 auto"}}
+            center={{ lat: 41.085064, lng: 29.044687 }}
+            zoom={10}
+            onClick={handleMapClick}
           >
-            <GoogleMap
-              mapContainerStyle={{ width: "80%", height: "400px", margin: "0 auto" }}
-              center={{ lat: 41.085064, lng: 29.044687 }}
-              zoom={10}
-              onClick={handleMapClick}
-            >
-              {selectedLocation && (
-                <Marker
-                  position={{
-                    lat: selectedLocation.lat,
-                    lng: selectedLocation.lng,
-                  }}
-                />
-              )}
-            </GoogleMap>
-          </LoadScript>
-          <div style={{ marginBottom: "20px" }} />
-          {searchResults.length > 0 && (
+            {selectedLocation && (
+              <Marker
+              position={{
+                lat: selectedLocation.lat,
+                lng: selectedLocation.lng,
+              }}
+              onClick={handleMarkerReClick}
+            />
+            )}
+          </GoogleMap>
+        </LoadScript>
+        <div style={{ marginBottom: "20px" }} />
+        {searchResults.length > 0 && (
             <div className="all-stories">
               <h1>Search Results</h1>
               {searchResults.map((story) => (
