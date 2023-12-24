@@ -36,16 +36,16 @@ function MyStories() {
 
 
   return (
-    <Space
-    direction="vertical"
-    align="center"
-    style={{
-      width: '100%',
-    }}
-    >
+      <Space
+      direction="vertical"
+      align="center"
+      style={{
+        width: '100%',
+      }}
+      >
     {contextHolder}
     <div className="all-stories">
-      <h1>My Stories</h1>
+      <center><h1>My Stories</h1></center>
       {myStories.map((story) => (
         <StoryList story={story} key={story.id} isMyStoriesPage={true}>
         </StoryList>
