@@ -64,7 +64,7 @@ public class StoryListResponse {
         this.id = story.getId();
         this.createdAt = story.getCreatedAt();
         this.picture = ImageService
-                .extractImageLinks(story.getText());
+                .extractFirstImageLink(story.getText());
         this.text = StoryService.getSubstring(story.getText());
         this.title = story.getTitle();
         this.labels = story.getLabels();

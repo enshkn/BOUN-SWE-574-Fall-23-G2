@@ -74,7 +74,7 @@ public class MyStoryListResponse {
         this.id = story.getId();
         this.createdAt = story.getCreatedAt();
         this.picture = ImageService
-                .extractImageLinks(story.getText());
+                .extractFirstImageLink(story.getText());
         this.text = story.getText();
         this.title = story.getTitle();
         this.labels = story.getLabels();
