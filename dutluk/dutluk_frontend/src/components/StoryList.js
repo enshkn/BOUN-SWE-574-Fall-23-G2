@@ -35,10 +35,6 @@ const StoryList = ({ story }) => {
         }
         return { mainText: text, fadeText: '' };
     };
-    
-    const formatDate = (timestamp) => {
-        return timestamp ? new Date(timestamp).toLocaleDateString() : '';
-      };
       
     const { mainText, fadeText } = truncateText(story.text, 95); // Adjust 100 to your desired length
 
@@ -118,8 +114,8 @@ const StoryList = ({ story }) => {
 
 
             <div className="date-information">
-                {story.startTimeStamp && <span className="date">Start: {formatDate(story.startTimeStamp)}</span>}
-                {story.endTimeStamp && <span className="date">End: {formatDate(story.endTimeStamp)}</span>}
+                {story.startTimeStamp && <span className="date">Start: {story.startTimeStamp}</span>}
+                {story.endTimeStamp && <span className="date">End: {story.endTimeStamp}</span>}
                 {story.season && <span className="date">Season: {story.season}</span>}
                 {story.decade && <span className="date">Decade: {story.decade}</span>}
                 {story.endDecade && <span className="date">End Decade: {story.endDecade}</span>}
