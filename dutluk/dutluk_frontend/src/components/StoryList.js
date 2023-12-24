@@ -128,7 +128,7 @@ const StoryList = ({ story }) => {
                     </div>
 
                     <div className="interactions">
-                        <button onClick={handleSaveClick} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", margin: "20px" }} type="submit" className="btn btn-primary">
+                        <button onClick={handleSaveClick} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none"}} type="submit" className="btn btn-primary">
                             {isSaved ? 'Unsave' : 'Save'}
                         </button>
                         {story.user.id == currentUserId && (
