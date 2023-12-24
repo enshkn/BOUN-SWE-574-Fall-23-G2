@@ -84,6 +84,10 @@ const StorySearch = () => {
     setSelectedLocation({ lat: clickedLat, lng: clickedLng });
   };
 
+  const handleMarkerReClick = () => {
+    setSelectedLocation(null);
+  };
+
   const handleDateTypeChange = (event) => {
     const type = event.target.value;
     setSearchDate({ type, value: null });
@@ -307,6 +311,7 @@ const StorySearch = () => {
                   lat: selectedLocation.lat,
                   lng: selectedLocation.lng,
                 }}
+                onClick={handleMarkerReClick}
               />
             )}
           </GoogleMap>
