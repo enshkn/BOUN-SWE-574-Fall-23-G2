@@ -280,6 +280,7 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type, token_cou
         raise
 
 
+
 def upsert_for_empty_list(final_text_vector, pinecone_index, vector_ids, vector_type):
     """
     Upserts vectors into a Pinecone index even for empty final_text_vector.

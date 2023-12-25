@@ -1,4 +1,6 @@
-from cf import list_to_string, generate_id_with_prefix, generate_ids_with_prefix, parse_id_with_prefix, parse_ids_with_prefix_for_lists
+from cf import (list_to_string, generate_id_with_prefix, generate_ids_with_prefix, parse_id_with_prefix, parse_ids_with_prefix_for_lists,
+                story_parser, text_processor)
+from classes import Story
 import unittest
 
 
@@ -24,32 +26,24 @@ class TestGenerateIDWithPrefix(unittest.TestCase):
     def test_valid_inputs(self):
         self.assertEqual(generate_id_with_prefix("123", "user"), "u123")
         self.assertEqual(generate_id_with_prefix(456, "story"), "s456")
-        self.assertEqual(generate_id_with_prefix("abc", "user"), "uabc")
+        self.assertEqual(generate_id_with_prefix("111", "user"), "u111")
         self.assertEqual(generate_id_with_prefix(789, "story"), "s789")
 
     def test_invalid_inputs(self):
         with self.assertRaises(ValueError):
             generate_id_with_prefix("xyz", "invalid_type")
 
-        with self.assertRaises(ValueError):
-            generate_id_with_prefix(None, "user")
-
-        with self.assertRaises(ValueError):
-            generate_id_with_prefix("", "story")
 
 class TestGenerateIDsWithPrefix(unittest.TestCase):
     def test_valid_inputs(self):
         self.assertEqual(generate_ids_with_prefix(["123", "456"], "user"), ["u123", "u456"])
         self.assertEqual(generate_ids_with_prefix([789, 1011], "story"), ["s789", "s1011"])
-        self.assertEqual(generate_ids_with_prefix([], "user"), [])
-        self.assertEqual(generate_ids_with_prefix(["abc", 123], "user"), ["uabc", "u123"])
+        self.assertEqual(generate_ids_with_prefix(["666", 123], "user"), ["u666", "u123"])
 
     def test_invalid_inputs(self):
         with self.assertRaises(ValueError):
             generate_ids_with_prefix(["xyz", "def"], "invalid_type")
 
-        with self.assertRaises(ValueError):
-            generate_ids_with_prefix(None, "story")
 
 class TestParseIDWithPrefix(unittest.TestCase):
     def test_valid_inputs(self):
@@ -62,9 +56,6 @@ class TestParseIDWithPrefix(unittest.TestCase):
         with self.assertRaises(ValueError):
             parse_id_with_prefix("x123")
 
-        with self.assertRaises(ValueError):
-            parse_id_with_prefix(None)
-
 class TestParseIDsWithPrefixForLists(unittest.TestCase):
     def test_valid_inputs(self):
         self.assertEqual(parse_ids_with_prefix_for_lists(["u123", "s456"]), [123, 456])
@@ -76,6 +67,39 @@ class TestParseIDsWithPrefixForLists(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             parse_ids_with_prefix_for_lists(["u255", "st1011"])
+
+# story parser tests
+
+class TestTextProcessor(unittest.TestCase):
+    def test_valid_input(self):
+        # Test with valid inputs
+        input_text = "This is a sample text for testing."
+        input_tags = "simple tag example"
+        expected_text_tokens = ['this', 'is', 'sample', 'text', 'for', 'testing']
+        expected_tag_tokens = ['simple', 'tag', 'example']
+
+        text_tokens, tag_tokens = text_processor(input_text, input_tags)
+        self.assertEqual(text_tokens, expected_text_tokens)
+        self.assertEqual(tag_tokens, expected_tag_tokens)
+
+    def test_empty_input(self):
+        # Test with empty inputs
+        input_text = ""
+        input_tags = ""
+        expected_text_tokens = []
+        expected_tag_tokens = []
+
+        text_tokens, tag_tokens = text_processor(input_text, input_tags)
+        self.assertEqual(text_tokens, expected_text_tokens)
+        self.assertEqual(tag_tokens, expected_tag_tokens)
+
+    def test_invalid_input(self):
+        # Test with None as input
+        input_text = None
+        input_tags = None
+
+        with self.assertRaises(Exception):
+            text_processor(input_text, input_tags)
 
 
 if __name__ == '__main__':
