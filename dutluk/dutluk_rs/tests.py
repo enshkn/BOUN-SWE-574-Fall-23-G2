@@ -1,4 +1,4 @@
-from cf import list_to_string
+from cf import list_to_string, generate_id_with_prefix
 import unittest
 
 
@@ -19,6 +19,23 @@ class TestListToString(unittest.TestCase):
         self.assertEqual(list_to_string([True, False]), "True False")
         self.assertEqual(list_to_string([None, 42]), "None 42")
         self.assertEqual(list_to_string([{'key': 'value'}, [1, 2, 3]]), "{'key': 'value'} [1, 2, 3]")
+
+class TestGenerateIDWithPrefix(unittest.TestCase):
+    def test_valid_inputs(self):
+        self.assertEqual(generate_id_with_prefix("123", "user"), "u123")
+        self.assertEqual(generate_id_with_prefix(456, "story"), "s456")
+        self.assertEqual(generate_id_with_prefix("abc", "user"), "uabc")
+        self.assertEqual(generate_id_with_prefix(789, "story"), "s789")
+
+    def test_invalid_inputs(self):
+        with self.assertRaises(ValueError):
+            generate_id_with_prefix("xyz", "invalid_type")
+
+        with self.assertRaises(ValueError):
+            generate_id_with_prefix(None, "user")
+
+        with self.assertRaises(ValueError):
+            generate_id_with_prefix("", "story")
 
 if __name__ == '__main__':
     unittest.main()
