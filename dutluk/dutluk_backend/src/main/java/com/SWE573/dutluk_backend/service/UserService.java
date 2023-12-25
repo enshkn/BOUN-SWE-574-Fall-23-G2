@@ -37,6 +37,7 @@ public class UserService{
 
 
     public User addUser(User user){
+        user.setProfilePhoto("https://i.imgur.com/I7f0YKp.png");
         return userRepository.save(user);
     }
     public User validateTokenizedUser(HttpServletRequest request){

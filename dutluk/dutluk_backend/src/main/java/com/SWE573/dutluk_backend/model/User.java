@@ -38,8 +38,8 @@ public class User extends BaseEntity{
     @NotNull
     private String password;
 
-    @Lob
-    private String profilePhoto = new String("https://i.imgur.com/I7f0YKp.png");
+
+    private String profilePhoto;
 
     @Column
     private String biography;
