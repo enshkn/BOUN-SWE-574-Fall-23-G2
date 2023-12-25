@@ -1,7 +1,7 @@
 from cf import (list_to_string, generate_id_with_prefix, generate_ids_with_prefix, parse_id_with_prefix, parse_ids_with_prefix_for_lists,
-                story_parser, text_processor, tokenizer, weighted_vectorising)
-from classes import Story
-from tests_artifacts import mock_model
+                story_parser, text_processor, tokenizer, weighted_vectorising, user_like_unlike_parser, list_to_nparray)
+from classes import Story, UserInteraction
+from tests_artifacts import mock_model, interaction_data, interaction_data_invalid
 import numpy as np
 import unittest
 
@@ -168,6 +168,57 @@ class TestWeightedVectorising(unittest.TestCase):
 
         with self.assertRaises(Exception):
             weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector)
+
+
+# update_story_vector
+
+# update_user_vector
+
+# user_like_unlike_parser
+
+# vector_fetcher
+
+# story_user_vectors_fetcher
+
+# single_vector_fetcher
+
+class TestListToNpArray(unittest.TestCase):
+    def test_convert_to_nparray(self):
+        # Test with valid lists to convert to NumPy arrays
+        story_vector = [0.1, 0.2, 0.3, 0.4]
+        user_vector = [0.5, 0.6, 0.7, 0.8]
+
+        expected_story_array = np.array(story_vector)
+        expected_user_array = np.array(user_vector)
+
+        result_story_array, result_user_array = list_to_nparray(story_vector, user_vector)
+
+        self.assertTrue(np.array_equal(result_story_array, expected_story_array))
+        self.assertTrue(np.array_equal(result_user_array, expected_user_array))
+
+    def test_empty_list(self):
+        # Test with empty lists
+        story_vector = []
+        user_vector = []
+
+        expected_story_array = np.array([])
+        expected_user_array = np.array([])
+
+        result_story_array, result_user_array = list_to_nparray(story_vector, user_vector)
+
+        self.assertTrue(np.array_equal(result_story_array, expected_story_array))
+        self.assertTrue(np.array_equal(result_user_array, expected_user_array))
+
+    def test_invalid_input(self):
+        # Test with non-numeric elements in the lists
+        story_vector = [0.1, 0.2, 0.3, 'a']
+        user_vector = ['b', 0.6, 0.7, 0.8]
+
+        with self.assertRaises(Exception):
+            list_to_nparray(story_vector, user_vector)
+
+
+
 
 
 if __name__ == '__main__':
