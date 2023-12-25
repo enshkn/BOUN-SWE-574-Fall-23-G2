@@ -1,6 +1,7 @@
 from cf import (list_to_string, generate_id_with_prefix, generate_ids_with_prefix, parse_id_with_prefix, parse_ids_with_prefix_for_lists,
-                story_parser, text_processor, tokenizer, weighted_vectorising, user_like_unlike_parser, list_to_nparray, like_story_operations, unlike_story_operations)
-from classes import Story, UserInteraction
+                story_parser, text_processor, tokenizer, weighted_vectorising, user_like_unlike_parser, list_to_nparray, like_story_operations,
+                unlike_story_operations, recommendation_parser)
+from classes import Story, UserInteraction, Recommend
 from tests_artifacts import mock_model, interaction_data, interaction_data_invalid
 import numpy as np
 import unittest
@@ -261,6 +262,30 @@ class TestUnlikeStoryOperations(unittest.TestCase):
         result = unlike_story_operations(np_user_vector, np_story_vector, user_weight)
         np.testing.assert_allclose(result, expected_updated_user_vector, rtol=1e-4)
 
+class TestRecommendationParser(unittest.TestCase):
+    def test_extract_info(self):
+        # Test with valid Recommend data
+        user_id = "u123"
+        excluded_ids = ["1", "2", "3"]
+        vector_type = "story"
+
+        recommendation_data = Recommend(userId=user_id, excludedIds=excluded_ids, vector_type=vector_type)
+
+        expected_result = (user_id, excluded_ids, vector_type)
+        result = recommendation_parser(recommendation_data)
+        self.assertEqual(result, expected_result)
+
+    def test_extract_info_with_int_ids(self):
+        # Test with valid Recommend data
+        user_id = "u123"
+        excluded_ids = [1, 2, 3]
+        vector_type = "story"
+
+        recommendation_data = Recommend(userId=user_id, excludedIds=excluded_ids, vector_type=vector_type)
+
+        expected_result = (user_id, excluded_ids, vector_type)
+        result = recommendation_parser(recommendation_data)
+        self.assertEqual(result, expected_result)
 
 
 if __name__ == '__main__':
