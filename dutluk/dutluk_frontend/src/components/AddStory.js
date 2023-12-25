@@ -8,7 +8,7 @@ import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import { format, getYear, set } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { Space, message, Input, Tag, Tooltip, Segmented} from 'antd';
+import { Space, message, Input, Tag, Tooltip, Segmented, InputNumber, Slider } from 'antd';
 import "./css/AddStory.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-quill/dist/quill.snow.css'; // Örnek olarak Quill editörünün varsayılan stillerini ekliyoruz
@@ -38,7 +38,7 @@ const AddStoryForm = () => {
   const [searchBox, setSearchBox] = useState(null);
   const [currentShape, setCurrentShape] = useState('marker');
   const [tempPoints, setTempPoints] = useState([]);
-  const [circleRadius, setCircleRadius] = useState(5000);
+  const [circleRadius, setCircleRadius] = useState(5);
   const [markers, setMarkers] = useState([]);
   const [circles, setCircles] = useState([]);
   const [polygons, setPolygons] = useState([]);
@@ -295,7 +295,7 @@ const AddStoryForm = () => {
     } else if (currentShape === 'circle') {
       const newCircle = {
         center: { lat: clickedLat, lng: clickedLng, name: locationName },
-        radius: circleRadius,
+        radius: circleRadius*1000,
         name: locationName,
         id: circles.length // Unique identifier based on the current length of the array
       };
@@ -505,10 +505,25 @@ const AddStoryForm = () => {
             <Segmented className="me-auto" size="large" options={[{label: 'Marker', value: 'marker'}, {label: 'Circle', value: 'circle'}, {label: 'Polygon', value: 'polygon'}, {label: 'Polyline', value: 'polyline'}]} value={currentShape} onChange={setCurrentShape} />
             {currentShape === 'circle' && (
               <div className="align-items-center mb-2">
-                <input type="number" className="form-control"
-                  style={{ width: "150px", margin: "10px" }}
-                  onChange={(e) => setCircleRadius(Number(e.target.value))}
-                  placeholder="Set Radius (m)"
+                <Slider
+                  min={0}
+                  max={99}
+                  onChange={(value) => setCircleRadius(value)}
+                  value={circleRadius}
+                  step={0.01}
+                />
+                <InputNumber
+                  addonBefore="Set Radius"
+                  min={0}
+                  max={9999}
+                  size="large"
+                  formatter={(value) => `${value}km`}
+                  parser={(value) => value.replace('km', '')}
+                  style={{
+                    width: "200px", margin: "10px"
+                  }}
+                  value={circleRadius}
+                  onChange={(value) => setCircleRadius(value)}
                 />
               </div>
             )}
