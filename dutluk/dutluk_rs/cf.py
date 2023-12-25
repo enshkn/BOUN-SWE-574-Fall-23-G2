@@ -244,7 +244,7 @@ def tokenizer(tokenized, model):
         raise
 
 
-def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
+def upsert(final_text_vector, pinecone_index, vector_ids, vector_type, token_count):
     """
     Upserts vectors into a Pinecone index.
 
@@ -253,6 +253,7 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
     - pinecone_index: The Pinecone index object.
     - vector_ids: The ID(s) associated with the vector.
     - vector_type: The type associated with the vector.
+    - token_count: The count of valid token in the story.
 
     Returns:
     - bool: True if the upsert operation is successful.
@@ -267,7 +268,7 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
                 {
                     "id": vector_ids,
                     "values": pinecone_vector,
-                    "metadata": {"id": vector_ids, "type": vector_type},
+                    "metadata": {"id": vector_ids, "type": vector_type, "token_count": token_count},
                 }
             ]
         )

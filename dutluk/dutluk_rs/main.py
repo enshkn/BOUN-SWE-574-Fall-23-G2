@@ -106,12 +106,13 @@ async def process_vectorize(data: Story):
         # Initialize an empty array to store the vectors
         text_vectors = tokenizer(tokenized_text, word2vec_model)
         tag_vectors = tokenizer(tokenized_tags, word2vec_model)
+        token_count = len(text_vectors) + len(tag_vectors)
         # Vector operations with Numpy
-        avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors,
+        avg_vector = weighted_vectorising(text_weight=0.85, tag_weight=0.15, text_vector=text_vectors,
                                           tag_vector=tag_vectors)
         # upsert to the vector db
         is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
-                             vector_type=vector_type)
+                             vector_type=vector_type, token_count=token_count)
         return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
     except Exception as e:
         # Log the exception for further debugging
@@ -132,12 +133,13 @@ async def process_vectorize_edit(data: Story):
         tokenized_text, tokenized_tags = text_processor(vector_text=vector_text, vector_tags=vector_tags)
         text_vectors = tokenizer(tokenized_text, word2vec_model)
         tag_vectors = tokenizer(tokenized_tags, word2vec_model)
+        token_count = len(text_vectors) + len(tag_vectors)
         # Vector operations with Numpy
-        avg_vector = weighted_vectorising(text_weight=0.5, tag_weight=0.5, text_vector=text_vectors,
+        avg_vector = weighted_vectorising(text_weight=0.85, tag_weight=0.15, text_vector=text_vectors,
                                           tag_vector=tag_vectors)
         # upsert to the vector db
         is_upserted = upsert(final_text_vector=avg_vector, pinecone_index=index, vector_ids=vector_ids,
-                             vector_type=vector_type)
+                             vector_type=vector_type, token_count=token_count)
         return {"vectorized": avg_vector.tolist(), "is_upserted": is_upserted}
     except Exception as e:
         # Log the exception for further debugging
