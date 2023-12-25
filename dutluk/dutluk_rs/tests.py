@@ -1,6 +1,6 @@
 from cf import (list_to_string, generate_id_with_prefix, generate_ids_with_prefix, parse_id_with_prefix, parse_ids_with_prefix_for_lists,
                 story_parser, text_processor, tokenizer, weighted_vectorising, user_like_unlike_parser, list_to_nparray, like_story_operations,
-                unlike_story_operations, recommendation_parser)
+                unlike_story_operations, recommendation_parser, create_empty_float_list, token_counter)
 from classes import Story, UserInteraction, Recommend
 from tests_artifacts import mock_model, interaction_data, interaction_data_invalid
 import numpy as np
@@ -286,6 +286,43 @@ class TestRecommendationParser(unittest.TestCase):
         expected_result = (user_id, excluded_ids, vector_type)
         result = recommendation_parser(recommendation_data)
         self.assertEqual(result, expected_result)
+
+# user_recommender
+
+# story_recommender
+
+class TestCreateEmptyFloatList(unittest.TestCase):
+    def test_empty_list_creation(self):
+        # Test whether the function generates a list of 300 zeros
+        result = create_empty_float_list()
+        self.assertEqual(len(result), 300)
+        self.assertTrue(all(isinstance(num, float) and num == 0.0 for num in result))
+
+
+class TestTokenCounter(unittest.TestCase):
+    def test_valid_input(self):
+        # Test with valid input (both text_vectors and tag_vectors are lists)
+        text_vectors = [1, 2, 3]
+        tag_vectors = ['a', 'b']
+
+        result = token_counter(text_vectors, tag_vectors)
+        self.assertEqual(result, len(text_vectors) + len(tag_vectors))
+
+    def test_invalid_input_text_vectors(self):
+        # Test with invalid input (text_vectors is not a list)
+        text_vectors = 5
+        tag_vectors = ['a', 'b']
+
+        result = token_counter(text_vectors, tag_vectors)
+        self.assertEqual(result, 0)  # Expected result due to TypeError
+
+    def test_invalid_input_tag_vectors(self):
+        # Test with invalid input (tag_vectors is not a list)
+        text_vectors = 7
+        tag_vectors = 8
+
+        result = token_counter(text_vectors, tag_vectors)
+        self.assertEqual(result, 0)  # Expected result due to TypeError
 
 
 if __name__ == '__main__':
