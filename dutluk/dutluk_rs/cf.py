@@ -718,3 +718,26 @@ def create_empty_float_list():
         print(f"Error in create_empty_float_list function: {e}")
         # Re-raise the exception to propagate it further if needed
         raise
+
+def token_counter(text_vectors, tag_vectors):
+    """
+    Counts the total number of tokens in text and tag vectors.
+
+    Args:
+    - text_vectors (list): List of text vectors.
+    - tag_vectors (list): List of tag vectors.
+
+    Returns:
+    - int: Total count of tokens in both vectors.
+    """
+    try:
+        total_tokens = len(text_vectors) + len(tag_vectors)
+        return total_tokens
+    except TypeError:
+        # Handle the case if either text_vectors or tag_vectors is not a list
+        return 0
+    except Exception as e:
+        # Handle any other potential exceptions
+        print(f"An error occurred: {e}")
+        return 0
+

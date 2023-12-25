@@ -9,7 +9,7 @@ from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectori
     unlike_story_operations, single_vector_fetcher, recommendation_parser, story_recommender, user_recommender, \
     list_to_string, \
     generate_id_with_prefix, generate_ids_with_prefix, parse_ids_with_prefix_for_lists, parse_id_with_prefix, \
-    create_empty_float_list, upsert_for_empty_list, vector_fetcher
+    create_empty_float_list, upsert_for_empty_list, vector_fetcher, token_counter
 
 app, index, word2vec_model = app_initializer()
 
@@ -107,7 +107,7 @@ async def process_vectorize(data: Story):
         # Initialize an empty array to store the vectors
         text_vectors = tokenizer(tokenized_text, word2vec_model)
         tag_vectors = tokenizer(tokenized_tags, word2vec_model)
-        token_count = len(text_vectors) + len(tag_vectors)
+        token_count = token_counter(text_vectors=text_vectors, tag_vectors=tag_vectors)
         # Vector operations with Numpy
         avg_vector = weighted_vectorising(text_weight=0.85, tag_weight=0.15, text_vector=text_vectors,
                                           tag_vector=tag_vectors)
@@ -134,7 +134,7 @@ async def process_vectorize_edit(data: Story):
         tokenized_text, tokenized_tags = text_processor(vector_text=vector_text, vector_tags=vector_tags)
         text_vectors = tokenizer(tokenized_text, word2vec_model)
         tag_vectors = tokenizer(tokenized_tags, word2vec_model)
-        token_count = len(text_vectors) + len(tag_vectors)
+        token_count = token_counter(text_vectors=text_vectors, tag_vectors=tag_vectors)
         # Vector operations with Numpy
         avg_vector = weighted_vectorising(text_weight=0.85, tag_weight=0.15, text_vector=text_vectors,
                                           tag_vector=tag_vectors)
