@@ -249,7 +249,17 @@ class TestLikeStoryOperations(unittest.TestCase):
         with self.assertRaises(Exception):
             like_story_operations(np_user_vector, np_story_vector, user_weight)
 
+class TestUnlikeStoryOperations(unittest.TestCase):
+    def test_unlike_weight_not_equal_to_0(self):
+        # Test with user_weight not equal to 0 (calculate updated user vector)
+        np_user_vector = np.array([0.2, 0.4, 0.6])
+        np_story_vector = np.array([0.1, 0.3, 0.5])
+        user_weight = 2
 
+        expected_updated_user_vector = ((np_user_vector * (user_weight + 1)) - np_story_vector) / user_weight
+
+        result = unlike_story_operations(np_user_vector, np_story_vector, user_weight)
+        np.testing.assert_allclose(result, expected_updated_user_vector, rtol=1e-4)
 
 
 
