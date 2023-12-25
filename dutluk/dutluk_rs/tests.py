@@ -1,7 +1,8 @@
 from cf import (list_to_string, generate_id_with_prefix, generate_ids_with_prefix, parse_id_with_prefix, parse_ids_with_prefix_for_lists,
-                story_parser, text_processor, tokenizer)
+                story_parser, text_processor, tokenizer, weighted_vectorising)
 from classes import Story
 from tests_artifacts import mock_model
+import numpy as np
 import unittest
 
 
@@ -134,6 +135,39 @@ class TestTokenizer(unittest.TestCase):
         self.assertEqual(result, expected_result)
 
 
+# upsert
+
+# upsert for empty lists
+
+class TestWeightedVectorising(unittest.TestCase):
+    def test_weighted_average(self):
+        # Test with valid inputs to calculate the weighted average vector
+        text_weight = 0.6
+        tag_weight = 0.4
+        text_vector = [
+            np.random.rand(300),  # Example 300-dimensional vector
+            np.random.rand(300),
+            np.random.rand(300)
+        ]
+        tag_vector = [
+            np.random.rand(300),  # Example 300-dimensional vector
+            np.random.rand(300),
+            np.random.rand(300)
+        ]
+        expected_result = text_weight * np.mean(text_vector, axis=0) + tag_weight * np.mean(tag_vector, axis=0)
+
+        result = weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector)
+        np.testing.assert_allclose(result, expected_result, rtol=1e-4)  # Checking for approximate equality
+
+    def test_invalid_input(self):
+        # Test with invalid inputs (e.g., empty vectors)
+        text_weight = 0.6
+        tag_weight = 0.4
+        text_vector = []  # Empty text vectors
+        tag_vector = []  # Empty tag vectors
+
+        with self.assertRaises(Exception):
+            weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector)
 
 
 if __name__ == '__main__':
