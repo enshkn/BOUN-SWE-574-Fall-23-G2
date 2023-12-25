@@ -1,5 +1,5 @@
 from cf import (list_to_string, generate_id_with_prefix, generate_ids_with_prefix, parse_id_with_prefix, parse_ids_with_prefix_for_lists,
-                story_parser, text_processor, tokenizer, weighted_vectorising, user_like_unlike_parser, list_to_nparray)
+                story_parser, text_processor, tokenizer, weighted_vectorising, user_like_unlike_parser, list_to_nparray, like_story_operations, unlike_story_operations)
 from classes import Story, UserInteraction
 from tests_artifacts import mock_model, interaction_data, interaction_data_invalid
 import numpy as np
@@ -216,6 +216,38 @@ class TestListToNpArray(unittest.TestCase):
 
         with self.assertRaises(Exception):
             list_to_nparray(story_vector, user_vector)
+
+class TestLikeStoryOperations(unittest.TestCase):
+    def test_like_weight_1(self):
+        # Test with user_weight equal to 1 (story vector becomes the updated user vector)
+        np_user_vector = np.array([0.2, 0.4, 0.6])
+        np_story_vector = np.array([0.1, 0.3, 0.5])
+        user_weight = 1
+
+        expected_updated_user_vector = np_story_vector
+
+        result = like_story_operations(np_user_vector, np_story_vector, user_weight)
+        np.testing.assert_array_equal(result, expected_updated_user_vector)
+
+    def test_like_weight_greater_than_1(self):
+        # Test with user_weight greater than 1 (calculate updated user vector)
+        np_user_vector = np.array([0.2, 0.4, 0.6])
+        np_story_vector = np.array([0.1, 0.3, 0.5])
+        user_weight = 2
+
+        expected_updated_user_vector = ((np_user_vector * (user_weight - 1)) + np_story_vector) / user_weight
+
+        result = like_story_operations(np_user_vector, np_story_vector, user_weight)
+        np.testing.assert_allclose(result, expected_updated_user_vector, rtol=1e-4)
+
+    def test_like_weight_0(self):
+        # Test with user_weight equal to None (should raise an exception)
+        np_user_vector = np.array([0.2, 0.4, 0.6])
+        np_story_vector = np.array([0.1, 0.3, 0.5])
+        user_weight = None
+
+        with self.assertRaises(Exception):
+            like_story_operations(np_user_vector, np_story_vector, user_weight)
 
 
 
