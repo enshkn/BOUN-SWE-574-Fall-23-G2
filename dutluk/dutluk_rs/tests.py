@@ -1,4 +1,4 @@
-from cf import list_to_string, generate_id_with_prefix, generate_ids_with_prefix
+from cf import list_to_string, generate_id_with_prefix, generate_ids_with_prefix, parse_id_with_prefix, parse_ids_with_prefix_for_lists
 import unittest
 
 
@@ -50,6 +50,20 @@ class TestGenerateIDsWithPrefix(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             generate_ids_with_prefix(None, "story")
+
+class TestParseIDWithPrefix(unittest.TestCase):
+    def test_valid_inputs(self):
+        self.assertEqual(parse_id_with_prefix("u123"), "123")
+        self.assertEqual(parse_id_with_prefix("s456"), "456")
+        self.assertEqual(parse_id_with_prefix("u789"), "789")
+        self.assertEqual(parse_id_with_prefix("s1011"), "1011")
+
+    def test_invalid_inputs(self):
+        with self.assertRaises(ValueError):
+            parse_id_with_prefix("x123")
+
+        with self.assertRaises(ValueError):
+            parse_id_with_prefix(None)
 
 if __name__ == '__main__':
     unittest.main()
