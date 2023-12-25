@@ -65,5 +65,18 @@ class TestParseIDWithPrefix(unittest.TestCase):
         with self.assertRaises(ValueError):
             parse_id_with_prefix(None)
 
+class TestParseIDsWithPrefixForLists(unittest.TestCase):
+    def test_valid_inputs(self):
+        self.assertEqual(parse_ids_with_prefix_for_lists(["u123", "s456"]), [123, 456])
+        self.assertEqual(parse_ids_with_prefix_for_lists(["u789", "s1011"]), [789, 1011])
+
+    def test_invalid_inputs(self):
+        with self.assertRaises(ValueError):
+            parse_ids_with_prefix_for_lists(["x123", "s456"])
+
+        with self.assertRaises(ValueError):
+            parse_ids_with_prefix_for_lists(["u255", "st1011"])
+
+
 if __name__ == '__main__':
     unittest.main()
