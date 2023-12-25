@@ -22,8 +22,9 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { QRCode } from 'antd';
+import { QRCode, FloatButton } from 'antd';
 import Paragraph from "antd/es/skeleton/Paragraph";
+import { FileTextOutlined } from '@ant-design/icons';
 
 
 function App() {
@@ -59,8 +60,22 @@ function App() {
       });
   };
 
+  const isAddStoryPage = window.location.pathname === "/story/add-story";
+
   return (
     <Router>
+      {!isAddStoryPage && loggedIn && (
+        <FloatButton
+          icon={<FileTextOutlined />}
+          description="ADD STORY"
+          shape="square"
+          style={{
+            position: "fixed",
+            right: 94,
+          }}
+          href={"/story/add-story"}
+        />
+      )}
       <Navbar
         style={{ backgroundColor: "#ff5500ca", color: "white" }}
         expand="lg"
