@@ -39,7 +39,7 @@ public class User extends BaseEntity{
     private String password;
 
     @Lob
-    private String profilePhoto = "https://i.imgur.com/I7f0YKp.png";
+    private String profilePhoto = new String("https://i.imgur.com/I7f0YKp.png");
 
     @Column
     private String biography;
