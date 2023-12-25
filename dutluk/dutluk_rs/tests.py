@@ -1,6 +1,7 @@
 from cf import (list_to_string, generate_id_with_prefix, generate_ids_with_prefix, parse_id_with_prefix, parse_ids_with_prefix_for_lists,
-                story_parser, text_processor)
+                story_parser, text_processor, tokenizer)
 from classes import Story
+from tests_artifacts import mock_model
 import unittest
 
 
@@ -100,6 +101,39 @@ class TestTextProcessor(unittest.TestCase):
 
         with self.assertRaises(Exception):
             text_processor(input_text, input_tags)
+
+
+class TestTokenizer(unittest.TestCase):
+
+    def test_valid_tokens(self):
+        # Test with valid tokens present in the mock model
+        input_tokens = ["apple", "banana", "orange"]
+        expected_vectors = [
+            [0.3, 0.5, 0.8],
+            [0.1, 0.9, 0.6],
+            [0.6, 0.2, 0.4]
+        ]
+
+        result = tokenizer(input_tokens, mock_model)
+        self.assertEqual(result, expected_vectors)
+
+    def test_invalid_tokens(self):
+        # Test with tokens not present in the mock model
+        input_tokens = ["pear", "grape"]
+        expected_result = {"vectorized_text": []}
+
+        result = tokenizer(input_tokens, mock_model)
+        self.assertEqual(result, expected_result)
+
+    def test_empty_tokens(self):
+        # Test with empty input tokens
+        input_tokens = []
+        expected_result = {"vectorized_text": []}
+
+        result = tokenizer(input_tokens, mock_model)
+        self.assertEqual(result, expected_result)
+
+
 
 
 if __name__ == '__main__':
