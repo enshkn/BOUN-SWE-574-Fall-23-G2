@@ -1216,20 +1216,24 @@ class _AddStoryViewState extends State<AddStoryView>
           : 'time_point',
       timeExpression: timeExpression,
     );
-    if (widget.myStories) {
-      await cubit.editStory(model, widget.storyModel!.id).then((value) {
-        if (value) {
-          Navigator.of(context).pop();
-          cubit.showNotification('Your Story is edited.');
-        }
-      });
+    if (locations.isEmpty) {
+      cubit.showNotification('Locations could not be empty.', isError: true);
     } else {
-      await cubit.addStory(model).then((value) {
-        if (value) {
-          Navigator.of(context).pop();
-          cubit.showNotification('Your Story is added.');
-        }
-      });
+      if (widget.myStories) {
+        await cubit.editStory(model, widget.storyModel!.id).then((value) {
+          if (value) {
+            Navigator.of(context).pop();
+            cubit.showNotification('Your Story is edited.');
+          }
+        });
+      } else {
+        await cubit.addStory(model).then((value) {
+          if (value) {
+            Navigator.of(context).pop();
+            cubit.showNotification('Your Story is added.');
+          }
+        });
+      }
     }
   }
 
