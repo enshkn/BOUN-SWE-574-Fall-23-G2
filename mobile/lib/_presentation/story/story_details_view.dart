@@ -379,10 +379,9 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         'Time Variants',
                         style: TextStyle(color: Colors.orange.shade800),
                       ),
-                      if (state.storyModel!.startTimeStamp != null &&
-                          state.storyModel!.startDateFlag != 1)
+                      if (state.storyModel!.verbalExpression != null) ...[
                         Text(
-                          'Start Time: ${state.storyModel!.startTimeStamp}',
+                          '${state.storyModel!.verbalExpression}',
                           style: const TextStyles.body().copyWith(
                             letterSpacing: 0.016,
                           ),
@@ -390,60 +389,73 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
                         ),
-                      if (state.storyModel!.endTimeStamp != null)
-                        BaseWidgets.lowestGap,
-                      if (state.storyModel!.endTimeStamp != null)
-                        Text(
-                          'End Time: ${state.storyModel!.endTimeStamp}',
-                          style: const TextStyles.body().copyWith(
-                            letterSpacing: 0.016,
+                      ] else ...[
+                        if (state.storyModel!.startTimeStamp != null &&
+                            state.storyModel!.startDateFlag != 1)
+                          Text(
+                            'Start Time: ${state.storyModel!.startTimeStamp}',
+                            style: const TextStyles.body().copyWith(
+                              letterSpacing: 0.016,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.start,
-                        ),
-                      if (state.storyModel!.decade != '' &&
-                          state.storyModel!.decade != null)
-                        BaseWidgets.lowestGap,
-                      if (state.storyModel!.decade != '' &&
-                          state.storyModel!.decade != null)
-                        Text(
-                          'Decade: ${state.storyModel!.decade!}',
-                          style: const TextStyles.body().copyWith(
-                            letterSpacing: 0.016,
+                        if (state.storyModel!.endTimeStamp != null)
+                          BaseWidgets.lowestGap,
+                        if (state.storyModel!.endTimeStamp != null)
+                          Text(
+                            'End Time: ${state.storyModel!.endTimeStamp}',
+                            style: const TextStyles.body().copyWith(
+                              letterSpacing: 0.016,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.start,
-                        ),
-                      if (state.storyModel!.endDecade != '' &&
-                          state.storyModel!.endDecade != null)
-                        BaseWidgets.lowestGap,
-                      if (state.storyModel!.endDecade != '' &&
-                          state.storyModel!.endDecade != null)
-                        Text(
-                          'End Decade: ${state.storyModel!.endDecade!}',
-                          style: const TextStyles.body().copyWith(
-                            letterSpacing: 0.016,
+                        if (state.storyModel!.decade != '' &&
+                            state.storyModel!.decade != null)
+                          BaseWidgets.lowestGap,
+                        if (state.storyModel!.decade != '' &&
+                            state.storyModel!.decade != null)
+                          Text(
+                            'Decade: ${state.storyModel!.decade!}',
+                            style: const TextStyles.body().copyWith(
+                              letterSpacing: 0.016,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.start,
-                        ),
-                      if (state.storyModel!.season != '' &&
-                          state.storyModel!.season != null)
-                        BaseWidgets.lowestGap,
-                      if (state.storyModel!.season != '' &&
-                          state.storyModel!.season != null)
-                        Text(
-                          'Season: ${state.storyModel!.season!}',
-                          style: const TextStyles.body().copyWith(
-                            letterSpacing: 0.016,
+                        if (state.storyModel!.endDecade != '' &&
+                            state.storyModel!.endDecade != null)
+                          BaseWidgets.lowestGap,
+                        if (state.storyModel!.endDecade != '' &&
+                            state.storyModel!.endDecade != null)
+                          Text(
+                            'End Decade: ${state.storyModel!.endDecade!}',
+                            style: const TextStyles.body().copyWith(
+                              letterSpacing: 0.016,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.start,
-                        ),
+                        if (state.storyModel!.season != '' &&
+                            state.storyModel!.season != null)
+                          BaseWidgets.lowestGap,
+                        if (state.storyModel!.season != '' &&
+                            state.storyModel!.season != null)
+                          Text(
+                            'Season: ${state.storyModel!.season!}',
+                            style: const TextStyles.body().copyWith(
+                              letterSpacing: 0.016,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
+                          ),
+                      ],
                     ],
                   ),
                 ),
