@@ -3,6 +3,7 @@ import { Space, message } from 'antd';
 import axios from "axios";
 import blankPhotoPreview from "../profile_pic.png";
 import Button from 'react-bootstrap/Button';
+import MyStories from "./MyStories";
 import "./css/User.css";
 
 function UserComponent({ userId }) {
@@ -144,6 +145,9 @@ function UserComponent({ userId }) {
             <button type="submit">Edit Biography</button>
           </form>
         </div>
+      </div>
+      <div className="my-stories-container">
+        <MyStories />
       </div>
     </Space>
   );

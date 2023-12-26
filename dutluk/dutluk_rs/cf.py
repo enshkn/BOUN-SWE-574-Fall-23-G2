@@ -244,7 +244,7 @@ def tokenizer(tokenized, model):
         raise
 
 
-def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
+def upsert(final_text_vector, pinecone_index, vector_ids, vector_type, token_count):
     """
     Upserts vectors into a Pinecone index.
 
@@ -253,6 +253,7 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
     - pinecone_index: The Pinecone index object.
     - vector_ids: The ID(s) associated with the vector.
     - vector_type: The type associated with the vector.
+    - token_count: The count of valid token in the story.
 
     Returns:
     - bool: True if the upsert operation is successful.
@@ -267,7 +268,7 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
                 {
                     "id": vector_ids,
                     "values": pinecone_vector,
-                    "metadata": {"id": vector_ids, "type": vector_type},
+                    "metadata": {"id": vector_ids, "type": vector_type, "token_count": token_count},
                 }
             ]
         )
@@ -277,6 +278,7 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type):
         print(f"Error in upsert function: {e}")
         # Re-raise the exception to propagate it further if needed
         raise
+
 
 
 def upsert_for_empty_list(final_text_vector, pinecone_index, vector_ids, vector_type):
@@ -629,7 +631,7 @@ def recommendation_parser(data: Recommend):
         raise
 
 
-def story_and_user_recommender(pinecone_index, user_vector, excluded_ids, vector_type):
+def user_recommender(pinecone_index, user_vector, excluded_ids, vector_type):
     """
     Performs recommendations for stories based on a user's vector.
 
@@ -651,7 +653,42 @@ def story_and_user_recommender(pinecone_index, user_vector, excluded_ids, vector
             vector=user_vector,
             top_k=100,
             filter={"id": {"$nin": excluded_ids},
-                    "type": {"$eq": vector_type}
+                    "type": {"$eq": vector_type},
+                    },
+        )
+        ids = [match['id'] for match in response['matches']]
+        scores = [match['score'] for match in response['matches']]
+        return ids, scores
+
+    except Exception as e:
+        print(f"Error in story_and_user_recommender function: {e}")
+        # Re-raise the exception to propagate it further if needed
+        raise
+
+def story_recommender(pinecone_index, user_vector, excluded_ids, vector_type):
+    """
+    Performs recommendations for stories based on a user's vector.
+
+    Parameters:
+    - pinecone_index: The Pinecone index object for querying vectors.
+    - user_vector (list): Vector representing the user.
+    - excluded_ids (list): List of IDs to be excluded from recommendations.
+    - vector_type (str): Type associated with the vector.
+
+    Returns:
+    - tuple: A tuple containing recommended IDs and their scores.
+
+    This function queries a Pinecone index to recommend stories based on a user's vector,
+    excluding specified IDs and considering a specific vector type.
+    """
+
+    try:
+        response = pinecone_index.query(
+            vector=user_vector,
+            top_k=100,
+            filter={"id": {"$nin": excluded_ids},
+                    "type": {"$eq": vector_type},
+                    "token_count": {"$gte": 75}
                     },
         )
         ids = [match['id'] for match in response['matches']]
@@ -682,3 +719,26 @@ def create_empty_float_list():
         print(f"Error in create_empty_float_list function: {e}")
         # Re-raise the exception to propagate it further if needed
         raise
+
+def token_counter(text_vectors, tag_vectors):
+    """
+    Counts the total number of tokens in text and tag vectors.
+
+    Args:
+    - text_vectors (list): List of text vectors.
+    - tag_vectors (list): List of tag vectors.
+
+    Returns:
+    - int: Total count of tokens in both vectors.
+    """
+    try:
+        total_tokens = len(text_vectors) + len(tag_vectors)
+        return total_tokens
+    except TypeError:
+        # Handle the case if either text_vectors or tag_vectors is not a list
+        return 0
+    except Exception as e:
+        # Handle any other potential exceptions
+        print(f"An error occurred: {e}")
+        return 0
+
