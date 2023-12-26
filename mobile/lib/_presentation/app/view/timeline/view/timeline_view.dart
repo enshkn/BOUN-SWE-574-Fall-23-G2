@@ -47,7 +47,7 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
 
   Future<void> getCurrentLocation() async {
     LocationData currentLocation;
-    Future.delayed(const Duration(seconds: 15), () async {
+    Future.delayed(const Duration(seconds: 5), () async {
       currentLocation = await _locationController.getLocation();
       if (currentLocation.latitude != null &&
           currentLocation.longitude != null) {
