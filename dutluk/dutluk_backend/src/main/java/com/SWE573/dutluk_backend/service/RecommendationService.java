@@ -113,7 +113,7 @@ public class RecommendationService {
         }
     }
 
-    public Map<Long,String> recommendStory(User user){
+    public Map<Long,Integer> recommendStory(User user){
         Set<Long> excludedStoryIds  = user.getLikedStories();
         List<Story> userCreatedStories = user.getStories();
         if(userCreatedStories != null && !userCreatedStories.isEmpty()){
@@ -132,7 +132,7 @@ public class RecommendationService {
             ObjectMapper objectMapper = new ObjectMapper();
             RecResponse recResponse = objectMapper.readValue(response.getBody(), RecResponse.class);
             System.out.println(response);
-            Map<Long, String> recommendedStoriesMap = getLongStringMap(recResponse);
+            Map<Long,Integer> recommendedStoriesMap = getLongStringMap(recResponse);
             user.setRecommendedStoriesMap(recommendedStoriesMap);
             userService.editUser(user);
             return user.getRecommendedStoriesMap();
@@ -148,15 +148,15 @@ public class RecommendationService {
         return null;
     }
 
-    private Map<Long, String> getLongStringMap(RecResponse recResponse) {
-        Map<Long, String> recommendedStoriesMap = new HashMap<>();
+    private Map<Long, Integer> getLongStringMap(RecResponse recResponse) {
+        Map<Long, Integer> recommendedStoriesMap = new HashMap<>();
         if (recResponse.getIds() != null && recResponse.getScores() != null
                 && recResponse.getIds().size() == recResponse.getScores().size()) {
             for (int i = 0; i < recResponse.getIds().size(); i++) {
                 Long id = recResponse.getIds().get(i);
                 Double score = recResponse.getScores().get(i);
-                String percentString = String.format("%.0f%%", score * 100);
-                recommendedStoriesMap.put(id, percentString);
+                long scoreOutofHundred = Math.round(score * 100);
+                recommendedStoriesMap.put(id, (int)scoreOutofHundred);
             }
         }
         return recommendedStoriesMap;

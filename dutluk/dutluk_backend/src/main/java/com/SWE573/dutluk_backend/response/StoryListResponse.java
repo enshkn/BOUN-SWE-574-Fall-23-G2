@@ -46,17 +46,25 @@ public class StoryListResponse {
 
     private String season;
 
+    private String endSeason;
+
     private String decade;
 
     private String endDecade;
 
-    private String percentage;
+    private Integer percentage;
+
+    private String timeType;
+
+    private String timeExpression;
+
+    private String verbalExpression;
 
     public StoryListResponse(Story story) {
         this.id = story.getId();
         this.createdAt = story.getCreatedAt();
         this.picture = ImageService
-                .extractImageLinks(story.getText());
+                .extractFirstImageLink(story.getText());
         this.text = StoryService.getSubstring(story.getText());
         this.title = story.getTitle();
         this.labels = story.getLabels();
@@ -75,8 +83,10 @@ public class StoryListResponse {
                         story.getEndHourFlag(),
                         story.getEndDateFlag());
         this.season = story.getSeason();
+        this.endSeason = story.getEndSeason();
         this.decade = StoryService.getDecadeString(story);
         this.endDecade = StoryService.getEndDecadeString(story);
         this.percentage = story.getPercentage();
+        this.verbalExpression = story.getVerbalExpression();
     }
 }

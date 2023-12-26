@@ -81,87 +81,90 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
     controller4 = ExpansionTileController();
     controller5 = ExpansionTileController();
     controller6 = ExpansionTileController();
-
-    final storyLocations = widget.model.locations;
-
-    for (var i = 0; i < storyLocations!.length; i++) {
-      if (storyLocations[i].isCircle != null &&
-          storyLocations[i].circleRadius != null) {
-        radiusList.add(storyLocations[i].circleRadius!);
-      }
-    }
-
-    for (var i = 0; i < storyLocations.length; i++) {
-      if (storyLocations[i].isPolygon != null) {
-        polygonLocations.add(storyLocations[i]);
-        polygoneCount = storyLocations[i].isPolygon!;
-      } else if (storyLocations[i].isPolyline != null) {
-        polylineLocations.add(storyLocations[i]);
-        polylineCount = storyLocations[i].isPolyline!;
-      } else if (storyLocations[i].isCircle != null) {
-        circleLocations.add(storyLocations[i]);
-        circleCount = storyLocations[i].isCircle!;
-      } else {
-        pointLocations.add(storyLocations[i]);
-      }
-    }
-
-    for (var i = 0; i < pointLocations.length; i++) {
-      if (pointLocations[i].latitude != null) {
-        additionalMarkers['$i'] = LatLng(
-          pointLocations[i].latitude!,
-          pointLocations[i].longitude!,
-        );
-      }
-    }
-    for (var k = 0; k <= polygoneCount; k++) {
-      if (k != 0) {
-        final list = <LatLng>[];
-        polygonLatLng.add(list);
-      }
-      for (var j = 0; j < polygonLocations.length; j++) {
-        if (polygonLocations[j].isPolygon == k) {
-          polygonLatLng[k].add(
-            LatLng(
-              polygonLocations[j].latitude!,
-              polygonLocations[j].longitude!,
-            ),
-          );
-          additionalPolygones?['$k'] = polygonLatLng[k];
-        }
-      }
-    }
-    for (var k = 0; k <= polylineCount; k++) {
-      if (k != 0) {
-        final list = <LatLng>[];
-        polylineLatLng.add(list);
-      }
-      for (var j = 0; j < polylineLocations.length; j++) {
-        if (polylineLocations[j].isPolygon == k) {
-          polylineLatLng[k].add(
-            LatLng(
-              polylineLocations[j].latitude!,
-              polylineLocations[j].longitude!,
-            ),
-          );
-          additionalPolylines?['$k'] = polylineLatLng[k];
-        }
-      }
-    }
-
-    for (var k = 0; k < circleCount; k++) {
-      for (var j = 0; j < circleLocations.length; j++) {
-        circleLatLng.add(
-          LatLng(
-            circleLocations[j].latitude!,
-            circleLocations[j].longitude!,
-          ),
-        );
-        additionalCircles?['$j'] = circleLatLng[j];
-      }
-    }
-
+    //locationCheck(widget.model);
     super.initState();
+  }
+
+  void locationCheck(StoryModel? storyModel) {
+    final storyLocations = storyModel?.locations;
+    if (storyModel?.locations != null) {
+      for (var i = 0; i < storyLocations!.length; i++) {
+        if (storyLocations[i].isCircle != null &&
+            storyLocations[i].circleRadius != null) {
+          radiusList.add(storyLocations[i].circleRadius!);
+        }
+      }
+
+      for (var i = 0; i < storyLocations.length; i++) {
+        if (storyLocations[i].isPolygon != null) {
+          polygonLocations.add(storyLocations[i]);
+          polygoneCount = storyLocations[i].isPolygon!;
+        } else if (storyLocations[i].isPolyline != null) {
+          polylineLocations.add(storyLocations[i]);
+          polylineCount = storyLocations[i].isPolyline!;
+        } else if (storyLocations[i].isCircle != null) {
+          circleLocations.add(storyLocations[i]);
+          circleCount = storyLocations[i].isCircle!;
+        } else {
+          pointLocations.add(storyLocations[i]);
+        }
+      }
+
+      for (var i = 0; i < pointLocations.length; i++) {
+        if (pointLocations[i].latitude != null) {
+          additionalMarkers['$i'] = LatLng(
+            pointLocations[i].latitude!,
+            pointLocations[i].longitude!,
+          );
+        }
+      }
+      for (var k = 0; k <= polygoneCount; k++) {
+        if (k != 0) {
+          final list = <LatLng>[];
+          polygonLatLng.add(list);
+        }
+        for (var j = 0; j < polygonLocations.length; j++) {
+          if (polygonLocations[j].isPolygon == k) {
+            polygonLatLng[k].add(
+              LatLng(
+                polygonLocations[j].latitude!,
+                polygonLocations[j].longitude!,
+              ),
+            );
+            additionalPolygones?['$k'] = polygonLatLng[k];
+          }
+        }
+      }
+      for (var k = 0; k <= polylineCount; k++) {
+        if (k != 0) {
+          final list = <LatLng>[];
+          polylineLatLng.add(list);
+        }
+        for (var j = 0; j < polylineLocations.length; j++) {
+          if (polylineLocations[j].isPolygon == k) {
+            polylineLatLng[k].add(
+              LatLng(
+                polylineLocations[j].latitude!,
+                polylineLocations[j].longitude!,
+              ),
+            );
+            additionalPolylines?['$k'] = polylineLatLng[k];
+          }
+        }
+      }
+
+      for (var k = 0; k < circleCount; k++) {
+        for (var j = 0; j < circleLocations.length; j++) {
+          circleLatLng.add(
+            LatLng(
+              circleLocations[j].latitude!,
+              circleLocations[j].longitude!,
+            ),
+          );
+          additionalCircles?['$j'] = circleLatLng[j];
+        }
+      }
+    }
   }
 
   @override
@@ -199,6 +202,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               await cubit.getStoryDetail(widget.model.id);
             },
             builder: (context, cubit, state) {
+              locationCheck(state.storyModel);
               return BaseLoader(
                 isLoading: state.isLoading,
                 child: BaseScrollView(
@@ -242,6 +246,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                 MaterialPageRoute(
                   builder: (context) => CommentsView(
                     storyId: widget.model.id,
+                    authUser: user,
                   ),
                 ),
               );
@@ -310,7 +315,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                 minScale: 0.8,
                                 onPressed: () async {
                                   await addFavorite(
-                                      storyId: state.storyModel!.id);
+                                    storyId: state.storyModel!.id,
+                                  );
                                 },
                                 child: Icon(
                                   Icons.favorite,
@@ -335,10 +341,22 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         );
                       },
                       child: IconWithLabel(
+                        specialIcon: true,
                         spacing: 8,
-                        icon: const Icon(
-                          Icons.star,
-                          color: Colors.yellow,
+                        icon: SizedBox(
+                          child: state.storyModel!.user!.profilePhoto != null
+                              ? CircleAvatar(
+                                  radius: 36,
+                                  backgroundImage: NetworkImage(
+                                    state.storyModel!.user!.profilePhoto!,
+                                  ),
+                                )
+                              : const CircleAvatar(
+                                  radius: 36,
+                                  backgroundImage: AssetImage(
+                                    'assets/images/profilePic.jpg',
+                                  ),
+                                ),
                         ),
                         label: state.storyModel!.user!.username!,
                       ),
@@ -361,7 +379,8 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         'Time Variants',
                         style: TextStyle(color: Colors.orange.shade800),
                       ),
-                      if (state.storyModel!.startTimeStamp != null)
+                      if (state.storyModel!.startTimeStamp != null &&
+                          state.storyModel!.startDateFlag != 1)
                         Text(
                           'Start Time: ${state.storyModel!.startTimeStamp}',
                           style: const TextStyles.body().copyWith(
@@ -390,6 +409,20 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           state.storyModel!.decade != null)
                         Text(
                           'Decade: ${state.storyModel!.decade!}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                      if (state.storyModel!.endDecade != '' &&
+                          state.storyModel!.endDecade != null)
+                        BaseWidgets.lowestGap,
+                      if (state.storyModel!.endDecade != '' &&
+                          state.storyModel!.endDecade != null)
+                        Text(
+                          'End Decade: ${state.storyModel!.endDecade!}',
                           style: const TextStyles.body().copyWith(
                             letterSpacing: 0.016,
                           ),
@@ -884,8 +917,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
 
 class CommentsView extends StatefulWidget {
   final int storyId;
+  final User authUser;
   const CommentsView({
     required this.storyId,
+    required this.authUser,
     super.key,
   });
 
@@ -907,41 +942,52 @@ class _CommentsViewState extends State<CommentsView> {
             context,
             title: 'Comments',
           ),
-          body: BaseLoader(
-            isLoading: state.isLoading,
-            child: BaseScrollView(
-              children: [
-                BaseWidgets.lowerGap,
-                if (state.storyModel == null ||
-                    state.storyModel!.comments == null ||
-                    state.storyModel!.comments!.isEmpty)
-                  const Center(
-                    child: Text(
-                      'No comment yet',
-                      style: TextStyles.title(),
+          body: RefreshIndicator(
+            onRefresh: () async {
+              await cubit.getStoryDetail(widget.storyId);
+            },
+            child: BaseLoader(
+              isLoading: state.isLoading,
+              child: BaseScrollView(
+                children: [
+                  BaseWidgets.lowerGap,
+                  if (state.storyModel == null ||
+                      state.storyModel!.comments == null ||
+                      state.storyModel!.comments!.isEmpty)
+                    const Center(
+                      child: Text(
+                        'No comment yet',
+                        style: TextStyles.title(),
+                      ),
+                    )
+                  else
+                    SizedBox(
+                      child: BaseListView(
+                        shrinkWrap: true,
+                        items: state.storyModel!.comments!,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (item) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 16,
+                            ),
+                            child: CommentCard(
+                              myComment: widget.authUser.id == item.user!.id
+                                  ? true
+                                  : false,
+                              user: item.user,
+                              content: item.text,
+                              onDeleteTap: () async {
+                                await cubit.deleteComment(item.id!);
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  )
-                else
-                  SizedBox(
-                    child: BaseListView(
-                      shrinkWrap: true,
-                      items: state.storyModel!.comments!,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (item) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 16,
-                          ),
-                          child: CommentCard(
-                            user: item.user,
-                            content: item.text,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         );

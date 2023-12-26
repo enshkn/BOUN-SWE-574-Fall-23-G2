@@ -118,7 +118,7 @@ final class StoryCubit extends BaseCubit<StoryState> {
         return false;
       },
       (data) {
-        showNotification('Your Story is added.');
+        //showNotification('Your Story is added.');
         return true;
       },
     );
@@ -137,7 +137,7 @@ final class StoryCubit extends BaseCubit<StoryState> {
         return false;
       },
       (data) {
-        showNotification('Your Story is edited.');
+        //showNotification('Your Story is edited.');
         return true;
       },
     );
@@ -170,6 +170,23 @@ final class StoryCubit extends BaseCubit<StoryState> {
       },
       (data) {
         showNotification('Your Story is deleted.');
+
+        return true;
+      },
+    );
+  }
+
+  Future<bool> deleteComment(int commentId) async {
+    setLoading(true);
+    final result = await _storyRepository.deleteComment(commentId);
+    setLoading(false);
+    return result.fold(
+      (failure) {
+        showNotification(failure?.message ?? '', isError: true);
+        return false;
+      },
+      (data) {
+        showNotification('Your comment is deleted.');
 
         return true;
       },

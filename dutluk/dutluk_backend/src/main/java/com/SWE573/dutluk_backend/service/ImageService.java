@@ -110,18 +110,15 @@ public class ImageService {
         return imgUrl;
     }
 
-    public static String extractImageLinks(String html) {
+    public static String extractFirstImageLink(String html) {
         String imageLink = null;
-
         Document doc = Jsoup.parse(html);
         Elements images = doc.select("img");
-
-        for (Element img : images) {
-            String src = img.attr("src");
-            imageLink = src;
-            break;
+        if (!images.isEmpty()) {
+            Element firstImg = images.first();
+            imageLink = firstImg.attr("src");
         }
-
         return imageLink;
     }
+
 }

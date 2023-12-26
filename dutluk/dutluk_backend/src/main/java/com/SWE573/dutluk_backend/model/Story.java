@@ -66,9 +66,17 @@ public class Story extends BaseEntity{
 
     private String season;
 
+    private String endSeason;
+
     private String decade;
 
     private String endDecade;
+
+    private String timeType;
+
+    private String timeExpression;
+
+    private String verbalExpression;
 
     private Integer startHourFlag = -1;// if 0, no hour, if 1, hour exists
 
@@ -80,6 +88,8 @@ public class Story extends BaseEntity{
 
     @Transient
     @JsonIgnore
-    private String percentage;
+    private Integer percentage;
+
+
 
 }

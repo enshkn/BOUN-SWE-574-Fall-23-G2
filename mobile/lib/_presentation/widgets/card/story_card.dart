@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:html/parser.dart';
 import 'package:swe/_common/constants/default_image.dart';
 import 'package:swe/_common/style/text_styles.dart';
@@ -30,6 +31,7 @@ class StoryCard extends StatelessWidget {
   final bool isFavoriteLoading;
   final bool showFavouriteButton;
   final bool myStories;
+  final bool isRecommended;
   const StoryCard({
     required this.storyModel,
     this.likeCount = '0',
@@ -46,6 +48,7 @@ class StoryCard extends StatelessWidget {
     this.isSaved = false,
     this.isSavedLoading = false,
     this.onEditTap,
+    this.isRecommended = false,
   });
 
   @override
@@ -99,10 +102,18 @@ class StoryCard extends StatelessWidget {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            if (storyModel.createdAt != null)
-              Text(
-                storyModel.createdAt!,
-              ),
+            Row(
+              children: [
+                if (storyModel.createdAt != null)
+                  Text(
+                    storyModel.createdAt!,
+                  ),
+                if (storyModel.percentage != null)
+                  Text(
+                    '${storyModel.percentage!}%',
+                  ),
+              ],
+            ),
             BaseWidgets.lowestGap,
             buildContent(context, imgurl, noImage),
             if (showFavouriteButton) buildFavourite(),
@@ -129,80 +140,136 @@ class StoryCard extends StatelessWidget {
           Radius.circular(24),
         ),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (noImage)
-            SizedBox(
-              width: 100,
-              height: 100,
-              child: Image.asset(
-                'assets/images/dutluk_logo.png',
-              ),
-            )
-          else
-            SizedBox(
-              child: Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: Image.network(
-                      imgUrl!,
+      child: !noImage
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  child: Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: Image.network(
+                          imgUrl!,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          BaseWidgets.lowestGap,
-          Text(
-            storyModel.title,
-            style: const TextStyles.title().copyWith(
-              letterSpacing: 0.016,
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-          ),
-          BaseWidgets.lowestGap,
-          if (storyModel.locations != null && storyModel.locations!.isNotEmpty)
-            Text(
-              storyModel.locations![0].locationName!.toLocation() ?? '',
-              style: const TextStyles.body().copyWith(
-                letterSpacing: 0.016,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          BaseWidgets.lowestGap,
-          if (storyModel.labels != null)
-            SizedBox(
-              height: 60,
-              child: BaseListView(
-                scrollDirection: Axis.horizontal,
-                items: storyModel.labels!,
-                itemBuilder: (item) {
-                  return GestureDetector(
-                    onTap: () {
-                      onTagSearch?.call(item);
-                    },
-                    child: Row(
-                      children: [
-                        Wrap(
-                          children: [
-                            _buildChip(item),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                          ],
-                        ),
-                      ],
+                BaseWidgets.lowestGap,
+                Text(
+                  storyModel.title,
+                  style: const TextStyles.title().copyWith(
+                    letterSpacing: 0.016,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                ),
+                //],
+                BaseWidgets.lowestGap,
+                if (storyModel.locations != null &&
+                    storyModel.locations!.isNotEmpty)
+                  Text(
+                    storyModel.locations![0].locationName!.toLocation() ?? '',
+                    style: const TextStyles.body().copyWith(
+                      letterSpacing: 0.016,
                     ),
-                  );
-                },
-              ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                BaseWidgets.lowestGap,
+                if (storyModel.labels != null)
+                  SizedBox(
+                    height: 60,
+                    child: BaseListView(
+                      scrollDirection: Axis.horizontal,
+                      items: storyModel.labels!,
+                      itemBuilder: (item) {
+                        return GestureDetector(
+                          onTap: () {
+                            onTagSearch?.call(item);
+                          },
+                          child: Row(
+                            children: [
+                              Wrap(
+                                children: [
+                                  _buildChip(item),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+              ],
+            )
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                BaseWidgets.lowestGap,
+                Text(
+                  storyModel.title,
+                  style: const TextStyles.title().copyWith(
+                    letterSpacing: 0.016,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                ),
+                if (!myStories)
+                  Text(
+                    storyModel.text,
+                    style: const TextStyles.body().copyWith(
+                      letterSpacing: 0.016,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                  ),
+                BaseWidgets.lowestGap,
+                if (storyModel.locations != null &&
+                    storyModel.locations!.isNotEmpty)
+                  Text(
+                    storyModel.locations![0].locationName!.toLocation() ?? '',
+                    style: const TextStyles.body().copyWith(
+                      letterSpacing: 0.016,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                BaseWidgets.lowestGap,
+                if (storyModel.labels != null)
+                  SizedBox(
+                    height: 60,
+                    child: BaseListView(
+                      scrollDirection: Axis.horizontal,
+                      items: storyModel.labels!,
+                      itemBuilder: (item) {
+                        return GestureDetector(
+                          onTap: () {
+                            onTagSearch?.call(item);
+                          },
+                          child: Row(
+                            children: [
+                              Wrap(
+                                children: [
+                                  _buildChip(item),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
     );
   }
 

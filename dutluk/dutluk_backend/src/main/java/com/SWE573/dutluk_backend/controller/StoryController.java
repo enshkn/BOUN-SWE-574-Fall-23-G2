@@ -4,8 +4,7 @@ import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.request.LikeRequest;
 import com.SWE573.dutluk_backend.request.SaveRequest;
-import com.SWE573.dutluk_backend.request.StoryCreateRequest;
-import com.SWE573.dutluk_backend.request.StoryEditRequest;
+import com.SWE573.dutluk_backend.request.StoryEnterRequest;
 import com.SWE573.dutluk_backend.response.MyStoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryResponse;
@@ -36,9 +35,9 @@ public class StoryController {
     RecommendationService recService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addStory(@RequestBody StoryCreateRequest storyCreateRequest,HttpServletRequest request) throws ParseException, IOException {
+    public ResponseEntity<?> addStory(@RequestBody StoryEnterRequest storyEnterRequest, HttpServletRequest request) throws ParseException, IOException {
         User user = userService.validateTokenizedUser(request);
-        return IntegrationService.mobileCheck(request,storyService.createStory(user,storyCreateRequest));
+        return IntegrationService.mobileCheck(request,storyService.createStory(user, storyEnterRequest));
     }
 
     @GetMapping("/all")
@@ -55,13 +54,13 @@ public class StoryController {
 
     }
 
-    @PostMapping("delete/all/RecEngine")
-    public ResponseEntity<?> deleteAllStoriesOnRecEngine(@RequestBody String password,HttpServletRequest request){
+    @PostMapping("delete/all/RecEngine/{password}")
+    public ResponseEntity<?> deleteAllStoriesOnRecEngine(@PathVariable String password, HttpServletRequest request){
         return IntegrationService.mobileCheck(request,recService.deleteAllOnRecEngine(password));
     }
 
     @PostMapping("/edit/{storyId}")
-    public ResponseEntity<?> editStory(@PathVariable Long storyId, @RequestBody StoryEditRequest storyEditRequest, HttpServletRequest request) throws ParseException, IOException {
+    public ResponseEntity<?> editStory(@PathVariable Long storyId, @RequestBody StoryEnterRequest storyEditRequest, HttpServletRequest request) throws ParseException, IOException {
         User tokenizedUser = userService.validateTokenizedUser(request);
         StoryResponse editedStory = storyService.storyAsStoryResponse(storyService.editStory(storyEditRequest,tokenizedUser,storyId));
         return IntegrationService.mobileCheck(request,editedStory);
@@ -200,6 +199,7 @@ public class StoryController {
             @RequestParam(required = false) String decade,
             @RequestParam(required = false) String endDecade,
             @RequestParam(required = false) String season,
+            @RequestParam(required = false) String endSeason,
             HttpServletRequest request) throws ParseException {
         List<Story> storyList = storyService.searchStoriesWithCombination(
                 query,
@@ -210,7 +210,8 @@ public class StoryController {
                 endTimeStamp,
                 decade,
                 endDecade,
-                season);
+                season,
+                endSeason);
         List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyList);
         return IntegrationService.mobileCheck(request,Objects.requireNonNullElse(storyListResponse, "[]"));
     }
@@ -234,6 +235,7 @@ public class StoryController {
             @RequestParam(required = false) String decade,
             @RequestParam(required = false) String endDecade,
             @RequestParam(required = false) String season,
+            @RequestParam(required = false) String endSeason,
             HttpServletRequest request) throws ParseException {
         List<Story> storyList = storyService.searchStoriesWithIntersection(
                 title,
@@ -245,7 +247,8 @@ public class StoryController {
                 endTimeStamp,
                 decade,
                 endDecade,
-                season);
+                season,
+                endSeason);
         List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyList);
         return IntegrationService.mobileCheck(request,Objects.requireNonNullElse(storyListResponse, "No stories with this search is found!"));
     }
