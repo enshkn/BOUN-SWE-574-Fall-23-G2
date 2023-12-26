@@ -179,20 +179,6 @@ public class UserService{
         return userRepository.existsByEmail(email);
     }
 
-    public Boolean existsByIdentifierAndPassword(String identifier, String password) throws AccountNotFoundException {
-        if (emailValidator.isValid(identifier)) {
-            return existsByEmailAndPassword(identifier,password);
-        }
-        return existsByUsernameAndPassword(identifier,password);
-    }
-
-    private Boolean existsByUsernameAndPassword(String identifier, String password) {
-        return userRepository.existsByUsernameAndPassword(identifier,password);
-    }
-
-    private Boolean existsByEmailAndPassword(String identifier, String password) {
-        return userRepository.existsByEmailAndPassword(identifier,password);
-    }
 
     public boolean validateRegistrationInput(RegisterRequest registerRequest) {
         if(existsByEmail(registerRequest.getEmail())){
@@ -200,6 +186,12 @@ public class UserService{
         }
         return !existsByUsername(registerRequest.getUsername());
 
+    }
+
+    public Boolean isFollowingUser(User foundUser, Long userId) {
+        Set<User> followingSet = foundUser.getFollowing();
+        User checkedUser = findByUserId(userId);
+        return followingSet.contains(checkedUser);
     }
 }
 

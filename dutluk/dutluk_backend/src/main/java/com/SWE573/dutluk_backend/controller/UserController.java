@@ -63,6 +63,12 @@ public class UserController {
         }
     }
 
+    @GetMapping("/isFollowing/{userId}")
+    public ResponseEntity<?> showFollowingStatus(@PathVariable Long userId, HttpServletRequest request) {
+        User foundUser = userService.validateTokenizedUser(request);
+        return IntegrationService.mobileCheck(request, userService.isFollowingUser(foundUser, userId));
+    }
+
     @GetMapping("/isTokenValid")
     public ResponseEntity<?> showTokenValidation(HttpServletRequest request){
         return IntegrationService.mobileCheck(request,userService.validateTokenByRequest(request));
