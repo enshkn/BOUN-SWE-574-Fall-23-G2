@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import "./App.css";
-import DutlukImage from "./dutlukfinal_1.jpg";
 import DutlukLogo from "./dutluk_logo.png";
 import User from "./components/User";
 import Profile from "./components/Profile";
@@ -23,7 +22,6 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { QRCode, FloatButton } from 'antd';
-import Paragraph from "antd/es/skeleton/Paragraph";
 import { FileTextOutlined } from '@ant-design/icons';
 
 
