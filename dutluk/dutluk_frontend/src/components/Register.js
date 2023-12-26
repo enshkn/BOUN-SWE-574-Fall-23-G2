@@ -37,8 +37,17 @@ const RegisterComponent = () => {
       await messageApi.open({ type: "success", content: "Registered successfully!"});
       navigate("/login")
     } catch (error) {
-      console.error(error);
-      messageApi.open({ type: "error", content: "Error occurred during registration!"});
+      if (error.response) {
+        messageApi.open({
+          type: "error",
+          content: error.response.data,
+        });
+      } else {
+        messageApi.open({
+          type: "error",
+          content: "An error occurred while logging in.",
+        });
+      }
     }
   };
 
@@ -62,6 +71,7 @@ const RegisterComponent = () => {
           <label className="register-label">Email:</label>
           <input
             type="email"
+            data-testid="email-input"
             className="register-input"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -71,6 +81,7 @@ const RegisterComponent = () => {
         <div className="register-input-group">
           <label className="register-label">Username:</label>
           <input
+          data-testid="username-input"
             type="text"
             className="register-input"
             value={username}
@@ -81,6 +92,7 @@ const RegisterComponent = () => {
         <div className="register-input-group">
           <label className="register-label">Password:</label>
           <input
+           data-testid="password-input"
             type="password"
             className="register-input"
             value={password}
@@ -91,6 +103,7 @@ const RegisterComponent = () => {
         <div className="register-input-group">
           <label className="register-label">Retype Password:</label>
           <input
+           data-testid="retype-password-input"
             type="password"
             className="register-input"
             value={retypePassword}

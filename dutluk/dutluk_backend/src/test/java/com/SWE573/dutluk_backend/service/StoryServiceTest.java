@@ -4,8 +4,7 @@ import com.SWE573.dutluk_backend.model.Location;
 import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.StoryRepository;
-import com.SWE573.dutluk_backend.request.StoryCreateRequest;
-import com.SWE573.dutluk_backend.request.StoryEditRequest;
+import com.SWE573.dutluk_backend.request.StoryEnterRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,6 @@ import org.mockito.MockitoAnnotations;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,24 +50,28 @@ class StoryServiceTest {
         when(userService.findByUserId(1L)).thenReturn(foundUser);
         Date date = new Date();
 
-        StoryCreateRequest storyCreateRequest = new StoryCreateRequest();
+        StoryEnterRequest storyEnterRequest = new StoryEnterRequest();
         ArrayList<String> labels = new ArrayList<>();
         labels.add("label1");
         labels.add("label2");
-        storyCreateRequest.setTitle("Test Story");
-        storyCreateRequest.setLabels(labels);
-        storyCreateRequest.setText("Test story text");
-        storyCreateRequest.setStartTimeStamp(date);
-        storyCreateRequest.setEndTimeStamp(date);
-        storyCreateRequest.setSeason("Summer");
-        storyCreateRequest.setDecade("2020s");
+        storyEnterRequest.setTitle("Test Story");
+        storyEnterRequest.setLabels(labels);
+        storyEnterRequest.setText("Test story text");
+        storyEnterRequest.setStartTimeStamp(date);
+        storyEnterRequest.setEndTimeStamp(date);
+        storyEnterRequest.setSeason("Summer");
+        storyEnterRequest.setDecade("2020s");
+        storyEnterRequest.setStartHourFlag(1);
+        storyEnterRequest.setEndHourFlag(1);
+        storyEnterRequest.setStartDateFlag(3);
+        storyEnterRequest.setEndDateFlag(3);
         List<Location> locations = new ArrayList<>();
         locations.add(Location.builder()
                 .latitude(41.085064)
                 .longitude(29.044687)
                 .locationName("Istanbul")
                 .build());
-        storyCreateRequest.setLocations((ArrayList<Location>) locations);
+        storyEnterRequest.setLocations((ArrayList<Location>) locations);
 
 
         Story savedStory = Story.builder()
@@ -87,7 +89,7 @@ class StoryServiceTest {
         when(storyRepository.save(any(Story.class))).thenReturn(savedStory);
 
 
-        Story createdStory = storyService.createStory(userService.findByUserId(1L), storyCreateRequest);
+        Story createdStory = storyService.createStory(userService.findByUserId(1L), storyEnterRequest);
 
 
         verify(userService, times(1)).findByUserId(1L);
@@ -455,7 +457,7 @@ class StoryServiceTest {
                 .username("testUser")
                 .build();
         when(userService.findByUserId(1L)).thenReturn(foundUser);
-        StoryEditRequest request = new StoryEditRequest();
+        StoryEnterRequest request = new StoryEnterRequest();
         Long storyId = 1L;
 
         Story existingStory = new Story();
@@ -478,7 +480,7 @@ class StoryServiceTest {
 
         User user = new User();
         User anotherUser = new User();
-        StoryEditRequest request = new StoryEditRequest();
+        StoryEnterRequest request = new StoryEnterRequest();
         Long storyId = 1L;
 
         Story existingStory = new Story();
@@ -492,6 +494,16 @@ class StoryServiceTest {
 
 
         assertNull(editedStory);
+    }
+
+    @Test
+    void removeHtmlFormatting() {
+        String input = "<p>Hello <b>World</b></p>";
+        String expected = "Hello World";
+
+        String result = StoryService.removeHtmlFormatting(input);
+
+        assertEquals(expected, result);
     }
 
 }

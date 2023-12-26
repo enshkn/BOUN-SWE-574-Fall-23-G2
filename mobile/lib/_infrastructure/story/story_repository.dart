@@ -88,6 +88,34 @@ class StoryRepository implements IStoryRepository {
       type: HttpTypes.post,
       parserModel: StoryModel(),
       data: model.toJson(),
+      cachePolicy: CachePolicy.noCache,
+    );
+
+    switch (response.statusCode) {
+      case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+
+        return right(response.entity as StoryModel);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
+  EitherFuture<StoryModel> editStoryModel(
+    AddStoryModel model,
+    int storyId,
+  ) async {
+    final response = await manager.fetch<StoryModel, StoryModel>(
+      '/api/story/edit/$storyId',
+      type: HttpTypes.post,
+      parserModel: StoryModel(),
+      data: model.toJson(),
+      cachePolicy: CachePolicy.noCache,
+      queryParameters: {
+        'storyId': storyId,
+      },
     );
 
     switch (response.statusCode) {
@@ -268,6 +296,23 @@ class StoryRepository implements IStoryRepository {
   }
 
   @override
+  EitherFuture<bool> deleteComment(int commentId) async {
+    final response = await manager.fetch<NoResultResponse, NoResultResponse>(
+      '/api/comment/delete/$commentId',
+      type: HttpTypes.get,
+      parserModel: NoResultResponse(),
+    );
+    switch (response.statusCode) {
+      case 1:
+        final status = response.success ?? false;
+        if (!status) return left(AppFailure(message: response.message));
+        return right(true);
+      default:
+        return left(response.errorType);
+    }
+  }
+
+  @override
   EitherFuture<StoryModel> getStoryDetail(int storyId) async {
     final response = await manager.fetch<StoryModel, StoryModel>(
       '/api/story/$storyId',
@@ -320,6 +365,7 @@ class StoryRepository implements IStoryRepository {
     final response = await manager.fetch<StoryModel, List<StoryModel>>(
       NetworkPaths.getActivityFeed,
       type: HttpTypes.get,
+      cachePolicy: CachePolicy.noCache,
       parserModel: StoryModel(),
     );
 

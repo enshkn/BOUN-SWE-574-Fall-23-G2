@@ -2,7 +2,6 @@ package com.SWE573.dutluk_backend.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -10,9 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name="users")
@@ -41,7 +38,7 @@ public class User extends BaseEntity{
     @NotNull
     private String password;
 
-    @Lob
+
     private String profilePhoto;
 
     @Column
@@ -50,7 +47,7 @@ public class User extends BaseEntity{
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @JsonIncludeProperties({"story_id", "title"})
+    @JsonIncludeProperties({"id","title"})
     private List<Story> stories;
 
     @JsonIgnore
@@ -67,7 +64,7 @@ public class User extends BaseEntity{
         return likedStories;
     }
 
-
+    @JsonIgnore
     private Set<Long> savedStories = new HashSet<>();
 
     public Set<Long> getSavedStories() {
@@ -77,16 +74,17 @@ public class User extends BaseEntity{
         return savedStories;
     }
 
-    private Set<Long> recommendedStories = new HashSet<>();
+    @ElementCollection
+    private Map<Long, Integer> recommendedStoriesMap = new HashMap<>();
 
-    public Set<Long> getRecommendedStories() {
-        if(recommendedStories == null){
-            recommendedStories = new HashSet<>();
+    public Map<Long, Integer> getRecommendedStoriesMap() {
+        if(recommendedStoriesMap == null){
+            recommendedStoriesMap = new HashMap<>();
         }
-        return recommendedStories;
+        return recommendedStoriesMap;
     }
 
-    @JsonIgnoreProperties({"followers", "email" , "password" , "biography" , "stories","following"})
+    @JsonIncludeProperties({"id","username"})
     @ManyToMany(fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "followers",
@@ -95,9 +93,6 @@ public class User extends BaseEntity{
     private Set<User> followers = new HashSet<>();
 
     @ManyToMany(mappedBy = "followers", fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JsonIgnoreProperties({"followers", "email" , "password" , "biography" , "stories","following"})
+    @JsonIncludeProperties({"id","username"})
     private Set<User> following = new HashSet<>();
-
-    @Transient
-    private String token;
 }

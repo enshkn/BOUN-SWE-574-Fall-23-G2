@@ -18,6 +18,12 @@ class AddStoryModel extends BaseEntity<AddStoryModel> with _$AddStoryModel {
     List<LocationModel>? locations,
     int? startHourFlag,
     int? endHourFlag,
+    String? endDecade,
+    int? startDateFlag,
+    int? endDateFlag,
+    String? timeType, //takes the value "time_point" or "time_interval";
+    String?
+        timeExpression, // takes the value "moment","day","month+season","year","decade" or "decade+season"
   }) = _AddStoryModel;
   const AddStoryModel._();
   factory AddStoryModel.initial() => const AddStoryModel();

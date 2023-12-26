@@ -81,90 +81,94 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
     controller4 = ExpansionTileController();
     controller5 = ExpansionTileController();
     controller6 = ExpansionTileController();
-
-    final storyLocations = widget.model.locations;
-
-    for (var i = 0; i < storyLocations!.length; i++) {
-      if (storyLocations[i].isCircle != null &&
-          storyLocations[i].circleRadius != null) {
-        radiusList.add(storyLocations[i].circleRadius!);
-      }
-    }
-
-    for (var i = 0; i < storyLocations.length; i++) {
-      if (storyLocations[i].isPolygon != null) {
-        polygonLocations.add(storyLocations[i]);
-        polygoneCount = storyLocations[i].isPolygon!;
-      } else if (storyLocations[i].isPolyline != null) {
-        polylineLocations.add(storyLocations[i]);
-        polylineCount = storyLocations[i].isPolyline!;
-      } else if (storyLocations[i].isCircle != null) {
-        circleLocations.add(storyLocations[i]);
-        circleCount = storyLocations[i].isCircle!;
-      } else {
-        pointLocations.add(storyLocations[i]);
-      }
-    }
-
-    for (var i = 0; i < pointLocations.length; i++) {
-      additionalMarkers['$i'] = LatLng(
-        pointLocations[i].latitude!,
-        pointLocations[i].longitude!,
-      );
-    }
-    for (var k = 0; k <= polygoneCount; k++) {
-      if (k != 0) {
-        final list = <LatLng>[];
-        polygonLatLng.add(list);
-      }
-      for (var j = 0; j < polygonLocations.length; j++) {
-        if (polygonLocations[j].isPolygon == k) {
-          polygonLatLng[k].add(
-            LatLng(
-              polygonLocations[j].latitude!,
-              polygonLocations[j].longitude!,
-            ),
-          );
-          additionalPolygones?['$k'] = polygonLatLng[k];
-        }
-      }
-    }
-    for (var k = 0; k <= polylineCount; k++) {
-      if (k != 0) {
-        final list = <LatLng>[];
-        polylineLatLng.add(list);
-      }
-      for (var j = 0; j < polylineLocations.length; j++) {
-        if (polylineLocations[j].isPolygon == k) {
-          polylineLatLng[k].add(
-            LatLng(
-              polylineLocations[j].latitude!,
-              polylineLocations[j].longitude!,
-            ),
-          );
-          additionalPolylines?['$k'] = polylineLatLng[k];
-        }
-      }
-    }
-
-    for (var k = 0; k < circleCount; k++) {
-      for (var j = 0; j < circleLocations.length; j++) {
-        circleLatLng.add(
-          LatLng(
-            circleLocations[j].latitude!,
-            circleLocations[j].longitude!,
-          ),
-        );
-        additionalCircles?['$j'] = circleLatLng[j];
-      }
-    }
-
+    //locationCheck(widget.model);
     super.initState();
+  }
+
+  void locationCheck(StoryModel? storyModel) {
+    final storyLocations = storyModel?.locations;
+    if (storyModel?.locations != null) {
+      for (var i = 0; i < storyLocations!.length; i++) {
+        if (storyLocations[i].isCircle != null &&
+            storyLocations[i].circleRadius != null) {
+          radiusList.add(storyLocations[i].circleRadius!);
+        }
+      }
+
+      for (var i = 0; i < storyLocations.length; i++) {
+        if (storyLocations[i].isPolygon != null) {
+          polygonLocations.add(storyLocations[i]);
+          polygoneCount = storyLocations[i].isPolygon!;
+        } else if (storyLocations[i].isPolyline != null) {
+          polylineLocations.add(storyLocations[i]);
+          polylineCount = storyLocations[i].isPolyline!;
+        } else if (storyLocations[i].isCircle != null) {
+          circleLocations.add(storyLocations[i]);
+          circleCount = storyLocations[i].isCircle!;
+        } else {
+          pointLocations.add(storyLocations[i]);
+        }
+      }
+
+      for (var i = 0; i < pointLocations.length; i++) {
+        if (pointLocations[i].latitude != null) {
+          additionalMarkers['$i'] = LatLng(
+            pointLocations[i].latitude!,
+            pointLocations[i].longitude!,
+          );
+        }
+      }
+      for (var k = 0; k <= polygoneCount; k++) {
+        if (k != 0) {
+          final list = <LatLng>[];
+          polygonLatLng.add(list);
+        }
+        for (var j = 0; j < polygonLocations.length; j++) {
+          if (polygonLocations[j].isPolygon == k) {
+            polygonLatLng[k].add(
+              LatLng(
+                polygonLocations[j].latitude!,
+                polygonLocations[j].longitude!,
+              ),
+            );
+            additionalPolygones?['$k'] = polygonLatLng[k];
+          }
+        }
+      }
+      for (var k = 0; k <= polylineCount; k++) {
+        if (k != 0) {
+          final list = <LatLng>[];
+          polylineLatLng.add(list);
+        }
+        for (var j = 0; j < polylineLocations.length; j++) {
+          if (polylineLocations[j].isPolygon == k) {
+            polylineLatLng[k].add(
+              LatLng(
+                polylineLocations[j].latitude!,
+                polylineLocations[j].longitude!,
+              ),
+            );
+            additionalPolylines?['$k'] = polylineLatLng[k];
+          }
+        }
+      }
+
+      for (var k = 0; k < circleCount; k++) {
+        for (var j = 0; j < circleLocations.length; j++) {
+          circleLatLng.add(
+            LatLng(
+              circleLocations[j].latitude!,
+              circleLocations[j].longitude!,
+            ),
+          );
+          additionalCircles?['$j'] = circleLatLng[j];
+        }
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final text = widget.model.text;
     return Scaffold(
       backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
       appBar: AppBar(
@@ -198,57 +202,19 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               await cubit.getStoryDetail(widget.model.id);
             },
             builder: (context, cubit, state) {
-              pushBackModel = state.storyModel;
+              locationCheck(state.storyModel);
               return BaseLoader(
                 isLoading: state.isLoading,
                 child: BaseScrollView(
                   children: [
-                    buildContent(
-                      context,
-                      text,
-                      user!,
-                    ),
-                    BaseWidgets.lowerGap,
-                    if (state.storyModel != null &&
-                        state.storyModel!.comments != null)
-                      GestureDetector(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(
-                            'Show Comments',
-                            style: const TextStyles.body()
-                                .copyWith(color: context.appBarColor),
-                          ),
-                        ),
-                        onTap: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CommentsView(
-                                storyId: widget.model.id,
-                              ),
-                            ),
-                          );
-                        },
+                    if (state.storyModel != null)
+                      buildContent(
+                        context,
+                        state.storyModel!.text,
+                        user!,
+                        state,
                       ),
-                    BaseWidgets.lowerGap,
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                      child: CommentCard(
-                        user: user,
-                        storyId: widget.model.id,
-                        onTapSend: (comment) {
-                          setState(() {
-                            cubit.addComment(comment);
-                            _focusnode.unfocus();
-
-                            context.replaceRoute(
-                              StoryDetailsRoute(model: widget.model),
-                            );
-                          });
-                        },
-                      ),
-                    ),
+                    commentBuild(state, user!),
                     BaseWidgets.normalGap,
                   ],
                 ),
@@ -260,14 +226,65 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
     );
   }
 
+  Widget commentBuild(StoryState state, User user) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (state.storyModel != null && state.storyModel!.comments != null)
+          GestureDetector(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                'Show Comments',
+                style: const TextStyles.body()
+                    .copyWith(color: context.appBarColor),
+              ),
+            ),
+            onTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CommentsView(
+                    storyId: widget.model.id,
+                    authUser: user,
+                  ),
+                ),
+              );
+            },
+          ),
+        BaseWidgets.lowestGap,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+          child: CommentCard(
+            user: user,
+            storyId: widget.model.id,
+            onTapSend: (comment) {
+              setState(() {
+                cubit.addComment(comment);
+                _focusnode.unfocus();
+
+                context.replaceRoute(
+                  StoryDetailsRoute(model: widget.model),
+                );
+              });
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget buildContent(
     BuildContext context,
     String text,
     User user,
+    StoryState state,
   ) {
     return FavoriteWrapper(
       userId: user.id!,
-      initialState: widget.model.likes!.contains(user.id),
+      initialState: state.storyModel!.likes != null
+          ? state.storyModel!.likes!.contains(user.id)
+          : false,
       storyId: widget.model.id,
       builder: (
         context,
@@ -287,7 +304,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (widget.model.likes != null)
+                    if (state.storyModel!.likes != null)
                       SizedBox(
                         width: 50,
                         height: 30,
@@ -297,7 +314,9 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                               ButtonCard(
                                 minScale: 0.8,
                                 onPressed: () async {
-                                  await addFavorite(storyId: widget.model.id);
+                                  await addFavorite(
+                                    storyId: state.storyModel!.id,
+                                  );
                                 },
                                 child: Icon(
                                   Icons.favorite,
@@ -318,23 +337,119 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                     GestureDetector(
                       onTap: () {
                         context.router.push(
-                          OtherProfileRoute(profile: widget.model.user!),
+                          OtherProfileRoute(profile: state.storyModel!.user!),
                         );
                       },
                       child: IconWithLabel(
+                        specialIcon: true,
                         spacing: 8,
-                        icon: const Icon(
-                          Icons.star,
-                          color: Colors.yellow,
+                        icon: SizedBox(
+                          child: state.storyModel!.user!.profilePhoto != null
+                              ? CircleAvatar(
+                                  radius: 36,
+                                  backgroundImage: NetworkImage(
+                                    state.storyModel!.user!.profilePhoto!,
+                                  ),
+                                )
+                              : const CircleAvatar(
+                                  radius: 36,
+                                  backgroundImage: AssetImage(
+                                    'assets/images/profilePic.jpg',
+                                  ),
+                                ),
                         ),
-                        label: widget.model.user!.username!,
+                        label: state.storyModel!.user!.username!,
                       ),
                     ),
                   ],
                 ),
               ),
-              BaseWidgets.normalGap,
+              BaseWidgets.lowerGap,
               Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.orange),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Time Variants',
+                        style: TextStyle(color: Colors.orange.shade800),
+                      ),
+                      if (state.storyModel!.startTimeStamp != null &&
+                          state.storyModel!.startDateFlag != 1)
+                        Text(
+                          'Start Time: ${state.storyModel!.startTimeStamp}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                      if (state.storyModel!.endTimeStamp != null)
+                        BaseWidgets.lowestGap,
+                      if (state.storyModel!.endTimeStamp != null)
+                        Text(
+                          'End Time: ${state.storyModel!.endTimeStamp}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                      if (state.storyModel!.decade != '' &&
+                          state.storyModel!.decade != null)
+                        BaseWidgets.lowestGap,
+                      if (state.storyModel!.decade != '' &&
+                          state.storyModel!.decade != null)
+                        Text(
+                          'Decade: ${state.storyModel!.decade!}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                      if (state.storyModel!.endDecade != '' &&
+                          state.storyModel!.endDecade != null)
+                        BaseWidgets.lowestGap,
+                      if (state.storyModel!.endDecade != '' &&
+                          state.storyModel!.endDecade != null)
+                        Text(
+                          'End Decade: ${state.storyModel!.endDecade!}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                      if (state.storyModel!.season != '' &&
+                          state.storyModel!.season != null)
+                        BaseWidgets.lowestGap,
+                      if (state.storyModel!.season != '' &&
+                          state.storyModel!.season != null)
+                        Text(
+                          'Season: ${state.storyModel!.season!}',
+                          style: const TextStyles.body().copyWith(
+                            letterSpacing: 0.016,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              /*  Container(
+                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.orange),
                   borderRadius: BorderRadius.circular(12),
@@ -358,7 +473,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.start,
                       ),
-                    BaseWidgets.lowerGap,
+                    if (widget.model.endTimeStamp != null) BaseWidgets.lowerGap,
                     if (widget.model.endTimeStamp != null)
                       Text(
                         'End Time: ${widget.model.endTimeStamp}',
@@ -400,30 +515,39 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                     BaseWidgets.lowerGap,
                   ],
                 ),
-              ),
-              BaseWidgets.lowerGap,
-              if (widget.model.locations != null)
+              ), */
+
+              BaseWidgets.lowestGap,
+              if (state.storyModel!.locations != null)
                 Container(
+                  width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.orange),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: ExpansionTile(
-                    iconColor: Colors.orange.shade800,
-                    controller: controller2,
+                  child: Column(
+                    /*  iconColor: Colors.orange.shade800,
+                    controller: controller2
                     title: Text(
                       'Locations',
                       style: TextStyle(color: Colors.orange.shade800),
                     ),
-                    initiallyExpanded: true,
+                    initiallyExpanded: true, */
                     children: <Widget>[
-                      BaseWidgets.lowerGap,
+                      BaseWidgets.dynamicGap(4),
+                      Text(
+                        'Locations',
+                        style: TextStyle(color: Colors.orange.shade800),
+                      ),
                       if (polylineLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
                           title: Text(
                             'Polyline Locations',
-                            style: TextStyle(color: Colors.orange.shade800),
+                            style: TextStyle(
+                              color: Colors.orange.shade800,
+                              fontSize: 14,
+                            ),
                           ),
                           controller: controller3,
                           children: [
@@ -438,7 +562,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                     return Row(
                                       children: [
                                         SizedBox(
-                                          width: 300,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.75,
                                           child: Text(
                                             item.locationName!.toLocation(),
                                             style: const TextStyles.body()
@@ -485,13 +612,17 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                             ),
                           ],
                         ),
-                      if (polygonLocations.isNotEmpty) BaseWidgets.lowerGap,
+                      if (polygonLocations.isNotEmpty)
+                        BaseWidgets.dynamicGap(4),
                       if (polygonLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
                           title: Text(
                             'Polygon Locations',
-                            style: TextStyle(color: Colors.orange.shade800),
+                            style: TextStyle(
+                              color: Colors.orange.shade800,
+                              fontSize: 14,
+                            ),
                           ),
                           controller: controller4,
                           children: [
@@ -506,7 +637,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                     return Row(
                                       children: [
                                         SizedBox(
-                                          width: 300,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.75,
                                           child: Text(
                                             item.locationName!.toLocation(),
                                             style: const TextStyles.body()
@@ -553,13 +687,16 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                             ),
                           ],
                         ),
-                      if (circleLocations.isNotEmpty) BaseWidgets.lowerGap,
+                      if (circleLocations.isNotEmpty) BaseWidgets.dynamicGap(4),
                       if (circleLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
                           title: Text(
                             'Circle Locations',
-                            style: TextStyle(color: Colors.orange.shade800),
+                            style: TextStyle(
+                              color: Colors.orange.shade800,
+                              fontSize: 14,
+                            ),
                           ),
                           controller: controller5,
                           children: [
@@ -574,7 +711,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                     return Row(
                                       children: [
                                         SizedBox(
-                                          width: 300,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.75,
                                           child: Text(
                                             item.locationName!.toLocation(),
                                             style: const TextStyles.body()
@@ -624,13 +764,15 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                             ),
                           ],
                         ),
-                      if (pointLocations.isNotEmpty) BaseWidgets.lowerGap,
                       if (pointLocations.isNotEmpty)
                         ExpansionTile(
                           iconColor: Colors.orange.shade800,
                           title: Text(
                             'Point Locations',
-                            style: TextStyle(color: Colors.orange.shade800),
+                            style: TextStyle(
+                              color: Colors.orange.shade800,
+                              fontSize: 14,
+                            ),
                           ),
                           controller: controller6,
                           children: [
@@ -645,7 +787,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                                     return Row(
                                       children: [
                                         SizedBox(
-                                          width: 300,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.75,
                                           child: Text(
                                             item.locationName!.toLocation(),
                                             style: const TextStyles.body()
@@ -695,15 +840,15 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                     ],
                   ),
                 ),
-              BaseWidgets.lowerGap,
-              if (widget.model.labels != null)
+              BaseWidgets.lowestGap,
+              if (state.storyModel!.labels != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: SizedBox(
                     height: 60,
                     child: BaseListView(
                       scrollDirection: Axis.horizontal,
-                      items: widget.model.labels!,
+                      items: state.storyModel!.labels!,
                       itemBuilder: (item) {
                         return GestureDetector(
                           onTap: () async {
@@ -734,18 +879,19 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
               ),
               BaseWidgets.lowerGap,
               Text(
-                widget.model.title,
+                state.storyModel!.title,
                 style: const TextStyles.title().copyWith(
                   letterSpacing: 0.016,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
               ),
-              BaseWidgets.lowerGap,
+              BaseWidgets.lowestGap,
               SingleChildScrollView(
                 child: Html(data: text),
               ),
-              BaseWidgets.highGap,
+
+              //comments
             ],
           ),
         );
@@ -771,8 +917,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
 
 class CommentsView extends StatefulWidget {
   final int storyId;
+  final User authUser;
   const CommentsView({
     required this.storyId,
+    required this.authUser,
     super.key,
   });
 
@@ -794,41 +942,52 @@ class _CommentsViewState extends State<CommentsView> {
             context,
             title: 'Comments',
           ),
-          body: BaseLoader(
-            isLoading: state.isLoading,
-            child: BaseScrollView(
-              children: [
-                BaseWidgets.lowerGap,
-                if (state.storyModel == null ||
-                    state.storyModel!.comments == null ||
-                    state.storyModel!.comments!.isEmpty)
-                  const Center(
-                    child: Text(
-                      'No comment yet',
-                      style: TextStyles.title(),
+          body: RefreshIndicator(
+            onRefresh: () async {
+              await cubit.getStoryDetail(widget.storyId);
+            },
+            child: BaseLoader(
+              isLoading: state.isLoading,
+              child: BaseScrollView(
+                children: [
+                  BaseWidgets.lowerGap,
+                  if (state.storyModel == null ||
+                      state.storyModel!.comments == null ||
+                      state.storyModel!.comments!.isEmpty)
+                    const Center(
+                      child: Text(
+                        'No comment yet',
+                        style: TextStyles.title(),
+                      ),
+                    )
+                  else
+                    SizedBox(
+                      child: BaseListView(
+                        shrinkWrap: true,
+                        items: state.storyModel!.comments!,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (item) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 16,
+                            ),
+                            child: CommentCard(
+                              myComment: widget.authUser.id == item.user!.id
+                                  ? true
+                                  : false,
+                              user: item.user,
+                              content: item.text,
+                              onDeleteTap: () async {
+                                await cubit.deleteComment(item.id!);
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  )
-                else
-                  SizedBox(
-                    child: BaseListView(
-                      shrinkWrap: true,
-                      items: state.storyModel!.comments!,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (item) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 16,
-                          ),
-                          child: CommentCard(
-                            user: item.user,
-                            content: item.text,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         );

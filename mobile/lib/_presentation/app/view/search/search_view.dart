@@ -1,9 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:google_map_location_picker/map_location_picker.dart'
+    hide Location;
+import 'package:location/location.dart';
 import 'package:swe/_application/session/session_cubit.dart';
 import 'package:swe/_application/session/session_state.dart';
 import 'package:swe/_application/story/story_cubit.dart';
 import 'package:swe/_application/story/story_state.dart';
+import 'package:swe/_core/widgets/base_loader.dart';
 import 'package:swe/_core/widgets/base_scroll_view.dart';
 import 'package:swe/_core/widgets/debouncer.dart';
 import 'package:swe/_domain/story/model/story_model.dart';
@@ -29,6 +33,32 @@ class _SearchViewState extends State<SearchView> with ScrollAnimMixin {
   final FocusNode _focusNode = FocusNode();
   final debouncer = Debouncer(milliseconds: 500);
   TextEditingController? _searchController;
+  late LatLng? _currentPosition = const LatLng(0, 0);
+  final Location _locationController = Location();
+  bool locationLoading = true;
+
+  @override
+  void initState() {
+    getCurrentLocation();
+
+    super.initState();
+  }
+
+  Future<void> getCurrentLocation() async {
+    LocationData currentLocation;
+    Future.delayed(const Duration(seconds: 5), () async {
+      currentLocation = await _locationController.getLocation();
+      if (currentLocation.latitude != null &&
+          currentLocation.longitude != null) {
+        setState(() {
+          _currentPosition =
+              LatLng(currentLocation.latitude!, currentLocation.longitude!);
+          locationLoading = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseConsumer<SessionCubit, SessionState>(
@@ -64,120 +94,126 @@ class _SearchViewState extends State<SearchView> with ScrollAnimMixin {
                         ),
                         onPressed: () {
                           _focusNode.unfocus();
-                          context.router.push(const AddStoryRoute());
+                          context.router.push(AddStoryRoute());
                         },
                       ),
                     ),
                   ),
                 ],
               ),
-              body: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: AppSearchBar(
-                      searchTerm: state.search,
-                      onSearchControllerReady: (controller) {
-                        _searchController = controller;
-                      },
-                      hintText: 'Search',
-                      onChanged: (val) {
-                        debouncer.run(() async {
-                          setState(() {
-                            isVisible = true;
+              body: BaseLoader(
+                isLoading: state.isLoading,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: AppSearchBar(
+                        searchTerm: state.search,
+                        onSearchControllerReady: (controller) {
+                          _searchController = controller;
+                        },
+                        hintText: 'Search',
+                        onChanged: (val) {
+                          debouncer.run(() async {
+                            setState(() {
+                              isVisible = true;
+                            });
+                            _searchController?.text = val!;
+
+                            await cubit.search(
+                              term: val,
+                            );
                           });
-                          _searchController?.text = val!;
-
-                          await cubit.search(
-                            term: val,
+                        },
+                        onPressedFilter: () async {
+                          _focusNode.unfocus();
+                          await getCurrentLocation();
+                          final filter = await showFilterModal(
+                            context,
+                            currentFilter: state.filter,
+                            currentPosition: _currentPosition,
                           );
-                        });
-                      },
-                      onPressedFilter: () async {
-                        _focusNode.unfocus();
+                          if (filter == null || filter.isEmpty) return;
 
-                        final filter = await showFilterModal(
-                          context,
-                          currentFilter: state.filter,
-                        );
-                        if (filter == null || filter.isEmpty) return;
-
-                        //_searchController?.clear();
-                        await cubit.getSearchResult(
-                          filter,
-                          _searchController?.text,
-                        );
-                      },
-                    ),
-                  ),
-                  if (user != null)
-                    Expanded(
-                      child: BaseListView<StoryModel>(
-                        controller: scrollController,
-                        items: state.searchResultStories,
-                        itemBuilder: (item) {
-                          return FavoriteWrapper(
-                            userId: user.id!,
-                            initialStateSave: item.savedBy!.contains(user.id),
-                            storyId: item.id,
-                            builder: (
-                              context,
-                              addFavorite,
-                              addSave,
-                              isfavorite,
-                              isSaved,
-                              isLoading,
-                              likeCount,
-                            ) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 8,
-                                ),
-                                height: 450,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    context.router.push(
-                                      StoryDetailsRoute(
-                                        model: item,
-                                      ),
-                                    );
-                                  },
-                                  child: StoryCard(
-                                    storyModel: item,
-                                    showFavouriteButton: false,
-                                    onTagSearch: (label) async {
-                                      await context.router.push(
-                                        TagSearchRoute(
-                                          tag: label,
-                                        ),
-                                      );
-                                    },
-                                    isSaved: isSaved,
-                                    isSavedLoading: isLoading,
-                                    onSavedTap: () async {
-                                      await addSave(
-                                        storyId: item.id,
-                                      );
-                                    },
-                                    /*  likeCount: likeCount,
-                                                        isFavorite: isfavorite,
-                                                        isFavoriteLoading:
-                                                            isLoading,
-                                                        onFavouriteTap: () async {
-                                                          await addFavorite(
-                                                            storyId: item.id,
-                                                          );
-                                                        }, */
-                                  ),
-                                ),
-                              );
-                            },
+                          //_searchController?.clear();
+                          await cubit.getSearchResult(
+                            filter,
+                            _searchController?.text,
                           );
                         },
                       ),
                     ),
-                ],
+                    if (user != null)
+                      Expanded(
+                        child: BaseListView<StoryModel>(
+                          controller: scrollController,
+                          items: state.searchResultStories,
+                          itemBuilder: (item) {
+                            return FavoriteWrapper(
+                              userId: user.id!,
+                              initialStateSave: item.savedBy != null
+                                  ? item.savedBy!.contains(user.id)
+                                  : false,
+                              storyId: item.id,
+                              builder: (
+                                context,
+                                addFavorite,
+                                addSave,
+                                isfavorite,
+                                isSaved,
+                                isLoading,
+                                likeCount,
+                              ) {
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 8,
+                                  ),
+                                  height: 450,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      context.router.push(
+                                        StoryDetailsRoute(
+                                          model: item,
+                                        ),
+                                      );
+                                    },
+                                    child: StoryCard(
+                                      storyModel: item,
+                                      showFavouriteButton: false,
+                                      onTagSearch: (label) async {
+                                        await context.router.push(
+                                          TagSearchRoute(
+                                            tag: label,
+                                          ),
+                                        );
+                                      },
+                                      isSaved: isSaved,
+                                      isSavedLoading: isLoading,
+                                      onSavedTap: () async {
+                                        await addSave(
+                                          storyId: item.id,
+                                        );
+                                      },
+                                      /*  likeCount: likeCount,
+                                                          isFavorite: isfavorite,
+                                                          isFavoriteLoading:
+                                                              isLoading,
+                                                          onFavouriteTap: () async {
+                                                            await addFavorite(
+                                                              storyId: item.id,
+                                                            );
+                                                          }, */
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                  ],
+                ),
               ),
             );
           },

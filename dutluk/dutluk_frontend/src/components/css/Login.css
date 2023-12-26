@@ -1,7 +1,13 @@
 @import "Base.css";
 
 .login-form {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
   max-width: 400px;
+  height: 45%;
   margin: 0 auto;
   padding: 20px;
   background-color: #f2f2f2;

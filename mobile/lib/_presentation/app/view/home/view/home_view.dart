@@ -96,7 +96,7 @@ class _HomeViewState extends State<HomeView>
                         ),
                         onPressed: () {
                           _focusNode.unfocus();
-                          context.router.push(const AddStoryRoute());
+                          context.router.push(AddStoryRoute());
                         },
                       ),
                     ),
@@ -132,10 +132,9 @@ class _HomeViewState extends State<HomeView>
                                       itemBuilder: (item) {
                                         return FavoriteWrapper(
                                           userId: user.id!,
-                                          initialLikeCount:
-                                              item.likes!.length.toString(),
-                                          initialStateSave:
-                                              item.savedBy!.contains(user.id),
+                                          initialStateSave: item.savedBy != null
+                                              ? item.savedBy!.contains(user.id)
+                                              : false,
                                           storyId: item.id,
                                           builder: (
                                             context,
@@ -219,10 +218,11 @@ class _HomeViewState extends State<HomeView>
                                         itemBuilder: (item) {
                                           return FavoriteWrapper(
                                             userId: user.id!,
-                                            initialLikeCount:
-                                                item.likes!.length.toString(),
                                             initialStateSave:
-                                                item.savedBy!.contains(user.id),
+                                                item.savedBy != null
+                                                    ? item.savedBy!
+                                                        .contains(user.id)
+                                                    : false,
                                             storyId: item.id,
                                             builder: (
                                               context,

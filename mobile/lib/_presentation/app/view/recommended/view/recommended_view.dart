@@ -62,92 +62,100 @@ class _RecommendedViewState extends State<RecommendedView> {
                         ),
                         onPressed: () {
                           _focusNode.unfocus();
-                          context.router.push(const AddStoryRoute());
+                          context.router.push(AddStoryRoute());
                         },
                       ),
                     ),
                   ),
                 ],
               ),
-              body: BaseScrollView(
-                children: [
-                  if (state.recommendedStories.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: BaseHeaderTitle(
-                        title: 'Recommended Stories',
-                        onShowAllButtonPressed: () {},
+              body: RefreshIndicator(
+                onRefresh: () async {
+                  await cubit.getRecommendedStories();
+                },
+                child: BaseScrollView(
+                  children: [
+                    if (state.recommendedStories.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: BaseHeaderTitle(
+                          title: 'Recommended Stories',
+                          onShowAllButtonPressed: () {},
+                        ),
                       ),
-                    ),
-                  if (user != null)
-                    SizedBox(
-                      child: BaseListView<StoryModel>(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        items: state.recommendedStories,
-                        itemBuilder: (item) {
-                          return FavoriteWrapper(
-                            userId: user.id!,
-                            initialStateSave: item.savedBy!.contains(user.id),
-                            storyId: item.id,
-                            builder: (
-                              context,
-                              addFavorite,
-                              addSave,
-                              isfavorite,
-                              isSaved,
-                              isLoading,
-                              likeCount,
-                            ) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 8,
-                                ),
-                                height: 450,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    context.router.push(
-                                      StoryDetailsRoute(
-                                        model: item,
-                                      ),
-                                    );
-                                  },
-                                  child: StoryCard(
-                                    storyModel: item,
-                                    showFavouriteButton: false,
-                                    onTagSearch: (label) async {
-                                      await context.router.push(
-                                        TagSearchRoute(
-                                          tag: label,
+                    if (user != null)
+                      SizedBox(
+                        child: BaseListView<StoryModel>(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          items: state.recommendedStories,
+                          itemBuilder: (item) {
+                            return FavoriteWrapper(
+                              userId: user.id!,
+                              initialStateSave: item.savedBy != null
+                                  ? item.savedBy!.contains(user.id)
+                                  : false,
+                              storyId: item.id,
+                              builder: (
+                                context,
+                                addFavorite,
+                                addSave,
+                                isfavorite,
+                                isSaved,
+                                isLoading,
+                                likeCount,
+                              ) {
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 8,
+                                  ),
+                                  height: 450,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      context.router.push(
+                                        StoryDetailsRoute(
+                                          model: item,
                                         ),
                                       );
                                     },
-                                    isSaved: isSaved,
-                                    isSavedLoading: isLoading,
-                                    onSavedTap: () async {
-                                      await addSave(
-                                        storyId: item.id,
-                                      );
-                                    },
-                                    /*  likeCount: likeCount,
-                                                        isFavorite: isfavorite,
-                                                        isFavoriteLoading:
-                                                            isLoading,
-                                                        onFavouriteTap: () async {
-                                                          await addFavorite(
-                                                            storyId: item.id,
-                                                          );
-                                                        }, */
+                                    child: StoryCard(
+                                      isRecommended: true,
+                                      storyModel: item,
+                                      showFavouriteButton: false,
+                                      onTagSearch: (label) async {
+                                        await context.router.push(
+                                          TagSearchRoute(
+                                            tag: label,
+                                          ),
+                                        );
+                                      },
+                                      isSaved: isSaved,
+                                      isSavedLoading: isLoading,
+                                      onSavedTap: () async {
+                                        await addSave(
+                                          storyId: item.id,
+                                        );
+                                      },
+                                      /*  likeCount: likeCount,
+                                                          isFavorite: isfavorite,
+                                                          isFavoriteLoading:
+                                                              isLoading,
+                                                          onFavouriteTap: () async {
+                                                            await addFavorite(
+                                                              storyId: item.id,
+                                                            );
+                                                          }, */
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          );
-                        },
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             );
           },

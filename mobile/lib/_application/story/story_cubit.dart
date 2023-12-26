@@ -111,11 +111,33 @@ final class StoryCubit extends BaseCubit<StoryState> {
     setLoading(false);
     return result.fold(
       (failure) {
-        showNotification(failure?.message ?? '', isError: true);
+        showNotification(
+          failure?.message ?? 'Your story could not be added.',
+          isError: true,
+        );
         return false;
       },
       (data) {
-        showNotification('Your Story is added.');
+        //showNotification('Your Story is added.');
+        return true;
+      },
+    );
+  }
+
+  Future<bool> editStory(AddStoryModel model, int storyId) async {
+    setLoading(true);
+    final result = await _storyRepository.editStoryModel(model, storyId);
+    setLoading(false);
+    return result.fold(
+      (failure) {
+        showNotification(
+          failure?.message ?? 'Your story could not be edited.',
+          isError: true,
+        );
+        return false;
+      },
+      (data) {
+        //showNotification('Your Story is edited.');
         return true;
       },
     );
@@ -154,16 +176,34 @@ final class StoryCubit extends BaseCubit<StoryState> {
     );
   }
 
+  Future<bool> deleteComment(int commentId) async {
+    setLoading(true);
+    final result = await _storyRepository.deleteComment(commentId);
+    setLoading(false);
+    return result.fold(
+      (failure) {
+        showNotification(failure?.message ?? '', isError: true);
+        return false;
+      },
+      (data) {
+        showNotification('Your comment is deleted.');
+
+        return true;
+      },
+    );
+  }
+
   Future<void> getStoryDetail(int storyId) async {
     setLoading(true);
     final result = await _storyRepository.getStoryDetail(storyId);
-    setLoading(false);
+
     result.fold(
       (failure) => showNotification(failure?.message ?? '', isError: true),
       (data) {
         safeEmit(state.copyWith(storyModel: data));
       },
     );
+    setLoading(false);
   }
 
   Future<void> getLikedStories() async {
@@ -225,7 +265,6 @@ final class StoryCubit extends BaseCubit<StoryState> {
     setLoading(true);
     final result =
         await _storyRepository.getTimelineSearchStories(filter, searchTerm);
-    setLoading(false);
     result.fold(
       (failure) => showNotification(failure?.message ?? '', isError: true),
       (searchResult) {
@@ -234,6 +273,7 @@ final class StoryCubit extends BaseCubit<StoryState> {
         );
       },
     );
+    setLoading(false);
   }
 
   Future<void> search({

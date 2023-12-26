@@ -6,31 +6,45 @@ import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
 import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
-import { format, getYear } from "date-fns";
+import { format, getYear, set } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { Space, message, Input, Tag, Tooltip} from 'antd';
+import { Space, message, Input, Tag, Tooltip, Segmented, InputNumber, Slider } from 'antd';
 import "./css/AddStory.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-quill/dist/quill.snow.css'; // Örnek olarak Quill editörünün varsayılan stillerini ekliyoruz
+import DateTimerPicker from "./DateTimerPicker";
+
 
 const AddStoryForm = () => {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
-  const [startTimeStamp, setStartTimeStamp] = useState(null);
-  const [endTimeStamp, setEndTimeStamp] = useState(null);
-  const [season, setSeason] = useState("");
-  const [decade, setDecade] = useState("");
+  // time resolution states
+  const [startTimeStamp, setStartTimeStamp] = useState(new Date());
+  const [endTimeStamp, setEndTimeStamp] = useState(new Date());
+  // timeType and timeExpression are used for time resolution
+  const [timeType, setTimeType] = useState(null);
+  const [timeExpression, setTimeExpression] = useState(null);
+  // hourFlag and dateFlag are used for time resolution
+  const [startHourFlag, setStartHourFlag] = useState(null);
+  const [startDateFlag, setStartDateFlag] = useState(null);
+  const [endHourFlag, setEndHourFlag] = useState(null);
+  const [endDateFlag, setEndDateFlag] = useState(null);
+  // season and decade are used for time resolution
+  const [season, setSeason] = useState(null);
+  const [endSeason, setEndSeason] = useState(null);
+  const [decade, setDecade] = useState(null);
+  const [endDecade, setEndDecade] = useState(null);
+  // existing states
   const [searchBox, setSearchBox] = useState(null);
-  const [currentShape, setCurrentShape] = useState(null);
+  const [currentShape, setCurrentShape] = useState('marker');
   const [tempPoints, setTempPoints] = useState([]);
-  const [circleRadius, setCircleRadius] = useState(5000);
-
+  const [circleRadius, setCircleRadius] = useState(5);
   const [markers, setMarkers] = useState([]);
   const [circles, setCircles] = useState([]);
   const [polygons, setPolygons] = useState([]);
   const [polylines, setPolylines] = useState([]);
   const [timeResolution, setTimeResolution] = useState("");
- 
   const [messageApi, contextHolder] = message.useMessage();
-
   const [tags, setTags] = useState([]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -38,12 +52,20 @@ const AddStoryForm = () => {
   const [editInputValue, setEditInputValue] = useState('');
   const inputRef = useRef(null);
   const editInputRef = useRef(null);
-
   const onSearchBoxLoad = (ref) => {
     setSearchBox(ref);
   };
 
-  // Location related event handlers
+  const seasonsDict = {
+    null: null,
+    "": null,
+    1: 'Winter',
+    2: 'Spring',
+    3: 'Summer',
+    4: 'Fall'
+  };
+
+  //  ----------------------------------- Location and Editor related event handlers ----------------------------------- //
   const onPlacesChanged = () => {
     const places = searchBox.getPlaces();
     const place = places[0];
@@ -72,6 +94,7 @@ const AddStoryForm = () => {
     }
   };
 
+  //  ----------------------------------- Editor and Location related event handlers ----------------------------------- //
 
   const handleEditorChange = (value) => {
     setText(value);
@@ -95,16 +118,18 @@ const AddStoryForm = () => {
       messageApi.open({ type: "error", content: "Please pick at least one location."});
       return; // Prevent form submission if no location is set
     }
+
+    {/* 
     const currentDateTime = new Date();
     let formattedStartTimeStamp = null;
     let formattedEndTimeStamp = null;
 
-    if(startTimeStamp !== null){
+    if(startTimeStamp !== null) {
       if (startTimeStamp && startTimeStamp > currentDateTime) {
         return;
       }
 
-      if(endTimeStamp !== null){
+    if(endTimeStamp !== null) {
         if (endTimeStamp && endTimeStamp > currentDateTime) {
           return;
         }
@@ -120,7 +145,7 @@ const AddStoryForm = () => {
         }
       }
     }
-    
+    */}
 
    
 
@@ -175,10 +200,18 @@ const AddStoryForm = () => {
           }))
         )
       ],
-      startTimeStamp: formattedStartTimeStamp,
-      endTimeStamp: formattedEndTimeStamp,
+      startTimeStamp,
+      endTimeStamp,
       season,
+      endSeason,
       decade,
+      endDecade,
+      startHourFlag,
+      endHourFlag,
+      startDateFlag,
+      endDateFlag,
+      timeType,
+      timeExpression,
     };
 
     try {
@@ -262,7 +295,7 @@ const AddStoryForm = () => {
     } else if (currentShape === 'circle') {
       const newCircle = {
         center: { lat: clickedLat, lng: clickedLng, name: locationName },
-        radius: circleRadius,
+        radius: circleRadius*1000,
         name: locationName,
         id: circles.length // Unique identifier based on the current length of the array
       };
@@ -296,13 +329,17 @@ const AddStoryForm = () => {
 
 
   // TimeResolution Handlers
+  {/* 
   const handleStartDateChange = (date) => {
     setStartTimeStamp(date);
     const startYear = getYear(date);
     const startDecade = startYear - (startYear % 10);
     setDecade(`${startDecade}s`);
   };
+  */}
 
+
+  {/* 
   const handleDecadeChange = (e) => {
     setDecade(e.target.value);
   };
@@ -311,8 +348,11 @@ const AddStoryForm = () => {
   const handleEndDateChange = (date) => {
     setEndTimeStamp(date);
   };
+
+  */}
   
 
+  {/*
   useEffect(() => {
     if (startTimeStamp) {
       const startYear = getYear(startTimeStamp);
@@ -322,6 +362,8 @@ const AddStoryForm = () => {
       setDecade("");
     }
   }, [startTimeStamp]);
+  
+  */}
 
   useEffect(() => {
     if (inputVisible) {
@@ -365,6 +407,87 @@ const AddStoryForm = () => {
     setEditInputValue('');
   };
 
+  //  ----------------------------------------- TIME PICKER COMPONENT ----------------------------------------- //
+  
+  const handleTimeTypeChange = (selectedTimeType) => {
+    setTimeType(selectedTimeType);
+    console.log('Selected Time Type:', timeType);
+  };
+
+  const handleTimeExpressionChange = (selectedTimeExpression) => {
+    setTimeExpression(selectedTimeExpression);
+    console.log('Selected Time Expression:', timeExpression);
+  };
+
+  const handleHourFlagChange = (hourFlag) => {
+    setStartHourFlag(hourFlag);
+    console.log('Selected Hour Flag:', startHourFlag);
+  }
+
+  const handleDateFlagChange = (dateFlag) => {
+    setStartDateFlag(dateFlag);
+    console.log('Selected Date Flag:', startDateFlag);
+  }
+
+  const handleEndHourFlagChange = (endHourFlag) => {
+    setEndHourFlag(endHourFlag);
+    console.log('Selected End Hour Flag:', endHourFlag);
+  }
+
+  const handleEndDateFlagChange = (endDateFlag) => {
+    setEndDateFlag(endDateFlag);
+    console.log('Selected End Date Flag:', endDateFlag);
+  }
+
+  const handleTimeStampStartChange = (timeStampStart) => {
+    setStartTimeStamp(timeStampStart);
+    console.log('Selected TimeStamp Start String:', startTimeStamp);
+  }
+  const handleTimeStampEndChange = (timeStampEnd) => {
+    setEndTimeStamp(timeStampEnd);
+    console.log('Selected TimeStamp End String:', endTimeStamp);
+  }
+  const handleSelectedSeasonStart = (selectedSeasonStart) => {
+    if (selectedSeasonStart !== '') {
+    setSeason(seasonsDict[selectedSeasonStart]);
+    console.log('Selected Season Start:', season);
+    }
+  
+    
+  }
+  const handleSelectedSeasonEnd = (selectedSeasonEnd) => {
+    if (selectedSeasonEnd !== '') {
+    setEndSeason(seasonsDict[selectedSeasonEnd]);
+    console.log('Selected Season End:', endSeason);
+    }
+    
+  }
+
+
+  const handleSelectedDecadeStart = (selectedDecadeStart) => {
+    if (selectedDecadeStart !== null) {
+    setDecade(`${selectedDecadeStart}s`);
+    console.log('Selected Decade Start:', decade);
+    }
+    
+  }
+  const handleSelectedDecadeEnd = (selectedDecadeEnd) => {
+    if (selectedDecadeEnd !== null) {
+    setEndDecade(`${selectedDecadeEnd}s`);
+    console.log('Selected Decade End:', endDecade);
+    }
+    
+  }
+  const handleSelectedDateTimeStart = (selectedDateTimeStart) => {
+
+    setStartTimeStamp(selectedDateTimeStart);
+    console.log('Selected DateTime Start Object:', startTimeStamp);
+  }
+  const handleSelectedDateTimeEnd = (selectedDateTimeEnd) => {
+    setEndTimeStamp(selectedDateTimeEnd);
+    console.log('Selected DateTime End Object:', endTimeStamp);
+  }
+
   return (
     <Space
     direction="vertical"
@@ -377,10 +500,60 @@ const AddStoryForm = () => {
     <form className="add-story-form" onSubmit={handleSubmit}>
       <div className="d-flex">
         <div style={{ flexGrow: 3, minWidth: 800, minHeight: 600 }}> {/* Allow map container to grow and take available space */}
+          <center>
+            Select Location Type (You can add multiple!):<br/>
+            <Segmented className="me-auto" size="large" options={[{label: 'Marker', value: 'marker'}, {label: 'Circle', value: 'circle'}, {label: 'Polygon', value: 'polygon'}, {label: 'Polyline', value: 'polyline'}]} value={currentShape} onChange={setCurrentShape} />
+            {currentShape === 'circle' && (
+              <div className="align-items-center mb-2">
+                <Slider
+                  min={0}
+                  max={99}
+                  onChange={(value) => setCircleRadius(value)}
+                  value={circleRadius}
+                  step={0.01}
+                />
+                <InputNumber
+                  addonBefore="Set Radius"
+                  min={0}
+                  max={9999}
+                  size="large"
+                  formatter={(value) => `${value}km`}
+                  parser={(value) => value.replace('km', '')}
+                  style={{
+                    width: "200px", margin: "10px"
+                  }}
+                  value={circleRadius}
+                  onChange={(value) => setCircleRadius(value)}
+                />
+              </div>
+            )}
+            {(currentShape === 'polygon' || currentShape === 'polyline') && (
+              <div className="align-items-center mb-2">
+              Please select points and approve after finished
+              <button
+                type="button"
+                className="btn btn-primary"
+                style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white",  border: "none", margin: "10px" }}
+                onClick={finishShape}
+                disabled={(currentShape === 'polyline' && tempPoints.length < 2) || (currentShape === 'polygon' && tempPoints.length < 3)}
+              >
+                Approve
+              </button>
+              </div>
+            )}
+          </center>
+
           <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
             libraries={["places"]}>
+                      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Gölge
+        borderRadius: "8px", // Köşeleri yuvarlama
+        padding: "10px", // İçeriği çerçeve içine yerleştirme, // Arka plan rengi
+        }}>
             <GoogleMap
-              mapContainerStyle={mapContainerStyle}
+              mapContainerStyle={{ width: "90%", height: "450px" }}
               center={center}
               zoom={10}
               onClick={handleMapClick}
@@ -440,37 +613,15 @@ const AddStoryForm = () => {
                 ) : null
               )}
             </GoogleMap>
+            </div>
+            <div className="d-flex justify-content-center mt-3">
+    {/* Boşluk bırakmak için */}
+    <span style={{ marginRight: '5px' }}></span>
+    </div>
             <StandaloneSearchBox onLoad={onSearchBoxLoad} onPlacesChanged={onPlacesChanged}>
-              <input type="text" placeholder="Search" style={{ width: "100%", height: "40px" }} />
+              <input type="text" placeholder="Search" style={{ width: "100%", height: "40px" }} className="form-control"/>
             </StandaloneSearchBox>
           </LoadScript>
-        </div>
-        <div className="map-controls d-flex flex-column align-items-left-b"
-          style={{ width: 'auto', height: 'auto', marginLeft: '5px' }}> {/* Added margin here */}
-          <button type="button" className="btn btn-primary mb-2" style={{ width: "50px" }} onClick={() => setCurrentShape('marker')}>
-            <i class="bi bi-geo-alt-fill"></i> {/* Marker Icon */}
-          </button>
-          <div class="d-flex align-items-center mb-2">
-            <button type="button" className="btn btn-primary " style={{ width: "50px" }} onClick={() => setCurrentShape('circle')}>
-              <i class="bi bi-circle"></i> {/* Circle Icon */}
-            </button>
-            <input type="number" className="form-control"
-              style={{ width: "150px", marginLeft: "5px" }}
-              onChange={(e) => setCircleRadius(Number(e.target.value))}
-              placeholder="Radius (m)"
-            >
-            </input>
-          </div>
-
-          <button type="button" className="btn btn-primary mb-2" style={{ width: "50px" }} onClick={() => setCurrentShape('polygon')}>
-            <i className="bi bi-hexagon"></i> {/* Polygon Icon */}
-          </button>
-          <button type="button" className="btn btn-primary mb-2" style={{ width: "50px" }} onClick={() => setCurrentShape('polyline')}>
-            <i className="bi bi-arrow-right"></i> {/* Polyline Icon */}
-          </button>
-          <button type="button" className="btn btn-primary mb-2" style={{ width: "50px" }} onClick={finishShape} disabled={tempPoints.length < 2}>
-            <i className="bi bi-check-lg"></i> {/* Finish Icon */}
-          </button>
         </div>
       </div>
 
@@ -536,7 +687,7 @@ const AddStoryForm = () => {
         Title:
         <input
           type="text"
-          className="add-story-input"
+          className="form-control"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required={true}
@@ -544,7 +695,7 @@ const AddStoryForm = () => {
       </label>
       <br />
       <div className="add-story-tags">
-        <label className="add-story-label">Tags:</label>
+        <label className="label">Tags:</label>
         <div>
           {tags.map((tag, index) => {
             if (editInputIndex === index) {
@@ -618,7 +769,24 @@ const AddStoryForm = () => {
       </label>
       
         
-        
+      <DateTimerPicker 
+      onTimeTypeSelect = {handleTimeTypeChange}
+      onTimeExpressionSelect = {handleTimeExpressionChange}
+      onHourFlagSelect = {handleHourFlagChange}
+      onDateFlagSelect = {handleDateFlagChange}
+      onTimeStampStartSelect = {handleTimeStampStartChange}
+      onTimeStampEndSelect = {handleTimeStampEndChange}
+      onSelectedSeasonStart = {handleSelectedSeasonStart}
+      onSelectedSeasonEnd = {handleSelectedSeasonEnd}
+      onSelectedDecadeStart = {handleSelectedDecadeStart}
+      onSelectedDecadeEnd = {handleSelectedDecadeEnd}
+      onSelectedDateTimeStart = {handleSelectedDateTimeStart}
+      onSelectedDateTimeEnd = {handleSelectedDateTimeEnd}
+      onEndHourFlagSelect = {handleEndHourFlagChange}
+      onEndDateFlagSelect = {handleEndDateFlagChange}
+      />
+
+{/* 
       <label className="add-story-label">
 
 
@@ -732,13 +900,15 @@ Time Resolution:
       </select>
     </label>
   </>
-)}
+)} 
+*/}
 
 
-
-      <button type="submit" className="add-story-button">
+<div className="d-flex justify-content-center mt-3">
+      <button type="submit" className="btn btn-primary">
         Add Story
       </button>
+    </div>
     </form>
     </Space>
   );

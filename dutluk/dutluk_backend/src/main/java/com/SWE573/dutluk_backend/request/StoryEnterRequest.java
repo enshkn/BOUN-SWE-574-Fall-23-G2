@@ -5,13 +5,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
 @Getter
 @Setter
-public class StoryCreateRequest {
+public class StoryEnterRequest {
     private String text;
 
 
@@ -31,9 +30,22 @@ public class StoryCreateRequest {
 
     private String season;
 
+    private String endSeason;
+
     private String decade;
 
-    private Integer startHourFlag;
+    private String endDecade;
 
-    private Integer endHourFlag;
+
+    private Integer startHourFlag = -1;// if 0, no hour, if 1, hour exists
+
+    private Integer endHourFlag = -1;// if 0, no hour, if 1, hour exists
+
+    private Integer startDateFlag = -1;// if 1 -> yyyy, if 2 -> MM/yyyy, if 3 dd/MM/yyyy
+
+    private Integer endDateFlag = -1;;// if 1 -> yyyy, if 2 -> MM/yyyy, if 3 dd/MM/yyyy
+
+    private String timeType; //takes the value "time_point" or "time_interval";
+
+    private String timeExpression;// takes the value "moment","day","month+season","year","decade" or "decade+season"
 }
