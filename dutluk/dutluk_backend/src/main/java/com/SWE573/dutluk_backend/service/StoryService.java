@@ -753,6 +753,6 @@ public class StoryService {
 
     // to be updated based on the verbal expression logic
     public static String generateVerbalExpression(Story story) {
-        return "Placeholder for verbalExpression generation and viewing for story " + story.getTitle() + "!";
+        return "Placeholder for verbalExpression generation and viewing for story with the id" + story.getId() + " !";
     }
 }
