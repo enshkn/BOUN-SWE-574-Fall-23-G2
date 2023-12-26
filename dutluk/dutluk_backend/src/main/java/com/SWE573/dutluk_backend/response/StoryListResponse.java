@@ -87,6 +87,6 @@ public class StoryListResponse {
         this.decade = StoryService.getDecadeString(story);
         this.endDecade = StoryService.getEndDecadeString(story);
         this.percentage = story.getPercentage();
-        this.verbalExpression = story.getVerbalExpression();
+        this.verbalExpression = StoryService.generateVerbalExpression(story);
     }
 }

@@ -87,7 +87,7 @@ public class StoryResponse{
         this.percentage = story.getPercentage();
         this.timeType = story.getTimeType();
         this.timeExpression = story.getTimeExpression();
-        this.verbalExpression = story.getVerbalExpression();
+        this.verbalExpression = StoryService.generateVerbalExpression(story);
     }
 }
 

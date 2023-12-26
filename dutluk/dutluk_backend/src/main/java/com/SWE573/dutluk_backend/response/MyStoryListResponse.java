@@ -98,7 +98,7 @@ public class MyStoryListResponse {
         this.endSeason = story.getEndSeason();
         this.decade = story.getDecade();
         this.endDecade = story.getEndDecade();
-        this.verbalExpression = story.getVerbalExpression();
+        this.verbalExpression = StoryService.generateVerbalExpression(story);
 
     }
 
