@@ -97,8 +97,8 @@ function App() {
               <Nav.Link href="/story/all-stories" className="nav-link">
                 All Stories
               </Nav.Link>
-              <Nav.Link href="/story/search" className="nav-link">
-                Search
+              <Nav.Link href="/story/explore" className="nav-link">
+                Explore
               </Nav.Link>
               <Nav.Link href="/story/timeline-search" className="nav-link">
                 Timeline Search
@@ -178,7 +178,9 @@ function App() {
         <Route path="/story/all-stories" element={<AllStories />} />
         <Route path="/story/:id" element={<StoryDetails />} />
         <Route path="/user/:id" element={<Profile />} />
-        <Route path="/story/search" element={<StorySearch />} />
+        <Route path="/story/explore" element={<StorySearch />} />
+        {/* Explore was previous search feature, sisnce it applies all filters individualy 
+        and add them to same list, wording is changed from "search" to "explore" */}
         <Route path="/story/timeline-search" element={<TimelineSearch />} />
         <Route path="/story/search/label/:label" element={<LabelSearch />} />
         <Route path="/story/recommended" element={<Recommended />} />
