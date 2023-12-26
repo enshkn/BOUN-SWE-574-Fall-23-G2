@@ -225,6 +225,7 @@ async def process_recommend_story(data: Recommend):
         excluded_ids = generate_ids_with_prefix(vector_ids=excluded_ids, vector_type=vector_type)
         # fetch the user vector with its vector_id
         vector = single_vector_fetcher(pinecone_index=index, vector_id=user_id)
+        print("this is test for single_vector_fetcher function:", vector)
         # parse ids of the recommended story and scores
         ids, scores = story_recommender(pinecone_index=index, user_vector=vector, excluded_ids=excluded_ids,
                                         vector_type=vector_type)

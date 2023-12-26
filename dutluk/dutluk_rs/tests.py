@@ -136,10 +136,6 @@ class TestTokenizer(unittest.TestCase):
         self.assertEqual(result, expected_result)
 
 
-# upsert
-
-# upsert for empty lists
-
 class TestWeightedVectorising(unittest.TestCase):
     def test_weighted_average(self):
         # Test with valid inputs to calculate the weighted average vector
@@ -170,18 +166,6 @@ class TestWeightedVectorising(unittest.TestCase):
         with self.assertRaises(Exception):
             weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector)
 
-
-# update_story_vector
-
-# update_user_vector
-
-# user_like_unlike_parser
-
-# vector_fetcher
-
-# story_user_vectors_fetcher
-
-# single_vector_fetcher
 
 class TestListToNpArray(unittest.TestCase):
     def test_convert_to_nparray(self):
@@ -287,9 +271,6 @@ class TestRecommendationParser(unittest.TestCase):
         result = recommendation_parser(recommendation_data)
         self.assertEqual(result, expected_result)
 
-# user_recommender
-
-# story_recommender
 
 class TestCreateEmptyFloatList(unittest.TestCase):
     def test_empty_list_creation(self):
@@ -323,6 +304,28 @@ class TestTokenCounter(unittest.TestCase):
 
         result = token_counter(text_vectors, tag_vectors)
         self.assertEqual(result, 0)  # Expected result due to TypeError
+
+# ------------------------------- TESTED WITH POSTMAN ------------------------------- #
+
+# upsert
+
+# update_user_vector done
+
+# user_like_unlike_parser done
+
+# vector_fetcher done
+
+# single_vector_fetcher
+
+# user_recommender
+
+# story_recommender
+
+# upsert for empty lists - not using
+
+# update_story_vector - not using
+
+# story_user_vectors_fetcher - not using
 
 
 if __name__ == '__main__':
