@@ -16,11 +16,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
             calendar.set(2023, Calendar.JANUARY, 1, 15, 30);
             Date date = calendar.getTime();
 
-            String resultFull = DateService.dateToStringBasedOnFlags(date, 1, null);
+            String resultFull = DateService.dateToStringBasedOnFlags(date, 1, 3);
             String expectedResultFull = "01/01/2023 15:30";
             assertEquals(expectedResultFull, resultFull);
 
-            String resultDateOnly = DateService.dateToStringBasedOnFlags(date, 0, null);
+            String resultDateOnly = DateService.dateToStringBasedOnFlags(date, 0, 3);
             String expectedResultDateOnly = "01/01/2023";
             assertEquals(expectedResultDateOnly, resultDateOnly);
 
