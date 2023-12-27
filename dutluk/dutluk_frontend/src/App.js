@@ -31,7 +31,11 @@ function App() {
   const [size] = useState(600);
 
   useEffect(() => {
-    axios
+    if (sessionStorage.getItem('currentUserId')!==null) {
+      setLoggedIn(true);
+    }
+    else {
+      axios
       .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile`, {
         withCredentials: true,
       })
@@ -40,7 +44,8 @@ function App() {
       })
       .catch((error) => {
         setLoggedIn(false);
-      });
+      });    }
+
   }, []);
 
   const handleLogout = () => {
