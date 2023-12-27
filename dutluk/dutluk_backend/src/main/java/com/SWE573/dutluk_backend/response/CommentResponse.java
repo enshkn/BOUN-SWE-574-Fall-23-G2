@@ -33,6 +33,6 @@ public class CommentResponse {
         this.user = comment.getUser();
         this.story = comment.getStory();
         this.likes = comment.getLikes();
-        this.likeSize = comment.getLikes().size();
+        this.likeSize = comment.getLikeSize();
     }
 }
