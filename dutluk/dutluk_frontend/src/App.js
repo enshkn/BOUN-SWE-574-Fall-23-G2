@@ -86,21 +86,63 @@ function App() {
           </Navbar.Brand>
           {loggedIn ? (
             <>
-              <Nav.Link href="/story/followings" className="nav-link">
-                Story Feed
-              </Nav.Link>
-              <Nav.Link href="/story/recommended" className="nav-link">
-                Recommended Stories
-              </Nav.Link>
-              <Nav.Link href="/story/all-stories" className="nav-link">
-                All Stories
-              </Nav.Link>
-              <Nav.Link href="/story/explore" className="nav-link">
-                Explore
-              </Nav.Link>
-              <Nav.Link href="/story/timeline-search" className="nav-link">
-                Timeline Search
-              </Nav.Link>
+              <NavDropdown
+                title="Story"
+                id="basic-nav-dropdown"
+                className="justify-content-end"
+              >
+                <NavDropdown.Item
+                  href="/story/followings" 
+                  className="justify-content-end"
+                >
+                  Story Feed
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/recommended" 
+                  className="justify-content-end"
+                >
+                  Recommended Stories
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/all-stories" 
+                  className="justify-content-end"
+                >
+                  All Stories
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/saved-stories"
+                  className="justify-content-end"
+                >
+                  Saved Stories
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item
+                  href="/story/add-story"
+                  className="justify-content-end"
+                >
+                  Add Story
+                </NavDropdown.Item>
+              </NavDropdown>
+
+              <NavDropdown
+                title="Search"
+                id="basic-nav-dropdown"
+                className="justify-content-end"
+              >
+                <NavDropdown.Item
+                  href="/story/explore" 
+                  className="justify-content-end"
+                >
+                  Explore
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/timeline-search" 
+                  className="justify-content-end"
+                >
+                  Timeline Search
+                </NavDropdown.Item>
+              </NavDropdown>
+
               <NavDropdown
                 title="My account"
                 id="basic-nav-dropdown"
@@ -111,18 +153,6 @@ function App() {
                   className="justify-content-end"
                 >
                   My Profile
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  href="/story/saved-stories"
-                  className="justify-content-end"
-                >
-                  Saved Stories
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  href="/story/add-story"
-                  className="justify-content-end"
-                >
-                  Add Story
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item
