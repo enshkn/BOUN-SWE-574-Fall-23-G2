@@ -31,12 +31,12 @@ public class StoryController {
     @Autowired
     StoryService storyService;
     @Autowired
-    private UserService userService;
+    UserService userService;
     @Autowired
     RecommendationService recService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addStory(@RequestBody StoryEnterRequest storyEnterRequest, HttpServletRequest request) throws ParseException, IOException {
+    public ResponseEntity<?> addStory(@RequestBody StoryEnterRequest storyEnterRequest, HttpServletRequest request) throws IOException {
         User user = userService.validateTokenizedUser(request);
         return IntegrationService.mobileCheck(request,storyService.createStory(user, storyEnterRequest));
     }
@@ -49,7 +49,6 @@ public class StoryController {
 
     @GetMapping("/delete/{storyId}")
     public ResponseEntity<?> deleteStory(@PathVariable Long storyId, HttpServletRequest request) {
-        User tokenizedUser = userService.validateTokenizedUser(request);
         String deletedStory = storyService.deleteByStoryId(storyService.getStoryByStoryId(storyId));
         return IntegrationService.mobileCheck(request,deletedStory);
 
@@ -61,7 +60,7 @@ public class StoryController {
     }
 
     @PostMapping("/edit/{storyId}")
-    public ResponseEntity<?> editStory(@PathVariable Long storyId, @RequestBody StoryEnterRequest storyEditRequest, HttpServletRequest request) throws ParseException, IOException {
+    public ResponseEntity<?> editStory(@PathVariable Long storyId, @RequestBody StoryEnterRequest storyEditRequest, HttpServletRequest request) throws IOException {
         User tokenizedUser = userService.validateTokenizedUser(request);
         StoryResponse editedStory = storyAsStoryResponse(storyService.editStory(storyEditRequest,tokenizedUser,storyId));
         return IntegrationService.mobileCheck(request,editedStory);
@@ -79,14 +78,14 @@ public class StoryController {
     }
 
     @GetMapping("/following")
-    public ResponseEntity<?> findAllStoriesfromFollowings(HttpServletRequest request){
+    public ResponseEntity<?> findAllStoriesFromFollowings(HttpServletRequest request) {
         User tokenizedUser = userService.validateTokenizedUser(request);
         List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyService.findFollowingStories(tokenizedUser));
         return IntegrationService.mobileCheck(request,storyListResponse);
     }
 
     @GetMapping("/fromUser")
-    public ResponseEntity<?> findAllStoriesfromUser(HttpServletRequest request){
+    public ResponseEntity<?> findAllStoriesFromUser(HttpServletRequest request) {
         User user = userService.validateTokenizedUser(request);
         List<MyStoryListResponse> storyList = storyListAsMyStoryListResponse(storyService.findByUserIdOrderByIdDesc(user.getId()));
         return IntegrationService.mobileCheck(request,storyList);

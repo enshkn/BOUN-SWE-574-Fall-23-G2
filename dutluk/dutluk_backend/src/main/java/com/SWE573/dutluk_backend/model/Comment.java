@@ -35,4 +35,9 @@ public class Comment extends BaseEntity{
     @Column
     private Set<Long> likes = new HashSet<>();
 
+    private Integer likeSize;
+
+    public Integer getLikeSize() {
+        return likes.size();
+    }
 }

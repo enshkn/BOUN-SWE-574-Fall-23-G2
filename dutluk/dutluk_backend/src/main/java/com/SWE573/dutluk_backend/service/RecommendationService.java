@@ -67,12 +67,12 @@ public class RecommendationService {
                         .tags(story.getLabels())
                         .text(StoryService.removeHtmlFormatting(story.getText()))
                         .build();
-        ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/vectorize-edit", vectorizeRequest,String.class);
+        restTemplate.postForEntity(recUrl + "/vectorize-edit", vectorizeRequest, String.class);
         return CompletableFuture.completedFuture("Data sent to karadut");
     }
 
     @Async
-    public CompletableFuture<String> likedStory(Story story, User user, Integer likedStorySize) throws JsonProcessingException {
+    public CompletableFuture<String> likedStory(Story story, User user, Integer likedStorySize) {
         RecStoryLikeOrDislikeRequest likedRequest =
                 RecStoryLikeOrDislikeRequest.builder()
                         .type("story")
@@ -81,7 +81,7 @@ public class RecommendationService {
                         .userWeight(likedStorySize)
                         .build();
         try {
-            ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-liked", likedRequest,String.class);
+            restTemplate.postForEntity(recUrl + "/story-liked", likedRequest, String.class);
             user.setRecommendedStoriesMap(recommendStory(user));
             if(user.getRecommendedStoriesMap() != null){
                 return CompletableFuture.completedFuture("Karadut has sent the relevant stories");
@@ -93,7 +93,7 @@ public class RecommendationService {
     }
 
     @Async
-    public CompletableFuture<String> dislikedStory(Story story, User user, Integer likedStorySize) throws JsonProcessingException {
+    public CompletableFuture<String> dislikedStory(Story story, User user, Integer likedStorySize) {
         RecStoryLikeOrDislikeRequest dislikedRequest =
                 RecStoryLikeOrDislikeRequest.builder()
                         .type("story")
@@ -102,7 +102,7 @@ public class RecommendationService {
                         .userWeight(likedStorySize)
                         .build();
         try {
-            ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/story-liked", dislikedRequest,String.class);
+            restTemplate.postForEntity(recUrl + "/story-liked", dislikedRequest, String.class);
             user.setRecommendedStoriesMap(recommendStory(user));
             if(user.getRecommendedStoriesMap()!= null){
                 return CompletableFuture.completedFuture("Karadut has sent the relevant stories");
@@ -138,10 +138,10 @@ public class RecommendationService {
             return user.getRecommendedStoriesMap();
 
         } catch (HttpClientErrorException e) {
-            System.err.println("Client error: " + e.getRawStatusCode() + " - " + e.getResponseBodyAsString());
+            System.err.println("Client error: " + e.getStatusCode().value() + " - " + e.getResponseBodyAsString());
 
         } catch (HttpServerErrorException e) {
-            System.err.println("Server error: " + e.getRawStatusCode() + " - " + e.getResponseBodyAsString());
+            System.err.println("Server error: " + e.getStatusCode().value() + " - " + e.getResponseBodyAsString());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -155,25 +155,24 @@ public class RecommendationService {
             for (int i = 0; i < recResponse.getIds().size(); i++) {
                 Long id = recResponse.getIds().get(i);
                 Double score = recResponse.getScores().get(i);
-                long scoreOutofHundred = Math.round(score * 100);
-                recommendedStoriesMap.put(id, (int)scoreOutofHundred);
+                long scoreOutOfHundred = Math.round(score * 100);
+                recommendedStoriesMap.put(id, (int) scoreOutOfHundred);
             }
         }
         return recommendedStoriesMap;
     }
 
 
-    public Set<Long> recommendUser(Long userId, Set<Long> excludedIds){
+    /*public Set<Long> recommendUser(Long userId, Set<Long> excludedIds){
         RecStoryOrUserRequest recStoryRequest =
                 RecStoryOrUserRequest.builder()
                         .userId(userId.toString())
                         .excludedIds(excludedIds)
                         .vector_type("user")
                         .build();
-        ResponseEntity<String> response = restTemplate.postForEntity(recUrl + "/recommend-user", recStoryRequest,String.class);
-        //return response.getBody();
+        restTemplate.postForEntity(recUrl + "/recommend-user", recStoryRequest,String.class);
         return null;
-    }
+    }*/
 
     @Async
     public CompletableFuture<String> deleteStoryRequest(Long storyId){

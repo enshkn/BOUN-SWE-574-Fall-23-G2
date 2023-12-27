@@ -25,11 +25,14 @@ public class CommentResponse {
 
     private Set<Long> likes;
 
+    private Integer likeSize;
+
     public CommentResponse(Comment comment) {
         this.createdAt = timeAgo(comment.getCreatedAt());
         this.text = comment.getText();
         this.user = comment.getUser();
         this.story = comment.getStory();
         this.likes = comment.getLikes();
+        this.likeSize = comment.getLikes().size();
     }
 }

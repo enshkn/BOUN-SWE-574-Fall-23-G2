@@ -2,14 +2,12 @@ package com.SWE573.dutluk_backend.request;
 
 import com.SWE573.dutluk_backend.model.Location;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 public class StoryEnterRequest {
     private String text;
 

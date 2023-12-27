@@ -26,13 +26,13 @@ import static com.SWE573.dutluk_backend.service.CommentService.commentToCommentR
 public class CommentController {
 
     @Autowired
-    private UserService userService;
+    UserService userService;
 
     @Autowired
-    private StoryService storyService;
+    StoryService storyService;
 
     @Autowired
-    private CommentService commentService;
+    CommentService commentService;
 
 
     @PostMapping("/add")

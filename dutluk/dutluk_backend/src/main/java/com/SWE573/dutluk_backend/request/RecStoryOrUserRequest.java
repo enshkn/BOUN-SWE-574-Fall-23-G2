@@ -1,16 +1,14 @@
 package com.SWE573.dutluk_backend.request;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Builder
-@Getter
-@Setter
-public class RecStoryOrUserRequest { // reccommend-story && recommend-user
+@Data
+public class RecStoryOrUserRequest { // recommend-story && recommend-user
 
     private String userId; // must be changed to string
 
