@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,6 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         void dateToStringBasedOnFlags() {
             Calendar calendar = Calendar.getInstance();
             calendar.set(2023, Calendar.JANUARY, 1, 15, 30);
+
+
+            TimeZone tz = TimeZone.getTimeZone("Europe/Istanbul");
+            calendar.setTimeZone(tz);
+
+
             Date date = calendar.getTime();
 
             String resultFull = DateService.dateToStringBasedOnFlags(date, 1, 3);
