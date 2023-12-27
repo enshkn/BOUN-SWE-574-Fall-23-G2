@@ -145,7 +145,7 @@ const StoryList = ({ story }) => {
                                 onClick={() => handleDeleteStory(story.id)}
                             >Delete</button>)
                         }
-                        <span>{story.likes ? story.likes.length : 0}❤️</span>
+                        <span>{story.likeSize ? story.likeSize : 0}❤️</span>
                         <span>{story.comments ? story.comments.length : 0}💬</span>
                     </div>
                 </div>
