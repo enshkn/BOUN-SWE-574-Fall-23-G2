@@ -86,8 +86,8 @@ public class MyStoryListResponse {
         this.locations = story.getLocations();
         this.startTimeStamp = StoryService
                 .dateToStringBasedOnFlags(
-                        story.getStartTimeStamp()
-                        , story.getStartHourFlag(),
+                        story.getStartTimeStamp(),
+                        story.getStartHourFlag(),
                         story.getStartDateFlag());
         this.endTimeStamp = StoryService
                 .dateToStringBasedOnFlags(
