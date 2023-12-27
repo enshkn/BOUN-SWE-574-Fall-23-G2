@@ -39,6 +39,8 @@ public class StoryService {
     @Autowired
     RecommendationService recService;
 
+
+
     public List<Story> findAll(){
         List<Story> storyList = storyRepository.findAll();
         return (storyList != null) ? storyList : Collections.emptyList();
@@ -49,7 +51,7 @@ public class StoryService {
         return (!storyList.isEmpty()) ? storyList : Collections.emptyList();
     }
 
-    public Story createStory(User foundUser, StoryEnterRequest storyEnterRequest) throws ParseException, IOException {
+    public Story createStory(User foundUser, StoryEnterRequest storyEnterRequest) throws IOException {
         Story createdStory = Story.builder()
                 .title(storyEnterRequest.getTitle())
                 .labels(storyEnterRequest.getLabels())
@@ -148,8 +150,9 @@ public class StoryService {
         double minLatitude, maxLatitude, minLongitude, maxLongitude;
         minLatitude = latitude - (radius / 111.0);
         maxLatitude = latitude + (radius / 111.0);
-        minLongitude = longitude - (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
-        maxLongitude = longitude + (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
+        double longDegreeDiffForRadius = radius / (111.0 * Math.cos(Math.toRadians(latitude)));
+        minLongitude = longitude - longDegreeDiffForRadius;
+        maxLongitude = longitude + longDegreeDiffForRadius;
         if (query != null) {
             return storyRepository.findByTitleContainingIgnoreCaseAndLocations_LatitudeBetweenAndLocations_LongitudeBetween(
                     query, minLatitude, maxLatitude, minLongitude, maxLongitude);
@@ -163,8 +166,9 @@ public class StoryService {
             double minLatitude, maxLatitude, minLongitude, maxLongitude;
             minLatitude = latitude - (radius / 111.0);
             maxLatitude = latitude + (radius / 111.0);
-            minLongitude = longitude - (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
-            maxLongitude = longitude + (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
+            double longDegreeDiffForRadius = 111.0 * Math.cos(Math.toRadians(latitude));
+            minLongitude = longitude - (radius / longDegreeDiffForRadius);
+            maxLongitude = longitude + (radius / longDegreeDiffForRadius);
             List<Story> storyList = storyRepository.findByLocations_LatitudeBetweenAndLocations_LongitudeBetween(
                     minLatitude, maxLatitude, minLongitude, maxLongitude);
             if(storyList.isEmpty()){
@@ -182,8 +186,7 @@ public class StoryService {
         return results.stream().toList();
     }
     public List<Story> searchStoriesWithTitle(String title) {
-        Set<Story> results = new HashSet<>();
-        results.addAll(storyRepository.findByTitleContainingIgnoreCase(title));
+        Set<Story> results = new HashSet<>(storyRepository.findByTitleContainingIgnoreCase(title));
         return results.stream().toList();
     }
 
@@ -196,8 +199,7 @@ public class StoryService {
     }
 
     public List<Story> searchStoriesWithDecade(String decade){
-        Set<Story> results = new HashSet<>();
-        results.addAll(storyRepository.findByDecadeContainingIgnoreCase(decade));
+        Set<Story> results = new HashSet<>(storyRepository.findByDecadeContainingIgnoreCase(decade));
         try {
             Date startDecadeDate = convertToStartDate(decade);
             Date endDecadeDate = convertToEndDate(decade);
@@ -284,7 +286,7 @@ public class StoryService {
 
 
 
-    public Story enterStory(StoryEnterRequest storyEditRequest,Story foundStory) throws ParseException, IOException {
+    public Story enterStory(StoryEnterRequest storyEditRequest,Story foundStory) throws IOException {
 
         foundStory.setLabels(storyEditRequest.getLabels());
         foundStory.setTitle(storyEditRequest.getTitle());
@@ -310,7 +312,7 @@ public class StoryService {
         return foundStory;
     }
 
-    public Story editStory(StoryEnterRequest request, User user, Long storyId) throws ParseException, IOException {
+    public Story editStory(StoryEnterRequest request, User user, Long storyId) throws IOException {
         Story story = getStoryByStoryId(storyId);
         if(Objects.equals(story.getUser().getId(),user.getId())){
             Story enteredStory = enterStory(request,story);
@@ -485,48 +487,40 @@ public class StoryService {
             String season,
             String endSeason) throws ParseException {
         Set<Story> storySet = new HashSet<>();
-        if(query != null){
-            if(!query.equalsIgnoreCase("") && !query.equalsIgnoreCase("null")){
-                storySet.addAll(searchStoriesWithQuery(query));
-            }
+        if(isStringApplicable(query)){
+            storySet.addAll(searchStoriesWithQuery(query));
         }
         if(latitude != null && longitude != null && (radius != null)){
-            if (query != null && !query.equalsIgnoreCase("null")){
+            if (isStringApplicable(query)){
                 storySet.addAll(searchStoriesWithLocation(query,radius,latitude,longitude));
             }
             else{
                 storySet.addAll(searchStoriesWithLocationOnly(radius,latitude,longitude));
             }
         }
-        if(startTimeStamp != null && !startTimeStamp.equalsIgnoreCase("null")){
-            if(endTimeStamp != null && !endTimeStamp.equalsIgnoreCase("null")){
+        if(isStringApplicable(startTimeStamp)){
+            if(isStringApplicable(endTimeStamp)){
                 storySet.addAll(searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
             }
             else{
                 storySet.addAll(searchStoriesWithSingleDate(startTimeStamp));
             }
         }
-        if(decade != null && !decade.equalsIgnoreCase("null")){
-            if(endDecade != null && !endDecade.equalsIgnoreCase("null")){
-                storySet.addAll(searchStoriesWithMultipleDecades(decade,endDecade));
-            }
-            else{
-                storySet.addAll(searchStoriesWithDecade(decade));
-            }
+        if(isStringApplicable(decade)){
+            storySet.addAll(searchStoriesWithMultipleDecades(decade,endDecade));
+        }
+        else{
+            storySet.addAll(searchStoriesWithDecade(decade));
 
         }
-        if(season != null && !season.equalsIgnoreCase("null")){
-            if(endSeason != null && !endSeason.equalsIgnoreCase("null")){
+        if(isStringApplicable(season)){
+            if(isStringApplicable(endSeason)){
                 storySet.addAll(searchStoriesWithMultipleSeasons(season,endSeason));
             }
             else{
                 storySet.addAll(searchStoriesWithSeason(season));
             }
 
-        }
-
-        if(storySet.isEmpty()){
-            return new ArrayList<>();
         }
         return storySet.stream().toList();
     }
@@ -543,35 +537,28 @@ public class StoryService {
             String endDecade,
             String season,
             String endSeason) throws ParseException {
-        Set<Story> titleSet = new HashSet<>();
-        Set<Story> labelsSet = new HashSet<>();
-        Set<Story> locationSet = new HashSet<>();
         Set<Story> dateSet = new HashSet<>();
         Set<Story> decadeSet = new HashSet<>();
         Set<Story> seasonSet = new HashSet<>();
         Set<Story> storySet = new HashSet<>(findAll());
-        if(title != null){
-            if(!title.equalsIgnoreCase("") && !title.equalsIgnoreCase("null")){
-                titleSet.addAll(searchStoriesWithTitle(title));
-                if(searchStoriesWithTitle(title) != null){
-                    storySet.retainAll(titleSet);
-                }
+        if(isStringApplicable(title)){
+            Set<Story> titleSet = new HashSet<>(searchStoriesWithTitle(title));
+            if(searchStoriesWithTitle(title) != null){
+                storySet.retainAll(titleSet);
             }
         }
-        if(labels != null){
-            if(!labels.equalsIgnoreCase("") && !labels.equalsIgnoreCase("null")){
-                labelsSet.addAll(searchStoriesWithLabel(labels));
-                if(searchStoriesWithTitle(title) != null){
-                    storySet.retainAll(labelsSet);
-                }
+        if(isStringApplicable(labels)){
+            Set<Story> labelsSet = new HashSet<>(searchStoriesWithLabel(labels));
+            if(searchStoriesWithLabel(labels) != null){
+                storySet.retainAll(labelsSet);
             }
         }
         if(latitude != null && longitude != null && radius != null){
-            locationSet.addAll(searchStoriesWithLocationOnly(radius,latitude,longitude));
+            Set<Story> locationSet = new HashSet<>(searchStoriesWithLocationOnly(radius, latitude, longitude));
             storySet.retainAll(locationSet);
         }
-        if(startTimeStamp != null && !startTimeStamp.equalsIgnoreCase("null")){
-            if(endTimeStamp != null && !endTimeStamp.equalsIgnoreCase("null")){
+        if(isStringApplicable(startTimeStamp)){
+            if(isStringApplicable(endTimeStamp)){
                 dateSet.addAll(searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
                 if(searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp) != null){
                     storySet.retainAll(dateSet);
@@ -584,8 +571,8 @@ public class StoryService {
                 }
             }
         }
-        if(decade != null && !decade.equalsIgnoreCase("null")){
-            if(endDecade != null && !endDecade.equalsIgnoreCase("null")){
+        if(isStringApplicable(decade)){
+            if(isStringApplicable(endDecade)){
                 decadeSet.addAll(searchStoriesWithMultipleDecades(decade, endDecade));
                 if(searchStoriesWithMultipleDecades(decade,endDecade) != null){
                     storySet.retainAll(decadeSet);
@@ -599,8 +586,8 @@ public class StoryService {
             }
 
         }
-        if(season != null && !season.equalsIgnoreCase("null")){
-            if(endSeason != null && !endSeason.equalsIgnoreCase("null")){
+        if(isStringApplicable(season)){
+            if(isStringApplicable(endSeason)){
                 seasonSet.addAll(searchStoriesWithMultipleSeasons(season,endSeason));
             }
             else{
@@ -632,6 +619,10 @@ public class StoryService {
     // to be updated based on the verbal expression logic
     public static String generateVerbalExpression(Story story) {
         return "Placeholder for verbalExpression generation and viewing for story with the id " + story.getId() + " !";
+    }
+
+    public Boolean isStringApplicable(String value){
+        return value != null && !value.equalsIgnoreCase("") && !value.equalsIgnoreCase("null");
     }
 
 
