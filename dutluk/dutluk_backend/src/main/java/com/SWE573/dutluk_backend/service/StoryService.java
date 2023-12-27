@@ -17,8 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.SWE573.dutluk_backend.service.DateService.*;
 
 @Service
 public class StoryService {
@@ -98,8 +99,7 @@ public class StoryService {
     }
 
     public Story getStoryByStoryIdWithPercentage(Long storyId,User user) {
-        Story story = addPercentageToStory(getStoryByStoryId(storyId),user.getRecommendedStoriesMap().get(storyId));
-        return story;
+        return addPercentageToStory(getStoryByStoryId(storyId),user.getRecommendedStoriesMap().get(storyId));
     }
 
     public List<Story> findFollowingStories(User foundUser) {
@@ -249,20 +249,15 @@ public class StoryService {
 
     public List<Story> searchStoriesWithSingleDate(String startTimeStamp) throws ParseException {
         Date formattedStartDate = stringToDate(startTimeStamp);
-        Date formattedEndDate;
-        switch (startTimeStamp.length()) {
-            case 4: // yyyy
-                formattedEndDate = incrementDateByOneYear(formattedStartDate);
-                break;
-            case 7: // yyyy-MM
-                formattedEndDate = incrementDateByOneMonth(formattedStartDate);
-                break;
-            case 10: // yyyy-MM-dd
-                formattedEndDate = incrementDateByOneDay(formattedStartDate);
-                break;
-            default:
-                throw new ParseException("Invalid date format", 0);
-        }
+        Date formattedEndDate = switch (startTimeStamp.length()) {
+            case 4 -> // yyyy
+                    incrementDateByOneYear(formattedStartDate);
+            case 7 -> // yyyy-MM
+                    incrementDateByOneMonth(formattedStartDate);
+            case 10 -> // yyyy-MM-dd
+                    incrementDateByOneDay(formattedStartDate);
+            default -> throw new ParseException("Invalid date format", 0);
+        };
         return storyRepository.findByStartTimeStampBetween(formattedStartDate,formattedEndDate);
     }
     public List<Story> searchStoriesWithMultipleDate(String startTimeStamp,String endTimeStamp) throws ParseException {
@@ -271,27 +266,7 @@ public class StoryService {
         return storyRepository.findByStartTimeStampBetween(formattedStartDate, formattedEndDate);
     }
 
-    public static String getDecadeString(Story story) {
-        Calendar calendar = Calendar.getInstance();
-        if(story.getDecade() == null && story.getStartTimeStamp() != null){
-            calendar.setTime(story.getStartTimeStamp());
-            int year = calendar.get(Calendar.YEAR);
-            int decadeStart = year - (year % 10);
-            return decadeStart + "s";
-        }
-        return story.getDecade();
-    }
 
-    public static String getEndDecadeString(Story story) {
-        Calendar calendar = Calendar.getInstance();
-        if(story.getEndDecade() == null && story.getEndTimeStamp() != null){
-            calendar.setTime(story.getEndTimeStamp());
-            int year = calendar.get(Calendar.YEAR);
-            int decadeStart = year - (year % 10);
-            return decadeStart + "s";
-        }
-        return story.getEndDecade();
-    }
 
     public String deleteByStoryId(Story story) {
         List<Comment> commentList = story.getComments();
@@ -307,17 +282,7 @@ public class StoryService {
         return "deleted";
     }
 
-    public Date stringToDate(String timeStamp) throws ParseException {
 
-        if (timeStamp.length() == 4) { // yyyy
-            timeStamp += "-01-01";
-        } else if (timeStamp.length() == 7) { // yyyy-MM
-            timeStamp += "-01";
-        }
-        // yyyy-MM-dd format will remain unchanged
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return dateFormat.parse(timeStamp);
-    }
 
     public Story enterStory(StoryEnterRequest storyEditRequest,Story foundStory) throws ParseException, IOException {
 
@@ -386,37 +351,6 @@ public class StoryService {
         calendar.add(Calendar.DAY_OF_MONTH, -7);
         Date date = calendar.getTime();
         return storyRepository.findByCreatedAtAfterOrderByIdDesc(date);
-    }
-
-    private static Date convertToStartDate(String decadeString) throws ParseException {
-
-        int decade = Integer.parseInt(decadeString.substring(0, 4));
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, decade);
-        calendar.set(Calendar.MONTH, Calendar.JANUARY);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        return calendar.getTime();
-    }
-
-    private static Date convertToEndDate(String decadeString) throws ParseException {
-
-        int decade = Integer.parseInt(decadeString.substring(0, 4));
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, decade);
-        calendar.set(Calendar.MONTH, Calendar.DECEMBER);
-        calendar.set(Calendar.DAY_OF_MONTH, 31);
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.add(Calendar.YEAR,9);
-
-        return calendar.getTime();
     }
 
     public Story saveStory(Long storyId,Long userId){
@@ -511,11 +445,11 @@ public class StoryService {
         return userSavedStories.contains(storyId);
     }
 
-    public StoryResponse storyAsStoryResponse(Story story){
+    public static StoryResponse storyAsStoryResponse(Story story){
         return new StoryResponse(story);
     }
 
-    public List<StoryListResponse> storyListAsStoryListResponse(List<Story> storyList){
+    public static List<StoryListResponse> storyListAsStoryListResponse(List<Story> storyList){
         if(storyList.isEmpty()){
             return new ArrayList<>();
         }
@@ -526,7 +460,7 @@ public class StoryService {
         return storyResponseList;
     }
 
-    public List<MyStoryListResponse> storyListAsMyStoryListResponse(List<Story> storyList){
+    public static List<MyStoryListResponse> storyListAsMyStoryListResponse(List<Story> storyList){
         if(storyList.isEmpty()){
             return new ArrayList<>();
         }
@@ -535,60 +469,6 @@ public class StoryService {
             storyResponseList.add(new MyStoryListResponse(story));
         }
         return storyResponseList;
-    }
-
-    public static String dateToStringBasedOnFlags(Date date, Integer hourFlag,Integer dateFlag) {
-        if(date == null){
-            return null;
-        }
-
-        SimpleDateFormat formatter;
-
-        if (hourFlag == null || hourFlag == -1 || hourFlag == 1) {
-            formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        } else {
-            if(dateFlag == null){
-                formatter = new SimpleDateFormat("dd/MM/yyyy");
-            }
-            else{
-                if(dateFlag == 1){
-                    formatter = new SimpleDateFormat("yyyy");
-                }
-                else if (dateFlag == 2) {
-                    formatter = new SimpleDateFormat("MM/yyyy");
-                }
-                else{
-                    formatter = new SimpleDateFormat("dd/MM/yyyy");
-                }
-            }
-
-
-        }
-
-        formatter.setTimeZone(TimeZone.getTimeZone("Europe/Istanbul"));
-
-        return formatter.format(date);
-    }
-
-    public Date incrementDateByOneYear(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.YEAR, 1);
-        return calendar.getTime();
-    }
-
-    public Date incrementDateByOneMonth(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MONTH, 1);
-        return calendar.getTime();
-    }
-
-    public Date incrementDateByOneDay(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DATE, 1);
-        return calendar.getTime();
     }
 
 
@@ -753,4 +633,6 @@ public class StoryService {
     public static String generateVerbalExpression(Story story) {
         return "Placeholder for verbalExpression generation and viewing for story with the id " + story.getId() + " !";
     }
+
+
 }

@@ -5,25 +5,23 @@ import com.SWE573.dutluk_backend.model.Location;
 import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.service.ImageService;
-import com.SWE573.dutluk_backend.service.StoryService;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.OneToMany;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-@Getter
-@Setter
+import static com.SWE573.dutluk_backend.service.DateService.dateToStringBasedOnFlags;
+import static com.SWE573.dutluk_backend.service.DateService.timeAgo;
+import static com.SWE573.dutluk_backend.service.StoryService.generateVerbalExpression;
+
+@Data
 public class MyStoryListResponse {
 
     private Long id;
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "Europe/Istanbul")
-    private Date createdAt;
+    private String createdAt;
 
     private String picture;
 
@@ -72,7 +70,7 @@ public class MyStoryListResponse {
 
     public MyStoryListResponse(Story story) {
         this.id = story.getId();
-        this.createdAt = story.getCreatedAt();
+        this.createdAt = timeAgo(story.getCreatedAt());
         this.picture = ImageService
                 .extractFirstImageLink(story.getText());
         this.text = story.getText();
@@ -84,16 +82,14 @@ public class MyStoryListResponse {
         this.likeSize = story.getLikes().size();
         this.savedBy = story.getSavedBy();
         this.locations = story.getLocations();
-        this.startTimeStamp = StoryService
-                .dateToStringBasedOnFlags(
-                        story.getStartTimeStamp(),
-                        story.getStartHourFlag(),
-                        story.getStartDateFlag());
-        this.endTimeStamp = StoryService
-                .dateToStringBasedOnFlags(
-                        story.getEndTimeStamp(),
-                        story.getEndHourFlag(),
-                        story.getEndDateFlag());
+        this.startTimeStamp = dateToStringBasedOnFlags(
+                story.getStartTimeStamp(),
+                story.getStartHourFlag(),
+                story.getStartDateFlag());
+        this.endTimeStamp = dateToStringBasedOnFlags(
+                story.getEndTimeStamp(),
+                story.getEndHourFlag(),
+                story.getEndDateFlag());
         this.startHourFlag = story.getStartHourFlag();
         this.startDateFlag = story.getStartDateFlag();
         this.endHourFlag  = story.getEndHourFlag();
@@ -102,7 +98,7 @@ public class MyStoryListResponse {
         this.endSeason = story.getEndSeason();
         this.decade = story.getDecade();
         this.endDecade = story.getEndDecade();
-        this.verbalExpression = StoryService.generateVerbalExpression(story);
+        this.verbalExpression = generateVerbalExpression(story);
 
     }
 

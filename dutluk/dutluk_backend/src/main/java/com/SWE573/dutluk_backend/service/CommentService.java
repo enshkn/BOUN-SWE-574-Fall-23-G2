@@ -5,6 +5,7 @@ import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.repository.CommentRepository;
 import com.SWE573.dutluk_backend.request.CommentRequest;
+import com.SWE573.dutluk_backend.response.CommentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,6 +59,18 @@ public class CommentService {
             return "comment deleted";
         }
         return "comment not deleted";
+    }
+
+    public static CommentResponse commentToCommentResponse(Comment comment){
+        return new CommentResponse(comment);
+    }
+
+    public static List<CommentResponse> commentListToCommentResponseList(List<Comment> commentList){
+        List<CommentResponse> commentResponseList = new ArrayList<>();
+        for(Comment comment: commentList){
+            commentResponseList.add(new CommentResponse(comment));
+        }
+        return commentResponseList;
     }
 
     public Comment getCommentById(Long commentId) {

@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.SWE573.dutluk_backend.service.CommentService.commentListToCommentResponseList;
+import static com.SWE573.dutluk_backend.service.CommentService.commentToCommentResponse;
+
 
 @RestController
 @RequestMapping("/api/comment")
@@ -43,7 +46,7 @@ public class CommentController {
     public ResponseEntity<?> getCommentsByStoryId(@PathVariable Long storyId, HttpServletRequest request) {
         List<Comment> foundComments = commentService.getCommentsByStoryId(storyId);
         if (foundComments != null) {
-            return IntegrationService.mobileCheck(request, foundComments);
+            return IntegrationService.mobileCheck(request, commentListToCommentResponseList(foundComments));
         }
         return ResponseEntity.notFound().build();
     }
@@ -52,7 +55,7 @@ public class CommentController {
     public ResponseEntity<?> getByCommentId(@PathVariable Long commentId, HttpServletRequest request) {
         Comment foundComment = commentService.getCommentById(commentId);
         if (foundComment != null) {
-            return IntegrationService.mobileCheck(request, foundComment);
+            return IntegrationService.mobileCheck(request,commentToCommentResponse(foundComment));
         }
         return ResponseEntity.notFound().build();
     }
@@ -67,7 +70,7 @@ public class CommentController {
     @PostMapping("/like")
     public ResponseEntity<?> likeComment(@RequestBody LikeRequest likeRequest, HttpServletRequest request) {
         User tokenizedUser = userService.validateTokenizedUser(request);
-        return IntegrationService.mobileCheck(request, commentService.likeComment(likeRequest.getLikedEntityId(), tokenizedUser.getId()));
+        return IntegrationService.mobileCheck(request, commentToCommentResponse(commentService.likeComment(likeRequest.getLikedEntityId(), tokenizedUser.getId())));
     }
 
 }

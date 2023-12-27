@@ -1,12 +1,9 @@
 package com.SWE573.dutluk_backend.response;
 
 
-import lombok.Getter;
+import lombok.Data;
 
-import lombok.Setter;
-
-@Getter
-@Setter
+@Data
 public class Response<T> {
     public int status = 200;
 
