@@ -123,11 +123,11 @@ public class DateService {
         long hours = ChronoUnit.HOURS.between(createdAt, now);
         long minutes = ChronoUnit.MINUTES.between(createdAt, now);
 
-        if (years > 0) return years + " years ago";
-        else if (months > 0) return months + " months ago";
-        else if (days > 0) return days + " days ago";
-        else if (hours > 0) return hours + " hours ago";
-        else if (minutes > 0) return minutes + " minutes ago";
+        if (years > 0) return years + " year" + (years > 1 ? "s" : "") + " ago";
+        else if (months > 0) return months + " month" + (months > 1 ? "s" : "") + " ago";
+        else if (days > 0) return days + " day" + (days > 1 ? "s" : "") + " ago";
+        else if (hours > 0) return hours + " hour" + (hours > 1 ? "s" : "") + " ago";
+        else if (minutes > 0) return minutes + " minute" + (minutes > 1 ? "s" : "") + " ago";
         else return "just now";
     }
 
