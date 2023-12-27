@@ -42,6 +42,8 @@ public class MyStoryListResponse {
     @OneToMany(mappedBy = "story")
     private List<Comment> comments;
 
+    private Integer commentSize;
+
     private Set<Long> likes;
     private Integer likeSize;
     private Set<Long> savedBy;
@@ -80,6 +82,7 @@ public class MyStoryListResponse {
         this.labels = story.getLabels();
         this.user = story.getUser();
         this.comments = story.getComments();
+        this.commentSize = story.getComments().size();
         this.likes = story.getLikes();
         this.likeSize = story.getLikes().size();
         this.savedBy = story.getSavedBy();
