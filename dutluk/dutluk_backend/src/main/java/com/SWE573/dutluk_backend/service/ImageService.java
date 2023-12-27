@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,10 +32,10 @@ public class ImageService {
     String imgurClientId;
 
     public String parseAndSaveImages(String textWithBase64) throws IOException {
-        String regex = "data:image/[^;]*;base64,([^\\\"]+)";
+        String regex = "data:image/[^;]*;base64,([^\"]+)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(textWithBase64);
-        StringBuffer updatedText = new StringBuffer();
+        StringBuilder updatedText = new StringBuilder();
 
         while (matcher.find()) {
             String base64Data = matcher.group(1);
@@ -97,28 +98,25 @@ public class ImageService {
                 requestEntity,
                 String.class
         );
-        String imgurUrl = extractImgurImageUrl(response.getBody());
 
-        return imgurUrl;
+        return extractImgurImageUrl(response.getBody());
     }
 
     protected String extractImgurImageUrl(String response) throws IOException{
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(response);
         JsonNode dataNode = rootNode.get("data");
-        String imgUrl = dataNode.get("link").asText();
-        return imgUrl;
+        return dataNode.get("link").asText();
     }
 
     public static String extractFirstImageLink(String html) {
-        String imageLink = null;
         Document doc = Jsoup.parse(html);
         Elements images = doc.select("img");
         if (!images.isEmpty()) {
             Element firstImg = images.first();
-            imageLink = firstImg.attr("src");
+            return Objects.requireNonNull(firstImg).attr("src");
         }
-        return imageLink;
+        return null;
     }
 
 }
