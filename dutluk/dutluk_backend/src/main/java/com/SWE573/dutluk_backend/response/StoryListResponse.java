@@ -31,8 +31,6 @@ public class StoryListResponse {
     @JsonIncludeProperties(value = {"id","username","profilePhoto"})
     private User user;
 
-    private Integer commentLikeSize;
-
     private Integer likeSize;
 
     private Set<Long> savedBy;
@@ -64,7 +62,6 @@ public class StoryListResponse {
         this.title = story.getTitle();
         this.labels = story.getLabels();
         this.user = story.getUser();
-        this.commentLikeSize = story.getComments().size();
         this.likeSize = story.getLikes().size();
         this.savedBy = story.getSavedBy();
         this.locations = story.getLocations();
