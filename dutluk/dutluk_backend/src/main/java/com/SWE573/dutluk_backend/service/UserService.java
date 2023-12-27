@@ -28,7 +28,7 @@ public class UserService{
     UserRepository userRepository;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    JwtUtil jwtUtil;
 
     @Autowired
     ImageService imageService;
@@ -152,8 +152,8 @@ public class UserService{
         return userRepository.save(toBeFollowedUser);
     }
 
-    public User editUser(User user){
-        return userRepository.save(user);
+    public void editUser(User user){
+        userRepository.save(user);
     }
 
     public User updateUserPhoto(User foundUser, MultipartFile uploadedFile) throws IOException {
