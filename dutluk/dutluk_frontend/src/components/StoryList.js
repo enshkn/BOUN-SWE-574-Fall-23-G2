@@ -146,7 +146,7 @@ const StoryList = ({ story }) => {
                             >Delete</button>)
                         }
                         <span>{story.likeSize ? story.likeSize : 0}❤️</span>
-                        <span>{story.comments ? story.comments.length : 0}💬</span>
+                        <span>{story.commentSize ? story.commentSize : 0}💬</span>
                     </div>
                 </div>
 
