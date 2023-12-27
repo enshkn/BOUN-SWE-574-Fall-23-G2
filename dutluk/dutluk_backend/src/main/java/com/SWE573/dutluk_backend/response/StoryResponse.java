@@ -53,10 +53,6 @@ public class StoryResponse{
 
     private Integer percentage;
 
-    private String timeType;
-
-    private String timeExpression;
-
     private String verbalExpression;
 
     public StoryResponse(Story story) {
@@ -85,8 +81,6 @@ public class StoryResponse{
         this.endDecade = StoryService
                 .getEndDecadeString(story);
         this.percentage = story.getPercentage();
-        this.timeType = story.getTimeType();
-        this.timeExpression = story.getTimeExpression();
         this.verbalExpression = StoryService.generateVerbalExpression(story);
     }
 }

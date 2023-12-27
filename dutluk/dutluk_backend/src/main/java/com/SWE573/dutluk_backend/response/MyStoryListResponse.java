@@ -84,7 +84,11 @@ public class MyStoryListResponse {
         this.likeSize = story.getLikes().size();
         this.savedBy = story.getSavedBy();
         this.locations = story.getLocations();
-        this.startTimeStamp = StoryService.dateToStringBasedOnFlags(story.getStartTimeStamp(),story.getStartHourFlag(),story.getStartDateFlag());
+        this.startTimeStamp = StoryService
+                .dateToStringBasedOnFlags(
+                        story.getStartTimeStamp()
+                        , story.getStartHourFlag(),
+                        story.getStartDateFlag());
         this.endTimeStamp = StoryService
                 .dateToStringBasedOnFlags(
                         story.getEndTimeStamp(),

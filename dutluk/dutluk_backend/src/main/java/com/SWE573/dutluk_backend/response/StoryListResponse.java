@@ -54,10 +54,6 @@ public class StoryListResponse {
 
     private Integer percentage;
 
-    private String timeType;
-
-    private String timeExpression;
-
     private String verbalExpression;
 
     public StoryListResponse(Story story) {
