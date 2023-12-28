@@ -134,7 +134,7 @@ const TimelineSearch = () => {
     >
     {contextHolder}
     <div className="story-search">
-      <h2>Timeline Search</h2>
+      <center><h2>Timeline Search</h2></center>
       <div className="search-form">
         <label>
           Radius (in km):
