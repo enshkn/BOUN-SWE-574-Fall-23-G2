@@ -30,6 +30,9 @@ class StoryServiceTest {
     private StoryService storyService;
 
     @Mock
+    private LocationService locationService;
+
+    @Mock
     private RecommendationService recService;
 
     @Mock

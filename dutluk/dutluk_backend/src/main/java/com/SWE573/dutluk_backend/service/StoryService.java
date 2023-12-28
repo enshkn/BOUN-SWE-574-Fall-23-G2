@@ -38,6 +38,9 @@ public class StoryService {
     @Autowired
     RecommendationService recService;
 
+    @Autowired
+    LocationService locationService;
+
 
 
     public List<Story> findAll(){
@@ -301,10 +304,7 @@ public class StoryService {
         foundStory.setEndHourFlag(storyEditRequest.getEndHourFlag());
         foundStory.setStartDateFlag(storyEditRequest.getStartDateFlag());
         foundStory.setEndDateFlag(storyEditRequest.getEndDateFlag());
-        List<Location> foundStoryLocations = foundStory.getLocations();
-        foundStoryLocations.clear();
-        foundStory.setLocations(foundStoryLocations);
-        storyRepository.save(foundStory);
+        locationService.deleteAllLocationsByStoryId(foundStory.getId());
         if (storyEditRequest.getLocations() != null) {
             List<Location> newLocationsList = storyEditRequest.getLocations();
             for (Location location : newLocationsList) {
