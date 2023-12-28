@@ -4,8 +4,8 @@ import com.SWE573.dutluk_backend.model.Location;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class StoryEnterRequest {
@@ -13,9 +13,9 @@ public class StoryEnterRequest {
 
 
     private String title;
-    private ArrayList<String> labels = new ArrayList<>();
+    private List<String> labels;
 
-    private ArrayList<Location> locations = new ArrayList<>();
+    private List<Location> locations;
 
 
 

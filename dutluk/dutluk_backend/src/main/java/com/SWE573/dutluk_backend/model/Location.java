@@ -2,7 +2,6 @@ package com.SWE573.dutluk_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -17,9 +16,9 @@ public class Location extends BaseEntity{
     @Column(name="location_name")
     private String locationName;
 
-    @NotNull
+
     private Double latitude;
-    @NotNull
+
     private Double longitude;
 
 

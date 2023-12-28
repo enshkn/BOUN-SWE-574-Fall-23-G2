@@ -70,7 +70,7 @@ public class StoryService {
                 .timeExpression(storyEnterRequest.getTimeExpression())
                 .likes(new HashSet<>())
                 .build();
-        ArrayList<Location> allLocations = storyEnterRequest.getLocations();
+        List<Location> allLocations = storyEnterRequest.getLocations();
         for (Location location : allLocations) {
             location.setStory(createdStory);
         }
@@ -297,17 +297,21 @@ public class StoryService {
         foundStory.setEndDecade(storyEditRequest.getEndDecade());
         foundStory.setSeason(storyEditRequest.getSeason());
         foundStory.setEndSeason(storyEditRequest.getEndSeason());
-        foundStory.setLocations(storyEditRequest.getLocations());
         foundStory.setStartHourFlag(storyEditRequest.getStartHourFlag());
         foundStory.setEndHourFlag(storyEditRequest.getEndHourFlag());
         foundStory.setStartDateFlag(storyEditRequest.getStartDateFlag());
         foundStory.setEndDateFlag(storyEditRequest.getEndDateFlag());
-        List<Location> storyLocations = foundStory.getLocations();
-        storyLocations.clear();
-        foundStory.setLocations(storyLocations);
+        List<Location> foundStoryLocations = foundStory.getLocations();
+        foundStoryLocations.clear();
+        foundStory.setLocations(foundStoryLocations);
         storyRepository.save(foundStory);
-        storyLocations.addAll(storyEditRequest.getLocations());
-        foundStory.setLocations(storyLocations);
+        if (storyEditRequest.getLocations() != null) {
+            List<Location> newLocationsList = storyEditRequest.getLocations();
+            for (Location location : newLocationsList) {
+                location.setStory(foundStory);
+            }
+            foundStory.setLocations(storyEditRequest.getLocations());
+        }
         return foundStory;
     }
 
