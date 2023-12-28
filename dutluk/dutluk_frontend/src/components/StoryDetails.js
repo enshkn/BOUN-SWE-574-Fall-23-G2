@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Space, message } from 'antd';
 import parse from "html-react-parser";
 import { useParams } from "react-router-dom";
@@ -12,6 +12,7 @@ function StoryDetails() {
   const [story, setStory] = useState();
   const [commentText, setCommentText] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
+  const [isLiked, setIsLiked] = useState(false);
 
   const [markers, setMarkers] = useState([]);
   const [circles, setCircles] = useState([]);
@@ -147,6 +148,25 @@ function StoryDetails() {
     }
   };
 
+  const fetchLikeStatus = useCallback(async () => {
+    try {
+        const response = await axios.get(
+            `${process.env.REACT_APP_BACKEND_URL}/api/story/isLikedByUser/${id}`,
+            {
+                withCredentials: true,
+            }
+        );
+        setIsLiked(response.data);
+    } catch (error) {
+        console.error('Like status API error:', error.message);
+        messageApi.open({ type: "error", content: "Error occurred while fetching liked story data!" });
+    }
+  }, [id, messageApi]);
+
+  useEffect(() => {
+      fetchLikeStatus();
+  }, [fetchLikeStatus]);
+
   const handleLikeStory = async () => {
     try {
       const response = await axios.post(
@@ -157,12 +177,18 @@ function StoryDetails() {
         }
       );
       setStory(response.data);
-      messageApi.open({ type: "success", content: "You liked this story!" });
+      setIsLiked(!isLiked);
+      if (isLiked === true) {
+        messageApi.open({ type: "success", content: "You unliked this story" });
+      } else if (isLiked === false) {
+        messageApi.open({ type: "success", content: "You liked this story" });
+      }
     } catch (error) {
       console.log(error);
       messageApi.open({ type: "error", content: "Error occured while liking this story!" });
     }
   };
+
   const handleLikeComment = async (commentId) => {
     try {
       const response = await axios.post(
@@ -236,7 +262,9 @@ function StoryDetails() {
         <p>
           <b>Likes:</b> {story.likes ? story.likes.length : 0}
         </p>
-        <button onClick={handleLikeStory} className="btn btn-primary mb-2">Like!</button>
+        <button onClick={handleLikeStory} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none"}} type="submit" className="btn btn-primary mb-2">
+          {isLiked ? 'Unlike' : 'Like!'}
+        </button>
         <p className="story-details">
           <b>Labels:</b>{" "}
           {story.labels.map((label, index) => (

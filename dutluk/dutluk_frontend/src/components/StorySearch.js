@@ -6,6 +6,9 @@ import "./css/StorySearch.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import StoryList from "./StoryList";
 
+// Explore was previous search feature, sisnce it applies all filters individualy
+// and add them to same list, wording is changed from "search" to "explore". Component name
+// and internal elements left same. 
 
 const StorySearch = () => {
   const [searchQuery, setSearchQuery] = useState(null);
@@ -114,11 +117,11 @@ const StorySearch = () => {
       {contextHolder}
       <div className="story-search">
         {/* Story Search Element */}
-        <h2>Story Search</h2>
+        <h2>Story Explore</h2>
         <div className="search-form">
           <form className="row g-3">
             <div className="col-md-6">
-              <label htmlFor="searchQuery" className="form-label">Search Query:</label>
+              <label htmlFor="searchQuery" className="form-label">Explore Query:</label>
               <input
                 id="searchQuery"
                 type="text"
@@ -291,7 +294,7 @@ const StorySearch = () => {
               className="btn btn-primary"
               onClick={handleSearch}
             >
-              Search
+              Explore
             </button>
           </div>
 
@@ -320,7 +323,7 @@ const StorySearch = () => {
         <div style={{ marginBottom: "20px" }} />
         {searchResults.length > 0 && (
             <div className="all-stories">
-              <h1>Search Results</h1>
+              <h1>Exploring Results</h1>
               {searchResults.map((story) => (
                 <StoryList story={story} key={story.id} />
               ))}

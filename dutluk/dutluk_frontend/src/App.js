@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import "./App.css";
-import DutlukImage from "./dutlukfinal_1.jpg";
 import DutlukLogo from "./dutluk_logo.png";
 import User from "./components/User";
 import Profile from "./components/Profile";
@@ -22,8 +21,8 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { QRCode } from 'antd';
-import Paragraph from "antd/es/skeleton/Paragraph";
+import { QRCode, FloatButton } from 'antd';
+import { FileTextOutlined } from '@ant-design/icons';
 
 
 function App() {
@@ -64,8 +63,22 @@ function App() {
       });
   };
 
+  const isAddStoryPage = window.location.pathname === "/story/add-story";
+
   return (
     <Router>
+      {!isAddStoryPage && loggedIn && (
+        <FloatButton
+          icon={<FileTextOutlined />}
+          description="ADD STORY"
+          shape="square"
+          style={{
+            position: "fixed",
+            right: 94,
+          }}
+          href={"/story/add-story"}
+        />
+      )}
       <Navbar
         style={{ backgroundColor: "#ff5500ca", color: "white" }}
         expand="lg"
@@ -78,21 +91,63 @@ function App() {
           </Navbar.Brand>
           {loggedIn ? (
             <>
-              <Nav.Link href="/story/followings" className="nav-link">
-                Story Feed
-              </Nav.Link>
-              <Nav.Link href="/story/recommended" className="nav-link">
-                Recommended Stories
-              </Nav.Link>
-              <Nav.Link href="/story/all-stories" className="nav-link">
-                All Stories
-              </Nav.Link>
-              <Nav.Link href="/story/search" className="nav-link">
-                Search
-              </Nav.Link>
-              <Nav.Link href="/story/timeline-search" className="nav-link">
-                Timeline Search
-              </Nav.Link>
+              <NavDropdown
+                title="Story"
+                id="basic-nav-dropdown"
+                className="justify-content-end"
+              >
+                <NavDropdown.Item
+                  href="/story/followings" 
+                  className="justify-content-end"
+                >
+                  Story Feed
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/recommended" 
+                  className="justify-content-end"
+                >
+                  Recommended Stories
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/all-stories" 
+                  className="justify-content-end"
+                >
+                  All Stories
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/saved-stories"
+                  className="justify-content-end"
+                >
+                  Saved Stories
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item
+                  href="/story/add-story"
+                  className="justify-content-end"
+                >
+                  Add Story
+                </NavDropdown.Item>
+              </NavDropdown>
+
+              <NavDropdown
+                title="Search"
+                id="basic-nav-dropdown"
+                className="justify-content-end"
+              >
+                <NavDropdown.Item
+                  href="/story/explore" 
+                  className="justify-content-end"
+                >
+                  Explore
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/timeline-search" 
+                  className="justify-content-end"
+                >
+                  Timeline Search
+                </NavDropdown.Item>
+              </NavDropdown>
+
               <NavDropdown
                 title="My account"
                 id="basic-nav-dropdown"
@@ -103,18 +158,6 @@ function App() {
                   className="justify-content-end"
                 >
                   My Profile
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  href="/story/saved-stories"
-                  className="justify-content-end"
-                >
-                  Saved Stories
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  href="/story/add-story"
-                  className="justify-content-end"
-                >
-                  Add Story
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item
@@ -168,7 +211,9 @@ function App() {
         <Route path="/story/all-stories" element={<AllStories />} />
         <Route path="/story/:id" element={<StoryDetails />} />
         <Route path="/user/:id" element={<Profile />} />
-        <Route path="/story/search" element={<StorySearch />} />
+        <Route path="/story/explore" element={<StorySearch />} />
+        {/* Explore was previous search feature, sisnce it applies all filters individualy 
+        and add them to same list, wording is changed from "search" to "explore" */}
         <Route path="/story/timeline-search" element={<TimelineSearch />} />
         <Route path="/story/search/label/:label" element={<LabelSearch />} />
         <Route path="/story/recommended" element={<Recommended />} />
