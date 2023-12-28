@@ -388,7 +388,7 @@ function StoryDetails() {
             ></textarea>
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button type="submit" className="btn btn-primary">Submit</button>
+            <button type="submit" className="btn btn-primary" style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white",  border: "none", margin: "10px" }}>Submit</button>
           </div>
         </form>
 

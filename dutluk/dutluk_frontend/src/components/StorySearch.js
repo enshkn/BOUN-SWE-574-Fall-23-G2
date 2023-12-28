@@ -292,6 +292,7 @@ const StorySearch = () => {
             <button
               type="button"
               className="btn btn-primary"
+              style={{backgroundColor: "#ff5500ca", color: "white",   border: "none"}}
               onClick={handleSearch}
             >
               Explore

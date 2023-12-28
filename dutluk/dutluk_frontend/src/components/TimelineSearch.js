@@ -144,7 +144,7 @@ const TimelineSearch = () => {
             onChange={(e) => setRadius(parseInt(e.target.value))}
           />
         </label>
-        <button type="button" onClick={handleSearchByLocation}>
+        <button type="button" className="btn btn-primary" style={{backgroundColor: "#ff5500ca", color: "white",   border: "none", margin: "5px"}} onClick={handleSearchByLocation}>
             Use My Location
         </button>
         <label>
@@ -266,7 +266,7 @@ const TimelineSearch = () => {
             <option value="2020s">2020s</option>
           </select>
         </label>
-        <button type="button" onClick={handleSearch}>
+        <button type="button" className="btn btn-primary" style={{backgroundColor: "#ff5500ca", color: "white",   border: "none", margin: "5px"}} onClick={handleSearch}>
           Search
         </button>
       </div>

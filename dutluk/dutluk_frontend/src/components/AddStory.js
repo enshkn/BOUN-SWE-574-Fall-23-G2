@@ -905,7 +905,7 @@ Time Resolution:
 
 
 <div className="d-flex justify-content-center mt-3">
-      <button type="submit" className="btn btn-primary">
+      <button type="submit" className="btn btn-primary" style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white",  border: "none", margin: "10px" }}>
         Add Story
       </button>
     </div>
