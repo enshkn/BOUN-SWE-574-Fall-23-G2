@@ -9,7 +9,6 @@ import com.SWE573.dutluk_backend.request.StoryEnterRequest;
 import com.SWE573.dutluk_backend.response.MyStoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,7 +118,7 @@ public class StoryService {
     }
 
 
-    public Story likeStory(Long storyId,Long userId) throws JsonProcessingException {
+    public Story likeStory(Long storyId, Long userId) {
         Story story = getStoryByStoryId(storyId);
         User user = userService.findByUserId(userId);
         Set<Long> likesList = story.getLikes();
@@ -507,11 +506,11 @@ public class StoryService {
             }
         }
         if(isStringApplicable(decade)){
-            storySet.addAll(searchStoriesWithMultipleDecades(decade,endDecade));
-        }
-        else{
-            storySet.addAll(searchStoriesWithDecade(decade));
-
+            if (isStringApplicable(endDecade)) {
+                storySet.addAll(searchStoriesWithMultipleDecades(decade, endDecade));
+            } else {
+                storySet.addAll(searchStoriesWithDecade(decade));
+            }
         }
         if(isStringApplicable(season)){
             if(isStringApplicable(endSeason)){
@@ -520,7 +519,6 @@ public class StoryService {
             else{
                 storySet.addAll(searchStoriesWithSeason(season));
             }
-
         }
         return storySet.stream().toList();
     }
@@ -622,7 +620,7 @@ public class StoryService {
     }
 
     public Boolean isStringApplicable(String value){
-        return value != null && !value.equalsIgnoreCase("") && !value.equalsIgnoreCase("null");
+        return value != null && !value.equalsIgnoreCase("") && !value.isBlank() && !value.equalsIgnoreCase("null");
     }
 
 
