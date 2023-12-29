@@ -81,8 +81,8 @@ const TimelineSearch = () => {
   };
 
   useEffect(() => {
-    handleSearch();
-  }, [handleSearch, searchDate, searchSeason, searchDecade]);
+  }, []); 
+  
 
   const handleDateTypeChange = (event) => {
     const type = event.target.value;
