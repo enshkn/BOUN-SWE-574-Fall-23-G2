@@ -228,23 +228,31 @@ const TimelineSearch = () => {
           )}
 
           {searchDate.type === "absolute-year" && (
-            <label>
-              Year:
+            <div className="col-md-6">
+              <label htmlFor="yearInput" className="form-label">
+                Year:
+              </label>
               <input
                 type="number"
+                className="form-control"
+                id="yearInput"
                 value={searchDate.value || ""}
                 onChange={(e) =>
                   setSearchDate({ ...searchDate, value: e.target.value })
                 }
               />
-            </label>
+            </div>
           )}
           {searchDate.type === "interval-year" && (
-            <>
-              <label>
-                Start Year:
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label htmlFor="startYear" className="form-label">
+                  Start Year:
+                </label>
                 <input
                   type="number"
+                  className="form-control"
+                  id="startYear"
                   value={searchDate.value?.startDate || ""}
                   onChange={(e) =>
                     setSearchDate({
@@ -253,11 +261,15 @@ const TimelineSearch = () => {
                     })
                   }
                 />
-              </label>
-              <label>
-                End Year:
+              </div>
+              <div className="mb-3">
+                <label htmlFor="endYear" className="form-label">
+                  End Year:
+                </label>
                 <input
                   type="number"
+                  className="form-control"
+                  id="endYear"
                   value={searchDate.value?.endDate || ""}
                   onChange={(e) =>
                     setSearchDate({
@@ -266,9 +278,10 @@ const TimelineSearch = () => {
                     })
                   }
                 />
-              </label>
-            </>
+              </div>
+            </div>
           )}
+
           {/* Season Picker Element */}
           <div className="col-md-6">
             <label htmlFor="season" className="form-label">Season:</label>
