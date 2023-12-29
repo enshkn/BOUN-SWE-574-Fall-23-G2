@@ -117,7 +117,7 @@ const StorySearch = () => {
       {contextHolder}
       <div className="story-search">
         {/* Story Search Element */}
-        <h2>Story Explore</h2>
+        <center><h2>Story Explore</h2></center>
         <div className="search-form">
           <form className="row g-3">
             <div className="col-md-6">
@@ -292,6 +292,7 @@ const StorySearch = () => {
             <button
               type="button"
               className="btn btn-primary"
+              style={{backgroundColor: "#ff5500ca", color: "white",   border: "none"}}
               onClick={handleSearch}
             >
               Explore

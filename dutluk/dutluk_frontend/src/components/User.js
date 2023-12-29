@@ -3,6 +3,7 @@ import { Space, message } from 'antd';
 import axios from "axios";
 import blankPhotoPreview from "../profile_pic.png";
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import MyStories from "./MyStories";
 import "./css/User.css";
 
@@ -107,6 +108,7 @@ function UserComponent({ userId }) {
       }}
     >
       {contextHolder}
+      <center>
       <div className="user-component">
         <h2>Username: {user.username}</h2>
         <p>Biography: {user.biography}</p>
@@ -122,15 +124,22 @@ function UserComponent({ userId }) {
             }
           </p>
           <form onSubmit={handleSubmit}>
-            <input type="file" name="photo" onChange={handleFileChange} />
+            <div className="photo-form">
+            {/* <input type="file" name="photo" onChange={handleFileChange} /> */}
+            <Form.Group controlId="formFile">
+              <Form.Control type="file" name="photo" onChange={handleFileChange} />
+            
             <Button
               variant="primary"
               type="submit"
+              className="photo-button mb-2"
               disabled={isLoading}
               onClick={!isLoading ? handleSubmit : null}
             >
               {isLoading ? 'Loading…' : 'Save photo'}
             </Button>
+            </Form.Group>
+            </div>
           </form>
         </div>
         <div>
@@ -139,13 +148,15 @@ function UserComponent({ userId }) {
             <input
               type="text"
               name="biography"
+              style={{ width:"350px", height:"150px" }}
               value={biography}
               onChange={handleBiographyChange}
             />
-            <button type="submit">Edit Biography</button>
+            <button type="submit" style={{margin: "10px"}}>Edit Biography</button>
           </form>
         </div>
       </div>
+      </center>
       <div className="my-stories-container">
         <MyStories />
       </div>
