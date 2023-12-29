@@ -134,12 +134,8 @@ const TimelineSearch = () => {
     >
       {contextHolder}
       <div className="story-search">
-        {/* Story Search Element */}
-        <h2>Timeline Search</h2>
         <div className="search-form">
-          <form className="row g-3">
-
-          </form>
+          <h2>Timeline Search</h2>
           {/* Radius Element */}
           <div className="col-md-6">
             <label htmlFor="radius" className="form-label">Radius (in km):</label>
@@ -319,7 +315,6 @@ const TimelineSearch = () => {
               <option value="2020s">2020s</option>
             </select>
           </div>
-          {/* Button  Element */}
           <div className="col-md-6 mt-3">
             <button
               type="button"
@@ -329,6 +324,9 @@ const TimelineSearch = () => {
               Search
             </button>
           </div>
+        </div>
+
+        <div className="map-section">
           <LoadScript
             googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
           >
@@ -349,6 +347,9 @@ const TimelineSearch = () => {
               )}
             </GoogleMap>
           </LoadScript>
+        </div>
+
+        <div className="searchResults">
           {searchResults.length > 0 && (
             <div>
               <h3>Search Results:</h3>
