@@ -223,6 +223,11 @@ public class StoryController {
         return IntegrationService.mobileCheck(request, storyListResponse);
     }
 
+    @GetMapping("/send/allToKaradut")
+    public ResponseEntity<?> sendAllStoriesToKaradut(HttpServletRequest request) {
+        return IntegrationService.mobileCheck(request, storyService.sendBatchofStories());
+    }
+
     @GetMapping("/search/timeline")
     public ResponseEntity<?> timelineSearchStories(
             @RequestParam(required = false) String title,
@@ -252,4 +257,6 @@ public class StoryController {
         List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyList);
         return IntegrationService.mobileCheck(request, storyListResponse);
     }
+
+
 }
