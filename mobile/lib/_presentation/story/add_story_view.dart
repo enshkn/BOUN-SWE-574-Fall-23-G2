@@ -713,6 +713,7 @@ class _AddStoryViewState extends State<AddStoryView>
             AppTextFormField(
               controller: titleController,
               hintText: 'Add Title',
+              isRequired: true,
             ),
             BaseWidgets.lowerGap,
             AppTextFormField(
@@ -722,7 +723,7 @@ class _AddStoryViewState extends State<AddStoryView>
             BaseWidgets.lowerGap,
             Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.6,
+              height: MediaQuery.of(context).size.height * 0.55,
               decoration: BoxDecoration(
                 border: Border.all(color: context.appBarColor),
                 borderRadius: BorderRadius.circular(12),
@@ -1218,6 +1219,15 @@ class _AddStoryViewState extends State<AddStoryView>
     );
     if (locations.isEmpty) {
       cubit.showNotification('Locations could not be empty.', isError: true);
+    } else if (titleController.text.isEmpty) {
+      cubit.showNotification('Title could not be empty.', isError: true);
+    } else if (htmlText == null) {
+      cubit.showNotification('Story could not be empty.', isError: true);
+    } else if (timeExpression == null) {
+      cubit.showNotification(
+        'Time Resolution could not be empty.',
+        isError: true,
+      );
     } else {
       if (widget.myStories) {
         await cubit.editStory(model, widget.storyModel!.id).then((value) {

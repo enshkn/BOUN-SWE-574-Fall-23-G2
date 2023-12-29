@@ -7,6 +7,7 @@ import 'package:swe/_application/profile/profile_cubit.dart';
 import 'package:swe/_application/profile/profile_state.dart';
 import 'package:swe/_application/session/session_cubit.dart';
 import 'package:swe/_application/session/session_state.dart';
+import 'package:swe/_core/widgets/base_loader.dart';
 import 'package:swe/_core/widgets/base_scroll_view.dart';
 import 'package:swe/_core/widgets/base_widgets.dart';
 import 'package:swe/_domain/auth/model/profile_update_model.dart';
@@ -63,40 +64,43 @@ class _ProfileDetailsViewState extends State<ProfileDetailsView> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   BaseWidgets.normalGap,
-                  Center(
-                    child: SizedBox(
-                      child: Stack(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: user.profilePhoto != null
-                                ? CircleAvatar(
-                                    radius: 56,
-                                    backgroundImage: NetworkImage(
-                                      user.profilePhoto!,
+                  BaseLoader(
+                    isLoading: state.isLoading,
+                    child: Center(
+                      child: SizedBox(
+                        child: Stack(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: user.profilePhoto != null
+                                  ? CircleAvatar(
+                                      radius: 56,
+                                      backgroundImage: NetworkImage(
+                                        user.profilePhoto!,
+                                      ),
+                                    )
+                                  : const CircleAvatar(
+                                      radius: 56,
+                                      backgroundImage: AssetImage(
+                                        'assets/images/profilePic.jpg',
+                                      ),
                                     ),
-                                  )
-                                : const CircleAvatar(
-                                    radius: 56,
-                                    backgroundImage: AssetImage(
-                                      'assets/images/profilePic.jpg',
-                                    ),
-                                  ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: IconButton(
-                              onPressed: () async {
-                                await _getImage();
-                                if (_file != null) {
-                                  await cubit.updateProfileImage(_file!);
-                                }
-                              },
-                              icon: const Icon(Icons.edit, size: 32),
                             ),
-                          ),
-                        ],
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: IconButton(
+                                onPressed: () async {
+                                  await _getImage();
+                                  if (_file != null) {
+                                    await cubit.updateProfileImage(_file!);
+                                  }
+                                },
+                                icon: const Icon(Icons.edit, size: 32),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
