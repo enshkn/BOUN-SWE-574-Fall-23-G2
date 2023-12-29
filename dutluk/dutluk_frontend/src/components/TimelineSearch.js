@@ -127,10 +127,10 @@ const TimelineSearch = () => {
 
   return (
     <Space
-    direction="vertical"
-    style={{
-      width: '100%',
-    }}
+      direction="vertical"
+      style={{
+        width: '100%',
+      }}
     >
       {contextHolder}
       <div className="story-search">
@@ -138,31 +138,31 @@ const TimelineSearch = () => {
           <h2>Timeline Search</h2>
           {/* Radius Element */}
           <div className="col-md-6">
-  <label htmlFor="radius" className="form-label">Radius (in km):</label>
-  <input
-    id="radius"
-    type="number"
-    className="form-control"
-    value={radius}
-    onChange={(e) => setRadius(parseInt(e.target.value))}
-  />
-</div>
+            <label htmlFor="radius" className="form-label">Radius (in km):</label>
+            <input
+              id="radius"
+              type="number"
+              className="form-control"
+              value={radius}
+              onChange={(e) => setRadius(parseInt(e.target.value))}
+            />
+          </div>
           {/* Time Type Picker Element */}
-<div className="col-md-6">
-  <label htmlFor="dateType" className="form-label">Date Type:</label>
-  <select
-    id="dateType"
-    className="form-select"
-    value={searchDate.type}
-    onChange={handleDateTypeChange}
-  >
-    <option value="">Select a Date Type</option>
-    <option value="absolute-date">Absolute Date</option>
-    <option value="interval-date">Interval Date</option>
-    <option value="absolute-year">Absolute Year</option>
-    <option value="interval-year">Interval Year</option>
-  </select>
-</div>
+          <div className="col-md-6">
+            <label htmlFor="dateType" className="form-label">Date Type:</label>
+            <select
+              id="dateType"
+              className="form-select"
+              value={searchDate.type}
+              onChange={handleDateTypeChange}
+            >
+              <option value="">Select a Date Type</option>
+              <option value="absolute-date">Absolute Date</option>
+              <option value="interval-date">Interval Date</option>
+              <option value="absolute-year">Absolute Year</option>
+              <option value="interval-year">Interval Year</option>
+            </select>
+          </div>
 
           {searchDate.type === "absolute-date" && (
             <div className="col-md-6">
