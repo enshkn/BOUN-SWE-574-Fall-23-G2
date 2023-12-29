@@ -38,7 +38,7 @@ public class User extends BaseEntity{
     @NotNull
     private String password;
 
-    @Lob
+
     private String profilePhoto;
 
     @Column
@@ -75,9 +75,9 @@ public class User extends BaseEntity{
     }
 
     @ElementCollection
-    private Map<Long, String> recommendedStoriesMap = new HashMap<>();
+    private Map<Long, Integer> recommendedStoriesMap = new HashMap<>();
 
-    public Map<Long, String> getRecommendedStoriesMap() {
+    public Map<Long, Integer> getRecommendedStoriesMap() {
         if(recommendedStoriesMap == null){
             recommendedStoriesMap = new HashMap<>();
         }
@@ -95,7 +95,4 @@ public class User extends BaseEntity{
     @ManyToMany(mappedBy = "followers", fetch = FetchType.LAZY,cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JsonIncludeProperties({"id","username"})
     private Set<User> following = new HashSet<>();
-
-    @Transient
-    private String token;
 }

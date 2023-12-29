@@ -42,7 +42,9 @@ enum TimeResolutionType {
   exactDate(0),
   exactDateWithTime(1),
   dateRange(2),
-  decade(3);
+  decade(3),
+  enddecade(4),
+  year(5);
 
   const TimeResolutionType(this.value);
   final int value;
@@ -74,6 +76,8 @@ class _AddStoryViewState extends State<AddStoryView>
   late QuillEditorController controller;
   late TextEditingController seasonController;
   late TextEditingController decadeController;
+  late TextEditingController endDecadeController;
+
   late TextEditingController timeResolutionController;
   List<LatLng> selectedLocations = [];
   Map<String, LatLng>? additionalMarkers = {};
@@ -125,6 +129,9 @@ class _AddStoryViewState extends State<AddStoryView>
   final bool _hasFocus = false;
   String? selectedSeason;
   String? selectedDecade;
+  String? selectedEndDecade;
+  late DateTime selectedYear;
+
   late String selectedMonth;
   late DateTime selectedStartDateTime;
   late DateTime selectedEndDateTime;
@@ -141,6 +148,7 @@ class _AddStoryViewState extends State<AddStoryView>
   bool hasPermission = false;
   String? formattedStartDate;
   String? formattedStartDateTime;
+  String? formattedYear;
 
   String? formattedEndDate;
   LocationModel? selectedLocation;
@@ -148,9 +156,13 @@ class _AddStoryViewState extends State<AddStoryView>
   String? htmlText;
   String? story;
   bool exatDateSelected = false;
+  bool decadeRangeSelected = false;
   bool exactDateWithTimeSelected = false;
   bool dateRangeSelected = false;
   bool decadeSelected = false;
+  bool enddecadeSelected = false;
+  bool yearSelected = false;
+
   int currnetIndex = 0;
   bool showBottomNav = true;
   String? selectTimeResolutions;
@@ -172,11 +184,24 @@ class _AddStoryViewState extends State<AddStoryView>
     '2010s',
     '2020s',
   ];
+  List<String> enddecade = <String>[
+    '1940s',
+    '1950s',
+    '1960s',
+    '1970s',
+    '1980s',
+    '1990s',
+    '2000s',
+    '2010s',
+    '2020s',
+  ];
   List<String> timeResolutions = <String>[
     'Exact Date',
     'Exact Date with Time',
     'Date Range',
     'Decade',
+    'Decade Range',
+    'Year',
   ];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -187,6 +212,8 @@ class _AddStoryViewState extends State<AddStoryView>
     getCurrentLocation();
     seasonController = TextEditingController();
     decadeController = TextEditingController();
+    endDecadeController = TextEditingController();
+
     titleController = TextEditingController();
     radiusController = TextEditingController();
     tagController = TextEditingController();
@@ -198,8 +225,17 @@ class _AddStoryViewState extends State<AddStoryView>
     selectedEndDateTime = DateTime(0);
     selectedStartDate = DateTime(0);
     selectedEndDate = DateTime(0);
+    selectedYear = DateTime(DateTime.now().year);
     if (widget.myStories) {
       story = widget.storyModel!.text;
+
+      if (widget.storyModel!.startDateFlag == 1) {
+        yearSelected = true;
+
+        selectedStartDate =
+            DateFormat.y().parse(widget.storyModel!.startTimeStamp!);
+        formattedYear = widget.storyModel!.startTimeStamp ?? '';
+      }
 
       for (var i = 0; i < widget.storyModel!.locations!.length; i++) {
         locations.add(widget.storyModel!.locations![i]);
@@ -211,6 +247,13 @@ class _AddStoryViewState extends State<AddStoryView>
       if (widget.storyModel!.decade != null) {
         decadeSelected = true;
         decadeController.text = widget.storyModel!.decade ?? '';
+      }
+
+      if (widget.storyModel!.endDecade != null) {
+        decadeSelected = false;
+        decadeRangeSelected = true;
+        decadeController.text = widget.storyModel!.decade ?? '';
+        endDecadeController.text = widget.storyModel!.endDecade ?? '';
       }
 
       titleController.text = widget.storyModel!.title ?? '';
@@ -225,7 +268,8 @@ class _AddStoryViewState extends State<AddStoryView>
       }
       if (widget.storyModel!.startHourFlag != 0 &&
           widget.storyModel!.startHourFlag != null &&
-          widget.storyModel!.startTimeStamp != null) {
+          widget.storyModel!.startTimeStamp != null &&
+          widget.storyModel!.startDateFlag != 1) {
         exactDateWithTimeSelected = true;
         final newTime = widget.storyModel!.startTimeStamp!.replaceAll('/', '-');
         final newTimeFormat = '$newTime:00';
@@ -234,7 +278,8 @@ class _AddStoryViewState extends State<AddStoryView>
         formattedStartDateTime = widget.storyModel!.startTimeStamp ?? '';
       } else if (widget.storyModel!.startHourFlag != null &&
           widget.storyModel!.startHourFlag == 0 &&
-          widget.storyModel!.startTimeStamp != null) {
+          widget.storyModel!.startTimeStamp != null &&
+          widget.storyModel!.startDateFlag != 1) {
         exatDateSelected = true;
         final newTime = widget.storyModel!.startTimeStamp!.replaceAll('/', '-');
         selectedStartDate = DateFormat('dd-MM-yyyy').parse(newTime);
@@ -272,6 +317,8 @@ class _AddStoryViewState extends State<AddStoryView>
     textController.clear();
     //decadeController.dispose();
     decadeController.clear();
+    endDecadeController.clear();
+
     //seasonController.dispose();
     seasonController.clear();
     timeResolutionController.clear();
@@ -789,21 +836,88 @@ class _AddStoryViewState extends State<AddStoryView>
               ),
             BaseWidgets.lowerGap,
             if (decadeSelected)
-              dropDownMenu(
-                selectedSeason,
-                season,
-                'Choose Season',
-                seasonController,
+              Column(
+                children: [
+                  dropDownMenu(
+                    selectedDecade,
+                    decade,
+                    'Choose Decade',
+                    decadeController,
+                  ),
+                  BaseWidgets.lowerGap,
+                  dropDownMenu(
+                    selectedSeason,
+                    season,
+                    'Choose Season',
+                    seasonController,
+                  ),
+                ],
               ),
-            BaseWidgets.lowerGap,
-            if (decadeSelected)
-              dropDownMenu(
-                selectedDecade,
-                decade,
-                'Choose Decade',
-                decadeController,
+            if (decadeRangeSelected)
+              Column(
+                children: [
+                  dropDownMenu(
+                    selectedDecade,
+                    decade,
+                    'Choose Decade',
+                    decadeController,
+                  ),
+                  BaseWidgets.lowerGap,
+                  dropDownMenu(
+                    selectedEndDecade,
+                    enddecade,
+                    'Choose End Decade',
+                    endDecadeController,
+                  ),
+                ],
               ),
-            BaseWidgets.lowerGap,
+            if (yearSelected)
+              Column(
+                children: [
+                  AppButton(
+                    labelStyle: const TextStyle(color: Colors.black),
+                    border: Border.all(color: context.appBarColor),
+                    backgroundColor: Colors.white,
+                    label: formattedYear ?? 'Choose Year',
+                    onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Select Year'),
+                            content: SizedBox(
+                              width: 300,
+                              height: 300,
+                              child: YearPicker(
+                                firstDate: DateTime(DateTime.now().year - 100),
+                                lastDate: DateTime(DateTime.now().year + 100),
+                                initialDate: DateTime.now(),
+                                selectedDate: selectedStartDate,
+                                onChanged: (DateTime dateTime) {
+                                  setState(() {
+                                    selectedStartDate = dateTime;
+                                    formattedYear = DateFormat.y()
+                                        .format(selectedStartDate);
+                                  });
+
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  BaseWidgets.lowerGap,
+                  dropDownMenu(
+                    selectedSeason,
+                    season,
+                    'Choose Season',
+                    seasonController,
+                  ),
+                ],
+              ),
             if (dateRangeSelected)
               Column(
                 children: [
@@ -909,23 +1023,43 @@ class _AddStoryViewState extends State<AddStoryView>
                 exactDateWithTimeSelected = false;
                 dateRangeSelected = false;
                 decadeSelected = false;
-
+                decadeRangeSelected = false;
+                yearSelected = false;
               case TimeResolutionType.exactDateWithTime:
                 exatDateSelected = false;
                 exactDateWithTimeSelected = true;
                 dateRangeSelected = false;
                 decadeSelected = false;
-
+                decadeRangeSelected = false;
+                yearSelected = false;
               case TimeResolutionType.dateRange:
                 exatDateSelected = false;
                 exactDateWithTimeSelected = false;
                 dateRangeSelected = true;
                 decadeSelected = false;
+                decadeRangeSelected = false;
+                yearSelected = false;
               case TimeResolutionType.decade:
                 exatDateSelected = false;
                 exactDateWithTimeSelected = false;
                 dateRangeSelected = false;
                 decadeSelected = true;
+                decadeRangeSelected = false;
+                yearSelected = false;
+              case TimeResolutionType.enddecade:
+                exatDateSelected = false;
+                exactDateWithTimeSelected = false;
+                dateRangeSelected = false;
+                decadeSelected = false;
+                decadeRangeSelected = true;
+                yearSelected = false;
+              case TimeResolutionType.year:
+                exatDateSelected = false;
+                exactDateWithTimeSelected = false;
+                dateRangeSelected = false;
+                decadeSelected = false;
+                decadeRangeSelected = false;
+                yearSelected = true;
             }
           }
         });
@@ -1012,21 +1146,6 @@ class _AddStoryViewState extends State<AddStoryView>
     final tagsList = tagController.text.split(',');
     var starttimecheck = false;
     var endtimecheck = false;
-    /* var endTime = <String>[];
-    var startTime = <String>[];
-    if (dateRangeSelected) {
-      if (selectedStartDateTime != DateTime(0)) {
-        final parsedStartTime = selectedStartDateTime.toString();
-        startTime = parsedStartTime.split(':00.000');
-        starttimecheck = true;
-      }
-
-      if (selectedEndDateTime != DateTime(0)) {
-        final parsedEndTime = selectedEndDateTime.toString();
-        endTime = parsedEndTime.split(':00.000');
-        endtimecheck = true;
-      }
-    } */
 
     if (selectedStartDateTime != DateTime(0)) {
       starttimecheck = true;
@@ -1034,15 +1153,38 @@ class _AddStoryViewState extends State<AddStoryView>
     if (selectedEndDateTime != DateTime(0)) {
       endtimecheck = true;
     }
+    String? timeExpression;
+// takes the value "moment","day","month+season","year","decade" or "decade+season"
+    if (exactDateWithTimeSelected) {
+      timeExpression = 'moment';
+    } else if (exatDateSelected) {
+      timeExpression = 'day';
+    } else if (yearSelected) {
+      timeExpression = 'year';
+    } else if (decadeRangeSelected && seasonController.text == '') {
+      timeExpression = 'decade';
+    } else if (decadeSelected && seasonController.text == '') {
+      timeExpression = 'decade';
+    } else if (decadeRangeSelected && seasonController.text != '') {
+      timeExpression = 'decade+season';
+    } else if (decadeSelected && seasonController.text != '') {
+      timeExpression = 'decade+season';
+    }
 
     final model = AddStoryModel(
       text: htmlText,
       title: titleController.text,
       labels: tagsList,
-      season: seasonController.text != '' ? seasonController.text : null,
-      decade: decadeController.text != '' ? decadeController.text : null,
-/*       startTimeStamp: !starttimecheck ? null : startTime[0],
-      endTimeStamp: !endtimecheck ? null : endTime[0], */
+      season: (seasonController.text != '' && decadeSelected)
+          ? seasonController.text
+          : null,
+      decade: (decadeController.text != '' &&
+              (decadeSelected || decadeRangeSelected))
+          ? decadeController.text
+          : null,
+      endDecade: (endDecadeController.text != '' && decadeRangeSelected)
+          ? endDecadeController.text
+          : null,
       startTimeStamp: starttimecheck
           ? exactDateWithTimeSelected
               ? selectedStartDateTime.toString()
@@ -1063,17 +1205,29 @@ class _AddStoryViewState extends State<AddStoryView>
               ? 1
               : 0,
       locations: locations,
+      startDateFlag: selectedStartDate != DateTime(0) && !yearSelected
+          ? 3
+          : yearSelected
+              ? 1
+              : -1,
+      endDateFlag: selectedEndDate != DateTime(0) ? 3 : -1,
+      timeType: (endtimecheck || decadeRangeSelected)
+          ? 'time_interval'
+          : 'time_point',
+      timeExpression: timeExpression,
     );
     if (widget.myStories) {
       await cubit.editStory(model, widget.storyModel!.id).then((value) {
         if (value) {
           Navigator.of(context).pop();
+          cubit.showNotification('Your Story is edited.');
         }
       });
     } else {
       await cubit.addStory(model).then((value) {
         if (value) {
           Navigator.of(context).pop();
+          cubit.showNotification('Your Story is added.');
         }
       });
     }

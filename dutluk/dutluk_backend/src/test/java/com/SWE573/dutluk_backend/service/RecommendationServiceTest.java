@@ -199,7 +199,7 @@ class RecommendationServiceTest {
                 .thenReturn(ResponseEntity.ok(mockResponse));
 
         // When
-        Map<Long, String> result = recommendationService.recommendStory(user);
+        Map<Long, Integer> result = recommendationService.recommendStory(user);
 
         // Then
         assertNotNull(result);
@@ -207,9 +207,9 @@ class RecommendationServiceTest {
         assertTrue(result.containsKey(1L));
         assertTrue(result.containsKey(2L));
         assertTrue(result.containsKey(3L));
-        assertEquals("50%", result.get(1L)); // Check if the values are correctly formatted as percentage strings
-        assertEquals("75%", result.get(2L));
-        assertEquals("100%", result.get(3L));
+        assertEquals(50, result.get(1L)); // Check if the values are correctly formatted as percentage strings
+        assertEquals(75, result.get(2L));
+        assertEquals(100, result.get(3L));
     }
 
 

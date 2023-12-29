@@ -34,11 +34,12 @@ const LabelSearch = () => {
     >
     {contextHolder}
     <div className="all-stories">
-    <center><h1>Stories with label: "{label}"</h1></center>
+    <center><h1>Stories with Label: "{label}"</h1></center>
       {labeledStories.map((story) => (
         <StoryList story={story} key={story.id} />
       ))}
     </div>
+
     </Space>
   );
 };
