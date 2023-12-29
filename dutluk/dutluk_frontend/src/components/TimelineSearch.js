@@ -41,7 +41,7 @@ const TimelineSearch = () => {
       }
 
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/api/story/search`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/story/search/timeline`,
         {
           params: {
             radius: radius,
