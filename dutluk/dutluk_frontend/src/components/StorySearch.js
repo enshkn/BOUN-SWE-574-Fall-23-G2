@@ -162,48 +162,63 @@ const StorySearch = () => {
   </select>
 </div>
 
-        {searchDate.type === "absolute-date" && (
-          <label>
-            Date:
-            <input
-              type="date"
-              value={searchDate.value || ""}
-              onChange={(e) =>
-                setSearchDate({ ...searchDate, value: e.target.value })
-              }
-            />
-          </label>
-        )}
+{searchDate.type === "absolute-date" && (
+          <div className="col-md-6">
+            <label htmlFor="searchDate" className="form-label">
+                Date:
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                id="searchDate"
+                value={searchDate.value || ""}
+                onChange={(e) =>
+                  setSearchDate({ ...searchDate, value: e.target.value })
+                }
+              />
+            </div>
+          )}
         {searchDate.type === "interval-date" && (
-          <>
-            <label>
-              Start Date:
-              <input
-                type="date"
-                value={searchDate.value?.startDate || ""}
-                onChange={(e) =>
-                  setSearchDate({
-                    ...searchDate,
-                    value: { ...searchDate.value, startDate: e.target.value },
-                  })
-                }
-              />
-            </label>
-            <label>
-              End Date:
-              <input
-                type="date"
-                value={searchDate.value?.endDate || ""}
-                onChange={(e) =>
-                  setSearchDate({
-                    ...searchDate,
-                    value: { ...searchDate.value, endDate: e.target.value },
-                  })
-                }
-              />
-            </label>
-          </>
-        )}
+            <div className="col-md-6">
+
+              <div className="mb-3">
+                <label htmlFor="startDate" className="form-label">
+                  Start Date:
+                </label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="startDate"
+                  value={searchDate.value?.startDate || ""}
+                  onChange={(e) =>
+                    setSearchDate({
+                      ...searchDate,
+                      value: { ...searchDate.value, startDate: e.target.value },
+                    })
+                  }
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="endDate" className="form-label">
+                  End Date:
+                </label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="endDate"
+                  value={searchDate.value?.endDate || ""}
+                  onChange={(e) =>
+                    setSearchDate({
+                      ...searchDate,
+                      value: { ...searchDate.value, endDate: e.target.value },
+                    })
+                  }
+                />
+              </div>
+
+            </div>
+          )}
         {searchDate.type === "absolute-year" && (
           <label>
             Year:
