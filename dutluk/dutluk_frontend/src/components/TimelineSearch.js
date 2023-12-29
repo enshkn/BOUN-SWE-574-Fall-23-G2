@@ -132,14 +132,10 @@ const TimelineSearch = () => {
       width: '100%',
     }}
     >
-    {contextHolder}
-    <div className="story-search">
-      {/* Story Search Element */}
-      <h2>Timeline Search</h2>
-      <div className="search-form">
-      <form className="row g-3">
-
-          </form>
+      {contextHolder}
+      <div className="story-search">
+        <div className="search-form">
+          <h2>Timeline Search</h2>
           {/* Radius Element */}
           <div className="col-md-6">
   <label htmlFor="radius" className="form-label">Radius (in km):</label>
@@ -168,181 +164,216 @@ const TimelineSearch = () => {
   </select>
 </div>
 
-        {searchDate.type === "absolute-date" && (
-          <label>
-            Date:
-            <input
-              type="date"
-              value={searchDate.value || ""}
-              onChange={(e) =>
-                setSearchDate({ ...searchDate, value: e.target.value })
-              }
-            />
-          </label>
-        )}
-        {searchDate.type === "interval-date" && (
-          <>
-            <label>
-              Start Date:
+          {searchDate.type === "absolute-date" && (
+            <div className="col-md-6">
+              <label htmlFor="searchDate" className="form-label">
+                Date:
+              </label>
               <input
                 type="date"
-                value={searchDate.value?.startDate || ""}
+                className="form-control"
+                id="searchDate"
+                value={searchDate.value || ""}
                 onChange={(e) =>
-                  setSearchDate({
-                    ...searchDate,
-                    value: { ...searchDate.value, startDate: e.target.value },
-                  })
+                  setSearchDate({ ...searchDate, value: e.target.value })
                 }
               />
-            </label>
-            <label>
-              End Date:
-              <input
-                type="date"
-                value={searchDate.value?.endDate || ""}
-                onChange={(e) =>
-                  setSearchDate({
-                    ...searchDate,
-                    value: { ...searchDate.value, endDate: e.target.value },
-                  })
-                }
-              />
-            </label>
-          </>
-        )}
-        {searchDate.type === "absolute-year" && (
-          <label>
-            Year:
-            <input
-              type="number"
-              value={searchDate.value || ""}
-              onChange={(e) =>
-                setSearchDate({ ...searchDate, value: e.target.value })
-              }
-            />
-          </label>
-        )}
-        {searchDate.type === "interval-year" && (
-          <>
-            <label>
-              Start Year:
+            </div>
+          )}
+
+          {searchDate.type === "interval-date" && (
+            <div className="col-md-6">
+
+              <div className="mb-3">
+                <label htmlFor="startDate" className="form-label">
+                  Start Date:
+                </label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="startDate"
+                  value={searchDate.value?.startDate || ""}
+                  onChange={(e) =>
+                    setSearchDate({
+                      ...searchDate,
+                      value: { ...searchDate.value, startDate: e.target.value },
+                    })
+                  }
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="endDate" className="form-label">
+                  End Date:
+                </label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="endDate"
+                  value={searchDate.value?.endDate || ""}
+                  onChange={(e) =>
+                    setSearchDate({
+                      ...searchDate,
+                      value: { ...searchDate.value, endDate: e.target.value },
+                    })
+                  }
+                />
+              </div>
+
+            </div>
+          )}
+
+          {searchDate.type === "absolute-year" && (
+            <div className="col-md-6">
+              <label htmlFor="yearInput" className="form-label">
+                Year:
+              </label>
               <input
                 type="number"
-                value={searchDate.value?.startDate || ""}
+                className="form-control"
+                id="yearInput"
+                value={searchDate.value || ""}
                 onChange={(e) =>
-                  setSearchDate({
-                    ...searchDate,
-                    value: { ...searchDate.value, startDate: e.target.value },
-                  })
+                  setSearchDate({ ...searchDate, value: e.target.value })
                 }
               />
-            </label>
-            <label>
-              End Year:
-              <input
-                type="number"
-                value={searchDate.value?.endDate || ""}
-                onChange={(e) =>
-                  setSearchDate({
-                    ...searchDate,
-                    value: { ...searchDate.value, endDate: e.target.value },
-                  })
-                }
-              />
-            </label>
-          </>
-        )}
-        {/* Season Picker Element */}
-<div className="col-md-6">
-  <label htmlFor="season" className="form-label">Season:</label>
-  <select
-    id="season"
-    className="form-select"
-    value={searchSeason}
-    onChange={handleSeasonChange}
-  >
-    <option value="">Select a Season</option>
-    <option value="spring">Spring</option>
-    <option value="summer">Summer</option>
-    <option value="fall">Fall</option>
-    <option value="winter">Winter</option>
-  </select>
-</div>
-        {/* Decade Picker Element */}
-<div className="col-md-6">
-  <label htmlFor="decade" className="form-label">Decade:</label>
-  <select
-    id="decade"
-    className="form-select"
-    value={searchDecade}
-    onChange={handleDecadeChange}
-  >
-    <option value="">Select a Decade</option>
-    <option value="1940s">1940s</option>
-    <option value="1950s">1950s</option>
-    <option value="1960s">1960s</option>
-    <option value="1970s">1970s</option>
-    <option value="1980s">1980s</option>
-    <option value="1990s">1990s</option>
-    <option value="2000s">2000s</option>
-    <option value="2010s">2010s</option>
-    <option value="2020s">2020s</option>
-  </select>
-</div>
-        {/* Button  Element */}
-<div className="col-md-6 mt-3">
-  <button
-    type="button"
-    className="btn btn-primary"
-    onClick={handleSearch}
-  >
-    Search
-  </button>
-</div>
-        <LoadScript
-          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-        >
-          <GoogleMap
-            mapContainerStyle={{ width: "100%", height: "400px" }}
-            center={{ lat: 41.085064, lng: 29.044687 }}
-            zoom={10}
-            onClick={handleMapClick}
-          >
-            {selectedLocation && (
-              <Marker
-                position={{
-                  lat: selectedLocation.lat,
-                  lng: selectedLocation.lng,
-                }}
-                onClick={handleMarkerReClick}
-              />
-            )}
-          </GoogleMap>
-        </LoadScript>
-        {searchResults.length > 0 && (
-          <div>
-            <h3>Search Results:</h3>
-            <ul>
-              {searchResults.map((result) => (
-                <li key={result.id}>
-                  <h2>
-                  <Timeline
-                  mode={"left"}
-                  items={[
-                  {
-                    label: result.startTimeStamp,
-                    children: <a href={`/story/${result.id}`}>{result.title}</a>,
-                  },
-                  ]}
-                  />
-                  </h2>
-                </li>
-              ))}
-            </ul>
+            </div>
+          )}
+          {searchDate.type === "interval-year" && (
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label htmlFor="startYear" className="form-label">
+                  Start Year:
+                </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="startYear"
+                  value={searchDate.value?.startDate || ""}
+                  onChange={(e) =>
+                    setSearchDate({
+                      ...searchDate,
+                      value: { ...searchDate.value, startDate: e.target.value },
+                    })
+                  }
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="endYear" className="form-label">
+                  End Year:
+                </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="endYear"
+                  value={searchDate.value?.endDate || ""}
+                  onChange={(e) =>
+                    setSearchDate({
+                      ...searchDate,
+                      value: { ...searchDate.value, endDate: e.target.value },
+                    })
+                  }
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Season Picker Element */}
+          <div className="col-md-6">
+            <label htmlFor="season" className="form-label">Season:</label>
+            <select
+              id="season"
+              className="form-select"
+              value={searchSeason}
+              onChange={handleSeasonChange}
+            >
+              <option value="">Select a Season</option>
+              <option value="spring">Spring</option>
+              <option value="summer">Summer</option>
+              <option value="fall">Fall</option>
+              <option value="winter">Winter</option>
+            </select>
           </div>
-        )}
+          {/* Decade Picker Element */}
+          <div className="col-md-6">
+            <label htmlFor="decade" className="form-label">Decade:</label>
+            <select
+              id="decade"
+              className="form-select"
+              value={searchDecade}
+              onChange={handleDecadeChange}
+            >
+              <option value="">Select a Decade</option>
+              <option value="1940s">1940s</option>
+              <option value="1950s">1950s</option>
+              <option value="1960s">1960s</option>
+              <option value="1970s">1970s</option>
+              <option value="1980s">1980s</option>
+              <option value="1990s">1990s</option>
+              <option value="2000s">2000s</option>
+              <option value="2010s">2010s</option>
+              <option value="2020s">2020s</option>
+            </select>
+          </div>
+          <div className="col-md-6 mt-3">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleSearch}
+            >
+              Search
+            </button>
+          </div>
+        </div>
+
+        <div className="map-section">
+          <LoadScript
+            googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+          >
+            <GoogleMap
+              mapContainerStyle={{ width: "100%", height: "400px" }}
+              center={{ lat: 41.085064, lng: 29.044687 }}
+              zoom={10}
+              onClick={handleMapClick}
+            >
+              {selectedLocation && (
+                <Marker
+                  position={{
+                    lat: selectedLocation.lat,
+                    lng: selectedLocation.lng,
+                  }}
+                  onClick={handleMarkerReClick}
+                />
+              )}
+            </GoogleMap>
+          </LoadScript>
+        </div>
+
+        <div className="searchResults">
+          {searchResults.length > 0 && (
+            <div>
+              <h3>Search Results:</h3>
+              <ul>
+                {searchResults.map((result) => (
+                  <li key={result.id}>
+                    <h2>
+                      <Timeline
+                        mode={"left"}
+                        items={[
+                          {
+                            label: result.startTimeStamp,
+                            children: <a href={`/story/${result.id}`}>{result.title}</a>,
+                          },
+                        ]}
+                      />
+                    </h2>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
     </Space>
   );
 };
