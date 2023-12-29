@@ -34,6 +34,8 @@ public class StoryResponse{
 
     private List<Comment> comments;
 
+    private Integer commentSize;
+
     private Set<Long> likes;
 
     private Set<Long> savedBy;
@@ -67,6 +69,7 @@ public class StoryResponse{
         this.labels = story.getLabels();
         this.user = story.getUser();
         this.comments = story.getComments();
+        this.commentSize = story.getComments().size();
         this.likes = story.getLikes();
         this.savedBy = story.getSavedBy();
         this.locations = story.getLocations();
