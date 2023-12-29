@@ -661,13 +661,16 @@ public class StoryService {
         return value != null && !value.equalsIgnoreCase("") && !value.isBlank() && !value.equalsIgnoreCase("null");
     }
 
-    public String sendBatchofStories() {
-        if (recService.isRecEngineStatus()) {
-            List<Story> storyList = findAll();
-            for (Story story : storyList) {
-                recService.vectorizeRequest(story);
+    public String sendBatchofStories(String password) {
+
+        if (password.equals("password")) {
+            if (recService.isRecEngineStatus()) {
+                List<Story> storyList = findAll();
+                for (Story story : storyList) {
+                    recService.vectorizeRequest(story);
+                }
+                return "Data sent to karadut";
             }
-            return "Data sent to karadut";
         }
         return "Karadut not active";
     }

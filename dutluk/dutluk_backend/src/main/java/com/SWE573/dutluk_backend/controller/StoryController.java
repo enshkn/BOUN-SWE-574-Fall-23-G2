@@ -223,9 +223,9 @@ public class StoryController {
         return IntegrationService.mobileCheck(request, storyListResponse);
     }
 
-    @GetMapping("/send/allToKaradut")
-    public ResponseEntity<?> sendAllStoriesToKaradut(HttpServletRequest request) {
-        return IntegrationService.mobileCheck(request, storyService.sendBatchofStories());
+    @GetMapping("/send/allToKaradut/{password}")
+    public ResponseEntity<?> sendAllStoriesToKaradut(@PathVariable String password, HttpServletRequest request) {
+        return IntegrationService.mobileCheck(request, storyService.sendBatchofStories(password));
     }
 
     @GetMapping("/search/timeline")
