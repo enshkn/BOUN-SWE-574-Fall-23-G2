@@ -103,6 +103,7 @@ const AddStoryForm = () => {
   const Navigate = useNavigate();
 
   const handleSubmit = async (event) => {
+    
     event.preventDefault();
     // Text validation
     if (!text || text.trim() === '' || text === '<p><br></p>') { // Check for empty or only whitespace
@@ -117,6 +118,14 @@ const AddStoryForm = () => {
     if (markers.length === 0 && circles.length === 0 && polygons.length === 0 && polylines.length === 0) {
       messageApi.open({ type: "error", content: "Please pick at least one location."});
       return; // Prevent form submission if no location is set
+    }
+    if (startTimeStamp !== null && endTimeStamp !== null && startTimeStamp > endTimeStamp) {
+      messageApi.open({ type: "error", content: "Start date should be before the end date" });
+      return;
+    }
+    if (decade !== null && endDecade !== null && decade > endDecade) {
+      messageApi.open({ type: "error", content: "Start decade should be before the end decade" });
+      return;
     }
 
     {/* 
@@ -905,7 +914,7 @@ Time Resolution:
 
 
 <div className="d-flex justify-content-center mt-3">
-      <button type="submit" className="btn btn-primary">
+      <button type="submit" className="btn btn-primary" style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white",  border: "none", margin: "10px" }}>
         Add Story
       </button>
     </div>
