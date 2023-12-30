@@ -113,34 +113,30 @@ const StoryCard = ({ story, active, onFocus }) => {
     );
   };
   
-  const Timeline = ({ items }) => {
-    const [focusedDate, setFocusedDate] = useState('');
+  const Timeline = ({ items, visibleCount = 3 }) => {
     const [startIdx, setStartIdx] = useState(0);
   
-    const handleFocusDate = (date) => {
-      setFocusedDate(date);
-    };
-  
     const handleMoveRight = () => {
-      setStartIdx((prev) => Math.min(prev + 1, items.length - 3));
+      setStartIdx(prev => Math.min(prev + visibleCount, items.length - visibleCount));
     };
   
     const handleMoveLeft = () => {
-      setStartIdx((prev) => Math.max(prev - 1, 0));
+      setStartIdx(prev => Math.max(prev - visibleCount, 0));
     };
   
     return (
       <div className="timeline">
-        {/* ... existing controls ... */}
+        <div className="timeline-controls">
+          <Button className="timeline-control-btn" onClick={handleMoveLeft}>{'<'}</Button>
+          <Button className="timeline-control-btn" onClick={handleMoveRight}>{'>'}</Button>
+        </div>
         <div className="timeline-carousel-container">
           <Row className="justify-content-center">
             <div className="timeline-carousel">
-              {items.slice(startIdx, startIdx + 3).map((item, index) => (
+              {items.slice(startIdx, startIdx + visibleCount).map(item => (
                 <StoryCard
                   key={item.id}
                   story={item}
-                  active={item.date === focusedDate}
-                  onFocus={handleFocusDate}
                 />
               ))}
             </div>
