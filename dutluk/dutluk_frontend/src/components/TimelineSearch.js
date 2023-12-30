@@ -59,7 +59,7 @@ const TimelineSearch = () => {
       setSearchResults(response.data);
     } catch (error) {
       console.log(error);
-      messageApi.open({ type: "error", content: "Error occured while searching stories!"});
+      messageApi.open({ type: "error", content: "Error occured while searching stories!" });
     }
   }, [
     radius,
@@ -266,7 +266,7 @@ const TimelineSearch = () => {
               <option value="2020s">2020s</option>
             </select>
           </label>
-          <button type="button" className="btn btn-primary" style={{backgroundColor: "#ff5500ca", color: "white",   border: "none", margin: "5px"}} onClick={handleSearch}>
+          <button type="button" className="btn btn-primary" style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", margin: "5px" }} onClick={handleSearch}>
             Search
           </button>
         </div>
@@ -292,19 +292,21 @@ const TimelineSearch = () => {
             </GoogleMap>
           </LoadScript>
           {searchResults.length > 0 && (
-                  <div>
-                    <h3>Search Results:</h3>
-                    <Timeline
-                      items={searchResults.map(result => ({
-                        id: result.id,
-                        title: result.title,
-                        image: result.picture, // or a placeholder if no image
-                        description: result.description,
-                        date: result.timeExpression,
-                      }))}
-                    />
-                  </div>
-                )}
+            <div>
+              <h3>Search Results:</h3>
+              <Timeline
+                items={searchResults.map(result => ({
+                  id: result.id,
+                  title: result.title,
+                  image: result.picture, // or a placeholder if no image
+                  description: result.text,
+                  date: result.timeExpression,
+                }))}
+                visibleCount={3} // Set the number of visible stories
+              />
+            </div>
+          )}
+
         </div>
       </div>
     </Space>
