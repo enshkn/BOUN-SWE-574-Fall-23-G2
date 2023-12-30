@@ -112,7 +112,7 @@ const StoryList = ({ story }) => {
                     <span className="location-text">{story.locations[0].locationName}</span>
                 </div>
 
-                {story.picture && <img src={story.picture} alt="Post" />}
+                <img src={story.picture || 'https://images.unsplash.com/photo-1682687220063-4742bd7fd538?q=80&w=1375&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'} alt="Post" />
 
                 <div className="text-container">
                     <p className="main-text">{mainText}</p>
