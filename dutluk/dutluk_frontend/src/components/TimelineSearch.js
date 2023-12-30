@@ -135,8 +135,7 @@ const TimelineSearch = () => {
       {contextHolder}
       <div className="story-search">
         <div className="search-form">
-          <h2>Timeline Search</h2>
-          {/* Radius Element */}
+        <center><h2>Timeline Search</h2></center>
           <div className="col-md-6">
             <label htmlFor="radius" className="form-label">Radius (in km):</label>
             <input
@@ -146,7 +145,11 @@ const TimelineSearch = () => {
               value={radius}
               onChange={(e) => setRadius(parseInt(e.target.value))}
             />
+            
           </div>
+          <button type="button" className="btn btn-primary" style={{backgroundColor: "#ff5500ca", color: "white",   border: "none", margin: "5px"}} onClick={handleSearchByLocation}>
+            Use My Location
+        </button>
           {/* Time Type Picker Element */}
           <div className="col-md-6">
             <label htmlFor="dateType" className="form-label">Date Type:</label>
