@@ -167,23 +167,32 @@ const StorySearch = () => {
           </div>
 
           {searchDate.type === "absolute-date" && (
-            <label>
-              Date:
+            <div className="col-md-6">
+              <label htmlFor="searchDate" className="form-label">
+                Date:
+              </label>
               <input
                 type="date"
+                className="form-control"
+                id="searchDate"
                 value={searchDate.value || ""}
                 onChange={(e) =>
                   setSearchDate({ ...searchDate, value: e.target.value })
                 }
               />
-            </label>
+            </div>
           )}
           {searchDate.type === "interval-date" && (
-            <>
-              <label>
-                Start Date:
+            <div className="col-md-6">
+
+              <div className="mb-3">
+                <label htmlFor="startDate" className="form-label">
+                  Start Date:
+                </label>
                 <input
                   type="date"
+                  className="form-control"
+                  id="startDate"
                   value={searchDate.value?.startDate || ""}
                   onChange={(e) =>
                     setSearchDate({
@@ -192,11 +201,16 @@ const StorySearch = () => {
                     })
                   }
                 />
-              </label>
-              <label>
-                End Date:
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="endDate" className="form-label">
+                  End Date:
+                </label>
                 <input
                   type="date"
+                  className="form-control"
+                  id="endDate"
                   value={searchDate.value?.endDate || ""}
                   onChange={(e) =>
                     setSearchDate({
@@ -205,27 +219,36 @@ const StorySearch = () => {
                     })
                   }
                 />
-              </label>
-            </>
+              </div>
+
+            </div>
           )}
           {searchDate.type === "absolute-year" && (
-            <label>
-              Year:
+            <div className="col-md-6">
+              <label htmlFor="yearInput" className="form-label">
+                Year:
+              </label>
               <input
                 type="number"
+                className="form-control"
+                id="yearInput"
                 value={searchDate.value || ""}
                 onChange={(e) =>
                   setSearchDate({ ...searchDate, value: e.target.value })
                 }
               />
-            </label>
+            </div>
           )}
           {searchDate.type === "interval-year" && (
-            <>
-              <label>
-                Start Year:
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label htmlFor="startYear" className="form-label">
+                  Start Year:
+                </label>
                 <input
                   type="number"
+                  className="form-control"
+                  id="startYear"
                   value={searchDate.value?.startDate || ""}
                   onChange={(e) =>
                     setSearchDate({
@@ -234,11 +257,15 @@ const StorySearch = () => {
                     })
                   }
                 />
-              </label>
-              <label>
-                End Year:
+              </div>
+              <div className="mb-3">
+                <label htmlFor="endYear" className="form-label">
+                  End Year:
+                </label>
                 <input
                   type="number"
+                  className="form-control"
+                  id="endYear"
                   value={searchDate.value?.endDate || ""}
                   onChange={(e) =>
                     setSearchDate({
@@ -247,8 +274,8 @@ const StorySearch = () => {
                     })
                   }
                 />
-              </label>
-            </>
+              </div>
+            </div>
           )}
           {/* Season Picker Element */}
           <div className="col-md-6">
