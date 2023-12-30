@@ -645,13 +645,13 @@ public class StoryService {
             };
             case "timeInterval" -> switch (timeExpression) {
                 case "moment" -> "Between " + startTimeStamp + " and " + endTimeStamp + ".";
-                case "day" -> "Between the days" + startTimeStamp + " and " + endTimeStamp + ".";
+                case "day" -> "Between the days " + startTimeStamp + " and " + endTimeStamp + ".";
                 case "month" ->
-                        "Between the month of" + startMonth + " of " + startYear + " and " + endMonth + " of " + endYear + ".";
+                        "Between the month of " + startMonth + " of " + startYear + " and " + endMonth + " of " + endYear + ".";
                 case "year" -> "Between the year of " + startYear + " and " + endYear + ".";
                 case "decade" -> "Between " + decade + " and " + endDecade + ".";
                 case "season" ->
-                        "Between " + season + " of the year " + startYear + " and the " + endSeason + "of the year " + endYear + ".";
+                        "Between " + season + " of the year " + startYear + " and the " + endSeason + " of the year " + endYear + ".";
                 case "decade+season" ->
                         "Between the " + season + " of " + decade + " and " + endSeason + " of " + endDecade + ".";
                 default -> null;

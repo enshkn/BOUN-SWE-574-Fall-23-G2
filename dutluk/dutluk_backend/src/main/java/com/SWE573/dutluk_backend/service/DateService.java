@@ -174,9 +174,10 @@ public class DateService {
             return getVerbalMonthValue(dateString.substring(3, 5));
         }
         if (dateString.length() == 7) {
-            return getVerbalMonthValue(dateString.substring(0, 3));
+            return getVerbalMonthValue(dateString.substring(0, 2));
         }
-        return getVerbalMonthValue(dateString);
+
+        return dateString;
     }
 
     public static String getVerbalMonthValue(String monthValue) {
