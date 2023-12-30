@@ -11,6 +11,7 @@ import YearPicker from './DateTimePicker/YearPicker'
 import DecadePicker from './DateTimePicker/DecadePicker'
 import SeasonMenu from './DateTimePicker/SeasonMenu'
 import { format, set } from 'date-fns'
+import { addDays } from 'date-fns/esm'
 
 function DateTimerPicker({
   onTimeTypeSelect,
@@ -304,6 +305,17 @@ function DateTimerPicker({
       console.log("date flag: ", dateFlag, "hour flag: ", hourFlag, "time stamp end:", timeStampEnd, "time stamp start: ", timeStampStart, "end hour flag: ", endHourFlag, "end date flag: ", endDateFlag);
     }, [dateFlag, hourFlag, timeStampEnd, timeStampStart, endHourFlag, endDateFlag]);
     
+    useEffect(() => {
+      if (selectedDateTimeStart && selectedDateTimeEnd && selectedDateTimeStart > selectedDateTimeEnd) {
+        alert('Start date should be before the end date');
+      }
+    }, [selectedDateTimeStart, selectedDateTimeEnd]);
+
+    useEffect(() => {
+      if (selectedDecadeStart && selectedDecadeEnd && selectedDecadeStart > selectedDecadeEnd) {
+        alert('Start date should be before the end date');
+      }
+    }, [selectedDecadeStart, selectedDecadeEnd]);
 
   // props 
   
