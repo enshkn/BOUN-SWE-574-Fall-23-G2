@@ -76,9 +76,4 @@ public class CommentService {
     public Comment getCommentById(Long commentId) {
         return commentRepository.getCommentById(commentId);
     }
-
-    public Boolean isCommentLikedByUser(Long commentId, Long userId) {
-        Comment comment = getCommentById(commentId);
-        return comment.getLikes().contains(userId);
-    }
 }
