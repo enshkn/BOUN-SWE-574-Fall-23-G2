@@ -141,7 +141,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
           polylineLatLng.add(list);
         }
         for (var j = 0; j < polylineLocations.length; j++) {
-          if (polylineLocations[j].isPolygon == k) {
+          if (polylineLocations[j].isPolyline == k) {
             polylineLatLng[k].add(
               LatLng(
                 polylineLocations[j].latitude!,
@@ -385,7 +385,7 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                           style: const TextStyles.body().copyWith(
                             letterSpacing: 0.016,
                           ),
-                          maxLines: 1,
+                          maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
                         ),
