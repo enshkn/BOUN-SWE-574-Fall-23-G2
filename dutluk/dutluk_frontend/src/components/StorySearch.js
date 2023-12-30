@@ -27,73 +27,95 @@ const StorySearch = () => {
     if (searchQuery && searchQuery.length < 4) {
       return;
     }
+    const isValidMonthYear = (input) => {
+      const regex = /^(0[1-9]|1[0-2])-\d{4}$/;
+      return regex.test(input);
+    };
+    let isValid = true;
+    let errorMessage = '';
 
-    try {
-      let startDate = null;
-      let endDate = null;
+    // Validate Absolute Month-Year
+    if (searchDate.type === "absolute-month" && !isValidMonthYear(searchMonthYearStart)) {
+        isValid = false;
+        errorMessage = 'Invalid format for Month-Year. Expected MM-YYYY.';
+    };
+    if (searchDate.type === "interval-month" && !isValidMonthYear(searchMonthYearStart) && !isValidMonthYear(searchMonthYearEnd)) {
+        isValid = false;
+        errorMessage = 'Invalid format for Month-Year. Expected MM-YYYY.';
+    };
 
-      switch (searchDate.type) {
-        case "absolute-date":
-          startDate = searchDate.value;
-          endDate = searchDate.value;
-          break;
-        case "interval-date":
-          startDate = searchDate.value.startDate;
-          endDate = searchDate.value.endDate;
-          break;
-        case "absolute-year":
-          startDate = `${searchDate.value}-01-01`;
-          endDate = `${searchDate.value}-12-31`;
-          break;
-        case "interval-year":
-          startDate = `${searchDate.value.startDate}-01-01`;
-          endDate = `${searchDate.value.endDate}-12-31`;
-          break;
-        case "absolute-month":
+      if (!isValid) {
+        // Display error message or handle the error
+        messageApi.open({ type: "error", content: errorMessage});
+        return;
+      }
+
+      try {
+        let startDate = null;
+        let endDate = null;
+
+        switch (searchDate.type) {
+          case "absolute-date":
+            startDate = searchDate.value;
+            endDate = searchDate.value;
+            break;
+          case "interval-date":
+            startDate = searchDate.value.startDate;
+            endDate = searchDate.value.endDate;
+            break;
+          case "absolute-year":
+            startDate = `${searchDate.value}-01-01`;
+            endDate = `${searchDate.value}-12-31`;
+            break;
+          case "interval-year":
+            startDate = `${searchDate.value.startDate}-01-01`;
+            endDate = `${searchDate.value.endDate}-12-31`;
+            break;
+          case "absolute-month":
             const [month, year] = searchMonthYearStart.split("-");
             startDate = `${year}-${month}`;
             break;
-        case "interval-month":
+          case "interval-month":
             const [startMonth, startYear] = searchMonthYearStart.split("-");
             const [endMonth, endYear] = searchMonthYearEnd.split("-");
             startDate = `${startYear}-${startMonth}`;
             endDate = `${endYear}-${endMonth}`;
             break;
-        default:
-          break;
-      }
-
-      const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/api/story/search`,
-        {
-          params: {
-            query: searchQuery,
-            radius: radius,
-            latitude: selectedLocation ? selectedLocation.lat : null,
-            longitude: selectedLocation ? selectedLocation.lng : null,
-            startTimeStamp: startDate,
-            endTimeStamp: endDate,
-            season: searchSeason,
-            decade: searchDecade,
-          },
-          withCredentials: true,
+          default:
+            break;
         }
-      );
 
-      setSearchResults(response.data);
-    } catch (error) {
-      console.log(error);
-      messageApi.open({ type: "error", content: "Error occured while searching stories!" });
-    }
-  }, [
-    messageApi,
-    searchQuery,
-    radius,
-    selectedLocation,
-    searchDate,
-    searchSeason,
-    searchDecade,
-  ]);
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/api/story/search`,
+          {
+            params: {
+              query: searchQuery,
+              radius: radius,
+              latitude: selectedLocation ? selectedLocation.lat : null,
+              longitude: selectedLocation ? selectedLocation.lng : null,
+              startTimeStamp: startDate,
+              endTimeStamp: endDate,
+              season: searchSeason,
+              decade: searchDecade,
+            },
+            withCredentials: true,
+          }
+        );
+
+        setSearchResults(response.data);
+      } catch (error) {
+        console.log(error);
+        messageApi.open({ type: "error", content: "Error occured while searching stories!" });
+      }
+    }, [
+      messageApi,
+      searchQuery,
+      radius,
+      selectedLocation,
+      searchDate,
+      searchSeason,
+      searchDecade,
+    ]);
 
   const handleMapClick = (event) => {
     const clickedLat = event.latLng.lat();
@@ -306,25 +328,25 @@ const StorySearch = () => {
             </div>
           )}
           {searchDate.type === "interval-month" && (
-              <div className="col-md-6">
-                <label htmlFor="startMonthYear" className="form-label">Start Month-Year:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="startMonthYear"
-                  placeholder="MM-YYYY"
-                  value={searchMonthYearStart}
-                  onChange={(e) => setSearchMonthYearStart(e.target.value)}
-                />
-                <label htmlFor="endMonthYear" className="form-label">End Month-Year:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="endMonthYear"
-                  placeholder="MM-YYYY"
-                  value={searchMonthYearEnd}
-                  onChange={(e) => setSearchMonthYearEnd(e.target.value)}
-                />
+            <div className="col-md-6">
+              <label htmlFor="startMonthYear" className="form-label">Start Month-Year:</label>
+              <input
+                type="text"
+                className="form-control"
+                id="startMonthYear"
+                placeholder="MM-YYYY"
+                value={searchMonthYearStart}
+                onChange={(e) => setSearchMonthYearStart(e.target.value)}
+              />
+              <label htmlFor="endMonthYear" className="form-label">End Month-Year:</label>
+              <input
+                type="text"
+                className="form-control"
+                id="endMonthYear"
+                placeholder="MM-YYYY"
+                value={searchMonthYearEnd}
+                onChange={(e) => setSearchMonthYearEnd(e.target.value)}
+              />
             </div>
           )}
 
