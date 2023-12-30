@@ -18,6 +18,9 @@ const StorySearch = () => {
   const [searchDate, setSearchDate] = useState({ type: null, value: null });
   const [searchSeason, setSearchSeason] = useState(null);
   const [searchDecade, setSearchDecade] = useState(null);
+  const [searchMonthYearStart, setSearchMonthYearStart] = useState("");
+  const [searchMonthYearEnd, setSearchMonthYearEnd] = useState("");
+
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleSearch = useCallback(async () => {
@@ -46,6 +49,16 @@ const StorySearch = () => {
           startDate = `${searchDate.value.startDate}-01-01`;
           endDate = `${searchDate.value.endDate}-12-31`;
           break;
+        case "absolute-month":
+            const [month, year] = searchMonthYearStart.split("-");
+            startDate = `${year}-${month}`;
+            break;
+        case "interval-month":
+            const [startMonth, startYear] = searchMonthYearStart.split("-");
+            const [endMonth, endYear] = searchMonthYearEnd.split("-");
+            startDate = `${startYear}-${startMonth}`;
+            endDate = `${endYear}-${endMonth}`;
+            break;
         default:
           break;
       }
@@ -163,6 +176,8 @@ const StorySearch = () => {
               <option value="interval-date">Interval Date</option>
               <option value="absolute-year">Absolute Year</option>
               <option value="interval-year">Interval Year</option>
+              <option value="absolute-month">Absolute Month</option>
+              <option value="interval-month">Interval Month</option>
             </select>
           </div>
 
@@ -277,6 +292,46 @@ const StorySearch = () => {
               </div>
             </div>
           )}
+          {searchDate.type === "absolute-month" && (
+            <div className="col-md-6">
+              <label htmlFor="monthYear" className="form-label">Month-Year:</label>
+              <input
+                type="text"
+                className="form-control"
+                id="monthYear"
+                placeholder="MM-YYYY"
+                value={searchMonthYearStart}
+                onChange={(e) => setSearchMonthYearStart(e.target.value)}
+              />
+            </div>
+          )}
+          {searchDate.type === "interval-month" && (
+            <div className="col-md-6">
+              <div className="col-md-6">
+                <label htmlFor="startMonthYear" className="form-label">Start Month-Year:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="startMonthYear"
+                  placeholder="MM-YYYY"
+                  value={searchMonthYearStart}
+                  onChange={(e) => setSearchMonthYearStart(e.target.value)}
+                />
+              </div>
+              <div className="col-md-6">
+                <label htmlFor="endMonthYear" className="form-label">End Month-Year:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="endMonthYear"
+                  placeholder="MM-YYYY"
+                  value={searchMonthYearEnd}
+                  onChange={(e) => setSearchMonthYearEnd(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
+
           {/* Season Picker Element */}
           <div className="col-md-6">
             <label htmlFor="season" className="form-label">Season:</label>
@@ -319,37 +374,37 @@ const StorySearch = () => {
             <button
               type="button"
               className="btn btn-primary"
-              style={{backgroundColor: "#ff5500ca", color: "white",   border: "none"}}
+              style={{ backgroundColor: "#ff5500ca", color: "white", border: "none" }}
               onClick={handleSearch}
             >
               Explore
             </button>
           </div>
 
-      </div>
-      <div className="search-results">
-        <LoadScript
-          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-        >
-          <GoogleMap
-            mapContainerStyle={{ width: "80%", height: "400px" , margin: "0 auto"}}
-            center={{ lat: 41.085064, lng: 29.044687 }}
-            zoom={10}
-            onClick={handleMapClick}
+        </div>
+        <div className="search-results">
+          <LoadScript
+            googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
           >
-            {selectedLocation && (
-              <Marker
-              position={{
-                lat: selectedLocation.lat,
-                lng: selectedLocation.lng,
-              }}
-              onClick={handleMarkerReClick}
-            />
-            )}
-          </GoogleMap>
-        </LoadScript>
-        <div style={{ marginBottom: "20px" }} />
-        {searchResults.length > 0 && (
+            <GoogleMap
+              mapContainerStyle={{ width: "80%", height: "400px", margin: "0 auto" }}
+              center={{ lat: 41.085064, lng: 29.044687 }}
+              zoom={10}
+              onClick={handleMapClick}
+            >
+              {selectedLocation && (
+                <Marker
+                  position={{
+                    lat: selectedLocation.lat,
+                    lng: selectedLocation.lng,
+                  }}
+                  onClick={handleMarkerReClick}
+                />
+              )}
+            </GoogleMap>
+          </LoadScript>
+          <div style={{ marginBottom: "20px" }} />
+          {searchResults.length > 0 && (
             <div className="all-stories">
               <h1>Exploring Results</h1>
               {searchResults.map((story) => (
