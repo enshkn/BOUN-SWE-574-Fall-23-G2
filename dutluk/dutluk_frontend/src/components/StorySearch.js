@@ -40,7 +40,7 @@ const StorySearch = () => {
         isValid = false;
         errorMessage = 'Invalid format for Month-Year. Expected MM-YYYY.';
     };
-    if (searchDate.type === "interval-month" && !isValidMonthYear(searchMonthYearStart) && !isValidMonthYear(searchMonthYearEnd)) {
+    if (searchDate.type === "interval-month" && (!isValidMonthYear(searchMonthYearStart) || !isValidMonthYear(searchMonthYearEnd))) {
         isValid = false;
         errorMessage = 'Invalid format for Month-Year. Expected MM-YYYY.';
     };
