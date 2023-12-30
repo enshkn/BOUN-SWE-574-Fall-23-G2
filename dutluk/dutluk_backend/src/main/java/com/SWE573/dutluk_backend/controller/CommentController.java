@@ -73,7 +73,7 @@ public class CommentController {
         return IntegrationService.mobileCheck(request, commentToCommentResponse(commentService.likeComment(likeRequest.getLikedEntityId(), tokenizedUser.getId())));
     }
 
-    @GetMapping("/isLiked")
+    @GetMapping("/isLiked/{commentId}")
     public ResponseEntity<?> isCommentLiked(@PathVariable Long commentId, HttpServletRequest request) {
         User tokenizedUser = userService.validateTokenizedUser(request);
         return IntegrationService.mobileCheck(request, commentService.isCommentLikedByUser(commentId, tokenizedUser.getId()));
