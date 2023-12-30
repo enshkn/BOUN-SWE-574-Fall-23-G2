@@ -1,0 +1,94 @@
+/* Timeline.css */
+
+.timeline {
+    margin-top: 20px;
+    position: relative;
+  }
+  
+  .timeline-controls {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    z-index: 1; /* Yüksek z-index butonların öne çıkmasını sağlar */
+  }
+  
+  .timeline-controls button {
+    background: none; /* Buton arka planını kaldır */
+    border: none; /* Buton çerçevesini kaldır */
+    font-size: 24px;
+    color: #0b25e9; /* Buton metin rengi */
+    cursor: pointer;
+    transition: color 0.3s ease-in-out; /* Geçiş efekti sadece metin rengine */
+    padding: 8px 16px; /* Buton iç boşluğu */
+    border-radius: 8px; /* Buton kenar yuvarlaklığı */
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Metin gölgesi */
+  }
+
+  .timeline-controls button:hover {
+    background: none; /* Hover rengi */
+    color: #ff0000; /* Hover durumunda metin rengi */
+    opacity: 0.4    ; /* Opacity ile rengi soluklaştır */
+    border-radius: 26px; /* Buton kenar yarıçapı */
+    padding: 10px 20px; /* Buton iç boşluğu */
+    font-size: 32px; /* Buton metin boyutu */
+  }
+
+  
+  .timeline-carousel-container {
+    margin: 0 auto; /* Kartları ortalamak için */
+    max-width: 1200px; /* Maksimum genişlik */
+    overflow-x: auto;
+    padding: 0 20px; /* Kartların sağı ve solu için iç boşluk */
+  }
+  
+  .timeline-carousel {
+    display: flex;
+    gap: 20px; /* Kartlar arası boşluk */
+  }
+  
+  .timeline-card {
+    flex: 0 0 calc(33.333% - 20px); /* 3 kart sığacak şekilde genişlik hesaplaması */
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .timeline-card:hover,
+  .timeline-card:focus {
+    transform: translateY(-5px);
+    z-index: 1;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    outline: none;
+  }
+  
+  .timeline-card img {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    height: 150px;
+    object-fit: cover;
+  }
+  
+  .timeline-card-body {
+    padding: 10px;
+  }
+  
+  /* styles.css (veya Timeline.css) */
+
+/* Filtrelerin transition özellikleri */
+.show-filters {
+    opacity: 1;
+    height: auto;
+    overflow: hidden;
+    transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  }
+  
+  .hide-filters {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  }
+  

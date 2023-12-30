@@ -3,7 +3,7 @@ import axios from "axios";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { Space, message } from 'antd';
 import "./css/StorySearch.css";
-import { Timeline } from 'antd';
+import Timeline from "./Timeline";
 
 const TimelineSearch = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -59,7 +59,7 @@ const TimelineSearch = () => {
       setSearchResults(response.data);
     } catch (error) {
       console.log(error);
-      messageApi.open({ type: "error", content: "Error occured while searching stories!"});
+      messageApi.open({ type: "error", content: "Error occured while searching stories!" });
     }
   }, [
     radius,
@@ -165,6 +165,7 @@ const TimelineSearch = () => {
               <option value="absolute-year">Absolute Year</option>
               <option value="interval-year">Interval Year</option>
             </select>
+
           </div>
 
           {searchDate.type === "absolute-date" && (
@@ -181,6 +182,7 @@ const TimelineSearch = () => {
                   setSearchDate({ ...searchDate, value: e.target.value })
                 }
               />
+
             </div>
           )}
 
@@ -203,6 +205,7 @@ const TimelineSearch = () => {
                     })
                   }
                 />
+
               </div>
 
               <div className="mb-3">
@@ -277,6 +280,7 @@ const TimelineSearch = () => {
                     })
                   }
                 />
+
               </div>
             </div>
           )}
@@ -350,29 +354,19 @@ const TimelineSearch = () => {
               )}
             </GoogleMap>
           </LoadScript>
-        </div>
-
-        <div className="searchResults">
           {searchResults.length > 0 && (
             <div>
               <h3>Search Results:</h3>
-              <ul>
-                {searchResults.map((result) => (
-                  <li key={result.id}>
-                    <h2>
-                      <Timeline
-                        mode={"left"}
-                        items={[
-                          {
-                            label: result.startTimeStamp,
-                            children: <a href={`/story/${result.id}`}>{result.title}</a>,
-                          },
-                        ]}
-                      />
-                    </h2>
-                  </li>
-                ))}
-              </ul>
+              <Timeline
+                items={searchResults.map(result => ({
+                  id: result.id,
+                  title: result.title,
+                  image: result.picture || "https://images.unsplash.com/photo-1682687220063-4742bd7fd538?q=80&w=1375&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
+                  description: result.text,
+                  date: result.timeExpression,
+                }))}
+                visibleCount={3} // Set the number of visible stories
+              />
             </div>
           )}
         </div>
