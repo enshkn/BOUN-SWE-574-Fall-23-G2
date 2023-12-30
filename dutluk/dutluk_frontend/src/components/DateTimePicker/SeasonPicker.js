@@ -20,6 +20,7 @@ function SeasonPicker({ onDateTimeChange }) {
   return (
     <div>
       <ReactDatePicker
+        className='form-control'
         selected={startDate}
         onChange={handleDateTimeChange}
         showYearPicker

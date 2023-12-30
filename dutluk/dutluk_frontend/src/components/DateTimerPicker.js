@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState, useEffect} from 'react'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import TimeTypeMenu from './DateTimePicker/TimeTypeMenu'
 import TimeExpression from './DateTimePicker/TimeExpression'
 import MomentPicker from './DateTimePicker/MomentPicker'
@@ -302,6 +303,7 @@ function DateTimerPicker({
     useEffect(() => {
       console.log("date flag: ", dateFlag, "hour flag: ", hourFlag, "time stamp end:", timeStampEnd, "time stamp start: ", timeStampStart, "end hour flag: ", endHourFlag, "end date flag: ", endDateFlag);
     }, [dateFlag, hourFlag, timeStampEnd, timeStampStart, endHourFlag, endDateFlag]);
+    
 
   // props 
   
@@ -459,7 +461,7 @@ function DateTimerPicker({
           formattedDateTimeEnd = null;
           break;
         case 'decade+season':
-          // showing relevant picker
+          showStartDecadeSeasonPicker = true;
           break;
       }
       break;
@@ -560,19 +562,27 @@ function DateTimerPicker({
           formattedDateTimeEnd = null;
           break;
         case 'decade+season':
-          showStartDecadeSeasonPicker = false;
-          showEndDecadeSeasonPicker = false;
+          showStartDecadeSeasonPicker = true;
+          showEndDecadeSeasonPicker = true;
+
           break;
       }
       break;
       default:
       break;
   }
-
   return (
-    <div>DateTimerPicker
+    <div className='container'>
+    <div className='row'>
+    <div className="col-md-6">
+    <br></br>
+    <div><i>Select a time resolotion which express best your story</i>
+    <div className="my-2">
       <TimeTypeMenu onTimeTypeChange={handleTimeTypeChange}/>
+      </div>
+      <div className="my-2">
       <TimeExpression onTimeExpressionChange={handleTimeExpressionChange}/>
+      </div>
       <div style={{ display: 'flex' }}>
       {showStartMomentPicker && (<MomentPicker onDateTimeChange={setSelectedDateTimeStart}/>)}
       {showEndMomentPicker && (<MomentPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
@@ -600,9 +610,6 @@ function DateTimerPicker({
       {showEndYearPicker && (<YearPicker onDateTimeChange={setSelectedDateTimeEnd} />)}
       {showStartDecadePicker && (<DecadePicker onDateTimeChange={setSelectedDecadeStart} />)}
       {showEndDecadePicker && (<DecadePicker onDateTimeChange={setSelectedDecadeEnd} />)}
-
-      { 
-      /*
       {showStartDecadeSeasonPicker && 
       (<div>
         <DecadePicker onDateTimeChange={setSelectedDecadeStart} />
@@ -613,11 +620,11 @@ function DateTimerPicker({
         <DecadePicker onDateTimeChange={setSelectedDecadeEnd} />
         <SeasonMenu onSeasonSelect={setSelectedSeasonEnd} />
       </div>)}
-      */
-      }
-
       </div>
-    </div>  
+    </div>
+    </div>
+    </div>
+    </div> 
     
   )
 }

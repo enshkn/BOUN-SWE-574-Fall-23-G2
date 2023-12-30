@@ -14,6 +14,7 @@ function MomentPicker({ onDateTimeChange }) {
   return (
     <div>
       <ReactDatePicker
+        className="form-control"
         selected={startDate}
         onChange={handleDateTimeChange}
         timeInputLabel="Time:"
