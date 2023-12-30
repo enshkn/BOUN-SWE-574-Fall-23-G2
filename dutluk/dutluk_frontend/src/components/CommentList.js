@@ -12,19 +12,19 @@ const CommentList = ({ story, comment }) => {
     const currentUserId = sessionStorage.getItem('currentUserId');
   
     const fetchCommentLikeStatus = useCallback(async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/api/comment/isLiked/${comment.id}`,
-          {
-            withCredentials: true,
-          }
-        );
-        setCommentIsLiked(response.data);
-      } catch (error) {
-        console.error('Like status API error:', error.message);
-        messageApi.open({ type: "error", content: "Error occurred while fetching comment likes!" });
-      }
-    }, [messageApi]); // Include id in the dependency array
+        try {
+          const response = await axios.get(
+            `${process.env.REACT_APP_BACKEND_URL}/api/comment/isLiked/${comment.id}`,
+            {
+              withCredentials: true,
+            }
+          );
+          setCommentIsLiked(response.data);
+        } catch (error) {
+          console.error('Like status API error:', error.message);
+          messageApi.open({ type: "error", content: "Error occurred while fetching comment likes!" });
+        }
+      }, [messageApi, comment.id]);
   
     useEffect(() => {
       fetchCommentLikeStatus();
@@ -108,12 +108,13 @@ const CommentList = ({ story, comment }) => {
                               onClick={() => handleLikeComment(comment.id)}
                             />
                           )}
-                          {comment.user.id == currentUserId && (
-                          <DeleteTwoTone 
-                            twoToneColor="red" 
-                            style={{ margin: "5px" }}
-                            onClick={() => handleDeleteComment(comment.id)}
-                          />)}
+                            {comment.user.id.toString() === currentUserId && (
+                                <DeleteTwoTone 
+                                    twoToneColor="red" 
+                                    style={{ margin: "5px" }}
+                                    onClick={() => handleDeleteComment(comment.id)}
+                                />
+                            )}
                         </p>
                       </div>
                     </div>
