@@ -38,6 +38,7 @@ public class Story extends BaseEntity{
     private User user;
 
     @OneToMany(mappedBy = "story")
+    @OrderBy("id")
     private List<Comment> comments;
 
     @Column(name = "likes")
