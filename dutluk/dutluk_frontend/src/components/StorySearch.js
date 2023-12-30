@@ -18,6 +18,7 @@ const StorySearch = () => {
   const [searchDate, setSearchDate] = useState({ type: null, value: null });
   const [searchSeason, setSearchSeason] = useState(null);
   const [searchDecade, setSearchDecade] = useState(null);
+  const [searchMonthYear, setSearchMonthYear] = useState("");
   const [searchMonthYearStart, setSearchMonthYearStart] = useState("");
   const [searchMonthYearEnd, setSearchMonthYearEnd] = useState("");
 
@@ -35,7 +36,7 @@ const StorySearch = () => {
     let errorMessage = '';
 
     // Validate Absolute Month-Year
-    if (searchDate.type === "absolute-month" && !isValidMonthYear(searchMonthYearStart)) {
+    if (searchDate.type === "absolute-month" && !isValidMonthYear(searchMonthYear)) {
         isValid = false;
         errorMessage = 'Invalid format for Month-Year. Expected MM-YYYY.';
     };
@@ -72,7 +73,7 @@ const StorySearch = () => {
             endDate = `${searchDate.value.endDate}-12-31`;
             break;
           case "absolute-month":
-            const [month, year] = searchMonthYearStart.split("-");
+            const [month, year] = searchMonthYear.split("-");
             startDate = `${year}-${month}`;
             break;
           case "interval-month":
@@ -322,8 +323,8 @@ const StorySearch = () => {
                 className="form-control"
                 id="monthYear"
                 placeholder="MM-YYYY"
-                value={searchMonthYearStart}
-                onChange={(e) => setSearchMonthYearStart(e.target.value)}
+                value={searchMonthYear}
+                onChange={(e) => setSearchMonthYear(e.target.value)}
               />
             </div>
           )}
