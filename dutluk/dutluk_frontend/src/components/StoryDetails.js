@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
 import { Space, message } from 'antd';
+import { LikeTwoTone, DeleteTwoTone } from '@ant-design/icons';
 import parse from "html-react-parser";
 import { useParams } from "react-router-dom";
 import { GoogleMap, LoadScript, Marker, Circle, Polygon, Polyline } from "@react-google-maps/api";
@@ -363,8 +364,8 @@ function StoryDetails() {
               </p>
               <p>
                 <b>Likes:</b> {comment.likes ? comment.likes.length : 0}
-                <button className="btn btn-primary" onClick={() => handleLikeComment(comment.id)}>
-                  Like
+                <button className="btn btn-primary" style={{ width: "70px", backgroundColor: "#ff5500ca", color: "white",  border: "none", margin: "10px" }} onClick={() => handleLikeComment(comment.id)}>
+                  Like!
                 </button>
                 {comment.user.id == currentUserId && (
                   <button
@@ -374,6 +375,37 @@ function StoryDetails() {
                   >Delete</button>)
                 }
               </p>
+              <div className="comment-container">
+                <div className="comment-body">
+                  <img src={comment.user.profilePhoto} className="profile-picture" alt="profile-pic" />
+                  <div className="comment-info">
+                    <div className="comment-header">
+                      <div className="comment-user">
+                        <a href={`/user/${comment.user.id}`} className="username">@{comment.user.username}</a>
+                      </div>
+                      <div className="comment-like-delete">
+                        <p>
+                          <b>Likes:</b> {comment.likes ? comment.likes.length : 0}
+                          <LikeTwoTone
+                            twoToneColor="#ff5500ca"
+                            style={{ margin: "5px" }}
+                            onClick={() => handleLikeComment(comment.id)}
+                          />
+                          {comment.user.id == currentUserId && (
+                          <DeleteTwoTone 
+                            twoToneColor="red" 
+                            style={{ margin: "5px" }}
+                            onClick={() => handleDeleteComment(comment.id)}
+                          />)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="comment-text">
+                      <span>{comment.text}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </li>
           ))}
         </ul>
