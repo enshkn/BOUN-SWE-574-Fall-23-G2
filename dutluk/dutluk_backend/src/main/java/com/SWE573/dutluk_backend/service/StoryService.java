@@ -524,7 +524,7 @@ public class StoryService {
                 storySet.addAll(searchStoriesWithSeason(season));
             }
         }
-        return storySet.stream().toList();
+        return sortStoriesByDescending(storySet.stream().toList());
     }
 
     public List<Story> searchStoriesWithIntersection(
