@@ -3,7 +3,7 @@ import axios from "axios";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { Space, message } from 'antd';
 import "./css/StorySearch.css";
-import { Timeline } from 'antd';
+import Timeline from "./Timeline";
 
 const TimelineSearch = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -127,194 +127,186 @@ const TimelineSearch = () => {
 
   return (
     <Space
-    direction="vertical"
-    style={{
-      width: '100%',
-    }}
+      direction="vertical"
+      style={{
+        width: '100%',
+      }}
     >
-    {contextHolder}
-    <div className="story-search">
-      <center><h2>Timeline Search</h2></center>
-      <div className="search-form">
-        <label>
-          Radius (in km):
-          <input
-            type="number"
-            value={radius}
-            onChange={(e) => setRadius(parseInt(e.target.value))}
-          />
-        </label>
-        <button type="button" className="btn btn-primary" style={{backgroundColor: "#ff5500ca", color: "white",   border: "none", margin: "5px"}} onClick={handleSearchByLocation}>
-            Use My Location
-        </button>
-        <label>
-          Date Type:
-          <select value={searchDate.type} onChange={handleDateTypeChange}>
-            <option value="">Select a Date Type</option>
-            <option value="absolute-date">Absolute Date</option>
-            <option value="interval-date">Interval Date</option>
-            <option value="absolute-year">Absolute Year</option>
-            <option value="interval-year">Interval Year</option>
-          </select>
-        </label>
-        {searchDate.type === "absolute-date" && (
+      {contextHolder}
+      <div className="story-search">
+        <center><h2>Timeline Search</h2></center>
+        <div className="search-form">
           <label>
-            Date:
-            <input
-              type="date"
-              value={searchDate.value || ""}
-              onChange={(e) =>
-                setSearchDate({ ...searchDate, value: e.target.value })
-              }
-            />
-          </label>
-        )}
-        {searchDate.type === "interval-date" && (
-          <>
-            <label>
-              Start Date:
-              <input
-                type="date"
-                value={searchDate.value?.startDate || ""}
-                onChange={(e) =>
-                  setSearchDate({
-                    ...searchDate,
-                    value: { ...searchDate.value, startDate: e.target.value },
-                  })
-                }
-              />
-            </label>
-            <label>
-              End Date:
-              <input
-                type="date"
-                value={searchDate.value?.endDate || ""}
-                onChange={(e) =>
-                  setSearchDate({
-                    ...searchDate,
-                    value: { ...searchDate.value, endDate: e.target.value },
-                  })
-                }
-              />
-            </label>
-          </>
-        )}
-        {searchDate.type === "absolute-year" && (
-          <label>
-            Year:
+            Radius (in km):
             <input
               type="number"
-              value={searchDate.value || ""}
-              onChange={(e) =>
-                setSearchDate({ ...searchDate, value: e.target.value })
-              }
+              value={radius}
+              onChange={(e) => setRadius(parseInt(e.target.value))}
             />
           </label>
-        )}
-        {searchDate.type === "interval-year" && (
-          <>
+          <button type="button" className="btn btn-primary" style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", margin: "5px" }} onClick={handleSearchByLocation}>
+            Use My Location
+          </button>
+          <label>
+            Date Type:
+            <select value={searchDate.type} onChange={handleDateTypeChange}>
+              <option value="">Select a Date Type</option>
+              <option value="absolute-date">Absolute Date</option>
+              <option value="interval-date">Interval Date</option>
+              <option value="absolute-year">Absolute Year</option>
+              <option value="interval-year">Interval Year</option>
+            </select>
+          </label>
+          {searchDate.type === "absolute-date" && (
             <label>
-              Start Year:
+              Date:
               <input
-                type="number"
-                value={searchDate.value?.startDate || ""}
+                type="date"
+                value={searchDate.value || ""}
                 onChange={(e) =>
-                  setSearchDate({
-                    ...searchDate,
-                    value: { ...searchDate.value, startDate: e.target.value },
-                  })
+                  setSearchDate({ ...searchDate, value: e.target.value })
                 }
               />
             </label>
+          )}
+          {searchDate.type === "interval-date" && (
+            <>
+              <label>
+                Start Date:
+                <input
+                  type="date"
+                  value={searchDate.value?.startDate || ""}
+                  onChange={(e) =>
+                    setSearchDate({
+                      ...searchDate,
+                      value: { ...searchDate.value, startDate: e.target.value },
+                    })
+                  }
+                />
+              </label>
+              <label>
+                End Date:
+                <input
+                  type="date"
+                  value={searchDate.value?.endDate || ""}
+                  onChange={(e) =>
+                    setSearchDate({
+                      ...searchDate,
+                      value: { ...searchDate.value, endDate: e.target.value },
+                    })
+                  }
+                />
+              </label>
+            </>
+          )}
+          {searchDate.type === "absolute-year" && (
             <label>
-              End Year:
+              Year:
               <input
                 type="number"
-                value={searchDate.value?.endDate || ""}
+                value={searchDate.value || ""}
                 onChange={(e) =>
-                  setSearchDate({
-                    ...searchDate,
-                    value: { ...searchDate.value, endDate: e.target.value },
-                  })
+                  setSearchDate({ ...searchDate, value: e.target.value })
                 }
               />
             </label>
-          </>
-        )}
-        <label>
-          Season:
-          <select value={searchSeason} onChange={handleSeasonChange}>
-            <option value="">Select a Season</option>
-            <option value="spring">Spring</option>
-            <option value="summer">Summer</option>
-            <option value="fall">Fall</option>
-            <option value="winter">Winter</option>
-          </select>
-        </label>
-        <label>
-          Decade:
-          <select value={searchDecade} onChange={handleDecadeChange}>
-            <option value="">Select a Decade</option>
-            <option value="1940s">1940s</option>
-            <option value="1950s">1950s</option>
-            <option value="1960s">1960s</option>
-            <option value="1970s">1970s</option>
-            <option value="1980s">1980s</option>
-            <option value="1990s">1990s</option>
-            <option value="2000s">2000s</option>
-            <option value="2010s">2010s</option>
-            <option value="2020s">2020s</option>
-          </select>
-        </label>
-        <button type="button" className="btn btn-primary" style={{backgroundColor: "#ff5500ca", color: "white",   border: "none", margin: "5px"}} onClick={handleSearch}>
-          Search
-        </button>
-      </div>
-      <div className="search-results">
-        <LoadScript
-          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-        >
-          <GoogleMap
-            mapContainerStyle={{ width: "100%", height: "400px" }}
-            center={{ lat: 41.085064, lng: 29.044687 }}
-            zoom={10}
-            onClick={handleMapClick}
+          )}
+          {searchDate.type === "interval-year" && (
+            <>
+              <label>
+                Start Year:
+                <input
+                  type="number"
+                  value={searchDate.value?.startDate || ""}
+                  onChange={(e) =>
+                    setSearchDate({
+                      ...searchDate,
+                      value: { ...searchDate.value, startDate: e.target.value },
+                    })
+                  }
+                />
+              </label>
+              <label>
+                End Year:
+                <input
+                  type="number"
+                  value={searchDate.value?.endDate || ""}
+                  onChange={(e) =>
+                    setSearchDate({
+                      ...searchDate,
+                      value: { ...searchDate.value, endDate: e.target.value },
+                    })
+                  }
+                />
+              </label>
+            </>
+          )}
+          <label>
+            Season:
+            <select value={searchSeason} onChange={handleSeasonChange}>
+              <option value="">Select a Season</option>
+              <option value="spring">Spring</option>
+              <option value="summer">Summer</option>
+              <option value="fall">Fall</option>
+              <option value="winter">Winter</option>
+            </select>
+          </label>
+          <label>
+            Decade:
+            <select value={searchDecade} onChange={handleDecadeChange}>
+              <option value="">Select a Decade</option>
+              <option value="1940s">1940s</option>
+              <option value="1950s">1950s</option>
+              <option value="1960s">1960s</option>
+              <option value="1970s">1970s</option>
+              <option value="1980s">1980s</option>
+              <option value="1990s">1990s</option>
+              <option value="2000s">2000s</option>
+              <option value="2010s">2010s</option>
+              <option value="2020s">2020s</option>
+            </select>
+          </label>
+          <button type="button" className="btn btn-primary" style={{backgroundColor: "#ff5500ca", color: "white",   border: "none", margin: "5px"}} onClick={handleSearch}>
+            Search
+          </button>
+        </div>
+        <div className="search-results">
+          <LoadScript
+            googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
           >
-            {selectedLocation && (
-              <Marker
-                position={{
-                  lat: selectedLocation.lat,
-                  lng: selectedLocation.lng,
-                }}
-                onClick={handleMarkerReClick}
-              />
-            )}
-          </GoogleMap>
-        </LoadScript>
-        {searchResults.length > 0 && (
-          <div>
-            <h3>Search Results:</h3>
-            <ul>
-              {searchResults.map((result) => (
-                <li key={result.id}>
-                  <h2>
-                  <Timeline
-                  mode={"left"}
-                  items={[
-                  {
-                    label: result.startTimeStamp,
-                    children: <a href={`/story/${result.id}`}>{result.title}</a>,
-                  },
-                  ]}
-                  />
-                  </h2>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+            <GoogleMap
+              mapContainerStyle={{ width: "100%", height: "400px" }}
+              center={{ lat: 41.085064, lng: 29.044687 }}
+              zoom={10}
+              onClick={handleMapClick}
+            >
+              {selectedLocation && (
+                <Marker
+                  position={{
+                    lat: selectedLocation.lat,
+                    lng: selectedLocation.lng,
+                  }}
+                  onClick={handleMarkerReClick}
+                />
+              )}
+            </GoogleMap>
+          </LoadScript>
+          {searchResults.length > 0 && (
+                  <div>
+                    <h3>Search Results:</h3>
+                    <Timeline
+                      items={searchResults.map(result => ({
+                        id: result.id,
+                        title: result.title,
+                        image: result.picture, // or a placeholder if no image
+                        description: result.description,
+                        date: result.timeExpression,
+                      }))}
+                    />
+                  </div>
+                )}
+        </div>
       </div>
-    </div>
     </Space>
   );
 };
