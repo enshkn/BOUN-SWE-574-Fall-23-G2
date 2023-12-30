@@ -539,70 +539,70 @@ public class StoryService {
             String endDecade,
             String season,
             String endSeason) throws ParseException {
-        Set<Story> dateSet = new HashSet<>();
-        Set<Story> decadeSet = new HashSet<>();
-        Set<Story> seasonSet = new HashSet<>();
-        Set<Story> storySet = new HashSet<>(findAll());
+        List<Story> dateList = new ArrayList<>();
+        List<Story> decadeList = new ArrayList<>();
+        List<Story> seasonList = new ArrayList<>();
+        List<Story> storyList = new ArrayList<>(findAll());
         if(isStringApplicable(title)){
-            Set<Story> titleSet = new HashSet<>(searchStoriesWithTitle(title));
+            List<Story> titleSet = new ArrayList<>(searchStoriesWithTitle(title));
             if(searchStoriesWithTitle(title) != null){
-                storySet.retainAll(titleSet);
+                storyList.retainAll(titleSet);
             }
         }
         if(isStringApplicable(labels)){
-            Set<Story> labelsSet = new HashSet<>(searchStoriesWithLabel(labels));
+            List<Story> labelsSet = new ArrayList<>(searchStoriesWithLabel(labels));
             if(searchStoriesWithLabel(labels) != null){
-                storySet.retainAll(labelsSet);
+                storyList.retainAll(labelsSet);
             }
         }
         if(latitude != null && longitude != null && radius != null){
-            Set<Story> locationSet = new HashSet<>(searchStoriesWithLocationOnly(radius, latitude, longitude));
-            storySet.retainAll(locationSet);
+            List<Story> locationSet = new ArrayList<>(searchStoriesWithLocationOnly(radius, latitude, longitude));
+            storyList.retainAll(locationSet);
         }
         if(isStringApplicable(startTimeStamp)){
             if(isStringApplicable(endTimeStamp)){
-                dateSet.addAll(searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
+                dateList.addAll(searchStoriesWithMultipleDate(startTimeStamp, endTimeStamp));
                 if(searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp) != null){
-                    storySet.retainAll(dateSet);
+                    storyList.retainAll(dateList);
                 }
             }
             else{
-                dateSet.addAll(searchStoriesWithSingleDate(startTimeStamp));
+                dateList.addAll(searchStoriesWithSingleDate(startTimeStamp));
                 if(searchStoriesWithSingleDate(startTimeStamp) != null){
-                    storySet.retainAll(dateSet);
+                    storyList.retainAll(dateList);
                 }
             }
         }
         if(isStringApplicable(decade)){
             if(isStringApplicable(endDecade)){
-                decadeSet.addAll(searchStoriesWithMultipleDecades(decade, endDecade));
+                decadeList.addAll(searchStoriesWithMultipleDecades(decade, endDecade));
                 if(searchStoriesWithMultipleDecades(decade,endDecade) != null){
-                    storySet.retainAll(decadeSet);
+                    storyList.retainAll(decadeList);
                 }
             }
             else{
-                decadeSet.addAll(searchStoriesWithDecade(decade));
+                decadeList.addAll(searchStoriesWithDecade(decade));
                 if(searchStoriesWithDecade(decade) != null){
-                    storySet.retainAll(decadeSet);
+                    storyList.retainAll(decadeList);
                 }
             }
 
         }
         if(isStringApplicable(season)){
             if(isStringApplicable(endSeason)){
-                seasonSet.addAll(searchStoriesWithMultipleSeasons(season,endSeason));
+                seasonList.addAll(searchStoriesWithMultipleSeasons(season, endSeason));
             }
             else{
-                seasonSet.addAll(searchStoriesWithSeason(season));
+                seasonList.addAll(searchStoriesWithSeason(season));
             }
-            if(!seasonSet.isEmpty()){
-                storySet.retainAll(seasonSet);
+            if (!seasonList.isEmpty()) {
+                storyList.retainAll(seasonList);
             }
         }
-        if(storySet.isEmpty()){
+        if (storyList.isEmpty()) {
             return new ArrayList<>();
         }
-        return storySet.stream().toList();
+        return storyList;
     }
 
 
@@ -632,6 +632,10 @@ public class StoryService {
         String endDecade = story.getEndDecade();
         String season = story.getSeason();
         String endSeason = story.getEndSeason();
+
+        if (timeType == null || timeExpression == null) {
+            return null;
+        }
         return switch (timeType) {
             case "timePoint" -> switch (timeExpression) {
                 case "moment" -> "At the moment " + startTimeStamp + ".";
