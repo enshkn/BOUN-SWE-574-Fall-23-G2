@@ -306,7 +306,6 @@ const StorySearch = () => {
             </div>
           )}
           {searchDate.type === "interval-month" && (
-            <div className="col-md-6">
               <div className="col-md-6">
                 <label htmlFor="startMonthYear" className="form-label">Start Month-Year:</label>
                 <input
@@ -317,8 +316,6 @@ const StorySearch = () => {
                   value={searchMonthYearStart}
                   onChange={(e) => setSearchMonthYearStart(e.target.value)}
                 />
-              </div>
-              <div className="col-md-6">
                 <label htmlFor="endMonthYear" className="form-label">End Month-Year:</label>
                 <input
                   type="text"
@@ -328,7 +325,6 @@ const StorySearch = () => {
                   value={searchMonthYearEnd}
                   onChange={(e) => setSearchMonthYearEnd(e.target.value)}
                 />
-              </div>
             </div>
           )}
 
