@@ -624,6 +624,10 @@ public class StoryService {
         String timeExpression = story.getTimeExpression();
         String startTimeStamp = dateToStringBasedOnFlags(story.getStartTimeStamp(), story.getStartHourFlag(), story.getEndDateFlag());
         String endTimeStamp = dateToStringBasedOnFlags(story.getEndTimeStamp(), story.getEndHourFlag(), story.getEndDateFlag());
+        String startYear = getYearValueFromString(startTimeStamp);
+        String endYear = getYearValueFromString(endTimeStamp);
+        String startMonth = getMonthValueFromString(startTimeStamp);
+        String endMonth = getMonthValueFromString(endTimeStamp);
         String decade = story.getDecade();
         String endDecade = story.getEndDecade();
         String season = story.getSeason();
@@ -631,12 +635,11 @@ public class StoryService {
         return switch (timeType) {
             case "timePoint" -> switch (timeExpression) {
                 case "moment" -> "At the moment " + startTimeStamp + ".";
-                case "day" -> "On the day " + endTimeStamp + ".";
-                case "month" ->
-                        "On the month " + startTimeStamp.substring(0, 2) + "of the year " + startTimeStamp.substring(3) + ".";
-                case "year" -> "On the year of " + startTimeStamp + ".";
+                case "day" -> "On the day " + startTimeStamp + ".";
+                case "month" -> "On the month " + startMonth + " of the year " + startYear + ".";
+                case "year" -> "On the year of " + startYear + ".";
                 case "decade" -> "In the decade of " + decade + ".";
-                case "season" -> "On the season of " + season + " of the year " + startTimeStamp.substring(3);
+                case "season" -> "On the season of " + season + " of the year " + startYear + ".";
                 case "decade+season" -> "On the " + season + " of the decade " + decade + ".";
                 default -> null;
             };
@@ -644,11 +647,11 @@ public class StoryService {
                 case "moment" -> "Between " + startTimeStamp + " and " + endTimeStamp + ".";
                 case "day" -> "Between the days" + startTimeStamp + " and " + endTimeStamp + ".";
                 case "month" ->
-                        "Between the" + startTimeStamp.substring(0, 2) + " of " + startTimeStamp.substring(3) + " and " + endTimeStamp.substring(0, 2) + " of " + endTimeStamp.substring(3) + ".";
-                case "year" -> "Between the year of " + startTimeStamp + " and " + endTimeStamp + ".";
+                        "Between the month of" + startMonth + " of " + startYear + " and " + endMonth + " of " + endYear + ".";
+                case "year" -> "Between the year of " + startYear + " and " + endYear + ".";
                 case "decade" -> "Between " + decade + " and " + endDecade + ".";
                 case "season" ->
-                        "Between " + season + " of the year " + startTimeStamp.substring(3) + " and the " + endSeason + "of the year " + endTimeStamp.substring(3) + ".";
+                        "Between " + season + " of the year " + startYear + " and the " + endSeason + "of the year " + endYear + ".";
                 case "decade+season" ->
                         "Between the " + season + " of " + decade + " and " + endSeason + " of " + endDecade + ".";
                 default -> null;
