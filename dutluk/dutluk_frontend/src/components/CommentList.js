@@ -64,6 +64,9 @@ const CommentList = ({ story, comment }) => {
             `${process.env.REACT_APP_BACKEND_URL}/api/comment/delete/${commentId}`,
             {
               withCredentials: true,
+            })
+            .then(() => {
+              window.location.reload(); 
             });
           if (response.status === 200) {
             messageApi.open({ type: "success", content: "Comment deleted." });
