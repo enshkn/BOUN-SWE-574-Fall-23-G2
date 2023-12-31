@@ -5,29 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-<<<<<<< HEAD
-            "name": "Launch development",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "debug",
-            "program": "mobile/lib/main/flavor/main_dev.dart",
-            "args": [
-                "--flavor",
-                "dev",
-            ]
-        },
-        {
-            "name": "Launch production",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "debug",
-            "program": "mobile/lib/main/flavor/main_prod.dart",
-            "args": [
-                "--flavor",
-                "prod",
-            ]
-        },
-=======
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
@@ -43,6 +20,5 @@
             "webRoot": "${workspaceFolder}/",
             "timeout": 30000
         }
->>>>>>> 42ce1ed (Layout of the code has been changed thus the look of the page is also changed)
     ]
 }
