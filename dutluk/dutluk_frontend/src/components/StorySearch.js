@@ -70,11 +70,14 @@ const StorySearch = () => {
             endDate = `${searchDate.value.endDate}-12-31`;
             break;
           case "absolute-month":
-            startDate = searchDate.value.startDate;
+            const [month, year] = searchDate.value.startDate.split("-");
+            startDate = `${year}-${month}`;
             break;
           case "interval-month":
-            startDate = searchDate.value.startDate;
-            endDate = searchDate.value.endDate;
+            const [startMonth, startYear] = searchDate.value.startDate.split("-");
+            const [endMonth, endYear] = searchDate.value.endDate.split("-");
+            startDate = `${startYear}-${startMonth}`;
+            endDate = `${endYear}-${endMonth}`;
             break;
           default:
             break;
