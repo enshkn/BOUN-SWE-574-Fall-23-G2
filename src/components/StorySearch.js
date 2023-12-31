@@ -23,10 +23,16 @@ const StorySearch = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [radius, setRadius] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [searchDate, setSearchDate] = useState({ type: null, value: { startDate: 1930 }, });
   const [searchSeason, setSearchSeason] = useState(null);
   const [searchDecade, setSearchDecade] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
+  const [searchDate, setSearchDate] = useState({
+    type: null,
+    value: {
+      startDate: 2000, // Set the initial value to 2000
+      endDate: 2023, // You can set the initial value for endDate if needed
+    },
+  });
 
 
   const handleSearch = useCallback(async () => {
@@ -240,23 +246,24 @@ const StorySearch = () => {
 
               {/* Absolute Year Picker Element */}
               {searchDate.type === "absolute-year" && (
-                <label>
-                  Year:
+
                   <Input
                     type="number"
                     value={searchDate.value || ""}
                     onChange={(e) =>
                       setSearchDate({ ...searchDate, value: e.target.value })
                     }
+                    min={1930}
+                    max={2023}
+                    placeholder="Enter your year here"
                   />
-                </label>
+
               )}
 
               {/* Interval Year Picker Element */}
               {searchDate.type === "interval-year" && (
                 <>
-                  <label>
-                    Start Year:
+
                     <Input
                       type="number"
                       value={searchDate.value?.startDate || ""}
@@ -266,10 +273,11 @@ const StorySearch = () => {
                           value: { ...searchDate.value, startDate: e.target.value },
                         })
                       }
+                      min={1930}
+                      max={2023}
+                      placeholder="Enter your start year here"
                     />
-                  </label>
-                  <label>
-                    End Year:
+
                     <Input
                       type="number"
                       value={searchDate.value?.endDate || ""}
@@ -279,8 +287,11 @@ const StorySearch = () => {
                           value: { ...searchDate.value, endDate: e.target.value },
                         })
                       }
+                      min={1930}
+                      max={2023}
+                      placeholder="Enter your end year here"
                     />
-                  </label>
+
                 </>
               )}
 
