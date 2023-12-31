@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { Space, message } from 'antd';
 import { useNavigate } from "react-router-dom";
 
+// Save feauture name was changed to stash in order to avoid confusion on the user side.
+
 const StoryList = ({ story }) => {
     const [isSaved, setIsSaved] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
@@ -20,8 +22,8 @@ const StoryList = ({ story }) => {
             );
             setIsSaved(response.data);
         } catch (error) {
-            console.error('Save status API error:', error.message);
-            messageApi.open({ type: "error", content: "Error occurred while fetching saved story data!" });
+            console.error('Stash(Save) status API error:', error.message);
+            messageApi.open({ type: "error", content: "Error occurred while fetching stashed story data!" });
         }
     }, [story.id, messageApi]);
 
@@ -50,12 +52,12 @@ const StoryList = ({ story }) => {
                     withCredentials: true,
                 }
             );
-            setIsSaved(!isSaved); // Toggle the save status
-            console.log(response); // Log the response to check if it's as expected
+            setIsSaved(!isSaved);
+            console.log(response);
             if (isSaved === true) {
-                messageApi.open({ type: "success", content: "You unsaved the story" });
+                messageApi.open({ type: "success", content: "You unstashed the story" });
             } else if (isSaved === false) {
-                messageApi.open({ type: "success", content: "You saved the story" });
+                messageApi.open({ type: "success", content: "You stashed the story" });
             }
         } catch (error) {
             console.error(error);
@@ -129,7 +131,7 @@ const StoryList = ({ story }) => {
 
                     <div className="interactions">
                         <button onClick={handleSaveClick} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none"}} type="submit" className="btn btn-primary">
-                            {isSaved ? 'Unsave' : 'Save'}
+                            {isSaved ? 'Unstashed' : 'Stash'}
                         </button>
                         {story.user.id == currentUserId && (
                             <button
@@ -152,12 +154,19 @@ const StoryList = ({ story }) => {
 
 
                 <div className="date-information">
-                    {story.startTimeStamp && <span className="date">Start: {story.startTimeStamp}</span>}
-                    {story.endTimeStamp && <span className="date">End: {story.endTimeStamp}</span>}
-                    {story.season && <span className="date">Season: {story.season}</span>}
-                    {story.decade && <span className="date">Decade: {story.decade}</span>}
-                    {story.endDecade && <span className="date">End Decade: {story.endDecade}</span>}
+                {story.verbalExpression != null ? (
+                    <   span className="story-date">{story.verbalExpression}</span>
+                ) : (
+                <>
+                    {story.startTimeStamp && <span className="story-date">Start: {story.startTimeStamp}</span>}
+                    {story.endTimeStamp && <span className="story-date">End: {story.endTimeStamp}</span>}
+                    {story.season && <span className="story-date">Season: {story.season}</span>}
+                    {story.endSeason && <span className="story-date">Season: {story.endSeason}</span>}
+                    {story.decade && <span className="story-date">Decade: {story.decade}</span>}
+                    {story.endDecade && <span className="story-date">End Decade: {story.endDecade}</span>}
                     {/* You can add more conditional renders for other date fields as needed */}
+                </>
+                )}
                 </div>
 
             </div>
