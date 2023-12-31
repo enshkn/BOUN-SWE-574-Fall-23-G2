@@ -38,6 +38,7 @@ public class Story extends BaseEntity{
     private User user;
 
     @OneToMany(mappedBy = "story")
+    @OrderBy("id")
     private List<Comment> comments;
 
     @Column(name = "likes")
@@ -75,8 +76,6 @@ public class Story extends BaseEntity{
     private String timeType;
 
     private String timeExpression;
-
-    private String verbalExpression;
 
     private Integer startHourFlag = -1;// if 0, no hour, if 1, hour exists
 

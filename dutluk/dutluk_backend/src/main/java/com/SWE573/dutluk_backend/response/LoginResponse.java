@@ -4,15 +4,13 @@ import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 public class LoginResponse {
     private Long id;
     private String email;

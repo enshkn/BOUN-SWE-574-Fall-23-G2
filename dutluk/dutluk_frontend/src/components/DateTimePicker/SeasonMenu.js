@@ -7,7 +7,7 @@ function SeasonMenu({ onSeasonSelect }) {
   };
 
   return (
-    <select onChange={handleSeasonChange}>
+    <select className='form-control' onChange={handleSeasonChange}>
       <option value="">Select Season</option>
       <option value="1">Winter</option>
       <option value="2">Spring</option>

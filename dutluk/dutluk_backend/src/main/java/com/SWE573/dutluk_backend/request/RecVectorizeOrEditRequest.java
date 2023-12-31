@@ -1,14 +1,12 @@
 package com.SWE573.dutluk_backend.request;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.List;
 
 @Builder
-@Getter
-@Setter
+@Data
 public class RecVectorizeOrEditRequest { // vectorize && vectorize-edit
 
     private String type;

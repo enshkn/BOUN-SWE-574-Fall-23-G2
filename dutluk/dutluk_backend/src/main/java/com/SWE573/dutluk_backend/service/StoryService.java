@@ -9,7 +9,6 @@ import com.SWE573.dutluk_backend.request.StoryEnterRequest;
 import com.SWE573.dutluk_backend.response.MyStoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryListResponse;
 import com.SWE573.dutluk_backend.response.StoryResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.SWE573.dutluk_backend.service.DateService.*;
 
 @Service
 public class StoryService {
@@ -38,6 +38,11 @@ public class StoryService {
     @Autowired
     RecommendationService recService;
 
+    @Autowired
+    LocationService locationService;
+
+
+
     public List<Story> findAll(){
         List<Story> storyList = storyRepository.findAll();
         return (storyList != null) ? storyList : Collections.emptyList();
@@ -48,7 +53,7 @@ public class StoryService {
         return (!storyList.isEmpty()) ? storyList : Collections.emptyList();
     }
 
-    public Story createStory(User foundUser, StoryEnterRequest storyEnterRequest) throws ParseException, IOException {
+    public Story createStory(User foundUser, StoryEnterRequest storyEnterRequest) throws IOException {
         Story createdStory = Story.builder()
                 .title(storyEnterRequest.getTitle())
                 .labels(storyEnterRequest.getLabels())
@@ -68,8 +73,7 @@ public class StoryService {
                 .timeExpression(storyEnterRequest.getTimeExpression())
                 .likes(new HashSet<>())
                 .build();
-        createdStory.setVerbalExpression(generateVerbalExpression(createdStory));
-        ArrayList<Location> allLocations = storyEnterRequest.getLocations();
+        List<Location> allLocations = storyEnterRequest.getLocations();
         for (Location location : allLocations) {
             location.setStory(createdStory);
         }
@@ -99,8 +103,7 @@ public class StoryService {
     }
 
     public Story getStoryByStoryIdWithPercentage(Long storyId,User user) {
-        Story story = addPercentageToStory(getStoryByStoryId(storyId),user.getRecommendedStoriesMap().get(storyId));
-        return story;
+        return addPercentageToStory(getStoryByStoryId(storyId),user.getRecommendedStoriesMap().get(storyId));
     }
 
     public List<Story> findFollowingStories(User foundUser) {
@@ -118,7 +121,7 @@ public class StoryService {
     }
 
 
-    public Story likeStory(Long storyId,Long userId) throws JsonProcessingException {
+    public Story likeStory(Long storyId, Long userId) {
         Story story = getStoryByStoryId(storyId);
         User user = userService.findByUserId(userId);
         Set<Long> likesList = story.getLikes();
@@ -149,8 +152,9 @@ public class StoryService {
         double minLatitude, maxLatitude, minLongitude, maxLongitude;
         minLatitude = latitude - (radius / 111.0);
         maxLatitude = latitude + (radius / 111.0);
-        minLongitude = longitude - (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
-        maxLongitude = longitude + (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
+        double longDegreeDiffForRadius = radius / (111.0 * Math.cos(Math.toRadians(latitude)));
+        minLongitude = longitude - longDegreeDiffForRadius;
+        maxLongitude = longitude + longDegreeDiffForRadius;
         if (query != null) {
             return storyRepository.findByTitleContainingIgnoreCaseAndLocations_LatitudeBetweenAndLocations_LongitudeBetween(
                     query, minLatitude, maxLatitude, minLongitude, maxLongitude);
@@ -164,8 +168,9 @@ public class StoryService {
             double minLatitude, maxLatitude, minLongitude, maxLongitude;
             minLatitude = latitude - (radius / 111.0);
             maxLatitude = latitude + (radius / 111.0);
-            minLongitude = longitude - (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
-            maxLongitude = longitude + (radius / (111.0 * Math.cos(Math.toRadians(latitude))));
+            double longDegreeDiffForRadius = 111.0 * Math.cos(Math.toRadians(latitude));
+            minLongitude = longitude - (radius / longDegreeDiffForRadius);
+            maxLongitude = longitude + (radius / longDegreeDiffForRadius);
             List<Story> storyList = storyRepository.findByLocations_LatitudeBetweenAndLocations_LongitudeBetween(
                     minLatitude, maxLatitude, minLongitude, maxLongitude);
             if(storyList.isEmpty()){
@@ -183,8 +188,7 @@ public class StoryService {
         return results.stream().toList();
     }
     public List<Story> searchStoriesWithTitle(String title) {
-        Set<Story> results = new HashSet<>();
-        results.addAll(storyRepository.findByTitleContainingIgnoreCase(title));
+        Set<Story> results = new HashSet<>(storyRepository.findByTitleContainingIgnoreCase(title));
         return results.stream().toList();
     }
 
@@ -197,8 +201,7 @@ public class StoryService {
     }
 
     public List<Story> searchStoriesWithDecade(String decade){
-        Set<Story> results = new HashSet<>();
-        results.addAll(storyRepository.findByDecadeContainingIgnoreCase(decade));
+        Set<Story> results = new HashSet<>(storyRepository.findByDecadeContainingIgnoreCase(decade));
         try {
             Date startDecadeDate = convertToStartDate(decade);
             Date endDecadeDate = convertToEndDate(decade);
@@ -250,20 +253,15 @@ public class StoryService {
 
     public List<Story> searchStoriesWithSingleDate(String startTimeStamp) throws ParseException {
         Date formattedStartDate = stringToDate(startTimeStamp);
-        Date formattedEndDate;
-        switch (startTimeStamp.length()) {
-            case 4: // yyyy
-                formattedEndDate = incrementDateByOneYear(formattedStartDate);
-                break;
-            case 7: // yyyy-MM
-                formattedEndDate = incrementDateByOneMonth(formattedStartDate);
-                break;
-            case 10: // yyyy-MM-dd
-                formattedEndDate = incrementDateByOneDay(formattedStartDate);
-                break;
-            default:
-                throw new ParseException("Invalid date format", 0);
-        }
+        Date formattedEndDate = switch (startTimeStamp.length()) {
+            case 4 -> // yyyy
+                    incrementDateByOneYear(formattedStartDate);
+            case 7 -> // yyyy-MM
+                    incrementDateByOneMonth(formattedStartDate);
+            case 10 -> // yyyy-MM-dd
+                    incrementDateByOneDay(formattedStartDate);
+            default -> throw new ParseException("Invalid date format", 0);
+        };
         return storyRepository.findByStartTimeStampBetween(formattedStartDate,formattedEndDate);
     }
     public List<Story> searchStoriesWithMultipleDate(String startTimeStamp,String endTimeStamp) throws ParseException {
@@ -272,27 +270,7 @@ public class StoryService {
         return storyRepository.findByStartTimeStampBetween(formattedStartDate, formattedEndDate);
     }
 
-    public static String getDecadeString(Story story) {
-        Calendar calendar = Calendar.getInstance();
-        if(story.getDecade() == null && story.getStartTimeStamp() != null){
-            calendar.setTime(story.getStartTimeStamp());
-            int year = calendar.get(Calendar.YEAR);
-            int decadeStart = year - (year % 10);
-            return decadeStart + "s";
-        }
-        return story.getDecade();
-    }
 
-    public static String getEndDecadeString(Story story) {
-        Calendar calendar = Calendar.getInstance();
-        if(story.getEndDecade() == null && story.getEndTimeStamp() != null){
-            calendar.setTime(story.getEndTimeStamp());
-            int year = calendar.get(Calendar.YEAR);
-            int decadeStart = year - (year % 10);
-            return decadeStart + "s";
-        }
-        return story.getEndDecade();
-    }
 
     public String deleteByStoryId(Story story) {
         List<Comment> commentList = story.getComments();
@@ -308,46 +286,51 @@ public class StoryService {
         return "deleted";
     }
 
-    public Date stringToDate(String timeStamp) throws ParseException {
 
-        if (timeStamp.length() == 4) { // yyyy
-            timeStamp += "-01-01";
-        } else if (timeStamp.length() == 7) { // yyyy-MM
-            timeStamp += "-01";
-        }
-        // yyyy-MM-dd format will remain unchanged
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return dateFormat.parse(timeStamp);
-    }
 
-    public Story enterStory(StoryEnterRequest storyEditRequest,Story foundStory) throws ParseException, IOException {
+    public Story enterStory(StoryEnterRequest storyEditRequest,Story foundStory) throws IOException {
 
         foundStory.setLabels(storyEditRequest.getLabels());
         foundStory.setTitle(storyEditRequest.getTitle());
         foundStory.setText(imageService.parseAndSaveImages(storyEditRequest.getText()));
-        foundStory.setStartTimeStamp(storyEditRequest.getStartTimeStamp());
-        foundStory.setEndTimeStamp(storyEditRequest.getEndTimeStamp());
-        foundStory.setStartHourFlag(storyEditRequest.getStartHourFlag());
-        foundStory.setDecade(storyEditRequest.getDecade());
-        foundStory.setEndDecade(storyEditRequest.getEndDecade());
-        foundStory.setSeason(storyEditRequest.getSeason());
-        foundStory.setEndSeason(storyEditRequest.getEndSeason());
-        foundStory.setLocations(storyEditRequest.getLocations());
-        foundStory.setStartHourFlag(storyEditRequest.getStartHourFlag());
-        foundStory.setEndHourFlag(storyEditRequest.getEndHourFlag());
-        foundStory.setStartDateFlag(storyEditRequest.getStartDateFlag());
-        foundStory.setEndDateFlag(storyEditRequest.getEndDateFlag());
-        foundStory.setVerbalExpression(generateVerbalExpression(foundStory));
-        List<Location> storyLocations = foundStory.getLocations();
-        storyLocations.clear();
-        foundStory.setLocations(storyLocations);
-        storyRepository.save(foundStory);
-        storyLocations.addAll(storyEditRequest.getLocations());
-        foundStory.setLocations(storyLocations);
+        if (isDateFieldApplicableCheck(storyEditRequest)) {
+            foundStory.setStartTimeStamp(storyEditRequest.getStartTimeStamp());
+            foundStory.setEndTimeStamp(storyEditRequest.getEndTimeStamp());
+            foundStory.setStartHourFlag(storyEditRequest.getStartHourFlag());
+            foundStory.setDecade(storyEditRequest.getDecade());
+            foundStory.setEndDecade(storyEditRequest.getEndDecade());
+            foundStory.setSeason(storyEditRequest.getSeason());
+            foundStory.setEndSeason(storyEditRequest.getEndSeason());
+            foundStory.setStartHourFlag(storyEditRequest.getStartHourFlag());
+            foundStory.setEndHourFlag(storyEditRequest.getEndHourFlag());
+            foundStory.setStartDateFlag(storyEditRequest.getStartDateFlag());
+            foundStory.setEndDateFlag(storyEditRequest.getEndDateFlag());
+        }
+        if (isStringApplicable(storyEditRequest.getTimeType()) || isStringApplicable(storyEditRequest.getTimeType())) {
+            foundStory.setTimeType(storyEditRequest.getTimeType());
+            foundStory.setTimeExpression(storyEditRequest.getTimeExpression());
+        }
+        locationService.deleteAllLocationsByStoryId(foundStory.getId());
+        if (storyEditRequest.getLocations() != null) {
+            List<Location> newLocationsList = storyEditRequest.getLocations();
+            for (Location location : newLocationsList) {
+                location.setStory(foundStory);
+            }
+            foundStory.setLocations(storyEditRequest.getLocations());
+        }
         return foundStory;
     }
 
-    public Story editStory(StoryEnterRequest request, User user, Long storyId) throws ParseException, IOException {
+    private Boolean isDateFieldApplicableCheck(StoryEnterRequest storyEditRequest) {
+        return storyEditRequest.getStartTimeStamp() != null ||
+                storyEditRequest.getEndTimeStamp() != null ||
+                storyEditRequest.getSeason() != null ||
+                storyEditRequest.getEndSeason() != null ||
+                storyEditRequest.getDecade() != null ||
+                storyEditRequest.getEndDecade() != null;
+    }
+
+    public Story editStory(StoryEnterRequest request, User user, Long storyId) throws IOException {
         Story story = getStoryByStoryId(storyId);
         if(Objects.equals(story.getUser().getId(),user.getId())){
             Story enteredStory = enterStory(request,story);
@@ -388,37 +371,6 @@ public class StoryService {
         calendar.add(Calendar.DAY_OF_MONTH, -7);
         Date date = calendar.getTime();
         return storyRepository.findByCreatedAtAfterOrderByIdDesc(date);
-    }
-
-    private static Date convertToStartDate(String decadeString) throws ParseException {
-
-        int decade = Integer.parseInt(decadeString.substring(0, 4));
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, decade);
-        calendar.set(Calendar.MONTH, Calendar.JANUARY);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        return calendar.getTime();
-    }
-
-    private static Date convertToEndDate(String decadeString) throws ParseException {
-
-        int decade = Integer.parseInt(decadeString.substring(0, 4));
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, decade);
-        calendar.set(Calendar.MONTH, Calendar.DECEMBER);
-        calendar.set(Calendar.DAY_OF_MONTH, 31);
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.add(Calendar.YEAR,9);
-
-        return calendar.getTime();
     }
 
     public Story saveStory(Long storyId,Long userId){
@@ -513,11 +465,11 @@ public class StoryService {
         return userSavedStories.contains(storyId);
     }
 
-    public StoryResponse storyAsStoryResponse(Story story){
+    public static StoryResponse storyAsStoryResponse(Story story){
         return new StoryResponse(story);
     }
 
-    public List<StoryListResponse> storyListAsStoryListResponse(List<Story> storyList){
+    public static List<StoryListResponse> storyListAsStoryListResponse(List<Story> storyList){
         if(storyList.isEmpty()){
             return new ArrayList<>();
         }
@@ -528,7 +480,7 @@ public class StoryService {
         return storyResponseList;
     }
 
-    public List<MyStoryListResponse> storyListAsMyStoryListResponse(List<Story> storyList){
+    public static List<MyStoryListResponse> storyListAsMyStoryListResponse(List<Story> storyList){
         if(storyList.isEmpty()){
             return new ArrayList<>();
         }
@@ -537,60 +489,6 @@ public class StoryService {
             storyResponseList.add(new MyStoryListResponse(story));
         }
         return storyResponseList;
-    }
-
-    public static String dateToStringBasedOnFlags(Date date, Integer hourFlag,Integer dateFlag) {
-        if(date == null){
-            return null;
-        }
-
-        SimpleDateFormat formatter;
-
-        if (hourFlag == null || hourFlag == -1 || hourFlag == 1) {
-            formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        } else {
-            if(dateFlag == null){
-                formatter = new SimpleDateFormat("dd/MM/yyyy");
-            }
-            else{
-                if(dateFlag == 1){
-                    formatter = new SimpleDateFormat("yyyy");
-                }
-                else if (dateFlag == 2) {
-                    formatter = new SimpleDateFormat("MM/yyyy");
-                }
-                else{
-                    formatter = new SimpleDateFormat("dd/MM/yyyy");
-                }
-            }
-
-
-        }
-
-        formatter.setTimeZone(TimeZone.getTimeZone("Europe/Istanbul"));
-
-        return formatter.format(date);
-    }
-
-    public Date incrementDateByOneYear(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.YEAR, 1);
-        return calendar.getTime();
-    }
-
-    public Date incrementDateByOneMonth(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MONTH, 1);
-        return calendar.getTime();
-    }
-
-    public Date incrementDateByOneDay(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DATE, 1);
-        return calendar.getTime();
     }
 
 
@@ -607,50 +505,41 @@ public class StoryService {
             String season,
             String endSeason) throws ParseException {
         Set<Story> storySet = new HashSet<>();
-        if(query != null){
-            if(!query.equalsIgnoreCase("") && !query.equalsIgnoreCase("null")){
-                storySet.addAll(searchStoriesWithQuery(query));
-            }
+        if(isStringApplicable(query)){
+            storySet.addAll(searchStoriesWithQuery(query));
         }
         if(latitude != null && longitude != null && (radius != null)){
-            if (query != null && !query.equalsIgnoreCase("null")){
+            if (isStringApplicable(query)){
                 storySet.addAll(searchStoriesWithLocation(query,radius,latitude,longitude));
             }
             else{
                 storySet.addAll(searchStoriesWithLocationOnly(radius,latitude,longitude));
             }
         }
-        if(startTimeStamp != null && !startTimeStamp.equalsIgnoreCase("null")){
-            if(endTimeStamp != null && !endTimeStamp.equalsIgnoreCase("null")){
+        if(isStringApplicable(startTimeStamp)){
+            if(isStringApplicable(endTimeStamp)){
                 storySet.addAll(searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
             }
             else{
                 storySet.addAll(searchStoriesWithSingleDate(startTimeStamp));
             }
         }
-        if(decade != null && !decade.equalsIgnoreCase("null")){
-            if(endDecade != null && !endDecade.equalsIgnoreCase("null")){
-                storySet.addAll(searchStoriesWithMultipleDecades(decade,endDecade));
-            }
-            else{
+        if(isStringApplicable(decade)){
+            if (isStringApplicable(endDecade)) {
+                storySet.addAll(searchStoriesWithMultipleDecades(decade, endDecade));
+            } else {
                 storySet.addAll(searchStoriesWithDecade(decade));
             }
-
         }
-        if(season != null && !season.equalsIgnoreCase("null")){
-            if(endSeason != null && !endSeason.equalsIgnoreCase("null")){
+        if(isStringApplicable(season)){
+            if(isStringApplicable(endSeason)){
                 storySet.addAll(searchStoriesWithMultipleSeasons(season,endSeason));
             }
             else{
                 storySet.addAll(searchStoriesWithSeason(season));
             }
-
         }
-
-        if(storySet.isEmpty()){
-            return new ArrayList<>();
-        }
-        return storySet.stream().toList();
+        return sortStoriesByDescending(storySet.stream().toList());
     }
 
     public List<Story> searchStoriesWithIntersection(
@@ -665,77 +554,70 @@ public class StoryService {
             String endDecade,
             String season,
             String endSeason) throws ParseException {
-        Set<Story> titleSet = new HashSet<>();
-        Set<Story> labelsSet = new HashSet<>();
-        Set<Story> locationSet = new HashSet<>();
-        Set<Story> dateSet = new HashSet<>();
-        Set<Story> decadeSet = new HashSet<>();
-        Set<Story> seasonSet = new HashSet<>();
-        Set<Story> storySet = new HashSet<>(findAll());
-        if(title != null){
-            if(!title.equalsIgnoreCase("") && !title.equalsIgnoreCase("null")){
-                titleSet.addAll(searchStoriesWithTitle(title));
-                if(searchStoriesWithTitle(title) != null){
-                    storySet.retainAll(titleSet);
-                }
+        List<Story> dateList = new ArrayList<>();
+        List<Story> decadeList = new ArrayList<>();
+        List<Story> seasonList = new ArrayList<>();
+        List<Story> storyList = new ArrayList<>(findAll());
+        if(isStringApplicable(title)){
+            List<Story> titleSet = new ArrayList<>(searchStoriesWithTitle(title));
+            if(searchStoriesWithTitle(title) != null){
+                storyList.retainAll(titleSet);
             }
         }
-        if(labels != null){
-            if(!labels.equalsIgnoreCase("") && !labels.equalsIgnoreCase("null")){
-                labelsSet.addAll(searchStoriesWithLabel(labels));
-                if(searchStoriesWithTitle(title) != null){
-                    storySet.retainAll(labelsSet);
-                }
+        if(isStringApplicable(labels)){
+            List<Story> labelsSet = new ArrayList<>(searchStoriesWithLabel(labels));
+            if(searchStoriesWithLabel(labels) != null){
+                storyList.retainAll(labelsSet);
             }
         }
         if(latitude != null && longitude != null && radius != null){
-            locationSet.addAll(searchStoriesWithLocationOnly(radius,latitude,longitude));
-            storySet.retainAll(locationSet);
+            List<Story> locationSet = new ArrayList<>(searchStoriesWithLocationOnly(radius, latitude, longitude));
+            storyList.retainAll(locationSet);
         }
-        if(startTimeStamp != null && !startTimeStamp.equalsIgnoreCase("null")){
-            if(endTimeStamp != null && !endTimeStamp.equalsIgnoreCase("null")){
-                dateSet.addAll(searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp));
+        if(isStringApplicable(startTimeStamp)){
+            if(isStringApplicable(endTimeStamp)){
+                dateList.addAll(searchStoriesWithMultipleDate(startTimeStamp, endTimeStamp));
                 if(searchStoriesWithMultipleDate(startTimeStamp,endTimeStamp) != null){
-                    storySet.retainAll(dateSet);
+                    storyList.retainAll(dateList);
                 }
             }
             else{
-                dateSet.addAll(searchStoriesWithSingleDate(startTimeStamp));
+                dateList.addAll(searchStoriesWithSingleDate(startTimeStamp));
                 if(searchStoriesWithSingleDate(startTimeStamp) != null){
-                    storySet.retainAll(dateSet);
+                    storyList.retainAll(dateList);
                 }
             }
         }
-        if(decade != null && !decade.equalsIgnoreCase("null")){
-            if(endDecade != null && !endDecade.equalsIgnoreCase("null")){
-                decadeSet.addAll(searchStoriesWithMultipleDecades(decade, endDecade));
+        if(isStringApplicable(decade)){
+            if(isStringApplicable(endDecade)){
+                decadeList.addAll(searchStoriesWithMultipleDecades(decade, endDecade));
                 if(searchStoriesWithMultipleDecades(decade,endDecade) != null){
-                    storySet.retainAll(decadeSet);
+                    storyList.retainAll(decadeList);
                 }
             }
             else{
-                decadeSet.addAll(searchStoriesWithDecade(decade));
+                decadeList.addAll(searchStoriesWithDecade(decade));
                 if(searchStoriesWithDecade(decade) != null){
-                    storySet.retainAll(decadeSet);
+                    storyList.retainAll(decadeList);
                 }
             }
 
         }
-        if(season != null && !season.equalsIgnoreCase("null")){
-            if(endSeason != null && !endSeason.equalsIgnoreCase("null")){
-                seasonSet.addAll(searchStoriesWithMultipleSeasons(season,endSeason));
+        if(isStringApplicable(season)){
+            if(isStringApplicable(endSeason)){
+                seasonList.addAll(searchStoriesWithMultipleSeasons(season, endSeason));
             }
             else{
-                seasonSet.addAll(searchStoriesWithSeason(season));
+                seasonList.addAll(searchStoriesWithSeason(season));
             }
-            if(!seasonSet.isEmpty()){
-                storySet.retainAll(seasonSet);
+            if (!seasonList.isEmpty()) {
+                storyList.retainAll(seasonList);
             }
         }
-        if(storySet.isEmpty()){
+        if (storyList.isEmpty()) {
             return new ArrayList<>();
         }
-        return storySet.stream().toList();
+        return storyList;
     }
 
 
@@ -751,8 +633,69 @@ public class StoryService {
         return removeHtmlFormatting(text).substring(0,100)+"...";
     }
 
-    // to be updated based on the verbal expression logic
     public static String generateVerbalExpression(Story story) {
-        return story.getVerbalExpression();
+
+        String timeType = story.getTimeType();
+        String timeExpression = story.getTimeExpression();
+        String startTimeStamp = dateToStringBasedOnFlags(story.getStartTimeStamp(), story.getStartHourFlag(), story.getEndDateFlag());
+        String endTimeStamp = dateToStringBasedOnFlags(story.getEndTimeStamp(), story.getEndHourFlag(), story.getEndDateFlag());
+        String startYear = getYearValueFromString(startTimeStamp);
+        String endYear = getYearValueFromString(endTimeStamp);
+        String startMonth = getMonthValueFromString(startTimeStamp);
+        String endMonth = getMonthValueFromString(endTimeStamp);
+        String decade = story.getDecade();
+        String endDecade = story.getEndDecade();
+        String season = story.getSeason();
+        String endSeason = story.getEndSeason();
+
+        if (timeType == null || timeExpression == null) {
+            return null;
+        }
+        return switch (timeType) {
+            case "timePoint" -> switch (timeExpression) {
+                case "moment" -> "At the moment " + startTimeStamp + ".";
+                case "day" -> "On the day " + startTimeStamp + ".";
+                case "month" -> "On the month " + startMonth + " of the year " + startYear + ".";
+                case "year" -> "On the year of " + startYear + ".";
+                case "decade" -> "In the decade of " + decade + ".";
+                case "season" -> "On the season of " + season + " of the year " + startYear + ".";
+                case "decade+season" -> "On the " + season + " of the decade " + decade + ".";
+                default -> null;
+            };
+            case "timeInterval" -> switch (timeExpression) {
+                case "moment" -> "Between " + startTimeStamp + " and " + endTimeStamp + ".";
+                case "day" -> "Between the days " + startTimeStamp + " and " + endTimeStamp + ".";
+                case "month" ->
+                        "Between the month of " + startMonth + " of " + startYear + " and " + endMonth + " of " + endYear + ".";
+                case "year" -> "Between the year of " + startYear + " and " + endYear + ".";
+                case "decade" -> "Between " + decade + " and " + endDecade + ".";
+                case "season" ->
+                        "Between " + season + " of the year " + startYear + " and the " + endSeason + " of the year " + endYear + ".";
+                case "decade+season" ->
+                        "Between the " + season + " of " + decade + " and " + endSeason + " of " + endDecade + ".";
+                default -> null;
+            };
+            default -> null;
+        };
     }
+
+    public Boolean isStringApplicable(String value){
+        return value != null && !value.equalsIgnoreCase("") && !value.isBlank() && !value.equalsIgnoreCase("null");
+    }
+
+    public String sendBatchofStories(String password) {
+
+        if (password.equals("password")) {
+            if (recService.isRecEngineStatus()) {
+                List<Story> storyList = findAll();
+                for (Story story : storyList) {
+                    recService.vectorizeRequest(story);
+                }
+                return "Data sent to karadut";
+            }
+        }
+        return "Karadut not active";
+    }
+
+
 }

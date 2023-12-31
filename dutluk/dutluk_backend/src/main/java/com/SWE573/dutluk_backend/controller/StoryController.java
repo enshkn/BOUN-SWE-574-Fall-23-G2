@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Objects;
+
+import static com.SWE573.dutluk_backend.service.StoryService.*;
 
 @RestController
 @RequestMapping("/api/story")
@@ -30,25 +31,24 @@ public class StoryController {
     @Autowired
     StoryService storyService;
     @Autowired
-    private UserService userService;
+    UserService userService;
     @Autowired
     RecommendationService recService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addStory(@RequestBody StoryEnterRequest storyEnterRequest, HttpServletRequest request) throws ParseException, IOException {
+    public ResponseEntity<?> addStory(@RequestBody StoryEnterRequest storyEnterRequest, HttpServletRequest request) throws IOException {
         User user = userService.validateTokenizedUser(request);
         return IntegrationService.mobileCheck(request,storyService.createStory(user, storyEnterRequest));
     }
 
     @GetMapping("/all")
     public ResponseEntity<?> findAllStories(HttpServletRequest request){
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.findAllByOrderByIdDesc());
+        List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyService.findAllByOrderByIdDesc());
         return IntegrationService.mobileCheck(request,storyListResponse);
     }
 
     @GetMapping("/delete/{storyId}")
     public ResponseEntity<?> deleteStory(@PathVariable Long storyId, HttpServletRequest request) {
-        User tokenizedUser = userService.validateTokenizedUser(request);
         String deletedStory = storyService.deleteByStoryId(storyService.getStoryByStoryId(storyId));
         return IntegrationService.mobileCheck(request,deletedStory);
 
@@ -60,9 +60,9 @@ public class StoryController {
     }
 
     @PostMapping("/edit/{storyId}")
-    public ResponseEntity<?> editStory(@PathVariable Long storyId, @RequestBody StoryEnterRequest storyEditRequest, HttpServletRequest request) throws ParseException, IOException {
+    public ResponseEntity<?> editStory(@PathVariable Long storyId, @RequestBody StoryEnterRequest storyEditRequest, HttpServletRequest request) throws IOException {
         User tokenizedUser = userService.validateTokenizedUser(request);
-        StoryResponse editedStory = storyService.storyAsStoryResponse(storyService.editStory(storyEditRequest,tokenizedUser,storyId));
+        StoryResponse editedStory = storyAsStoryResponse(storyService.editStory(storyEditRequest,tokenizedUser,storyId));
         return IntegrationService.mobileCheck(request,editedStory);
 
     }
@@ -78,23 +78,23 @@ public class StoryController {
     }
 
     @GetMapping("/following")
-    public ResponseEntity<?> findAllStoriesfromFollowings(HttpServletRequest request){
+    public ResponseEntity<?> findAllStoriesFromFollowings(HttpServletRequest request) {
         User tokenizedUser = userService.validateTokenizedUser(request);
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.findFollowingStories(tokenizedUser));
+        List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyService.findFollowingStories(tokenizedUser));
         return IntegrationService.mobileCheck(request,storyListResponse);
     }
 
     @GetMapping("/fromUser")
-    public ResponseEntity<?> findAllStoriesfromUser(HttpServletRequest request){
+    public ResponseEntity<?> findAllStoriesFromUser(HttpServletRequest request) {
         User user = userService.validateTokenizedUser(request);
-        List<MyStoryListResponse> storyList = storyService.storyListAsMyStoryListResponse(storyService.findByUserIdOrderByIdDesc(user.getId()));
+        List<MyStoryListResponse> storyList = storyListAsMyStoryListResponse(storyService.findByUserIdOrderByIdDesc(user.getId()));
         return IntegrationService.mobileCheck(request,storyList);
 
     }
 
     @GetMapping("/fromUserId/{userId}")
     public ResponseEntity<?> findAllStoriesbyUserId(@PathVariable Long userId, HttpServletRequest request){
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.findByUserIdOrderByIdDesc(userId));
+        List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyService.findByUserIdOrderByIdDesc(userId));
         return IntegrationService.mobileCheck(request,storyListResponse);
 
     }
@@ -104,7 +104,7 @@ public class StoryController {
         User user = userService.validateTokenizedUser(request);
         Story foundStory = storyService.getStoryByStoryIdWithPercentage(id,user);
         if (foundStory!=null) {
-            StoryResponse storyResponse = storyService.storyAsStoryResponse(foundStory);
+            StoryResponse storyResponse = storyAsStoryResponse(foundStory);
             return IntegrationService.mobileCheck(request,storyResponse);
         }
         return ResponseEntity.notFound().build();
@@ -130,14 +130,14 @@ public class StoryController {
     @PostMapping("/like/")
     public ResponseEntity<?> likeStory(@RequestBody LikeRequest likeRequest, HttpServletRequest request) throws JsonProcessingException {
         User tokenizedUser = userService.validateTokenizedUser(request);
-        StoryResponse likedStory = storyService.storyAsStoryResponse(storyService.likeStory(likeRequest.getLikedEntityId(),tokenizedUser.getId()));
+        StoryResponse likedStory = storyAsStoryResponse(storyService.likeStory(likeRequest.getLikedEntityId(),tokenizedUser.getId()));
         return IntegrationService.mobileCheck(request,likedStory);
     }
 
     @GetMapping("/liked")
     public ResponseEntity<?> likedStories(HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.likedStories(tokenizedUser));
+        List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyService.likedStories(tokenizedUser));
         return IntegrationService.mobileCheck(request,storyListResponse);
 
     }
@@ -148,34 +148,34 @@ public class StoryController {
             @RequestParam(required = false) Double latitude,
             @RequestParam(required = false) Double longitude,
             HttpServletRequest request){
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.searchStoriesWithLocationOnly(radius,latitude,longitude).stream().toList());
-        return IntegrationService.mobileCheck(request,Objects.requireNonNullElse(storyListResponse, "No stories with this search is found!"));
+        List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyService.searchStoriesWithLocationOnly(radius,latitude,longitude).stream().toList());
+        return IntegrationService.mobileCheck(request, storyListResponse);
     }
 
     @GetMapping("/recommended")
     public ResponseEntity<?> findFeedStories(HttpServletRequest request){
         User user = userService.validateTokenizedUser(request);
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.recommendedStories(user));
+        List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyService.recommendedStories(user));
         return IntegrationService.mobileCheck(request,storyListResponse);
     }
 
     @GetMapping("/recent")
     public ResponseEntity<?> findRecentStories(HttpServletRequest request){
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.findRecentStories());
+        List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyService.findRecentStories());
         return IntegrationService.mobileCheck(request,storyListResponse);
     }
 
     @PostMapping("/save")
     public ResponseEntity<?> saveStory(@RequestBody SaveRequest saveRequest, HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
-        StoryResponse savedStory = storyService.storyAsStoryResponse(storyService.saveStory(saveRequest.getSavedEntityId(),tokenizedUser.getId()));
+        StoryResponse savedStory = storyAsStoryResponse(storyService.saveStory(saveRequest.getSavedEntityId(),tokenizedUser.getId()));
         return IntegrationService.mobileCheck(request,savedStory);
     }
 
     @GetMapping("/saved")
     public ResponseEntity<?> savedStories(HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.savedStories(tokenizedUser));
+        List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyService.savedStories(tokenizedUser));
         return IntegrationService.mobileCheck(request,storyListResponse);
 
     }
@@ -183,7 +183,7 @@ public class StoryController {
     @GetMapping("/savedByUser/{userId}")
     public ResponseEntity<?> savedStoriesByUser(@PathVariable Long userId, HttpServletRequest request){
         User foundUser = userService.findByUserId(userId);
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.savedStories(foundUser));
+        List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyService.savedStories(foundUser));
         return IntegrationService.mobileCheck(request,storyListResponse);
 
     }
@@ -212,15 +212,20 @@ public class StoryController {
                 endDecade,
                 season,
                 endSeason);
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyList);
-        return IntegrationService.mobileCheck(request,Objects.requireNonNullElse(storyListResponse, "[]"));
+        List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyList);
+        return IntegrationService.mobileCheck(request, storyListResponse);
     }
 
     @GetMapping("/search/label")
     public ResponseEntity<?> searchStoriesByLabel(@RequestParam(required = false) String label,
                                                   HttpServletRequest request){
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyService.searchStoriesWithLabel(label));
-        return IntegrationService.mobileCheck(request,Objects.requireNonNullElse(storyListResponse,"No story found!"));
+        List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyService.searchStoriesWithLabel(label));
+        return IntegrationService.mobileCheck(request, storyListResponse);
+    }
+
+    @GetMapping("/send/allToKaradut/{password}")
+    public ResponseEntity<?> sendAllStoriesToKaradut(@PathVariable String password, HttpServletRequest request) {
+        return IntegrationService.mobileCheck(request, storyService.sendBatchofStories(password));
     }
 
     @GetMapping("/search/timeline")
@@ -249,7 +254,9 @@ public class StoryController {
                 endDecade,
                 season,
                 endSeason);
-        List<StoryListResponse> storyListResponse = storyService.storyListAsStoryListResponse(storyList);
-        return IntegrationService.mobileCheck(request,Objects.requireNonNullElse(storyListResponse, "No stories with this search is found!"));
+        List<StoryListResponse> storyListResponse = storyListAsStoryListResponse(storyList);
+        return IntegrationService.mobileCheck(request, storyListResponse);
     }
+
+
 }

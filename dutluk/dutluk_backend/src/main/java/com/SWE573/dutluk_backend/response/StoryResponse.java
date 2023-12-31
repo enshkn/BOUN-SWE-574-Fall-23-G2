@@ -4,24 +4,24 @@ import com.SWE573.dutluk_backend.model.Comment;
 import com.SWE573.dutluk_backend.model.Location;
 import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
-import com.SWE573.dutluk_backend.service.StoryService;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.SWE573.dutluk_backend.service.DateService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-@Getter
-@Setter
+import static com.SWE573.dutluk_backend.service.DateService.dateToStringBasedOnFlags;
+import static com.SWE573.dutluk_backend.service.DateService.getEndDecadeStringByEndTimeStamp;
+import static com.SWE573.dutluk_backend.service.StoryService.generateVerbalExpression;
+
+@Data
 public class StoryResponse{
     private Long id;
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone = "Europe/Istanbul")
-    private Date createdAt;
+
+    private String createdAt;
 
     private String text;
 
@@ -33,6 +33,8 @@ public class StoryResponse{
     private User user;
 
     private List<Comment> comments;
+
+    private Integer commentSize;
 
     private Set<Long> likes;
 
@@ -53,41 +55,32 @@ public class StoryResponse{
 
     private Integer percentage;
 
-    private String timeType;
-
-    private String timeExpression;
-
     private String verbalExpression;
 
     public StoryResponse(Story story) {
         this.id = story.getId();
-        this.createdAt = story.getCreatedAt();
+        this.createdAt = DateService.timeAgo(story.getCreatedAt());
         this.text = story.getText();
         this.title = story.getTitle();
         this.labels = story.getLabels();
         this.user = story.getUser();
         this.comments = story.getComments();
+        this.commentSize = story.getComments().size();
         this.likes = story.getLikes();
         this.savedBy = story.getSavedBy();
         this.locations = story.getLocations();
-        this.startTimeStamp = StoryService
-                .dateToStringBasedOnFlags(
-                        story.getStartTimeStamp(),
-                        story.getStartHourFlag(),
-                        story.getStartDateFlag());
-        this.endTimeStamp = StoryService
-                .dateToStringBasedOnFlags(
-                        story.getEndTimeStamp(),
-                        story.getEndHourFlag(),
-                        story.getEndDateFlag());
+        this.startTimeStamp = dateToStringBasedOnFlags(
+                story.getStartTimeStamp(),
+                story.getStartHourFlag(),
+                story.getStartDateFlag());
+        this.endTimeStamp = dateToStringBasedOnFlags(
+                story.getEndTimeStamp(),
+                story.getEndHourFlag(),
+                story.getEndDateFlag());
         this.season = story.getSeason();
         this.decade = story.getDecade();
-        this.endDecade = StoryService
-                .getEndDecadeString(story);
+        this.endDecade = getEndDecadeStringByEndTimeStamp(story);
         this.percentage = story.getPercentage();
-        this.timeType = story.getTimeType();
-        this.timeExpression = story.getTimeExpression();
-        this.verbalExpression = story.getVerbalExpression();
+        this.verbalExpression = generateVerbalExpression(story);
     }
 }
-

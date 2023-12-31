@@ -1,7 +1,6 @@
 package com.SWE573.dutluk_backend.controller;
 
 
-import com.SWE573.dutluk_backend.configuration.JwtUtil;
 import com.SWE573.dutluk_backend.model.User;
 import com.SWE573.dutluk_backend.request.FollowRequest;
 import com.SWE573.dutluk_backend.request.LoginRequest;
@@ -28,10 +27,8 @@ import java.io.IOException;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    UserService userService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
 
 
 
@@ -101,7 +98,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request,HttpServletResponse response) {
-        response = userService.logout(response);
+        userService.logout(response);
         return IntegrationService.mobileCheck(request,"Logged out");
     }
 
@@ -114,7 +111,7 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest, HttpServletRequest request) throws Exception{
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest, HttpServletRequest request) {
         try {
             if(!userService.validateRegistrationInput(registerRequest)){
                 return IntegrationService.mobileCheck(request,"Username or email already exists!",HttpStatus.NOT_FOUND);
@@ -132,7 +129,7 @@ public class UserController {
     }
 
     @PostMapping(value= "/photo", consumes = "multipart/form-data")
-    public ResponseEntity<?> uploadPhoto(@RequestParam("photo") MultipartFile file, HttpServletRequest request) throws Exception{
+    public ResponseEntity<?> uploadPhoto(@RequestParam("photo") MultipartFile file, HttpServletRequest request) {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("Please select a file to upload!");
         }

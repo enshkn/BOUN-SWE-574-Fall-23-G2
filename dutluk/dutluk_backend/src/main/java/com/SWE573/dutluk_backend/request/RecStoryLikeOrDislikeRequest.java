@@ -1,12 +1,10 @@
 package com.SWE573.dutluk_backend.request;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 @Builder
-@Getter
-@Setter
+@Data
 public class RecStoryLikeOrDislikeRequest { // story-liked & story-disliked
     private String type;
 
