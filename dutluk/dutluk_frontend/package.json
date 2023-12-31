@@ -77,5 +77,4 @@
       "\\.(css|less|scss|sass)$": "jest-transform-stub"
     }
   }
-  
 }
