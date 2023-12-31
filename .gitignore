@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Compiled class file
 *.class
 
@@ -90,3 +91,34 @@ dutluk/dutluk_backend/.run/DutlukBackendApplication.run.xml
 # node modules and build files
 dutluk/dutluk_frontend/build
 dutluk/dutluk_frontend/node_modules
+=======
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# intellij
+.idea
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# env variables
+.env
+>>>>>>> 42ce1ed (Layout of the code has been changed thus the look of the page is also changed)
