@@ -152,12 +152,19 @@ const StoryList = ({ story }) => {
 
 
                 <div className="date-information">
-                    {story.startTimeStamp && <span className="date">Start: {story.startTimeStamp}</span>}
-                    {story.endTimeStamp && <span className="date">End: {story.endTimeStamp}</span>}
-                    {story.season && <span className="date">Season: {story.season}</span>}
-                    {story.decade && <span className="date">Decade: {story.decade}</span>}
-                    {story.endDecade && <span className="date">End Decade: {story.endDecade}</span>}
+                {story.verbalExpression != null ? (
+                    <   span className="story-date">{story.verbalExpression}</span>
+                ) : (
+                <>
+                    {story.startTimeStamp && <span className="story-date">Start: {story.startTimeStamp}</span>}
+                    {story.endTimeStamp && <span className="story-date">End: {story.endTimeStamp}</span>}
+                    {story.season && <span className="story-date">Season: {story.season}</span>}
+                    {story.endSeason && <span className="story-date">Season: {story.endSeason}</span>}
+                    {story.decade && <span className="story-date">Decade: {story.decade}</span>}
+                    {story.endDecade && <span className="story-date">End Decade: {story.endDecade}</span>}
                     {/* You can add more conditional renders for other date fields as needed */}
+                </>
+                )}
                 </div>
 
             </div>
