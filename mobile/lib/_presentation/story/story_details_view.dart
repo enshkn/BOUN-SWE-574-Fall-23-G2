@@ -375,10 +375,10 @@ class _StoryDetailsViewState extends State<StoryDetailsView> {
                   padding: const EdgeInsets.all(8),
                   child: Column(
                     children: [
-                      Text(
+                      /*  Text(
                         'Time Variants',
                         style: TextStyle(color: Colors.orange.shade800),
-                      ),
+                      ), */
                       if (state.storyModel!.verbalExpression != null) ...[
                         Text(
                           '${state.storyModel!.verbalExpression}',

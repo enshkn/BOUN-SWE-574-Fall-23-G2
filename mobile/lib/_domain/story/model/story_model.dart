@@ -27,7 +27,7 @@ class StoryModel extends BaseEntity<StoryModel> with _$StoryModel {
     int? endHourFlag,
     List<int>? savedBy,
     String? picture,
-    String? percentage,
+    int? percentage,
     String? endDecade,
     int? startDateFlag,
     int? endDateFlag,
