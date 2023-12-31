@@ -17,6 +17,7 @@ const EditStoryForm = () => {
   const { id } = useParams();
   const [messageApi, contextHolder] = message.useMessage();
   const Navigate = useNavigate();
+  const [prevStory, setPrevStory] = useState([]);
 
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
@@ -53,10 +54,10 @@ const EditStoryForm = () => {
   const [editInputValue, setEditInputValue] = useState('');
   const inputRef = useRef(null);
   const editInputRef = useRef(null);
+  const [verbalExpression, setVerbalExpression] = useState("");
+
   const [loading, setLoading] = useState(true); // Loading state
 
-  const [geocodedLocations, setGeocodedLocations] = useState([]);
-  const [locations, setLocations] = useState([]);
 
   const onSearchBoxLoad = (ref) => {
     setSearchBox(ref);
@@ -122,7 +123,7 @@ const EditStoryForm = () => {
         }
       );
       const existingStory = response.data;
-
+      setPrevStory(existingStory);
       setTitle(existingStory.title);
       setTags(existingStory.labels || []);
       setText(existingStory.text);
@@ -140,6 +141,7 @@ const EditStoryForm = () => {
       setEndDateFlag(existingStory.endDateFlag);
       setTimeType(existingStory.timeType);
       setTimeExpression(existingStory.timeExpression);
+      setVerbalExpression(existingStory.verbalExpression);
 
     // Initialize arrays to hold location data
     const newMarkers = [];
@@ -852,10 +854,29 @@ const EditStoryForm = () => {
       </label>
 
       <br />
+        <div className="date-information">
+          <h5>Previously selected time:</h5>
+          {prevStory.verbalExpression != null ? (
+                <   span className="date">{prevStory.verbalExpression}</span>
+                ) : (
+                <>
+                  {/* {prevStory.timeType && <span className="date">Time Type: {prevStory.timeType}</span>}
+                  {prevStory.timeExpression && <span className="date">Time Expression: {prevStory.timeExpression}</span>} */}
+                  {prevStory.startTimeStamp && <span className="date">Start: {prevStory.startTimeStamp}</span>}
+                  {prevStory.endTimeStamp && <span className="date">End: {prevStory.endTimeStamp}</span>}
+                  {prevStory.season && <span className="date">Season: {prevStory.season}</span>}
+                  {prevStory.endSeason && <span className="date">End Season: {prevStory.endSeason}</span>}
+                  {prevStory.decade && <span className="date">Decade: {prevStory.decade}</span>}
+                  {prevStory.endDecade && <span className="date">End Decade: {prevStory.endDecade}</span>}
+                  {/* You can add more conditional renders for other date fields as needed */}
+                </>
+                )}<br/><br/>
+          <h6>If you want to change the date, please select one from below.</h6>
+        </div>
       <DateTimerPicker 
       // Loading previously selected timeType and timeExpression
-      selectedTimeType = {timeType}
-      selectedTimeExpression = {timeExpression}
+      // selectedTimeType = {timeType}
+      // selectedTimeExpression = {timeExpression}
       // Normal DateTimePicker component
       onTimeTypeSelect = {handleTimeTypeChange}
       onTimeExpressionSelect = {handleTimeExpressionChange}
@@ -872,9 +893,8 @@ const EditStoryForm = () => {
       onEndHourFlagSelect = {handleEndHourFlagChange}
       onEndDateFlagSelect = {handleEndDateFlagChange}
       />
-      <br />
       <div className="d-flex justify-content-center mt-3">
-      <button style={{backgroundColor: "#ff5500ca", color: "white"}} type="submit" className="btn btn-primary">
+      <button style={{backgroundColor: "#ff5500ca", color: "white", border: "none"}} type="submit" className="btn btn-primary">
         Update Story
       </button>
       </div>
