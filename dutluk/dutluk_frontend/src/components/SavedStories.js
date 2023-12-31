@@ -4,6 +4,9 @@ import { Space, message } from 'antd';
 import "./css/AllStories.css";
 import StoryList from "./StoryList";
 
+// This component contains old name but it is changed in order to avoid confusion on the user side.
+// Component and api names remains same.
+
 function SavedStories() {
   const [savedStories, setSavedStories] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
@@ -32,7 +35,7 @@ function SavedStories() {
     >
     {contextHolder}
     <div className="all-stories">
-        <center><h1>Your saved stories</h1></center>
+        <center><h1>Your Stashed Stories</h1></center>
         {savedStories.map((story) => (
           <StoryList key={story.id} story={story} />
         ))}
