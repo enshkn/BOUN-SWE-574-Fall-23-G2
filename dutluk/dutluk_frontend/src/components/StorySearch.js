@@ -26,7 +26,7 @@ const StorySearch = () => {
       return;
     }
     const isValidMonthYear = (input) => {
-      const regex = /^(0[1-9]|1[0-2])-\d{4}$/;
+      const regex = /^(0[1-9]|1[0-2])\/\d{4}$/;
       return regex.test(input);
     };
     let isValid = true;
@@ -70,12 +70,12 @@ const StorySearch = () => {
             endDate = `${searchDate.value.endDate}-12-31`;
             break;
           case "absolute-month":
-            const [month, year] = searchDate.value.startDate.split("-");
+            const [month, year] = searchDate.value.startDate.split("/");
             startDate = `${year}-${month}`;
             break;
           case "interval-month":
-            const [startMonth, startYear] = searchDate.value.startDate.split("-");
-            const [endMonth, endYear] = searchDate.value.endDate.split("-");
+            const [startMonth, startYear] = searchDate.value.startDate.split("/");
+            const [endMonth, endYear] = searchDate.value.endDate.split("/");
             startDate = `${startYear}-${startMonth}`;
             endDate = `${endYear}-${endMonth}`;
             break;
@@ -319,7 +319,7 @@ const StorySearch = () => {
                 type="text"
                 className="form-control"
                 id="monthYear"
-                placeholder="MM-YYYY"
+                placeholder="MM/YYYY"
                 onChange={(e) =>
                   setSearchDate({
                     ...searchDate,
@@ -336,7 +336,7 @@ const StorySearch = () => {
                 type="text"
                 className="form-control"
                 id="startMonthYear"
-                placeholder="MM-YYYY"
+                placeholder="MM/YYYY"
                 onChange={(e) =>
                   setSearchDate({
                     ...searchDate,
@@ -349,7 +349,7 @@ const StorySearch = () => {
                 type="text"
                 className="form-control"
                 id="endMonthYear"
-                placeholder="MM-YYYY"
+                placeholder="MM/YYYY"
                 onChange={(e) =>
                   setSearchDate({
                     ...searchDate,
