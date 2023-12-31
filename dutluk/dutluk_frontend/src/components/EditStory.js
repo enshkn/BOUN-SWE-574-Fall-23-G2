@@ -343,7 +343,7 @@ const EditStoryForm = () => {
         </select>
       </label>
       <br />
-      <button type="submit" className="edit-story-button">
+      <button type="submit" className="edit-story-button" style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white",  border: "none", margin: "10px" }}>
         Edit Story
       </button>
     </form>

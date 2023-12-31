@@ -46,3 +46,55 @@
   margin-bottom: 5px;
 }
 
+.comment-container {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  width: 50%;
+  max-width: 600px;
+}
+
+.comment-body {
+  display: flex;
+  align-items: center;
+}
+
+.profile-picture {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.comment-info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comment-user,
+.comment-like-delete {
+  display: flex;
+  align-items: center;
+}
+
+.comment-like-delete p {
+  margin: 0; /* Remove default paragraph margin */
+}
+
+.comment-text {
+  margin-top: 10px;
+}
+
+.username {
+  font-size: 1em;
+  color: #007bff;
+  text-decoration: none;
+}
