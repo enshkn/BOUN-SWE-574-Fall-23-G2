@@ -306,6 +306,10 @@ public class StoryService {
             foundStory.setStartDateFlag(storyEditRequest.getStartDateFlag());
             foundStory.setEndDateFlag(storyEditRequest.getEndDateFlag());
         }
+        if (isStringApplicable(storyEditRequest.getTimeType()) || isStringApplicable(storyEditRequest.getTimeType())) {
+            foundStory.setTimeType(storyEditRequest.getTimeType());
+            foundStory.setTimeExpression(storyEditRequest.getTimeExpression());
+        }
         locationService.deleteAllLocationsByStoryId(foundStory.getId());
         if (storyEditRequest.getLocations() != null) {
             List<Location> newLocationsList = storyEditRequest.getLocations();
