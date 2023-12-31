@@ -13,13 +13,16 @@ function DayPicker({ onDateTimeChange }) {
 
   return (
     <div>
+      <div className="form-group">
       <ReactDatePicker
         selected={startDate}
         onChange={handleDateTimeChange}
         timeInputLabel="Time:"
         dateFormat="dd/MM/yyyy"
+        className="form-control"
         
       />
+      </div>
     </div>
   );
 }
