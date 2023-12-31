@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { GoogleMap, LoadScript, Marker, Circle, Polygon, Polyline } from "@react-google-maps/api";
 import "react-quill/dist/quill.snow.css";
 import "./css/AllStories.css";
+import CommentList from "./CommentList";
 
 function StoryDetails() {
   const { id } = useParams();
@@ -18,8 +19,6 @@ function StoryDetails() {
   const [circles, setCircles] = useState([]);
   const [polygons, setPolygons] = useState([]);
   const [polylines, setPolylines] = useState([]);
-
-  const currentUserId = sessionStorage.getItem('currentUserId');
 
   const convertLocations = (story) => {
 
@@ -189,56 +188,6 @@ function StoryDetails() {
     }
   };
 
-  const handleLikeComment = async (commentId) => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/comment/like`,
-        { likedEntityId: commentId },
-        {
-          withCredentials: true,
-        }
-      );
-      const updatedStory = { ...story };
-      const updatedComments = updatedStory.comments.map((comment) => {
-        if (comment.id === commentId) {
-          return response.data;
-        }
-        return comment;
-      });
-      updatedStory.comments = updatedComments;
-      setStory(updatedStory);
-      messageApi.open({ type: "success", content: "You liked the comment!" });
-    } catch (error) {
-      console.log(error);
-      messageApi.open({ type: "error", content: "Error occured while liking the comment!" });
-    }
-  };
-
-  const handleDeleteComment = async (commentId) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/api/comment/delete/${commentId}`,
-        {
-          withCredentials: true,
-        });
-      if (response.status === 200) {
-        messageApi.open({ type: "success", content: "Comment deleted." });
-        // Filter out the comment with the given id from the current comments array
-        const updatedComments = story.comments.filter(comment => comment.id !== commentId);
-        // Update the state with the new comments array
-        setStory({ ...story, comments: updatedComments });
-      }
-      else {
-        messageApi.open({ type: "error", content: "Error occured while trying to delete comment!" });
-      }
-    } catch (error) {
-      console.log(error);
-      messageApi.open({ type: "error", content: "Error occured while trying to delete comment!" });
-    }
-  }
-
-
-
   if (!story) {
     messageApi.open({ type: "error", content: "Story Not Found!" });
     return <div>Story Not Found!</div>;
@@ -352,47 +301,23 @@ function StoryDetails() {
         <p>
           <b>Comments:</b>
         </p>
-        <ul>
           {story.comments.map((comment) => (
-            <li key={comment.id}>
-              <b>Comment: </b>
-              {comment.text}
-              <p>
-                <b>Commented by: </b>
-                {comment.user.username}
-              </p>
-              <p>
-                <b>Likes:</b> {comment.likes ? comment.likes.length : 0}
-                <button className="btn btn-primary" onClick={() => handleLikeComment(comment.id)}>
-                  Like
-                </button>
-                {comment.user.id == currentUserId && (
-                  <button
-                    className="btn btn-danger"
-                    style={{ marginLeft: '10px' }} // Add some space between the buttons
-                    onClick={() => handleDeleteComment(comment.id)}
-                  >Delete</button>)
-                }
-              </p>
-            </li>
+            <CommentList comment={comment} story={story} key={comment} />
           ))}
-        </ul>
-        <form onSubmit={handleCommentSubmit} style={{ width: "80%" }}>
-          <div>
-            <textarea
-              label="Add Comment"
-              value={commentText}
-              placeholder="Add Comment"
-              style={{ width: "100%", height: "100px" }}
-              onChange={(e) => setCommentText(e.target.value)}
-            ></textarea>
-          </div>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button type="submit" className="btn btn-primary" style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white",  border: "none", margin: "10px" }}>Submit</button>
-          </div>
-        </form>
-
-
+          <form onSubmit={handleCommentSubmit} style={{ width: "80%" }}>
+              <div>
+                  <textarea
+                  label="Add Comment"
+                  value={commentText}
+                  placeholder="Add Comment"
+                  style={{ width: "100%", height: "100px" }}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  ></textarea>
+              </div>
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <button type="submit" className="btn btn-primary" style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white",  border: "none", margin: "10px" }}>Submit</button>
+              </div>
+          </form>
       </div>
     </Space>
   );
