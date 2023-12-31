@@ -293,17 +293,19 @@ public class StoryService {
         foundStory.setLabels(storyEditRequest.getLabels());
         foundStory.setTitle(storyEditRequest.getTitle());
         foundStory.setText(imageService.parseAndSaveImages(storyEditRequest.getText()));
-        foundStory.setStartTimeStamp(storyEditRequest.getStartTimeStamp());
-        foundStory.setEndTimeStamp(storyEditRequest.getEndTimeStamp());
-        foundStory.setStartHourFlag(storyEditRequest.getStartHourFlag());
-        foundStory.setDecade(storyEditRequest.getDecade());
-        foundStory.setEndDecade(storyEditRequest.getEndDecade());
-        foundStory.setSeason(storyEditRequest.getSeason());
-        foundStory.setEndSeason(storyEditRequest.getEndSeason());
-        foundStory.setStartHourFlag(storyEditRequest.getStartHourFlag());
-        foundStory.setEndHourFlag(storyEditRequest.getEndHourFlag());
-        foundStory.setStartDateFlag(storyEditRequest.getStartDateFlag());
-        foundStory.setEndDateFlag(storyEditRequest.getEndDateFlag());
+        if (isDateFieldApplicableCheck(storyEditRequest)) {
+            foundStory.setStartTimeStamp(storyEditRequest.getStartTimeStamp());
+            foundStory.setEndTimeStamp(storyEditRequest.getEndTimeStamp());
+            foundStory.setStartHourFlag(storyEditRequest.getStartHourFlag());
+            foundStory.setDecade(storyEditRequest.getDecade());
+            foundStory.setEndDecade(storyEditRequest.getEndDecade());
+            foundStory.setSeason(storyEditRequest.getSeason());
+            foundStory.setEndSeason(storyEditRequest.getEndSeason());
+            foundStory.setStartHourFlag(storyEditRequest.getStartHourFlag());
+            foundStory.setEndHourFlag(storyEditRequest.getEndHourFlag());
+            foundStory.setStartDateFlag(storyEditRequest.getStartDateFlag());
+            foundStory.setEndDateFlag(storyEditRequest.getEndDateFlag());
+        }
         locationService.deleteAllLocationsByStoryId(foundStory.getId());
         if (storyEditRequest.getLocations() != null) {
             List<Location> newLocationsList = storyEditRequest.getLocations();
@@ -313,6 +315,15 @@ public class StoryService {
             foundStory.setLocations(storyEditRequest.getLocations());
         }
         return foundStory;
+    }
+
+    private Boolean isDateFieldApplicableCheck(StoryEnterRequest storyEditRequest) {
+        return storyEditRequest.getStartTimeStamp() != null ||
+                storyEditRequest.getEndTimeStamp() != null ||
+                storyEditRequest.getSeason() != null ||
+                storyEditRequest.getEndSeason() != null ||
+                storyEditRequest.getDecade() != null ||
+                storyEditRequest.getEndDecade() != null;
     }
 
     public Story editStory(StoryEnterRequest request, User user, Long storyId) throws IOException {
