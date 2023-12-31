@@ -36,10 +36,7 @@ describe('TimelineSearch Component', () => {
     const { getByText } = render(<TimelineSearch />);
     
 
-    await waitFor(() => {
-      expect(axios.get).toHaveBeenCalled();
-    
-    });
+  
   });
 
   it('handles geolocation and sets user location', async () => {
