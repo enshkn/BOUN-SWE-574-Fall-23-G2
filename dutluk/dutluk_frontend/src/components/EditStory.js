@@ -236,10 +236,10 @@ const EditStoryForm = () => {
       messageApi.open({ type: "error", content: "Story body cannot be empty. Please try again."});
       return; // Prevent form submission if story body is empty
     }
-    if (!startTimeStamp && !decade && !season) {
-      messageApi.open({ type: "error", content: "Please select at least one: Start Date, Decade, or Season"});
-      return; // Prevent form submission if no date is picked
-    }
+    // if (!startTimeStamp && !decade && !season) {
+    //   messageApi.open({ type: "error", content: "Please select at least one: Start Date, Decade, or Season"});
+    //   return; // Prevent form submission if no date is picked
+    // }
     // Location validation
     if (markers.length === 0 && circles.length === 0 && polygons.length === 0 && polylines.length === 0) {
       messageApi.open({ type: "error", content: "Please pick at least one location."});
