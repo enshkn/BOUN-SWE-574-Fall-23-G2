@@ -117,7 +117,7 @@ function Profile() {
           </button>
         </div>
         <div className="all-stories">
-          <center><h1>User's Stories</h1></center>
+          <center><h1>{user.username}'s Stories</h1></center>
           {userStories.map((story) => (
             <StoryList 
               story={story} key={story.id}>
