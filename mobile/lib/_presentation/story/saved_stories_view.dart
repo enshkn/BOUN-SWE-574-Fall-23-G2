@@ -59,7 +59,7 @@ class _SavedStoriesViewState extends State<SavedStoriesView> {
                     Padding(
                       padding: const EdgeInsets.all(20),
                       child: BaseHeaderTitle(
-                        title: 'Saved Stories',
+                        title: 'Stashed Stories',
                         onShowAllButtonPressed: () {},
                       ),
                     ),

@@ -155,7 +155,7 @@ class _ProfileViewState extends State<ProfileView> {
                           ),
                           BaseWidgets.normalGap,
                           const Text(
-                            'Saved Stories',
+                            'Stashed Stories',
                             style: TextStyles.listTitle(),
                           ),
                         ],
