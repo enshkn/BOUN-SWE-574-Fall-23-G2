@@ -355,6 +355,9 @@ const TimelineSearch = () => {
               )}
             </GoogleMap>
           </LoadScript>
+        </div>
+      </div>
+      <div className="search-results">
           {searchResults.length > 0 && (
             <div>
               <h3>Search Results:</h3>
@@ -370,8 +373,7 @@ const TimelineSearch = () => {
               />
             </div>
           )}
-        </div>
-      </div>
+          </div>
     </Space>
   );
 };
