@@ -131,16 +131,23 @@ const EditStoryForm = () => {
       setEndTimeStamp(
         existingStory.endTimeStamp ? new Date(existingStory.endTimeStamp) : null
       );
-      setSeason(existingStory.season);
-      setEndSeason(existingStory.endSeason);
-      setDecade(existingStory.decade);
-      setEndDecade(existingStory.endDecade);
-      setStartHourFlag(existingStory.startHourFlag);
-      setEndHourFlag(existingStory.endHourFlag);
-      setStartDateFlag(existingStory.startDateFlag);
-      setEndDateFlag(existingStory.endDateFlag);
-      setTimeType(existingStory.timeType);
-      setTimeExpression(existingStory.timeExpression);
+
+      //Previously selected date is gathered from prevStory so below fields are extracted to avoid confusion.
+
+      // setStartTimeStamp(new Date(existingStory.startTimeStamp));
+      // setEndTimeStamp(
+      //   existingStory.endTimeStamp ? new Date(existingStory.endTimeStamp) : null
+      // );
+      // setSeason(existingStory.season);
+      // setEndSeason(existingStory.endSeason);
+      // setDecade(existingStory.decade);
+      // setEndDecade(existingStory.endDecade);
+      // setStartHourFlag(existingStory.startHourFlag);
+      // setEndHourFlag(existingStory.endHourFlag);
+      // setStartDateFlag(existingStory.startDateFlag);
+      // setEndDateFlag(existingStory.endDateFlag);
+      // setTimeType(existingStory.timeType);
+      // setTimeExpression(existingStory.timeExpression);
       setVerbalExpression(existingStory.verbalExpression);
 
     // Initialize arrays to hold location data
