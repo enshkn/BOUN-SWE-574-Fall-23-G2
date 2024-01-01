@@ -44,7 +44,7 @@ const StorySearch = () => {
 
     if (!isValid) {
       // Display error message or handle the error
-      messageApi.open({ type: "error", content: errorMessage});
+      messageApi.open({ type: "error", content: errorMessage });
       return;
     }
 
@@ -148,11 +148,11 @@ const StorySearch = () => {
       }}
     >
       {contextHolder}
-      <center><h2>Story Explore</h2></center>
-      
+      <center><h1>Story Explore</h1></center>
+
       <div className="story-search" style={{ display: 'flex' }} >
         {/* Story Search Element */}
-        <div className="search-form" style={{ flex:3 }}> 
+        <div className="search-form" style={{ flex: 3 }}>
           <form className="row g-3">
             <div className="col-md-15">
               <label htmlFor="searchQuery" className="form-label">Explore Query:</label>
@@ -411,7 +411,7 @@ const StorySearch = () => {
           </div>
 
         </div>
-        <div className="map-section" style={{ flex:7 }}> 
+        <div className="map-section" style={{ flex: 7 }}>
           <LoadScript
             googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
           >
@@ -440,7 +440,7 @@ const StorySearch = () => {
       <div className="search-results">
         {searchResults.length > 0 && (
           <div className="all-stories">
-            <h1>Exploring Results</h1>
+            <center><h1>Exploring Results</h1></center>
             {searchResults.map((story) => (
               <StoryList story={story} key={story.id} />
             ))}
