@@ -41,7 +41,7 @@ const EditStoryForm = () => {
   const [searchBox, setSearchBox] = useState(null);
   const [currentShape, setCurrentShape] = useState('marker');
   const [tempPoints, setTempPoints] = useState([]);
-  const [circleRadius, setCircleRadius] = useState("");
+  const [circleRadius, setCircleRadius] = useState(5);
   const [markers, setMarkers] = useState([]);
   const [circles, setCircles] = useState([]);
   const [polygons, setPolygons] = useState([]);
@@ -57,6 +57,8 @@ const EditStoryForm = () => {
   const [verbalExpression, setVerbalExpression] = useState("");
 
   const [loading, setLoading] = useState(true); // Loading state
+  const [geocodedLocations, setGeocodedLocations] = useState([]);
+  const [locations, setLocations] = useState([]);
 
 
   const onSearchBoxLoad = (ref) => {
@@ -127,9 +129,17 @@ const EditStoryForm = () => {
       setTitle(existingStory.title);
       setTags(existingStory.labels || []);
       setText(existingStory.text);
-      setStartTimeStamp(new Date(existingStory.startTimeStamp));
-      setEndTimeStamp(
-        existingStory.endTimeStamp ? new Date(existingStory.endTimeStamp) : null
+      setLocations(
+        existingStory.locations.map((location) => ({
+          latitude: location.latitude,
+          longitude: location.longitude,
+          name: location.locationName,
+          circleRadius: location.circleRadius,
+          isCircle: location.isCircle,
+          isPolyline: location.isPolyline,
+          isPolygon: location.isPolygon,
+          isPoint: location.isPoint
+        }))
       );
 
       //Previously selected date is gathered from prevStory so below fields are extracted to avoid confusion.
