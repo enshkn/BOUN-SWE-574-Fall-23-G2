@@ -1,3 +1,5 @@
+@import "Base.css";
+
 .story-container {
     border: 1px solid #e1e1e1; 
     border-radius: 4px;
@@ -75,3 +77,24 @@
     flex-direction: column;
     height: 100%; /* Ensure the map container fills the parent height */
 }
+
+.story-comments{
+    border: 1px solid #e1e1e1; 
+    border-radius: 4px;
+    padding: 15px; 
+    margin: 20px 30px; 
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    position: relative; 
+    width: 50%;
+
+}
+
+.comment-textarea{
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    width: 600px;
+}
+

@@ -302,8 +302,31 @@ function StoryDetails() {
             </div>
           </div>
         </div>
+
+
       </div>
 
+      <div className="story-comments">
+      <p>
+        <b>Comments:</b>
+      </p>
+        {story.comments.map((comment) => (
+          <CommentList comment={comment} story={story} key={comment} />
+        ))}
+        <form onSubmit={handleCommentSubmit} style={{ width: "80%" }}>
+          <div>
+            <textarea
+              className="comment-textarea"
+              label="Add Comment"
+              value={commentText}
+              placeholder="Add Comment"
+              onChange={(e) => setCommentText(e.target.value)}
+            ></textarea>
+          </div>
+          <button type="submit" className="btn btn-primary" style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white", border: "none" }}>Submit</button>
+
+        </form>
+      </div>
 
 
       {/* <div className="story">
