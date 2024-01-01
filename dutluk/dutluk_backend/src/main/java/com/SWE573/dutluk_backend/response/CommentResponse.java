@@ -14,6 +14,8 @@ import static com.SWE573.dutluk_backend.service.DateService.timeAgo;
 @Data
 public class CommentResponse {
 
+    private Long id;
+
     private String createdAt;
     private String text;
 
@@ -28,6 +30,7 @@ public class CommentResponse {
     private Integer likeSize;
 
     public CommentResponse(Comment comment) {
+        this.id = comment.getId();
         this.createdAt = timeAgo(comment.getCreatedAt());
         this.text = comment.getText();
         this.user = comment.getUser();
