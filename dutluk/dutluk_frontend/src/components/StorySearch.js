@@ -411,12 +411,12 @@ const StorySearch = () => {
           </div>
 
         </div>
-        <div className="map-section" style={{ flex: 7 }}>
+        <div className="map-section" style={{ flex: 7, marginRight:"10px" }}>
           <LoadScript
             googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
           >
             <GoogleMap
-              mapContainerStyle={{ width: "80%", height: "400px", margin: "0 auto" }}
+              mapContainerStyle={{ width: "100%", height: "400px", margin: "0 auto" }}
               center={{ lat: 41.085064, lng: 29.044687 }}
               zoom={10}
               onClick={handleMapClick}
