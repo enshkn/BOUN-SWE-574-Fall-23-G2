@@ -133,9 +133,10 @@ const TimelineSearch = () => {
       }}
     >
       {contextHolder}
-      <div className="story-search">
-        <div className="search-form">
-        <center><h2>Timeline Search</h2></center>
+      <center><h2>Timeline Search</h2></center>
+
+      <div  className="story-search" style={{ display: 'flex' }} >
+        <div className="search-form" style={{ flex: 1 }}>
           <div className="col-md-6">
             <label htmlFor="radius" className="form-label">Radius (in km):</label>
             <input
@@ -333,7 +334,7 @@ const TimelineSearch = () => {
           </div>
         </div>
 
-        <div className="map-section">
+        <div className="map-section" style={{ flex: 1, marginRight: 10 }}>
           <LoadScript
             googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
           >
