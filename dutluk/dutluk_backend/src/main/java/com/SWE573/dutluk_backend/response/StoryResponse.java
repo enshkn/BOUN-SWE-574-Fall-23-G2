@@ -1,6 +1,5 @@
 package com.SWE573.dutluk_backend.response;
 
-import com.SWE573.dutluk_backend.model.Comment;
 import com.SWE573.dutluk_backend.model.Location;
 import com.SWE573.dutluk_backend.model.Story;
 import com.SWE573.dutluk_backend.model.User;
@@ -12,6 +11,7 @@ import lombok.Data;
 import java.util.List;
 import java.util.Set;
 
+import static com.SWE573.dutluk_backend.service.CommentService.commentListToCommentResponseList;
 import static com.SWE573.dutluk_backend.service.DateService.dateToStringBasedOnFlags;
 import static com.SWE573.dutluk_backend.service.DateService.getEndDecadeStringByEndTimeStamp;
 import static com.SWE573.dutluk_backend.service.StoryService.generateVerbalExpression;
@@ -32,7 +32,7 @@ public class StoryResponse{
     @JsonIncludeProperties(value = {"id" , "username","profilePhoto"})
     private User user;
 
-    private List<Comment> comments;
+    private List<CommentResponse> comments;
 
     private Integer commentSize;
 
@@ -64,7 +64,7 @@ public class StoryResponse{
         this.title = story.getTitle();
         this.labels = story.getLabels();
         this.user = story.getUser();
-        this.comments = story.getComments();
+        this.comments = commentListToCommentResponseList(story.getComments());
         this.commentSize = story.getComments().size();
         this.likes = story.getLikes();
         this.savedBy = story.getSavedBy();
