@@ -32,7 +32,7 @@ function FollowedUserStories() {
     >
     {contextHolder}
     <div className="all-stories">
-      <h1>Story Feed</h1>
+    <center><h1>Story Feed</h1></center>
       {followedUserStories.map((story) => (
         <StoryList story={story} key={story.id} />
       ))}
