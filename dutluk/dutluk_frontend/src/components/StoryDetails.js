@@ -220,26 +220,34 @@ function StoryDetails() {
         </div>
         <div className="story-map-container" style={{ display: 'flex' }} >
           <div className="story-content" style={{ flex: 5 }}>
-            <b>Labels:</b>{" "}
-            {story.labels.map((label, index) => (
-              <span key={index}>
-                <a href={"/story/search/label/" + label}>{label}</a>
-                {index < story.labels.length - 1 && ", "}
-              </span>
-            ))}
+            <div className="story-labels-and-like">
+              <div className="label">
+                <b>Labels:</b>{" "}
+                {story.labels.map((label, index) => (
+                  <span key={index}>
+                    <a href={"/story/search/label/" + label}>{label}</a>
+                    {index < story.labels.length - 1 && ", "}
+                  </span>
+                ))}
+              </div>
+              <button className="like-button" onClick={handleLikeStory} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none" }} type="submit"> 
+              Like 
+              </button>
+            </div>
+
             {story.verbalExpression != null ? (
               <   span className="story-date">{story.verbalExpression}</span>
             ) : (
               <>
-                {story.startTimeStamp && <span className="story-date">Start: {story.startTimeStamp}</span>}
-                {story.endTimeStamp && <span className="story-date">End: {story.endTimeStamp}</span>}
-                {story.season && <span className="story-date">Season: {story.season}</span>}
-                {story.endSeason && <span className="story-date">Season: {story.endSeason}</span>}
-                {story.decade && <span className="story-date">Decade: {story.decade}</span>}
-                {story.endDecade && <span className="story-date">End Decade: {story.endDecade}</span>}
+                {story.startTimeStamp && <span >Start: {story.startTimeStamp}</span>}
+                {story.endTimeStamp && <span>End: {story.endTimeStamp}</span>}
+                {story.season && <span>Season: {story.season}</span>}
+                {story.endSeason && <span>Season: {story.endSeason}</span>}
+                {story.decade && <span>Decade: {story.decade}</span>}
+                {story.endDecade && <span>End Decade: {story.endDecade}</span>}
               </>
             )}
-            
+
             <div className="story-text">
               {parse(story.text)}
             </div>
@@ -293,10 +301,6 @@ function StoryDetails() {
               </ul>
             </label>
           </div>
-
-        </div>
-        <div className="story-footer">
-          <button className="like-button">Like</button>
         </div>
       </div>
 
