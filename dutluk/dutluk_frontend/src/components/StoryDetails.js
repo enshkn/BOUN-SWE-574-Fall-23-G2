@@ -206,7 +206,7 @@ function StoryDetails() {
         <div className="story-header">
           <h1 className="story-title">{story.title}</h1>
           <div className="user-info">
-            <span className="story-date"> Posted on: {story.createdAt}</span>
+            <span className="story-date"> Posted: {story.createdAt}</span>
             <a href={`/user/${story.user.id}`} className="username">@{story.user.username}</a>
           </div>
           <div className="interaction-info">
