@@ -125,17 +125,20 @@ const StoryList = ({ story }) => {
                 <div className="tag-interaction-container">
                     <div className="tags">
                         {story.labels.map((tag, idx) => (
-                            <span key={idx} className="tag">{tag}</span>
-                        ))}
+                            <span key={idx} className="tag">
+                                <a href={"/story/search/label/" + tag}>{tag}</a>
+                            </span>
+                    ))}
                     </div>
 
                     <div className="interactions">
-                        <button onClick={handleSaveClick} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none"}} type="submit" className="btn btn-primary">
-                            {isSaved ? 'Unstash' : 'Stash'}
+
+                        <button onClick={handleSaveClick} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", marginRight: "10px"}} type="submit" className="btn btn-primary">
+                            {isSaved ? 'Unstashed' : 'Stash'}
                         </button>
                         {story.user.id == currentUserId && (
                             <button
-                                style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", margin: "10px" }}
+                                style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", marginRight: "10px" }}
                                 className="btn btn-primary"
                                 onClick={() => handleEditStory(story.id)}
                             >Update</button>)

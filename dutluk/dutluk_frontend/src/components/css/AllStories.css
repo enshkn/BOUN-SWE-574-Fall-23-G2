@@ -52,7 +52,7 @@
   border-radius: 8px;
   margin-bottom: 5px;
   width: 50%;
-  max-width: 600px;
+  min-width: 600px;
 }
 
 .comment-body {
@@ -97,4 +97,11 @@
   font-size: 1em;
   color: #007bff;
   text-decoration: none;
+}
+
+.comment-date {
+  font-size: 0.85em;
+  /* Adjust size as needed */
+  color: #666;
+  /* Adjust color as needed */
 }
