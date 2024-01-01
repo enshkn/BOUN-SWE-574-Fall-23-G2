@@ -222,13 +222,11 @@ function StoryDetails() {
           <div className="story-content" style={{ flex: 5 }}>
             <div className="story-labels-and-like">
               <div className="label">
-                <b>Labels:</b>{" "}
-                {story.labels.map((label, index) => (
-                  <span key={index}>
-                    <a href={"/story/search/label/" + label}>{label}</a>
-                    {index < story.labels.length - 1 && ", "}
-                  </span>
-                ))}
+                <div className="tags">
+                  {story.labels.map((tag, idx) => (
+                    <span key={idx} className="tag">{tag}</span>
+                  ))}
+                </div>
               </div>
               <button className="like-button" onClick={handleLikeStory} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none" }} type="submit">
                 Like
@@ -307,9 +305,9 @@ function StoryDetails() {
       </div>
 
       <div className="story-comments">
-      <p>
-        <b>Comments:</b>
-      </p>
+        <p>
+          <b>Comments:</b>
+        </p>
         {story.comments.map((comment) => (
           <CommentList comment={comment} story={story} key={comment} />
         ))}
