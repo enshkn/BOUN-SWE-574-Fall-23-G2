@@ -9,6 +9,7 @@ import Register from "./components/Register";
 import AddStoryForm from "./components/AddStory";
 import EditStoryForm from "./components/EditStory";
 import StashedStories from "./components/SavedStories"; // Save feauture name was changed to stash in order to avoid confusion on the user side.
+import LikedStories from "./components/LikedStories";
 import StoryDetails from "./components/StoryDetails";
 import Recommended from "./components/Recommended";
 import AllStories from "./components/AllStories";
@@ -120,6 +121,12 @@ function App() {
                 >
                   Stashed Stories
                 </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/liked-stories"
+                  className="justify-content-end"
+                >
+                  Liked Stories
+                </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item
                   href="/story/add-story"
@@ -209,6 +216,7 @@ function App() {
         <Route path="/story/stashed-stories" element={<StashedStories />} />
         {/* Stash was previous save feature, since naming can be comfusing on the user side 
         wording is changed from "save" to "stash" */}
+        <Route path="/story/liked-stories" element={<LikedStories />} />
         <Route path="/story/followings" element={<FollowedUserStories />} />
         <Route path="/story/all-stories" element={<AllStories />} />
         <Route path="/story/:id" element={<StoryDetails />} />

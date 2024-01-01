@@ -103,7 +103,7 @@ const StoryList = ({ story }) => {
                     </div>
                     <div className="percentage">
                         {story.percentage && (
-                            <p>{`Recommended: ${story.percentage}`}</p>
+                            <p>{`Recommended: ${story.percentage} %`}</p>
                         )}
                     </div>
                 </div>
@@ -132,6 +132,7 @@ const StoryList = ({ story }) => {
                     </div>
 
                     <div className="interactions">
+
                         <button onClick={handleSaveClick} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", marginRight: "10px"}} type="submit" className="btn btn-primary">
                             {isSaved ? 'Unstashed' : 'Stash'}
                         </button>
@@ -140,7 +141,7 @@ const StoryList = ({ story }) => {
                                 style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", marginRight: "10px" }}
                                 className="btn btn-primary"
                                 onClick={() => handleEditStory(story.id)}
-                            >Edit</button>)
+                            >Update</button>)
                         }
                         {story.user.id == currentUserId && (
                             <button
