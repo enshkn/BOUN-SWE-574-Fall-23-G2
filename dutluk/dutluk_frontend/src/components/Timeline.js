@@ -105,7 +105,7 @@ const StoryCard = ({ story, active, onFocus }) => {
       >
         <Card.Img variant="top" src={story.image} alt={story.title} />
         <Card.Body>
-          <Card.Title>{story.title}</Card.Title>
+          <h2><a href={`/story/${story.id}`} className="story-title">{story.title}</a></h2>
           <Card.Text>{story.description}</Card.Text>
           <Card.Text>Date: {story.date}</Card.Text>
         </Card.Body>
