@@ -224,7 +224,9 @@ function StoryDetails() {
               <div className="label">
                 <div className="tags">
                   {story.labels.map((tag, idx) => (
-                    <span key={idx} className="tag">{tag}</span>
+                    <span key={idx} className="tag">
+                      <a href={"/story/search/label/" + tag}>{tag}</a>
+                    </span>
                   ))}
                 </div>
               </div>
