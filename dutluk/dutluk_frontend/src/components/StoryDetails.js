@@ -206,7 +206,7 @@ function StoryDetails() {
         <div className="story-header">
           <h1 className="story-title">{story.title}</h1>
           <div className="user-info">
-            <span className="story-date">{story.createdAt}</span>
+            <span className="story-date"> Posted on: {story.createdAt}</span>
             <a href={`/user/${story.user.id}`} className="username">@{story.user.username}</a>
           </div>
           <div className="interaction-info">
@@ -218,63 +218,85 @@ function StoryDetails() {
             </span>
           </div>
         </div>
-        <div className="story-search" style={{ display: 'flex' }} >
+        <div className="story-map-container" style={{ display: 'flex' }} >
           <div className="story-content" style={{ flex: 5 }}>
-          <b>Labels:</b>{" "}
-          {story.labels.map((label, index) => (
-            <span key={index}>
-              <a href={"/story/search/label/" + label}>{label}</a>
-              {index < story.labels.length - 1 && ", "}
-            </span>
-          ))}
-          <div><b>Date:</b> {story.verbalExpression}</div>
-
+            <b>Labels:</b>{" "}
+            {story.labels.map((label, index) => (
+              <span key={index}>
+                <a href={"/story/search/label/" + label}>{label}</a>
+                {index < story.labels.length - 1 && ", "}
+              </span>
+            ))}
+            {story.verbalExpression != null ? (
+              <   span className="story-date">{story.verbalExpression}</span>
+            ) : (
+              <>
+                {story.startTimeStamp && <span className="story-date">Start: {story.startTimeStamp}</span>}
+                {story.endTimeStamp && <span className="story-date">End: {story.endTimeStamp}</span>}
+                {story.season && <span className="story-date">Season: {story.season}</span>}
+                {story.endSeason && <span className="story-date">Season: {story.endSeason}</span>}
+                {story.decade && <span className="story-date">Decade: {story.decade}</span>}
+                {story.endDecade && <span className="story-date">End Decade: {story.endDecade}</span>}
+              </>
+            )}
+            
             <div className="story-text">
               {parse(story.text)}
             </div>
           </div>
           <div className="map-container" style={{ flex: 5 }}>
-          <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
-          <GoogleMap
-            mapContainerStyle={{ width: "100%", height: "400px" }}
-            center={{
-              lat: story.locations[0].latitude,
-              lng: story.locations[0].longitude,
-            }}
-            zoom={10}
-          >
-            {markers.map((marker, index) => (
-              <Marker
-                key={index}
-                position={{
-                  lat: marker.latitude,
-                  lng: marker.longitude,
+            <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+              <GoogleMap
+                mapContainerStyle={{ width: "100%", height: "400px" }}
+                center={{
+                  lat: story.locations[0].latitude,
+                  lng: story.locations[0].longitude,
                 }}
-              />
-            ))}
-            {circles.map((circle, index) => (
-              <Circle
-                key={index}
-                center={circle.center}
-                radius={circle.radius}
-              />
-            ))}
-            {polygons.map((polygon, index) => (
-              <Polygon
-                key={index}
-                paths={polygon.path}
-              />
-            ))}
-            {polylines.map((polyline, index) => (
-              <Polyline
-                key={index}
-                path={polyline.path}
-              />
-            ))}
-          </GoogleMap>
-        </LoadScript>
+                zoom={10}
+              >
+                {markers.map((marker, index) => (
+                  <Marker
+                    key={index}
+                    position={{
+                      lat: marker.latitude,
+                      lng: marker.longitude,
+                    }}
+                  />
+                ))}
+                {circles.map((circle, index) => (
+                  <Circle
+                    key={index}
+                    center={circle.center}
+                    radius={circle.radius}
+                  />
+                ))}
+                {polygons.map((polygon, index) => (
+                  <Polygon
+                    key={index}
+                    paths={polygon.path}
+                  />
+                ))}
+                {polylines.map((polyline, index) => (
+                  <Polyline
+                    key={index}
+                    path={polyline.path}
+                  />
+                ))}
+              </GoogleMap>
+            </LoadScript>
+            <label>
+              <b>Selected Locations:</b>
+              <ul className="locations-list">
+                {story.locations.map((location) => (
+                  <li key={location.id}>{location.locationName}</li>
+                ))}
+              </ul>
+            </label>
           </div>
 
+        </div>
+        <div className="story-footer">
+          <button className="like-button">Like</button>
         </div>
       </div>
 

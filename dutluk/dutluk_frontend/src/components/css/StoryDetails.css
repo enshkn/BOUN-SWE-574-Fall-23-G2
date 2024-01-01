@@ -5,6 +5,7 @@
     margin: 20px 30px; 
     background: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    position: relative; 
   }
 
   .story-header {
@@ -43,3 +44,21 @@
     margin-top: 10px; 
   }
   
+  .story-footer {
+    display: flex;
+    justify-content: flex-end; /* Aligns the button to the right */
+    position: absolute; /* Position the footer at the bottom of the container */
+    bottom: 0;
+    right: 0;
+    width: 100%; /* Ensures the footer spans the width of the container */
+    padding: 10px; /* Add some padding around the button */
+  }
+  
+  .like-button {
+    padding: 5px 15px; /* Adjust padding to your liking */
+    background-color: #ff5500; /* Adjust background color to your liking */
+    color: white; /* Adjust text color to your liking */
+    border: none; /* Removes the default border */
+    border-radius: 5px; /* Optional: adds rounded corners to the button */
+    cursor: pointer; /* Changes the cursor to a pointer when hovering over the button */
+  }
