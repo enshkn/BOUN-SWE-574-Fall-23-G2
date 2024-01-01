@@ -230,8 +230,8 @@ function StoryDetails() {
                   </span>
                 ))}
               </div>
-              <button className="like-button" onClick={handleLikeStory} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none" }} type="submit"> 
-              Like 
+              <button className="like-button" onClick={handleLikeStory} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none" }} type="submit">
+                Like
               </button>
             </div>
 
@@ -292,21 +292,21 @@ function StoryDetails() {
                 ))}
               </GoogleMap>
             </LoadScript>
-            <label>
-              <b>Selected Locations:</b>
+            <label><b>Selected Locations:</b></label>
+            <div className="location-container">
               <ul className="locations-list">
                 {story.locations.map((location) => (
                   <li key={location.id}>{location.locationName}</li>
                 ))}
               </ul>
-            </label>
+            </div>
           </div>
         </div>
       </div>
 
 
 
-      <div className="story">
+      {/* <div className="story">
         <div>
           <h1>{story.title}</h1>
         </div>
@@ -433,7 +433,7 @@ function StoryDetails() {
             <button type="submit" className="btn btn-primary" style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white", border: "none", margin: "10px" }}>Submit</button>
           </div>
         </form>
-      </div>
+      </div> */}
     </Space>
   );
 }
