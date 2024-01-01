@@ -360,7 +360,7 @@ const TimelineSearch = () => {
       <div className="search-results">
         {searchResults.length > 0 && (
           <div>
-            <h3>Search Results:</h3>
+            <center><h3>Search Results</h3></center>
             <Timeline
               items={searchResults.map(result => ({
                 id: result.id,
