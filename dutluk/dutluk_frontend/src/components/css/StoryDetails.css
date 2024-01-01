@@ -6,24 +6,31 @@
     background: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
   }
+
+  .story-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
   
   .story-title {
-    font-size: 1.5em;
-    margin-bottom: 10px; 
+    font-weight: bold;
+    margin: 0; /* No margin for the title to fit on the same line */
+    flex-grow: 1; /* Allow the title to take up available space */
   }
   
   .interaction-info {
     display: flex;
     align-items: center;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #eee;
+    white-space: nowrap; /* Ensure this doesn't wrap to a new line */
   }
   
   .user-info {
-    display: flex;
-    align-items: center;
-    margin-top: 10px; 
+    white-space: nowrap; /* Ensure this doesn't wrap to a new line */
+    margin-left: 10px; /* Spacing between elements */
   }
   
   .story-date {

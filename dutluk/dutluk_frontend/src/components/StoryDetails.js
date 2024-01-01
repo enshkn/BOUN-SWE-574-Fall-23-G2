@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { GoogleMap, LoadScript, Marker, Circle, Polygon, Polyline } from "@react-google-maps/api";
 import "react-quill/dist/quill.snow.css";
 import "./css/AllStories.css";
+import "./css/StoryDetails.css";
 import CommentList from "./CommentList";
 
 function StoryDetails() {
@@ -149,21 +150,21 @@ function StoryDetails() {
 
   const fetchLikeStatus = useCallback(async () => {
     try {
-        const response = await axios.get(
-            `${process.env.REACT_APP_BACKEND_URL}/api/story/isLikedByUser/${id}`,
-            {
-                withCredentials: true,
-            }
-        );
-        setIsLiked(response.data);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/story/isLikedByUser/${id}`,
+        {
+          withCredentials: true,
+        }
+      );
+      setIsLiked(response.data);
     } catch (error) {
-        console.error('Like status API error:', error.message);
-        messageApi.open({ type: "error", content: "Error occurred while fetching liked story data!" });
+      console.error('Like status API error:', error.message);
+      messageApi.open({ type: "error", content: "Error occurred while fetching liked story data!" });
     }
   }, [id, messageApi]);
 
   useEffect(() => {
-      fetchLikeStatus();
+    fetchLikeStatus();
   }, [fetchLikeStatus]);
 
   const handleLikeStory = async () => {
@@ -201,8 +202,89 @@ function StoryDetails() {
       }}
     >
       {contextHolder}
-      <div className="all-stories">
-        <h1>Title: {story.title}</h1>
+      <div className="story-container">
+        <div className="story-header">
+          <h1 className="story-title">{story.title}</h1>
+          <div className="user-info">
+            <span className="story-date">{story.createdAt}</span>
+            <a href={`/user/${story.user.id}`} className="username">@{story.user.username}</a>
+          </div>
+          <div className="interaction-info">
+            <span style={{ marginRight: '8px' }}>
+              ❤️ {story.likes ? story.likes.length : 0}
+            </span>
+            <span>
+              💬 {story.comments.length}
+            </span>
+          </div>
+        </div>
+        <div className="story-search" style={{ display: 'flex' }} >
+          <div className="story-content" style={{ flex: 5 }}>
+            <div className="story-text">
+              {parse(story.text)}
+            </div>
+          </div>
+          <div className="map-container" style={{ flex: 5 }}>
+          <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+          <GoogleMap
+            mapContainerStyle={{ width: "100%", height: "400px" }}
+            center={{
+              lat: story.locations[0].latitude,
+              lng: story.locations[0].longitude,
+            }}
+            zoom={10}
+          >
+            {markers.map((marker, index) => (
+              <Marker
+                key={index}
+                position={{
+                  lat: marker.latitude,
+                  lng: marker.longitude,
+                }}
+              />
+            ))}
+            {circles.map((circle, index) => (
+              <Circle
+                key={index}
+                center={circle.center}
+                radius={circle.radius}
+              />
+            ))}
+            {polygons.map((polygon, index) => (
+              <Polygon
+                key={index}
+                paths={polygon.path}
+              />
+            ))}
+            {polylines.map((polyline, index) => (
+              <Polyline
+                key={index}
+                path={polyline.path}
+              />
+            ))}
+          </GoogleMap>
+        </LoadScript>
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+
+      <div className="story">
+        <div>
+          <h1>{story.title}</h1>
+        </div>
+        <div className="story-header">
+          <img src={story.user.profilePhoto} className="profile-picture" alt="profile-pic" />
+          <div className="story-info">
+            <a href={`/user/${story.user.id}`} className="username">@{story.user.username}</a>
+            <span className="story-date">Posted: {story.createdAt}</span>
+          </div>
+        </div>
+
         <p>
           <b>Story:</b>
           <p></p>
@@ -211,7 +293,7 @@ function StoryDetails() {
         <p>
           <b>Likes:</b> {story.likes ? story.likes.length : 0}
         </p>
-        <button onClick={handleLikeStory} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none"}} type="submit" className="btn btn-primary mb-2">
+        <button onClick={handleLikeStory} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none" }} type="submit" className="btn btn-primary mb-2">
           {isLiked ? 'Unlike' : 'Like!'}
         </button>
         <p className="story-details">
@@ -301,23 +383,23 @@ function StoryDetails() {
         <p>
           <b>Comments:</b>
         </p>
-          {story.comments.map((comment) => (
-            <CommentList comment={comment} story={story} key={comment} />
-          ))}
-          <form onSubmit={handleCommentSubmit} style={{ width: "80%" }}>
-              <div>
-                  <textarea
-                  label="Add Comment"
-                  value={commentText}
-                  placeholder="Add Comment"
-                  style={{ width: "100%", height: "100px" }}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  ></textarea>
-              </div>
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <button type="submit" className="btn btn-primary" style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white",  border: "none", margin: "10px" }}>Submit</button>
-              </div>
-          </form>
+        {story.comments.map((comment) => (
+          <CommentList comment={comment} story={story} key={comment} />
+        ))}
+        <form onSubmit={handleCommentSubmit} style={{ width: "80%" }}>
+          <div>
+            <textarea
+              label="Add Comment"
+              value={commentText}
+              placeholder="Add Comment"
+              style={{ width: "100%", height: "100px" }}
+              onChange={(e) => setCommentText(e.target.value)}
+            ></textarea>
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button type="submit" className="btn btn-primary" style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white", border: "none", margin: "10px" }}>Submit</button>
+          </div>
+        </form>
       </div>
     </Space>
   );
