@@ -135,9 +135,9 @@ const TimelineSearch = () => {
       {contextHolder}
       <center><h2>Timeline Search</h2></center>
 
-      <div  className="story-search" style={{ display: 'flex' }} >
-        <div className="search-form" style={{ flex: 1 }}>
-          <div className="col-md-6">
+      <div  className="story-search" style={{ display: 'flex'}} >
+        <div className="search-form" style={{ width: '300px' }}> {/* Fixed width for the left div */}
+          <div className="col-md-15">
             <label htmlFor="radius" className="form-label">Radius (in km):</label>
             <input
               id="radius"
@@ -152,7 +152,7 @@ const TimelineSearch = () => {
             Use My Location
         </button>
           {/* Time Type Picker Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="dateType" className="form-label">Date Type:</label>
             <select
               id="dateType"
@@ -170,7 +170,7 @@ const TimelineSearch = () => {
           </div>
 
           {searchDate.type === "absolute-date" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <label htmlFor="searchDate" className="form-label">
                 Date:
               </label>
@@ -188,7 +188,7 @@ const TimelineSearch = () => {
           )}
 
           {searchDate.type === "interval-date" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
 
               <div className="mb-3">
                 <label htmlFor="startDate" className="form-label">
@@ -231,7 +231,7 @@ const TimelineSearch = () => {
           )}
 
           {searchDate.type === "absolute-year" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <label htmlFor="yearInput" className="form-label">
                 Year:
               </label>
@@ -247,7 +247,7 @@ const TimelineSearch = () => {
             </div>
           )}
           {searchDate.type === "interval-year" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <div className="mb-3">
                 <label htmlFor="startYear" className="form-label">
                   Start Year:
@@ -287,7 +287,7 @@ const TimelineSearch = () => {
           )}
 
           {/* Season Picker Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="season" className="form-label">Season:</label>
             <select
               id="season"
@@ -303,7 +303,7 @@ const TimelineSearch = () => {
             </select>
           </div>
           {/* Decade Picker Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="decade" className="form-label">Decade:</label>
             <select
               id="decade"
@@ -323,7 +323,7 @@ const TimelineSearch = () => {
               <option value="2020s">2020s</option>
             </select>
           </div>
-          <div className="col-md-6 mt-3">
+          <div className="col-md-15 mt-3">
             <button
               type="button"
               className="btn btn-primary"
@@ -334,7 +334,7 @@ const TimelineSearch = () => {
           </div>
         </div>
 
-        <div className="map-section" style={{ flex: 1, marginRight: 10 }}>
+        <div className="map-section" style={{ flex: 1, marginLeft: '10px' }}> {/* Right div takes remaining space */}
           <LoadScript
             googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
           >
