@@ -173,7 +173,7 @@ const EditStoryForm = () => {
       if (isCircle !== null) {
         newCircles.push({
           center: { name: location.locationName, lat: location.latitude, lng: location.longitude },
-          radius: location.circleRadius/1000,
+          radius: location.circleRadius,
         });
       } else if (isPolygon !== null) {
         // Find the existing polygon in the state based on index
@@ -436,7 +436,7 @@ const EditStoryForm = () => {
     } else if (currentShape === 'circle') {
       const newCircle = {
         center: { lat: clickedLat, lng: clickedLng, name: locationName },
-        radius: circleRadius*1000,
+        radius: circleRadius,
         name: locationName,
         id: circles.length // Unique identifier based on the current length of the array
       };
@@ -674,7 +674,7 @@ const EditStoryForm = () => {
                     <Circle
                       key={index}
                       center={circle.center}
-                      radius={circle.radius}
+                      radius={circle.radius*1000}
                     />
                   ))}
                   {polygons.map((polygon, index) => (
