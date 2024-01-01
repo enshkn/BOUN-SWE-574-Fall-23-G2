@@ -168,7 +168,7 @@ const EditStoryForm = () => {
 
     // Loop through existingStory.locations
     existingStory.locations.map((location, index) => {
-      const { isCircle, isPolygon, isPolyline, isPoint } = location;
+      const { latitude, longitude, name, isCircle, isPolygon, isPolyline, isPoint  } = location;
 
       if (isCircle !== null) {
         newCircles.push({
@@ -190,7 +190,7 @@ const EditStoryForm = () => {
         // Update the newPolylines array
         newPolylines[isPolyline] = existingPolyline;
       } else if (isPoint !== null) {
-        newMarkers.push({ name: location.locationName, lat: location.latitude, lng: location.longitude });
+        newMarkers.push({ name: location.locationName, latitude: location.latitude, longitude: location.longitude });
       }
     });
 
@@ -261,6 +261,13 @@ const EditStoryForm = () => {
     if (markers.length === 0 && circles.length === 0 && polygons.length === 0 && polylines.length === 0) {
       messageApi.open({ type: "error", content: "Please pick at least one location."});
       return; // Prevent form submission if no location is set
+    }
+
+    // Additional location validation (latitude and longitude)
+    const invalidLocations = locations.filter(location => !location.latitude || !location.longitude);
+    if (invalidLocations.length > 0) {
+      messageApi.open({ type: "error", content: "Some locations are missing latitude or longitude. Please refresh and try again." });
+      return;
     }
 
     {/* 
