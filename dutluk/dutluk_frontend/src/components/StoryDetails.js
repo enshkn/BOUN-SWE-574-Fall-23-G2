@@ -220,6 +220,15 @@ function StoryDetails() {
         </div>
         <div className="story-search" style={{ display: 'flex' }} >
           <div className="story-content" style={{ flex: 5 }}>
+          <b>Labels:</b>{" "}
+          {story.labels.map((label, index) => (
+            <span key={index}>
+              <a href={"/story/search/label/" + label}>{label}</a>
+              {index < story.labels.length - 1 && ", "}
+            </span>
+          ))}
+          <div><b>Date:</b> {story.verbalExpression}</div>
+
             <div className="story-text">
               {parse(story.text)}
             </div>
@@ -267,8 +276,6 @@ function StoryDetails() {
           </div>
 
         </div>
-
-
       </div>
 
 
