@@ -138,7 +138,7 @@ const StoryList = ({ story }) => {
                                 style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", margin: "10px" }}
                                 className="btn btn-primary"
                                 onClick={() => handleEditStory(story.id)}
-                            >Edit</button>)
+                            >Update</button>)
                         }
                         {story.user.id == currentUserId && (
                             <button
