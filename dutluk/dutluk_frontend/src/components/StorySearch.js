@@ -34,86 +34,86 @@ const StorySearch = () => {
 
     // Validate Absolute Month-Year
     if (searchDate.type === "absolute-month" && !isValidMonthYear(searchDate.value.startDate)) {
-        isValid = false;
-        errorMessage = 'Invalid format for Month-Year. Expected MM-YYYY.';
+      isValid = false;
+      errorMessage = 'Invalid format for Month-Year. Expected MM-YYYY.';
     };
     if (searchDate.type === "interval-month" && (!isValidMonthYear(searchDate.value.startDate) || !isValidMonthYear(searchDate.value.endDate))) {
-        isValid = false;
-        errorMessage = 'Invalid format for Month-Year. Expected MM-YYYY.';
+      isValid = false;
+      errorMessage = 'Invalid format for Month-Year. Expected MM-YYYY.';
     };
 
-      if (!isValid) {
-        // Display error message or handle the error
-        messageApi.open({ type: "error", content: errorMessage});
-        return;
+    if (!isValid) {
+      // Display error message or handle the error
+      messageApi.open({ type: "error", content: errorMessage});
+      return;
+    }
+
+    try {
+      let startDate = null;
+      let endDate = null;
+
+      switch (searchDate.type) {
+        case "absolute-date":
+          startDate = searchDate.value;
+          endDate = searchDate.value;
+          break;
+        case "interval-date":
+          startDate = searchDate.value.startDate;
+          endDate = searchDate.value.endDate;
+          break;
+        case "absolute-year":
+          startDate = `${searchDate.value}-01-01`;
+          endDate = `${searchDate.value}-12-31`;
+          break;
+        case "interval-year":
+          startDate = `${searchDate.value.startDate}-01-01`;
+          endDate = `${searchDate.value.endDate}-12-31`;
+          break;
+        case "absolute-month":
+          const [month, year] = searchDate.value.startDate.split("-");
+          startDate = `${year}-${month}`;
+          break;
+        case "interval-month":
+          const [startMonth, startYear] = searchDate.value.startDate.split("-");
+          const [endMonth, endYear] = searchDate.value.endDate.split("-");
+          startDate = `${startYear}-${startMonth}`;
+          endDate = `${endYear}-${endMonth}`;
+          break;
+        default:
+          break;
       }
 
-      try {
-        let startDate = null;
-        let endDate = null;
-
-        switch (searchDate.type) {
-          case "absolute-date":
-            startDate = searchDate.value;
-            endDate = searchDate.value;
-            break;
-          case "interval-date":
-            startDate = searchDate.value.startDate;
-            endDate = searchDate.value.endDate;
-            break;
-          case "absolute-year":
-            startDate = `${searchDate.value}-01-01`;
-            endDate = `${searchDate.value}-12-31`;
-            break;
-          case "interval-year":
-            startDate = `${searchDate.value.startDate}-01-01`;
-            endDate = `${searchDate.value.endDate}-12-31`;
-            break;
-          case "absolute-month":
-            const [month, year] = searchDate.value.startDate.split("-");
-            startDate = `${year}-${month}`;
-            break;
-          case "interval-month":
-            const [startMonth, startYear] = searchDate.value.startDate.split("-");
-            const [endMonth, endYear] = searchDate.value.endDate.split("-");
-            startDate = `${startYear}-${startMonth}`;
-            endDate = `${endYear}-${endMonth}`;
-            break;
-          default:
-            break;
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/story/search`,
+        {
+          params: {
+            query: searchQuery,
+            radius: radius,
+            latitude: selectedLocation ? selectedLocation.lat : null,
+            longitude: selectedLocation ? selectedLocation.lng : null,
+            startTimeStamp: startDate,
+            endTimeStamp: endDate,
+            season: searchSeason,
+            decade: searchDecade,
+          },
+          withCredentials: true,
         }
+      );
 
-        const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/api/story/search`,
-          {
-            params: {
-              query: searchQuery,
-              radius: radius,
-              latitude: selectedLocation ? selectedLocation.lat : null,
-              longitude: selectedLocation ? selectedLocation.lng : null,
-              startTimeStamp: startDate,
-              endTimeStamp: endDate,
-              season: searchSeason,
-              decade: searchDecade,
-            },
-            withCredentials: true,
-          }
-        );
-
-        setSearchResults(response.data);
-      } catch (error) {
-        console.log(error);
-        messageApi.open({ type: "error", content: "Error occured while searching stories!" });
-      }
-    }, [
-      messageApi,
-      searchQuery,
-      radius,
-      selectedLocation,
-      searchDate,
-      searchSeason,
-      searchDecade,
-    ]);
+      setSearchResults(response.data);
+    } catch (error) {
+      console.log(error);
+      messageApi.open({ type: "error", content: "Error occured while searching stories!" });
+    }
+  }, [
+    messageApi,
+    searchQuery,
+    radius,
+    selectedLocation,
+    searchDate,
+    searchSeason,
+    searchDecade,
+  ]);
 
   const handleMapClick = (event) => {
     const clickedLat = event.latLng.lat();
@@ -148,12 +148,13 @@ const StorySearch = () => {
       }}
     >
       {contextHolder}
-      <div className="story-search">
+      <center><h2>Story Explore</h2></center>
+      
+      <div className="story-search" style={{ display: 'flex' }} >
         {/* Story Search Element */}
-        <center><h2>Story Explore</h2></center>
-        <div className="search-form">
+        <div className="search-form" style={{ flex:3 }}> 
           <form className="row g-3">
-            <div className="col-md-6">
+            <div className="col-md-15">
               <label htmlFor="searchQuery" className="form-label">Explore Query:</label>
               <input
                 id="searchQuery"
@@ -172,7 +173,7 @@ const StorySearch = () => {
             </div>
           </form>
           {/* Radius Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="radius" className="form-label">Radius (in km):</label>
             <input
               id="radius"
@@ -183,7 +184,7 @@ const StorySearch = () => {
             />
           </div>
           {/* Time Type Picker Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="dateType" className="form-label">Date Type:</label>
             <select
               id="dateType"
@@ -202,7 +203,7 @@ const StorySearch = () => {
           </div>
 
           {searchDate.type === "absolute-date" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <label htmlFor="searchDate" className="form-label">
                 Date:
               </label>
@@ -218,7 +219,7 @@ const StorySearch = () => {
             </div>
           )}
           {searchDate.type === "interval-date" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
 
               <div className="mb-3">
                 <label htmlFor="startDate" className="form-label">
@@ -259,7 +260,7 @@ const StorySearch = () => {
             </div>
           )}
           {searchDate.type === "absolute-year" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <label htmlFor="yearInput" className="form-label">
                 Year:
               </label>
@@ -275,7 +276,7 @@ const StorySearch = () => {
             </div>
           )}
           {searchDate.type === "interval-year" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <div className="mb-3">
                 <label htmlFor="startYear" className="form-label">
                   Start Year:
@@ -313,7 +314,7 @@ const StorySearch = () => {
             </div>
           )}
           {searchDate.type === "absolute-month" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <label htmlFor="monthYear" className="form-label">Month-Year:</label>
               <input
                 type="text"
@@ -330,7 +331,7 @@ const StorySearch = () => {
             </div>
           )}
           {searchDate.type === "interval-month" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <label htmlFor="startMonthYear" className="form-label">Start Month-Year:</label>
               <input
                 type="text"
@@ -361,7 +362,7 @@ const StorySearch = () => {
           )}
 
           {/* Season Picker Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="season" className="form-label">Season:</label>
             <select
               id="season"
@@ -377,7 +378,7 @@ const StorySearch = () => {
             </select>
           </div>
           {/* Decade Picker Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="decade" className="form-label">Decade:</label>
             <select
               id="decade"
@@ -398,7 +399,7 @@ const StorySearch = () => {
             </select>
           </div>
           {/* Button  Element */}
-          <div className="col-md-6 mt-3">
+          <div className="col-md-15 mt-3">
             <button
               type="button"
               className="btn btn-primary"
@@ -410,7 +411,7 @@ const StorySearch = () => {
           </div>
 
         </div>
-        <div className="search-results">
+        <div className="map-section" style={{ flex:7 }}> 
           <LoadScript
             googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
           >
@@ -432,15 +433,19 @@ const StorySearch = () => {
             </GoogleMap>
           </LoadScript>
           <div style={{ marginBottom: "20px" }} />
-          {searchResults.length > 0 && (
-            <div className="all-stories">
-              <h1>Exploring Results</h1>
-              {searchResults.map((story) => (
-                <StoryList story={story} key={story.id} />
-              ))}
-            </div>
-          )}
+
         </div>
+      </div>
+
+      <div className="search-results">
+        {searchResults.length > 0 && (
+          <div className="all-stories">
+            <h1>Exploring Results</h1>
+            {searchResults.map((story) => (
+              <StoryList story={story} key={story.id} />
+            ))}
+          </div>
+        )}
       </div>
     </Space>
   );
