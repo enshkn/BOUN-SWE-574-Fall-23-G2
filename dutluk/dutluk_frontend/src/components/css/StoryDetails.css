@@ -98,3 +98,8 @@
     width: 600px;
 }
 
+.locations-list-container {
+    overflow-y: auto; /* Enables scroll for the list if it's too long */
+    flex-grow: 1; /* Allows the list container to fill the space after the map */
+    margin-top: 20px; /* Space between the map and the locations list */
+  }

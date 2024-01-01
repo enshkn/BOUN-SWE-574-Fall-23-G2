@@ -251,9 +251,9 @@ function StoryDetails() {
             </div>
           </div>
           <div className="map-container" style={{ flex: 5 }}>
-            <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+            <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} >
               <GoogleMap
-                mapContainerStyle={{ width: "100%", height: "400px" }}
+                mapContainerStyle={{ width: '100%', height: '100%', minHeight: '300px' }} // Adjust the height as needed
                 center={{
                   lat: story.locations[0].latitude,
                   lng: story.locations[0].longitude,
@@ -290,18 +290,18 @@ function StoryDetails() {
                 ))}
               </GoogleMap>
             </LoadScript>
-            <label><b>Selected Locations:</b></label>
-            <div className="location-container">
-              <ul className="locations-list">
-                {story.locations.map((location) => (
-                  <li key={location.id}>{location.locationName}</li>
-                ))}
-              </ul>
+            <div className="locations-list-container">
+              <label><b>Selected Locations:</b></label>
+              <div className="location-container">
+                <ul className="locations-list">
+                  {story.locations.map((location) => (
+                    <li key={location.id}>{location.locationName}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-
-
       </div>
 
       <div className="story-comments">
@@ -322,7 +322,6 @@ function StoryDetails() {
             ></textarea>
           </div>
           <button type="submit" className="btn btn-primary" style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white", border: "none" }}>Submit</button>
-
         </form>
       </div>
 
