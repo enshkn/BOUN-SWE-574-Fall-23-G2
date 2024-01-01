@@ -98,3 +98,10 @@
   color: #007bff;
   text-decoration: none;
 }
+
+.comment-date {
+  font-size: 0.85em;
+  /* Adjust size as needed */
+  color: #666;
+  /* Adjust color as needed */
+}
