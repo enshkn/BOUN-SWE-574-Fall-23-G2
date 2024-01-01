@@ -81,8 +81,8 @@ const TimelineSearch = () => {
   };
 
   useEffect(() => {
-  }, []); 
-  
+  }, []);
+
 
   const handleDateTypeChange = (event) => {
     const type = event.target.value;
@@ -135,8 +135,8 @@ const TimelineSearch = () => {
       {contextHolder}
       <center><h2>Timeline Search</h2></center>
 
-      <div  className="story-search" style={{ display: 'flex'}} >
-        <div className="search-form" style={{ width: '300px' }}> {/* Fixed width for the left div */}
+      <div className="story-search" style={{ display: 'flex' }} >
+        <div className="search-form" style={{ flex: 3 }}>
           <div className="col-md-15">
             <label htmlFor="radius" className="form-label">Radius (in km):</label>
             <input
@@ -146,11 +146,11 @@ const TimelineSearch = () => {
               value={radius}
               onChange={(e) => setRadius(parseInt(e.target.value))}
             />
-            
+
           </div>
-          <button type="button" className="btn btn-primary" style={{backgroundColor: "#ff5500ca", color: "white",   border: "none", margin: "5px"}} onClick={handleSearchByLocation}>
+          <button type="button" className="btn btn-primary" style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", margin: "5px" }} onClick={handleSearchByLocation}>
             Use My Location
-        </button>
+          </button>
           {/* Time Type Picker Element */}
           <div className="col-md-15">
             <label htmlFor="dateType" className="form-label">Date Type:</label>
@@ -334,7 +334,7 @@ const TimelineSearch = () => {
           </div>
         </div>
 
-        <div className="map-section" style={{ flex: 1, marginLeft: '10px' }}> {/* Right div takes remaining space */}
+        <div className="map-section" style={{ flex: 7, marginRight: '10px' }}>
           <LoadScript
             googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
           >
@@ -358,22 +358,22 @@ const TimelineSearch = () => {
         </div>
       </div>
       <div className="search-results">
-          {searchResults.length > 0 && (
-            <div>
-              <h3>Search Results:</h3>
-              <Timeline
-                items={searchResults.map(result => ({
-                  id: result.id,
-                  title: result.title,
-                  image: result.picture || "https://images.unsplash.com/photo-1682687220063-4742bd7fd538?q=80&w=1375&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
-                  description: result.text,
-                  date: result.timeExpression,
-                }))}
-                visibleCount={3} // Set the number of visible stories
-              />
-            </div>
-          )}
+        {searchResults.length > 0 && (
+          <div>
+            <h3>Search Results:</h3>
+            <Timeline
+              items={searchResults.map(result => ({
+                id: result.id,
+                title: result.title,
+                image: result.picture || "https://images.unsplash.com/photo-1682687220063-4742bd7fd538?q=80&w=1375&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                description: result.text,
+                date: result.timeExpression,
+              }))}
+              visibleCount={3} // Set the number of visible stories
+            />
           </div>
+        )}
+      </div>
     </Space>
   );
 };
