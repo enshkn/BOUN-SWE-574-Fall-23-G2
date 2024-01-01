@@ -591,7 +591,7 @@ function DateTimerPicker({
     <div className='row'>
     <div className="col-md-6">
     <br></br>
-    <div><i>Select a time resolotion which express best your story</i>
+    <div><i>Select a time resolution which expresses your story.</i>
     <div className="my-2">
       <TimeTypeMenu onTimeTypeChange={handleTimeTypeChange}/>
       </div>

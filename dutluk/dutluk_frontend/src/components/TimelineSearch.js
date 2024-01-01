@@ -81,8 +81,8 @@ const TimelineSearch = () => {
   };
 
   useEffect(() => {
-  }, []); 
-  
+  }, []);
+
 
   const handleDateTypeChange = (event) => {
     const type = event.target.value;
@@ -133,10 +133,11 @@ const TimelineSearch = () => {
       }}
     >
       {contextHolder}
-      <div className="story-search">
-        <div className="search-form">
-        <center><h2>Timeline Search</h2></center>
-          <div className="col-md-6">
+      <center><h2>Timeline Search</h2></center>
+
+      <div className="story-search" style={{ display: 'flex' }} >
+        <div className="search-form" style={{ flex: 3 }}>
+          <div className="col-md-15">
             <label htmlFor="radius" className="form-label">Radius (in km):</label>
             <input
               id="radius"
@@ -145,13 +146,13 @@ const TimelineSearch = () => {
               value={radius}
               onChange={(e) => setRadius(parseInt(e.target.value))}
             />
-            
+
           </div>
-          <button type="button" className="btn btn-primary" style={{backgroundColor: "#ff5500ca", color: "white",   border: "none", margin: "5px"}} onClick={handleSearchByLocation}>
+          <button type="button" className="btn btn-primary" style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", margin: "5px" }} onClick={handleSearchByLocation}>
             Use My Location
-        </button>
+          </button>
           {/* Time Type Picker Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="dateType" className="form-label">Date Type:</label>
             <select
               id="dateType"
@@ -169,7 +170,7 @@ const TimelineSearch = () => {
           </div>
 
           {searchDate.type === "absolute-date" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <label htmlFor="searchDate" className="form-label">
                 Date:
               </label>
@@ -187,7 +188,7 @@ const TimelineSearch = () => {
           )}
 
           {searchDate.type === "interval-date" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
 
               <div className="mb-3">
                 <label htmlFor="startDate" className="form-label">
@@ -230,7 +231,7 @@ const TimelineSearch = () => {
           )}
 
           {searchDate.type === "absolute-year" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <label htmlFor="yearInput" className="form-label">
                 Year:
               </label>
@@ -246,7 +247,7 @@ const TimelineSearch = () => {
             </div>
           )}
           {searchDate.type === "interval-year" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <div className="mb-3">
                 <label htmlFor="startYear" className="form-label">
                   Start Year:
@@ -286,7 +287,7 @@ const TimelineSearch = () => {
           )}
 
           {/* Season Picker Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="season" className="form-label">Season:</label>
             <select
               id="season"
@@ -302,7 +303,7 @@ const TimelineSearch = () => {
             </select>
           </div>
           {/* Decade Picker Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="decade" className="form-label">Decade:</label>
             <select
               id="decade"
@@ -322,7 +323,7 @@ const TimelineSearch = () => {
               <option value="2020s">2020s</option>
             </select>
           </div>
-          <div className="col-md-6 mt-3">
+          <div className="col-md-15 mt-3">
             <button
               type="button"
               className="btn btn-primary"
@@ -333,7 +334,7 @@ const TimelineSearch = () => {
           </div>
         </div>
 
-        <div className="map-section">
+        <div className="map-section" style={{ flex: 7, marginRight: '10px' }}>
           <LoadScript
             googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
           >
@@ -354,22 +355,24 @@ const TimelineSearch = () => {
               )}
             </GoogleMap>
           </LoadScript>
-          {searchResults.length > 0 && (
-            <div>
-              <h3>Search Results:</h3>
-              <Timeline
-                items={searchResults.map(result => ({
-                  id: result.id,
-                  title: result.title,
-                  image: result.picture || "https://images.unsplash.com/photo-1682687220063-4742bd7fd538?q=80&w=1375&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
-                  description: result.text,
-                  date: result.timeExpression,
-                }))}
-                visibleCount={3} // Set the number of visible stories
-              />
-            </div>
-          )}
         </div>
+      </div>
+      <div className="search-results">
+        {searchResults.length > 0 && (
+          <div>
+            <center><h3>Search Results</h3></center>
+            <Timeline
+              items={searchResults.map(result => ({
+                id: result.id,
+                title: result.title,
+                image: result.picture || "https://images.unsplash.com/photo-1682687220063-4742bd7fd538?q=80&w=1375&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                description: result.text,
+                date: result.timeExpression,
+              }))}
+              visibleCount={3} // Set the number of visible stories
+            />
+          </div>
+        )}
       </div>
     </Space>
   );

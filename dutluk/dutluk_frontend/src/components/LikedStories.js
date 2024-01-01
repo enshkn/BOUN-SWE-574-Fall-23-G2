@@ -4,24 +4,21 @@ import { Space, message } from 'antd';
 import "./css/AllStories.css";
 import StoryList from "./StoryList";
 
-// This component contains old name but it is changed in order to avoid confusion on the user side.
-// Component and api names remains same.
-
-function SavedStories() {
-  const [savedStories, setSavedStories] = useState([]);
+function LikedStories() {
+  const [likedStories, setLikedStories] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/saved`, {
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/liked`, {
         withCredentials: true,
       })
       .then((response) => {
-        setSavedStories(response.data);
+        setLikedStories(response.data);
       })
       .catch((error) => {
         console.log(error);
-        messageApi.open({ type: "error", content: "Error occured while loading stories from followings!"});
+        messageApi.open({ type: "error", content: "Error occured while loading your saved stories."});
       });
   }, [messageApi]);
 
@@ -35,8 +32,8 @@ function SavedStories() {
     >
     {contextHolder}
     <div className="all-stories">
-        <center><h1>Your Stashed Stories</h1></center>
-        {savedStories.map((story) => (
+        <center><h1>Stories You Liked</h1></center>
+        {likedStories.map((story) => (
           <StoryList key={story.id} story={story} />
         ))}
     </div>
@@ -44,4 +41,4 @@ function SavedStories() {
   );
 }
 
-export default SavedStories;
+export default LikedStories;

@@ -1,0 +1,105 @@
+@import "Base.css";
+
+.story-container {
+    border: 1px solid #e1e1e1; 
+    border-radius: 4px;
+    padding: 15px; 
+    margin: 20px 30px; 
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    position: relative; 
+  }
+  .story-content {
+    flex: 3; /* Adjust the ratio to your liking */
+    padding-right: 20px; /* Space between the story content and the map */
+  }
+  .story-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .story-title {
+    font-weight: bold;
+    margin: 0; /* No margin for the title to fit on the same line */
+    flex-grow: 1; /* Allow the title to take up available space */
+  }
+  
+  .interaction-info {
+    display: flex;
+    align-items: center;
+    white-space: nowrap; /* Ensure this doesn't wrap to a new line */
+  }
+  
+  .user-info {
+    white-space: nowrap; /* Ensure this doesn't wrap to a new line */
+    margin-left: 10px; /* Spacing between elements */
+  }
+  
+  .story-date {
+    margin-left: 10px;
+    color: #777;
+    font-size: 0.9em;
+  }
+  
+  .story-text {
+    margin-top: 10px; 
+  }
+  
+  .story-labels-and-like {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px; /* Add some space below the labels and like button */
+  }
+
+  .labels {
+    /* Styles for the labels, if needed */
+  }
+
+  .like-button {
+    padding: 5px 10px;
+    background-color: #ff5500;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
+    /* Add additional styles for the like button if needed */
+  }
+
+  .map-container {
+    flex: 2; /* Adjust the ratio to your liking */
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensure the map container fills the parent height */
+}
+
+.story-comments{
+    border: 1px solid #e1e1e1; 
+    border-radius: 4px;
+    padding: 15px; 
+    margin: 20px 30px; 
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    position: relative; 
+    width: 50%;
+
+}
+
+.comment-textarea{
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    width: 600px;
+}
+
+.locations-list-container {
+    overflow-y: auto; /* Enables scroll for the list if it's too long */
+    flex-grow: 1; /* Allows the list container to fill the space after the map */
+    margin-top: 20px; /* Space between the map and the locations list */
+  }

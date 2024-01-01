@@ -18,10 +18,33 @@ const StorySearch = () => {
   const [searchDate, setSearchDate] = useState({ type: null, value: null });
   const [searchSeason, setSearchSeason] = useState(null);
   const [searchDecade, setSearchDecade] = useState(null);
+
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleSearch = useCallback(async () => {
     if (searchQuery && searchQuery.length < 4) {
+      return;
+    }
+    const isValidMonthYear = (input) => {
+      const regex = /^(0[1-9]|1[0-2])-\d{4}$/;
+      return regex.test(input);
+    };
+    let isValid = true;
+    let errorMessage = '';
+
+    // Validate Absolute Month-Year
+    if (searchDate.type === "absolute-month" && !isValidMonthYear(searchDate.value.startDate)) {
+      isValid = false;
+      errorMessage = 'Invalid format for Month-Year. Expected MM-YYYY.';
+    };
+    if (searchDate.type === "interval-month" && (!isValidMonthYear(searchDate.value.startDate) || !isValidMonthYear(searchDate.value.endDate))) {
+      isValid = false;
+      errorMessage = 'Invalid format for Month-Year. Expected MM-YYYY.';
+    };
+
+    if (!isValid) {
+      // Display error message or handle the error
+      messageApi.open({ type: "error", content: errorMessage });
       return;
     }
 
@@ -45,6 +68,16 @@ const StorySearch = () => {
         case "interval-year":
           startDate = `${searchDate.value.startDate}-01-01`;
           endDate = `${searchDate.value.endDate}-12-31`;
+          break;
+        case "absolute-month":
+          const [month, year] = searchDate.value.startDate.split("-");
+          startDate = `${year}-${month}`;
+          break;
+        case "interval-month":
+          const [startMonth, startYear] = searchDate.value.startDate.split("-");
+          const [endMonth, endYear] = searchDate.value.endDate.split("-");
+          startDate = `${startYear}-${startMonth}`;
+          endDate = `${endYear}-${endMonth}`;
           break;
         default:
           break;
@@ -115,12 +148,13 @@ const StorySearch = () => {
       }}
     >
       {contextHolder}
-      <div className="story-search">
+      <center><h1>Story Explore</h1></center>
+
+      <div className="story-search" style={{ display: 'flex' }} >
         {/* Story Search Element */}
-        <center><h2>Story Explore</h2></center>
-        <div className="search-form">
+        <div className="search-form" style={{ flex: 3 }}>
           <form className="row g-3">
-            <div className="col-md-6">
+            <div className="col-md-15">
               <label htmlFor="searchQuery" className="form-label">Explore Query:</label>
               <input
                 id="searchQuery"
@@ -139,7 +173,7 @@ const StorySearch = () => {
             </div>
           </form>
           {/* Radius Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="radius" className="form-label">Radius (in km):</label>
             <input
               id="radius"
@@ -150,7 +184,7 @@ const StorySearch = () => {
             />
           </div>
           {/* Time Type Picker Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="dateType" className="form-label">Date Type:</label>
             <select
               id="dateType"
@@ -163,11 +197,13 @@ const StorySearch = () => {
               <option value="interval-date">Interval Date</option>
               <option value="absolute-year">Absolute Year</option>
               <option value="interval-year">Interval Year</option>
+              <option value="absolute-month">Absolute Month</option>
+              <option value="interval-month">Interval Month</option>
             </select>
           </div>
 
           {searchDate.type === "absolute-date" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <label htmlFor="searchDate" className="form-label">
                 Date:
               </label>
@@ -183,7 +219,7 @@ const StorySearch = () => {
             </div>
           )}
           {searchDate.type === "interval-date" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
 
               <div className="mb-3">
                 <label htmlFor="startDate" className="form-label">
@@ -224,7 +260,7 @@ const StorySearch = () => {
             </div>
           )}
           {searchDate.type === "absolute-year" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <label htmlFor="yearInput" className="form-label">
                 Year:
               </label>
@@ -240,7 +276,7 @@ const StorySearch = () => {
             </div>
           )}
           {searchDate.type === "interval-year" && (
-            <div className="col-md-6">
+            <div className="col-md-15">
               <div className="mb-3">
                 <label htmlFor="startYear" className="form-label">
                   Start Year:
@@ -277,8 +313,56 @@ const StorySearch = () => {
               </div>
             </div>
           )}
+          {searchDate.type === "absolute-month" && (
+            <div className="col-md-15">
+              <label htmlFor="monthYear" className="form-label">Month-Year:</label>
+              <input
+                type="text"
+                className="form-control"
+                id="monthYear"
+                placeholder="MM-YYYY"
+                onChange={(e) =>
+                  setSearchDate({
+                    ...searchDate,
+                    value: { ...searchDate.value, startDate: e.target.value },
+                  })
+                }
+              />
+            </div>
+          )}
+          {searchDate.type === "interval-month" && (
+            <div className="col-md-15">
+              <label htmlFor="startMonthYear" className="form-label">Start Month-Year:</label>
+              <input
+                type="text"
+                className="form-control"
+                id="startMonthYear"
+                placeholder="MM-YYYY"
+                onChange={(e) =>
+                  setSearchDate({
+                    ...searchDate,
+                    value: { ...searchDate.value, startDate: e.target.value },
+                  })
+                }
+              />
+              <label htmlFor="endMonthYear" className="form-label">End Month-Year:</label>
+              <input
+                type="text"
+                className="form-control"
+                id="endMonthYear"
+                placeholder="MM-YYYY"
+                onChange={(e) =>
+                  setSearchDate({
+                    ...searchDate,
+                    value: { ...searchDate.value, endDate: e.target.value },
+                  })
+                }
+              />
+            </div>
+          )}
+
           {/* Season Picker Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="season" className="form-label">Season:</label>
             <select
               id="season"
@@ -294,7 +378,7 @@ const StorySearch = () => {
             </select>
           </div>
           {/* Decade Picker Element */}
-          <div className="col-md-6">
+          <div className="col-md-15">
             <label htmlFor="decade" className="form-label">Decade:</label>
             <select
               id="decade"
@@ -315,49 +399,53 @@ const StorySearch = () => {
             </select>
           </div>
           {/* Button  Element */}
-          <div className="col-md-6 mt-3">
+          <div className="col-md-15 mt-3">
             <button
               type="button"
               className="btn btn-primary"
-              style={{backgroundColor: "#ff5500ca", color: "white",   border: "none"}}
+              style={{ backgroundColor: "#ff5500ca", color: "white", border: "none" }}
               onClick={handleSearch}
             >
               Explore
             </button>
           </div>
 
-      </div>
-      <div className="search-results">
-        <LoadScript
-          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-        >
-          <GoogleMap
-            mapContainerStyle={{ width: "80%", height: "400px" , margin: "0 auto"}}
-            center={{ lat: 41.085064, lng: 29.044687 }}
-            zoom={10}
-            onClick={handleMapClick}
-          >
-            {selectedLocation && (
-              <Marker
-              position={{
-                lat: selectedLocation.lat,
-                lng: selectedLocation.lng,
-              }}
-              onClick={handleMarkerReClick}
-            />
-            )}
-          </GoogleMap>
-        </LoadScript>
-        <div style={{ marginBottom: "20px" }} />
-        {searchResults.length > 0 && (
-            <div className="all-stories">
-              <h1>Exploring Results</h1>
-              {searchResults.map((story) => (
-                <StoryList story={story} key={story.id} />
-              ))}
-            </div>
-          )}
         </div>
+        <div className="map-section" style={{ flex: 7, marginRight:"10px" }}>
+          <LoadScript
+            googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+          >
+            <GoogleMap
+              mapContainerStyle={{ width: "100%", height: "400px", margin: "0 auto" }}
+              center={{ lat: 41.085064, lng: 29.044687 }}
+              zoom={10}
+              onClick={handleMapClick}
+            >
+              {selectedLocation && (
+                <Marker
+                  position={{
+                    lat: selectedLocation.lat,
+                    lng: selectedLocation.lng,
+                  }}
+                  onClick={handleMarkerReClick}
+                />
+              )}
+            </GoogleMap>
+          </LoadScript>
+          <div style={{ marginBottom: "20px" }} />
+
+        </div>
+      </div>
+
+      <div className="search-results">
+        {searchResults.length > 0 && (
+          <div className="all-stories">
+            <center><h1>Exploring Results</h1></center>
+            {searchResults.map((story) => (
+              <StoryList story={story} key={story.id} />
+            ))}
+          </div>
+        )}
       </div>
     </Space>
   );
