@@ -81,9 +81,13 @@ public class UserController {
         try {
             User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
             String token = userService.generateUserToken(foundUser);
-            Cookie cookie = new Cookie("Bearer", token);
-            cookie.setPath("/api");
-            response.addCookie(cookie);
+            if (request.getRemoteHost().contains("https://")) {
+                response.setHeader("Set-Cookie", "Bearer=" + token + "; Path=/api; SameSite=None; Secure");
+            } else {
+                Cookie cookie = new Cookie("Bearer", token);
+                cookie.setPath("/api");
+                response.addCookie(cookie);
+            }
             LoginResponse loginResponse = new LoginResponse(foundUser,token);
             return IntegrationService.mobileCheck(request,loginResponse);
         } catch (AccountNotFoundException e) {
