@@ -33,7 +33,7 @@ function AllStories() {
     >
     {contextHolder}
     <div className="all-stories">
-      <h1>All Stories</h1>
+      <center><h1>All Stories</h1></center>
       {allStories.map((story) => (
         <StoryList story={story} key={story.id} />
       ))}
