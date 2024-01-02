@@ -83,9 +83,13 @@ public class RecommendationService {
         try {
             restTemplate.postForEntity(recUrl + "/story-liked", likedRequest, String.class);
             user.setRecommendedStoriesMap(recommendStory(user));
+            System.out.println("User id: "+user.getId());
+            System.out.println("Recommended Stories: "+user.getRecommendedStoriesMap());
             if(user.getRecommendedStoriesMap() != null){
+                System.out.println("Recommended stories received for user: "+user.getId());
                 return CompletableFuture.completedFuture("Karadut has sent the relevant stories");
             }
+            System.out.println("No stories recommended from karadut to user: "+user.getId());
             return CompletableFuture.completedFuture("No stories recommended");
         }catch (NullPointerException e){
             return CompletableFuture.completedFuture("Recommendation complete");
@@ -144,6 +148,8 @@ public class RecommendationService {
             System.err.println("Server error: " + e.getStatusCode().value() + " - " + e.getResponseBodyAsString());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
+        } catch(Exception e){
+            System.err.println("An error occured on recommend story api");
         }
         return null;
     }
