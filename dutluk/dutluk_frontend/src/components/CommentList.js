@@ -121,6 +121,9 @@ const CommentList = ({ story, comment }) => {
                         </p>
                       </div>
                     </div>
+                    <div className="comment-date">
+                    <span>{comment.createdAt}</span>
+                    </div>
                     <div className="comment-text">
                       <span>{comment.text}</span>
                     </div>

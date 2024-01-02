@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { GoogleMap, LoadScript, Marker, Circle, Polygon, Polyline } from "@react-google-maps/api";
 import "react-quill/dist/quill.snow.css";
 import "./css/AllStories.css";
+import "./css/StoryDetails.css";
 import CommentList from "./CommentList";
 
 function StoryDetails() {
@@ -149,21 +150,21 @@ function StoryDetails() {
 
   const fetchLikeStatus = useCallback(async () => {
     try {
-        const response = await axios.get(
-            `${process.env.REACT_APP_BACKEND_URL}/api/story/isLikedByUser/${id}`,
-            {
-                withCredentials: true,
-            }
-        );
-        setIsLiked(response.data);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/story/isLikedByUser/${id}`,
+        {
+          withCredentials: true,
+        }
+      );
+      setIsLiked(response.data);
     } catch (error) {
-        console.error('Like status API error:', error.message);
-        messageApi.open({ type: "error", content: "Error occurred while fetching liked story data!" });
+      console.error('Like status API error:', error.message);
+      messageApi.open({ type: "error", content: "Error occurred while fetching liked story data!" });
     }
   }, [id, messageApi]);
 
   useEffect(() => {
-      fetchLikeStatus();
+    fetchLikeStatus();
   }, [fetchLikeStatus]);
 
   const handleLikeStory = async () => {
@@ -201,124 +202,131 @@ function StoryDetails() {
       }}
     >
       {contextHolder}
-      <div className="all-stories">
-        <h1>Title: {story.title}</h1>
-        <p>
-          <b>Story:</b>
-          <p></p>
-          {parse(story.text)}
-        </p>
-        <p>
-          <b>Likes:</b> {story.likes ? story.likes.length : 0}
-        </p>
-        <button onClick={handleLikeStory} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none"}} type="submit" className="btn btn-primary mb-2">
-          {isLiked ? 'Unlike' : 'Like!'}
-        </button>
-        <p className="story-details">
-          <b>Labels:</b>{" "}
-          {story.labels.map((label, index) => (
-            <span key={index}>
-              <a href={"/story/search/label/" + label}>{label}</a>
-              {index < story.labels.length - 1 && ", "}
+      <div className="story-container">
+        <div className="story-header">
+          <h1 className="story-title">{story.title}</h1>
+          <div className="user-info">
+            <span className="story-date"> Posted: {story.createdAt}</span>
+            <a href={`/user/${story.user.id}`} className="username">@{story.user.username}</a>
+          </div>
+          <div className="interaction-info">
+            <span style={{ marginRight: '8px' }}>
+              ❤️ {story.likes ? story.likes.length : 0}
             </span>
-          ))}
-        </p>
-        <b>Written by:</b>
-        <a href={"/user/" + story.user.id}>{story.user.username}</a>
-        <p>
+            <span>
+              💬 {story.comments.length}
+            </span>
+          </div>
+        </div>
+        <div className="story-map-container" style={{ display: 'flex' }} >
+          <div className="story-content" style={{ flex: 5 }}>
+            <div className="story-labels-and-like">
+              <div className="label">
+                <div className="tags">
+                  {story.labels.map((tag, idx) => (
+                    <span key={idx} className="tag">
+                      <a href={"/story/search/label/" + tag}>{tag}</a>
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <button className="like-button" onClick={handleLikeStory} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none" }} type="submit">
+                Like
+              </button>
+            </div>
 
-          <b>Published at: </b>
-          {story.createdAt}
-        </p>
-        {story.season && (
-          <p>
-            <b>Season:</b> {story.season}
-          </p>
-        )}
-        {story.decade && (
-          <p>
-            <b>Decade:</b> {story.decade}
-          </p>
-        )}
-        {story.startTimeStamp && (
-          <p>
-            <b>Start Date:</b> {story.startTimeStamp}
-          </p>
-        )}
-        {story.endTimeStamp && (
-          <p>
-            <b>End Date:</b> {story.endTimeStamp}
-          </p>
-        )}
+            {story.verbalExpression != null ? (
+              <   span className="story-date">{story.verbalExpression}</span>
+            ) : (
+              <>
+                {story.startTimeStamp && <span >Start: {story.startTimeStamp}</span>}
+                {story.endTimeStamp && <span>End: {story.endTimeStamp}</span>}
+                {story.season && <span>Season: {story.season}</span>}
+                {story.endSeason && <span>Season: {story.endSeason}</span>}
+                {story.decade && <span>Decade: {story.decade}</span>}
+                {story.endDecade && <span>End Decade: {story.endDecade}</span>}
+              </>
+            )}
 
-        <label>
-          <b>Selected Locations:</b>
-          <ul className="locations-list">
-            {story.locations.map((location) => (
-              <li key={location.id}>{location.locationName}</li>
-            ))}
-          </ul>
-        </label>
-        <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
-          <GoogleMap
-            mapContainerStyle={{ width: "80%", height: "400px" }}
-            center={{
-              lat: story.locations[0].latitude,
-              lng: story.locations[0].longitude,
-            }}
-            zoom={10}
-          >
-            {markers.map((marker, index) => (
-              <Marker
-                key={index}
-                position={{
-                  lat: marker.latitude,
-                  lng: marker.longitude,
+            <div className="story-text">
+              {parse(story.text)}
+            </div>
+          </div>
+          <div className="map-container" style={{ flex: 5 }}>
+            <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} >
+              <GoogleMap
+                mapContainerStyle={{ width: '100%', height: '100%', minHeight: '300px' }} // Adjust the height as needed
+                center={{
+                  lat: story.locations[0].latitude,
+                  lng: story.locations[0].longitude,
                 }}
-              />
-            ))}
-            {circles.map((circle, index) => (
-              <Circle
-                key={index}
-                center={circle.center}
-                radius={circle.radius}
-              />
-            ))}
-            {polygons.map((polygon, index) => (
-              <Polygon
-                key={index}
-                paths={polygon.path}
-              />
-            ))}
-            {polylines.map((polyline, index) => (
-              <Polyline
-                key={index}
-                path={polyline.path}
-              />
-            ))}
-          </GoogleMap>
-        </LoadScript>
+                zoom={10}
+              >
+                {markers.map((marker, index) => (
+                  <Marker
+                    key={index}
+                    position={{
+                      lat: marker.latitude,
+                      lng: marker.longitude,
+                    }}
+                  />
+                ))}
+                {circles.map((circle, index) => (
+                  <Circle
+                    key={index}
+                    center={circle.center}
+                    radius={circle.radius}
+                  />
+                ))}
+                {polygons.map((polygon, index) => (
+                  <Polygon
+                    key={index}
+                    paths={polygon.path}
+                  />
+                ))}
+                {polylines.map((polyline, index) => (
+                  <Polyline
+                    key={index}
+                    path={polyline.path}
+                  />
+                ))}
+              </GoogleMap>
+            </LoadScript>
+            <div className="locations-list-container">
+              <label><b>Selected Locations:</b></label>
+              <div className="location-container">
+                <ul className="locations-list">
+                  {story.locations.map((location) => (
+                    <li key={location.id}>{location.locationName}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="story-comments">
         <p>
           <b>Comments:</b>
         </p>
-          {story.comments.map((comment) => (
-            <CommentList comment={comment} story={story} key={comment} />
-          ))}
-          <form onSubmit={handleCommentSubmit} style={{ width: "80%" }}>
-              <div>
-                  <textarea
-                  label="Add Comment"
-                  value={commentText}
-                  placeholder="Add Comment"
-                  style={{ width: "100%", height: "100px" }}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  ></textarea>
-              </div>
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <button type="submit" className="btn btn-primary" style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white",  border: "none", margin: "10px" }}>Submit</button>
-              </div>
-          </form>
+        {story.comments.map((comment) => (
+          <CommentList comment={comment} story={story} key={comment} />
+        ))}
+        <form onSubmit={handleCommentSubmit} style={{ width: "80%" }}>
+          <div>
+            <textarea
+              className="comment-textarea"
+              label="Add Comment"
+              value={commentText}
+              placeholder="Add Comment"
+              onChange={(e) => setCommentText(e.target.value)}
+            ></textarea>
+          </div>
+          <button type="submit" className="btn btn-primary" style={{ width: "100px", backgroundColor: "#ff5500ca", color: "white", border: "none" }}>Submit</button>
+        </form>
       </div>
+
     </Space>
   );
 }

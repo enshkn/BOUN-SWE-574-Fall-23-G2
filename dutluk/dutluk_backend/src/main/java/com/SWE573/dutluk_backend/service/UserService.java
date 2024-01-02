@@ -163,11 +163,15 @@ public class UserService{
     }
 
 
-    public HttpServletResponse logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("Bearer", null);
-        cookie.setPath("/api");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+    public HttpServletResponse logout(HttpServletRequest request, HttpServletResponse response) {
+        if (request.getRequestURL().toString().contains("https://")) {
+            response.setHeader("Set-Cookie", "Bearer=" + getTokenFromEndpoint(request) + "; Path=/api; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=None; Secure");
+        } else {
+            Cookie cookie = new Cookie("Bearer", null);
+            cookie.setPath("/api");
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
         return response;
     }
 

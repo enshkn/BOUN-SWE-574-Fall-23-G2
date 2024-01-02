@@ -8,7 +8,8 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import AddStoryForm from "./components/AddStory";
 import EditStoryForm from "./components/EditStory";
-import SavedStories from "./components/SavedStories";
+import StashedStories from "./components/SavedStories"; // Save feauture name was changed to stash in order to avoid confusion on the user side.
+import LikedStories from "./components/LikedStories";
 import StoryDetails from "./components/StoryDetails";
 import Recommended from "./components/Recommended";
 import AllStories from "./components/AllStories";
@@ -115,10 +116,16 @@ function App() {
                   All Stories
                 </NavDropdown.Item>
                 <NavDropdown.Item
-                  href="/story/saved-stories"
+                  href="/story/stashed-stories"
                   className="justify-content-end"
                 >
-                  Saved Stories
+                  Stashed Stories
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="/story/liked-stories"
+                  className="justify-content-end"
+                >
+                  Liked Stories
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item
@@ -192,7 +199,7 @@ function App() {
                 type="svg"
                 size={size}
                 iconSize={size / 3}
-                value="https://drive.google.com/file/d/1CNu4UZIRLdt-MiicpNkl5kSKHmhClR_1/view?usp=drive_link"
+                value="https://drive.google.com/drive/folders/1vh4xgd2obxcE3oZ5o-n0hCG2krOHtwk3?usp=sharing"
                 icon="https://imgtr.ee/images/2023/12/03/6a9ea85221f5a50f74baa5578a9a9d3c.jpeg"
               />
             </div>
@@ -206,13 +213,16 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/story/add-story" element={<AddStoryForm />} />
         <Route path="/story/edit/:id" element={<EditStoryForm />} />
-        <Route path="/story/saved-stories" element={<SavedStories />} />
+        <Route path="/story/stashed-stories" element={<StashedStories />} />
+        {/* Stash was previous save feature, since naming can be comfusing on the user side 
+        wording is changed from "save" to "stash" */}
+        <Route path="/story/liked-stories" element={<LikedStories />} />
         <Route path="/story/followings" element={<FollowedUserStories />} />
         <Route path="/story/all-stories" element={<AllStories />} />
         <Route path="/story/:id" element={<StoryDetails />} />
         <Route path="/user/:id" element={<Profile />} />
         <Route path="/story/explore" element={<StorySearch />} />
-        {/* Explore was previous search feature, sisnce it applies all filters individualy 
+        {/* Explore was previous search feature, since it applies all filters individualy 
         and add them to same list, wording is changed from "search" to "explore" */}
         <Route path="/story/timeline-search" element={<TimelineSearch />} />
         <Route path="/story/search/label/:label" element={<LabelSearch />} />
