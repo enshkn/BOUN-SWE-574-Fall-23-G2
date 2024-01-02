@@ -684,18 +684,30 @@ public class StoryService {
     }
 
     public String sendBatchofStories(String password) {
+        if (!password.equals("password")) {
+            return "Invalid password";
+        }
 
-        if (password.equals("password")) {
-            if (recService.isRecEngineStatus()) {
-                List<Story> storyList = findAll();
-                for (Story story : storyList) {
-                    recService.vectorizeRequest(story);
-                }
-                return "Data sent to karadut";
+        if (!recService.isRecEngineStatus()) {
+            return "Karadut not active";
+        }
+
+        List<Story> storyList = findAll();
+        for (Story story : storyList) {
+            try {
+                recService.vectorizeRequest(story);
+                System.out.println("Request sent for story: " + story.getId());
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Thread interrupted for story: " + story.getId());
+            } catch (Exception e) {
+                System.out.println("Failed to send request for story: " + story.getId());
             }
         }
-        return "Karadut not active";
+        return "Data sent to karadut";
     }
+
 
 
 }

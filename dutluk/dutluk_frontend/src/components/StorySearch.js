@@ -26,7 +26,7 @@ const StorySearch = () => {
       return;
     }
     const isValidMonthYear = (input) => {
-      const regex = /^(0[1-9]|1[0-2])-\d{4}$/;
+      const regex = /^(0[1-9]|1[0-2])\/\d{4}$/;
       return regex.test(input);
     };
     let isValid = true;
@@ -320,7 +320,7 @@ const StorySearch = () => {
                 type="text"
                 className="form-control"
                 id="monthYear"
-                placeholder="MM-YYYY"
+                placeholder="MM/YYYY"
                 onChange={(e) =>
                   setSearchDate({
                     ...searchDate,
@@ -337,7 +337,7 @@ const StorySearch = () => {
                 type="text"
                 className="form-control"
                 id="startMonthYear"
-                placeholder="MM-YYYY"
+                placeholder="MM/YYYY"
                 onChange={(e) =>
                   setSearchDate({
                     ...searchDate,
@@ -350,7 +350,7 @@ const StorySearch = () => {
                 type="text"
                 className="form-control"
                 id="endMonthYear"
-                placeholder="MM-YYYY"
+                placeholder="MM/YYYY"
                 onChange={(e) =>
                   setSearchDate({
                     ...searchDate,
