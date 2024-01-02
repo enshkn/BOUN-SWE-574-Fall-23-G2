@@ -71,7 +71,7 @@ public class RecommendationService {
         return CompletableFuture.completedFuture("Data sent to karadut");
     }
 
-    @Async
+    
     public CompletableFuture<String> likedStory(Story story, User user, Integer likedStorySize) {
         RecStoryLikeOrDislikeRequest likedRequest =
                 RecStoryLikeOrDislikeRequest.builder()
@@ -96,7 +96,7 @@ public class RecommendationService {
         }
     }
 
-    @Async
+    
     public CompletableFuture<String> dislikedStory(Story story, User user, Integer likedStorySize) {
         RecStoryLikeOrDislikeRequest dislikedRequest =
                 RecStoryLikeOrDislikeRequest.builder()
