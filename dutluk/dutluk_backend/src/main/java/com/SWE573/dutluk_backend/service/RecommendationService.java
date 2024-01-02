@@ -84,7 +84,7 @@ public class RecommendationService {
             restTemplate.postForEntity(recUrl + "/story-liked", likedRequest, String.class);
             user.setRecommendedStoriesMap(recommendStory(user));
             System.out.println("User id: "+user.getId());
-            System.out.println("Recommended Stories:"+user.getRecommendedStoriesMap.keySet());
+            System.out.println("Recommended Stories: "+user.getRecommendedStoriesMap());
             if(user.getRecommendedStoriesMap() != null){
                 System.out.println("Recommended stories received for user: "+user.getId());
                 return CompletableFuture.completedFuture("Karadut has sent the relevant stories");
