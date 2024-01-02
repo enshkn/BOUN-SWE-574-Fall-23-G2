@@ -165,6 +165,11 @@ public class StoryController {
         return IntegrationService.mobileCheck(request,storyListResponse);
     }
 
+    @GetMapping("/removeAllStoryLikes")
+    public ResponseEntity<?> removeAllStoryLikes(HttpServletRequest request) {
+        return IntegrationService.mobileCheck(request, storyService.removeAllLikesFromStories());
+    }
+
     @PostMapping("/save")
     public ResponseEntity<?> saveStory(@RequestBody SaveRequest saveRequest, HttpServletRequest request){
         User tokenizedUser = userService.validateTokenizedUser(request);
