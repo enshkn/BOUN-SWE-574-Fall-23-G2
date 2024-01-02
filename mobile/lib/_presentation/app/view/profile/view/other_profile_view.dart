@@ -152,7 +152,8 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                           itemBuilder: (item) {
                                             return Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 8),
+                                                left: 8,
+                                              ),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -219,7 +220,8 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                           itemBuilder: (item) {
                                             return Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 8),
+                                                left: 8,
+                                              ),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -287,7 +289,8 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                           itemBuilder: (item) {
                                             return Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 12),
+                                                left: 12,
+                                              ),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -295,11 +298,11 @@ class _OtherProfileViewState extends State<OtherProfileView> {
                                                   BaseWidgets.lowerGap,
                                                   GestureDetector(
                                                     onTap: () {
-                                                      /*  context.router.push(
-                                                  StoryDetailsRoute(
-                                                    model: item,
-                                                  ),
-                                                ); */
+                                                      context.router.push(
+                                                        StoryDetailsRoute(
+                                                          model: item,
+                                                        ),
+                                                      );
                                                     },
                                                     child: Text(
                                                       state.otherProfile!

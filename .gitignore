@@ -62,7 +62,7 @@ mobile/build/
 /ios/codesigndoc_exports
 mobile/.env_development
 mobile/.env_production
-
+mobile/coverage
 
 # Symbolication related
 app.*.symbols
