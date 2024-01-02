@@ -10,9 +10,9 @@ import SeasonPicker from './DateTimePicker/SeasonPicker'
 import YearPicker from './DateTimePicker/YearPicker'
 import DecadePicker from './DateTimePicker/DecadePicker'
 import SeasonMenu from './DateTimePicker/SeasonMenu'
-import { format, set } from 'date-fns'
-import { addDays } from 'date-fns/esm'
-import { message } from 'antd';
+// import { format, set } from 'date-fns'
+// import { addDays } from 'date-fns/esm'
+// import { message } from 'antd';
 
 function DateTimerPicker({
   onTimeTypeSelect,
@@ -31,7 +31,7 @@ function DateTimerPicker({
   onSelectedDateTimeEnd,
   
 }) {
-  {/* -------------------------------------------------- STATES -------------------------------------------------- */}
+  // {/* -------------------------------------------------- STATES -------------------------------------------------- */}
   // time type
   const [selectedTimeType, setSelectedTimeType] = useState('');
   const handleTimeTypeChange = (selectedTimeType) => {
@@ -60,22 +60,22 @@ function DateTimerPicker({
   const [selectedDecadeStart, setSelectedDecadeStart] = useState(null);
   const [selectedDecadeEnd, setSelectedDecadeEnd] = useState(null);
 
-  const seasonDict = { 12:1,
-    1:1,
-    2:1,
-    3:2,
-    4:2,
-    5:2,
-    6:3,
-    7:3,
-    8:3,
-    9:4,
-    10:4,
-    11:4,
-  }
+  // const seasonDict = { 12:1,
+  //   1:1,
+  //   2:1,
+  //   3:2,
+  //   4:2,
+  //   5:2,
+  //   6:3,
+  //   7:3,
+  //   8:3,
+  //   9:4,
+  //   10:4,
+  //   11:4,
+  // }
 
 
-  {/* -------------------------------------------------- FORMATTERS -------------------------------------------------- */}
+  // {/* -------------------------------------------------- FORMATTERS -------------------------------------------------- */}
 
  // moment formatter
   function formatDate(date) {
@@ -150,67 +150,67 @@ function DateTimerPicker({
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
 // season formatter
-  function calculateSeasonDates(startYear, startSeason, timeType, endYear = null, endSeason = null) {
-    let seasonStartMonth = 0;
-    let seasonEndMonth = 0;
+  // function calculateSeasonDates(startYear, startSeason, timeType, endYear = null, endSeason = null) {
+  //   let seasonStartMonth = 0;
+  //   let seasonEndMonth = 0;
   
-    switch (startSeason) {
-      case 1: // Winter: Starts in December
-        seasonStartMonth = 11; // December
-        seasonEndMonth = 1;    // February
-        break;
-      case 2: // Spring: Starts in March
-        seasonStartMonth = 2;  // March
-        seasonEndMonth = 4;    // May
-        break;
-      case 3: // Summer: Starts in June
-        seasonStartMonth = 5;  // June
-        seasonEndMonth = 7;    // August
-        break;
-      case 4: // Autumn: Starts in September
-        seasonStartMonth = 8;  // September
-        seasonEndMonth = 10;   // November
-        break;
-      default:
-        return "Invalid season value!";
-    }
+  //   switch (startSeason) {
+  //     case 1: // Winter: Starts in December
+  //       seasonStartMonth = 11; // December
+  //       seasonEndMonth = 1;    // February
+  //       break;
+  //     case 2: // Spring: Starts in March
+  //       seasonStartMonth = 2;  // March
+  //       seasonEndMonth = 4;    // May
+  //       break;
+  //     case 3: // Summer: Starts in June
+  //       seasonStartMonth = 5;  // June
+  //       seasonEndMonth = 7;    // August
+  //       break;
+  //     case 4: // Autumn: Starts in September
+  //       seasonStartMonth = 8;  // September
+  //       seasonEndMonth = 10;   // November
+  //       break;
+  //     default:
+  //       return "Invalid season value!";
+  //   }
   
-    const parsedStartYear = startYear;
+  //   const parsedStartYear = startYear;
   
-    const formattedStartTime = `${parsedStartYear}-${seasonStartMonth + 1}-01 00:00`;
-    const formattedEndTimePoint = `${parsedStartYear}-${seasonEndMonth + 1}-${new Date(parsedStartYear, seasonEndMonth + 1, 0).getDate()} 23:59 `;
+  //   const formattedStartTime = `${parsedStartYear}-${seasonStartMonth + 1}-01 00:00`;
+  //   const formattedEndTimePoint = `${parsedStartYear}-${seasonEndMonth + 1}-${new Date(parsedStartYear, seasonEndMonth + 1, 0).getDate()} 23:59 `;
   
-    if (timeType === "timePoint") {
-      return { formattedStartTime, formattedEndTime: formattedEndTimePoint };
-    }
+  //   if (timeType === "timePoint") {
+  //     return { formattedStartTime, formattedEndTime: formattedEndTimePoint };
+  //   }
   
-    if (timeType === "timeInterval" && endYear && endSeason) {
-      const parsedEndYear = endYear;
+  //   if (timeType === "timeInterval" && endYear && endSeason) {
+  //     const parsedEndYear = endYear;
   
-      switch (endSeason) {
-        case 1: // Winter
-          seasonEndMonth = 1;
-          break;
-        case 2: // Spring
-          seasonEndMonth = 4;
-          break;
-        case 3: // Summer
-          seasonEndMonth = 7;
-          break;
-        case 4: // Autumn
-          seasonEndMonth = 10;
-          break;
-        default:
-          return "Invalid endSeason value!";
-      }
+  //     switch (endSeason) {
+  //       case 1: // Winter
+  //         seasonEndMonth = 1;
+  //         break;
+  //       case 2: // Spring
+  //         seasonEndMonth = 4;
+  //         break;
+  //       case 3: // Summer
+  //         seasonEndMonth = 7;
+  //         break;
+  //       case 4: // Autumn
+  //         seasonEndMonth = 10;
+  //         break;
+  //       default:
+  //         return "Invalid endSeason value!";
+  //     }
   
-      const formattedEndTimeInterval = `${endYear}-${seasonEndMonth + 1}-${new Date(parsedEndYear, seasonEndMonth + 1, 0).getDate()} 23:59:59`;
+  //     const formattedEndTimeInterval = `${endYear}-${seasonEndMonth + 1}-${new Date(parsedEndYear, seasonEndMonth + 1, 0).getDate()} 23:59:59`;
   
-      return { formattedStartTime, formattedEndTime: formattedEndTimeInterval };
-    }
+  //     return { formattedStartTime, formattedEndTime: formattedEndTimeInterval };
+  //   }
   
-    return "Invalid timeType or insufficient parameters!";
-  }
+  //   return "Invalid timeType or insufficient parameters!";
+  // }
 // decade formatter
   function getDecadeRangePoint(decade) {
     const startYear = decade;
@@ -223,7 +223,7 @@ function DateTimerPicker({
     return { startDate, endDate };
   }
 
-{/* -------------------------------------------------- SHOWING ELEMENTS AND VARIABLES -------------------------------------------------- */}
+// {/* -------------------------------------------------- SHOWING ELEMENTS AND VARIABLES -------------------------------------------------- */}
   let showStartMomentPicker = false;
   let showEndMomentPicker = false;
   let showStartDayPicker = false;
@@ -247,7 +247,7 @@ function DateTimerPicker({
   let var_endHourFlag = -1;
   let var_endDateFlag = -1;
 
-{/* -------------------------------------------------- RESET FORMS -------------------------------------------------- */}
+// {/* -------------------------------------------------- RESET FORMS -------------------------------------------------- */}
 
 
   // reset form
@@ -299,38 +299,38 @@ function DateTimerPicker({
     setHourFlag(var_hourFlag);
     setEndHourFlag(var_endHourFlag);
     setEndDateFlag(var_endDateFlag);
-    })
+    }, [formattedDateTimeStart, formattedDateTimeEnd, var_dateFlag, var_hourFlag, var_endHourFlag, var_endDateFlag]);
 
     // log timestamp when selectedDateTimeStart and selectedDateTimeEnd changes
     useEffect(() => {
       console.log("date flag: ", dateFlag, "hour flag: ", hourFlag, "time stamp end:", timeStampEnd, "time stamp start: ", timeStampStart, "end hour flag: ", endHourFlag, "end date flag: ", endDateFlag);
     }, [dateFlag, hourFlag, timeStampEnd, timeStampStart, endHourFlag, endDateFlag]);
     
-    {/*  // this code block alreadt exists in the parent component
+//     {/*  // this code block alreadt exists in the parent component
 
-    useEffect(() => {
-      if (selectedDateTimeStart && selectedDateTimeEnd && selectedDateTimeStart > selectedDateTimeEnd) {
-      ('Start date should be before the end date');
-      }
-    }, [selectedDateTimeStart, selectedDateTimeEnd]);
+//     useEffect(() => {
+//       if (selectedDateTimeStart && selectedDateTimeEnd && selectedDateTimeStart > selectedDateTimeEnd) {
+//       ('Start date should be before the end date');
+//       }
+//     }, [selectedDateTimeStart, selectedDateTimeEnd]);
 
-    useEffect(() => {
-      if (selectedDecadeStart && selectedDecadeEnd && selectedDecadeStart > selectedDecadeEnd) {
-        alert('Start date should be before the end date');
-      }
-    }, [selectedDecadeStart, selectedDecadeEnd]);
-    */}
-  // props 
+//     useEffect(() => {
+//       if (selectedDecadeStart && selectedDecadeEnd && selectedDecadeStart > selectedDecadeEnd) {
+//         alert('Start date should be before the end date');
+//       }
+//     }, [selectedDecadeStart, selectedDecadeEnd]);
+//     */}
+//   // props 
   
-  { 
-   // single props example 
-  /*
-  useEffect(() => {
-    onTimeTypeSelect(selectedTimeType);
-  }, [selectedTimeType, onTimeTypeSelect]);
-  */
- }
-{/* -------------------------------------------------- PROPS  -------------------------------------------------- */}
+//   { 
+//    // single props example 
+//   /*
+//   useEffect(() => {
+//     onTimeTypeSelect(selectedTimeType);
+//   }, [selectedTimeType, onTimeTypeSelect]);
+//   */
+//  }
+// {/* -------------------------------------------------- PROPS  -------------------------------------------------- */}
   useEffect(() => {
     onTimeTypeSelect(selectedTimeType);
     onTimeExpressionSelect(selectedTimeExpression);
@@ -379,7 +379,7 @@ function DateTimerPicker({
   ]);
   
 
-    {/* -------------------------------------------------- PICKER LOGIC  -------------------------------------------------- */}
+    // {/* -------------------------------------------------- PICKER LOGIC  -------------------------------------------------- */}
   
 
   switch (selectedTimeType) {
@@ -478,6 +478,7 @@ function DateTimerPicker({
         case 'decade+season':
           showStartDecadeSeasonPicker = true;
           break;
+        default:
       }
       break;
     case 'timeInterval':
@@ -581,6 +582,7 @@ function DateTimerPicker({
           showEndDecadeSeasonPicker = true;
 
           break;
+        default:
       }
       break;
       default:

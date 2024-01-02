@@ -1,5 +1,5 @@
-import React, {useState, useRef} from 'react';
-import { Card, Row, Col, Button } from 'react-bootstrap';
+import React, {useState} from 'react';
+import { Card, Row, Button } from 'react-bootstrap';
 import "./css/Timeline.css";
 
 // Story Kartı Componenti

@@ -81,7 +81,7 @@ function Profile() {
         console.log(error);
         messageApi.open({ type: "error", content: "Error occured while loading this user's stories"});
       });
-  }, [messageApi]);
+  }, [id, messageApi]);
 
   if (!user) {
     return <div>User not found!</div>;
