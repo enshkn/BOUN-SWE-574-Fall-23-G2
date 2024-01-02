@@ -103,6 +103,7 @@ class StoryCard extends StatelessWidget {
           clipBehavior: Clip.none,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 if (storyModel.createdAt != null)
                   Text(
