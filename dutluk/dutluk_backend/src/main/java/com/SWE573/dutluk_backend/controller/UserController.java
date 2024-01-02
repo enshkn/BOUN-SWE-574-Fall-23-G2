@@ -81,7 +81,6 @@ public class UserController {
         try {
             User foundUser = userService.findByIdentifierAndPassword(loginRequest.getIdentifier(), loginRequest.getPassword());
             String token = userService.generateUserToken(foundUser);
-            System.out.println(request.getRequestURL().toString());
             if (request.getRequestURL().toString().contains("https://")) {
                 response.setHeader("Set-Cookie", "Bearer=" + token + "; Path=/api; SameSite=None; Secure");
             } else {
