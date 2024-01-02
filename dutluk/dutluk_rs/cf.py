@@ -277,8 +277,41 @@ def upsert(final_text_vector, pinecone_index, vector_ids, vector_type, token_cou
     except Exception as e:
         print(f"Error in upsert function: {e}")
         # Re-raise the exception to propagate it further if needed
-        raise
+        raise        
 
+def upsert_user(final_text_vector, pinecone_index, vector_ids, vector_type):
+  """
+  Upserts user vectors into a Pinecone index.
+
+  Parameters:
+  - final_text_vector (numpy.ndarray): The vector to be upserted into the index.
+  - pinecone_index: The Pinecone index object.
+  - vector_ids: The ID(s) associated with the vector.
+  - vector_type: The type associated with the vector.
+
+  Returns:
+  - bool: True if the upsert operation is successful.
+
+  This function upserts a vector into a Pinecone index with associated metadata.
+  """
+
+  try:
+      pinecone_vector = final_text_vector.tolist()
+      pinecone_index.upsert(
+          vectors=[
+              {
+                  "id": vector_ids,
+                  "values": pinecone_vector,
+                  "metadata": {"id": vector_ids, "type": vector_type},
+              }
+          ]
+      )
+      return True
+
+  except Exception as e:
+      print(f"Error in upsert_user function: {e}")
+      # Re-raise the exception to propagate it further if needed
+      raise
 
 
 def upsert_for_empty_list(final_text_vector, pinecone_index, vector_ids, vector_type):
