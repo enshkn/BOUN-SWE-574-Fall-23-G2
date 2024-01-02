@@ -9,7 +9,7 @@ from cf import story_parser, text_processor, tokenizer, upsert, weighted_vectori
     unlike_story_operations, single_vector_fetcher, recommendation_parser, story_recommender, user_recommender, \
     list_to_string, \
     generate_id_with_prefix, generate_ids_with_prefix, parse_ids_with_prefix_for_lists, parse_id_with_prefix, \
-    create_empty_float_list, upsert_for_empty_list, vector_fetcher, token_counter
+    create_empty_float_list, upsert_for_empty_list, vector_fetcher, token_counter, upsert_user
 
 app, index, word2vec_model = app_initializer()
 
@@ -166,7 +166,7 @@ async def process_story_liked(data: UserInteraction):
             user_vector = story_vector
             np_story_vector, np_user_vector = list_to_nparray(story_vector=story_vector, user_vector=user_vector)
             updated_user_vector = np_user_vector
-            response = upsert(final_text_vector=updated_user_vector, pinecone_index=index, vector_ids=user_id,
+            response = upsert_user(final_text_vector=updated_user_vector, pinecone_index=index, vector_ids=user_id,
                               vector_type="user")
         else:
             # fetch story and user vectors
