@@ -721,7 +721,7 @@ def story_recommender(pinecone_index, user_vector, excluded_ids, vector_type):
             top_k=100,
             filter={"id": {"$nin": excluded_ids},
                     "type": {"$eq": vector_type},
-                    "token_count": {"$gte": 75}
+                    "token_count": {"$gte": 1}
                     },
         )
         ids = [match['id'] for match in response['matches']]
