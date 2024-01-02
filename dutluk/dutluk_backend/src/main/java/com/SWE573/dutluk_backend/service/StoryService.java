@@ -413,14 +413,14 @@ public class StoryService {
 
     public List<Story> recommendedStories(User foundUser) {
         Map<Long,Integer> recommendationMap;
-        if(recService.isRecEngineStatus() && foundUser.getRecommendedStoriesMap().isEmpty()){
+        if (recService.isRecEngineStatus()) {
             recommendationMap = recService.recommendStory(foundUser);
         }
         else{
             recommendationMap = foundUser.getRecommendedStoriesMap();
         }
         List<Long> recommendationList = new ArrayList<>(recommendationMap.keySet());
-        if(foundUser.getRecommendedStoriesMap() == null || recommendationMap.isEmpty()){
+        if (foundUser.getRecommendedStoriesMap() == null || foundUser.getRecommendedStoriesMap().isEmpty()) {
             return findRecentStories();
         }
         List<Story> storyList = new ArrayList<>();
@@ -708,6 +708,18 @@ public class StoryService {
         return "Data sent to karadut";
     }
 
-
+    public String removeAllLikesFromStories() {
+        List<Story> storyList = findAll();
+        List<User> userList = userService.findAll();
+        for (User user : userList) {
+            user.setLikedStories(new HashSet<>());
+            userService.editUser(user);
+        }
+        for (Story story : storyList) {
+            story.setLikes(new HashSet<>());
+            storyRepository.save(story);
+        }
+        return "All likes deleted";
+    }
 
 }
