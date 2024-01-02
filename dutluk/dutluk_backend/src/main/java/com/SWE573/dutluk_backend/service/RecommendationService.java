@@ -162,7 +162,9 @@ public class RecommendationService {
                 Long id = recResponse.getIds().get(i);
                 Double score = recResponse.getScores().get(i);
                 long scoreOutOfHundred = Math.round(score * 100);
-                recommendedStoriesMap.put(id, (int) scoreOutOfHundred);
+                if (scoreOutOfHundred != 0) {
+                    recommendedStoriesMap.put(id, (int) scoreOutOfHundred);
+                }
             }
         }
         return recommendedStoriesMap;
