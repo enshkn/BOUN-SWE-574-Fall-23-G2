@@ -84,10 +84,10 @@ public class RecommendationService {
             restTemplate.postForEntity(recUrl + "/story-liked", likedRequest, String.class);
             user.setRecommendedStoriesMap(recommendStory(user));
             System.out.println("User id: "+user.getId());
-            System.out.println("Recommended Stories: "+user.getRecommendedStoriesMap());
+            System.out.println("Recommended Stories: " + user.getRecommendedStoriesMap().keySet());
             if(user.getRecommendedStoriesMap() != null){
                 System.out.println("Recommended stories received for user: "+user.getId());
-                return CompletableFuture.completedFuture("Karadut has sent the relevant stories");
+                return CompletableFuture.completedFuture("Recommendation complete");
             }
             System.out.println("No stories recommended from karadut to user: "+user.getId());
             return CompletableFuture.completedFuture("No stories recommended");
@@ -106,10 +106,10 @@ public class RecommendationService {
                         .userWeight(likedStorySize)
                         .build();
         try {
-            restTemplate.postForEntity(recUrl + "/story-liked", dislikedRequest, String.class);
+            restTemplate.postForEntity(recUrl + "/story-unliked", dislikedRequest, String.class);
             user.setRecommendedStoriesMap(recommendStory(user));
             if(user.getRecommendedStoriesMap()!= null){
-                return CompletableFuture.completedFuture("Karadut has sent the relevant stories");
+                return CompletableFuture.completedFuture("Recommendation complete");
             }
             return CompletableFuture.completedFuture("No stories recommended");
         }catch (NullPointerException e){
