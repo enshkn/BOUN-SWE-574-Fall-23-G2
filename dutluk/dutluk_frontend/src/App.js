@@ -54,10 +54,17 @@ function App() {
         withCredentials: true,
       })
       .then((response) => {
-        document.cookie =
+        let nTries = 0;
+        while (sessionStorage.getItem('currentUserId')) {
+          sessionStorage.removeItem('currentUserId');
+          nTries++;
+          if (nTries > 10) {
+            break;
+          }
+        }
+          document.cookie =
           "Bearer=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/api;";
         setLoggedIn(false);
-        sessionStorage.removeItem('currentUserId');
       })
       .catch((error) => {
         console.log(error);
