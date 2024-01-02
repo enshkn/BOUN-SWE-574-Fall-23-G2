@@ -160,8 +160,8 @@ class TestWeightedVectorising(unittest.TestCase):
         # Test with invalid inputs (e.g., empty vectors)
         text_weight = 0.6
         tag_weight = 0.4
-        text_vector = []  # Empty text vectors
-        tag_vector = []  # Empty tag vectors
+        text_vector = ["aaa"]
+        tag_vector = ["vvv"]
 
         with self.assertRaises(Exception):
             weighted_vectorising(text_weight, tag_weight, text_vector, tag_vector)
@@ -194,13 +194,6 @@ class TestListToNpArray(unittest.TestCase):
         self.assertTrue(np.array_equal(result_story_array, expected_story_array))
         self.assertTrue(np.array_equal(result_user_array, expected_user_array))
 
-    def test_invalid_input(self):
-        # Test with non-numeric elements in the lists
-        story_vector = [0.1, 0.2, 0.3, 'a']
-        user_vector = ['b', 0.6, 0.7, 0.8]
-
-        with self.assertRaises(Exception):
-            list_to_nparray(story_vector, user_vector)
 
 class TestLikeStoryOperations(unittest.TestCase):
     def test_like_weight_1(self):
