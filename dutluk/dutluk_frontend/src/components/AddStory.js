@@ -4,9 +4,9 @@ import { Circle, GoogleMap, LoadScript, Marker, Polygon, Polyline, StandaloneSea
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
-// import DatePicker from "react-datetime-picker";
+import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
-// import { format, getYear, set } from "date-fns";
+import { format, getYear, set } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Space, message, Input, Tag, Tooltip, Segmented, InputNumber, Slider } from 'antd';
 import "./css/AddStory.css";
@@ -43,7 +43,7 @@ const AddStoryForm = () => {
   const [circles, setCircles] = useState([]);
   const [polygons, setPolygons] = useState([]);
   const [polylines, setPolylines] = useState([]);
-  // const [timeResolution, setTimeResolution] = useState("");
+  const [timeResolution, setTimeResolution] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
   const [tags, setTags] = useState([]);
   const [inputVisible, setInputVisible] = useState(false);
@@ -128,35 +128,35 @@ const AddStoryForm = () => {
       return;
     }
 
-    // {/* 
-    // const currentDateTime = new Date();
-    // let formattedStartTimeStamp = null;
-    // let formattedEndTimeStamp = null;
+    {/* 
+    const currentDateTime = new Date();
+    let formattedStartTimeStamp = null;
+    let formattedEndTimeStamp = null;
 
-    // if(startTimeStamp !== null) {
-    //   if (startTimeStamp && startTimeStamp > currentDateTime) {
-    //     return;
-    //   }
+    if(startTimeStamp !== null) {
+      if (startTimeStamp && startTimeStamp > currentDateTime) {
+        return;
+      }
 
-    // if(endTimeStamp !== null) {
-    //     if (endTimeStamp && endTimeStamp > currentDateTime) {
-    //       return;
-    //     }
+    if(endTimeStamp !== null) {
+        if (endTimeStamp && endTimeStamp > currentDateTime) {
+          return;
+        }
 
-    //     if (decade) {
-    //       formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
-    //       formattedEndTimeStamp = endTimeStamp
-    //         ? format(endTimeStamp, "yyyy-MM-dd HH:mm")
-    //         : null;
-    //     } else {
-    //       formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
-    //       formattedEndTimeStamp = null;
-    //     }
-    //   }
-    // }
-    // */}
+        if (decade) {
+          formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
+          formattedEndTimeStamp = endTimeStamp
+            ? format(endTimeStamp, "yyyy-MM-dd HH:mm")
+            : null;
+        } else {
+          formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
+          formattedEndTimeStamp = null;
+        }
+      }
+    }
+    */}
 
-  
+   
 
     // Create story object to be sent to backend
     const story = {
@@ -241,10 +241,10 @@ const AddStoryForm = () => {
     }
   };
 
-  // const mapContainerStyle = {
-  //   width: "100%",
-  //   height: "100%",
-  // };
+  const mapContainerStyle = {
+    width: "100%",
+    height: "100%",
+  };
 
   const center = {
     lat: 41.085064,
@@ -338,41 +338,41 @@ const AddStoryForm = () => {
 
 
   // TimeResolution Handlers
-  // {/* 
-  // const handleStartDateChange = (date) => {
-  //   setStartTimeStamp(date);
-  //   const startYear = getYear(date);
-  //   const startDecade = startYear - (startYear % 10);
-  //   setDecade(`${startDecade}s`);
-  // };
-  // */}
+  {/* 
+  const handleStartDateChange = (date) => {
+    setStartTimeStamp(date);
+    const startYear = getYear(date);
+    const startDecade = startYear - (startYear % 10);
+    setDecade(`${startDecade}s`);
+  };
+  */}
 
 
-  // {/* 
-  // const handleDecadeChange = (e) => {
-  //   setDecade(e.target.value);
-  // };
+  {/* 
+  const handleDecadeChange = (e) => {
+    setDecade(e.target.value);
+  };
   
 
-  // const handleEndDateChange = (date) => {
-  //   setEndTimeStamp(date);
-  // };
+  const handleEndDateChange = (date) => {
+    setEndTimeStamp(date);
+  };
 
-  // */}
+  */}
   
 
-  // {/*
-  // useEffect(() => {
-  //   if (startTimeStamp) {
-  //     const startYear = getYear(startTimeStamp);
-  //     const startDecade = startYear - (startYear % 10);
-  //     setDecade(`${startDecade}s`);
-  //   } else {
-  //     setDecade("");
-  //   }
-  // }, [startTimeStamp]);
+  {/*
+  useEffect(() => {
+    if (startTimeStamp) {
+      const startYear = getYear(startTimeStamp);
+      const startDecade = startYear - (startYear % 10);
+      setDecade(`${startDecade}s`);
+    } else {
+      setDecade("");
+    }
+  }, [startTimeStamp]);
   
-  // */}
+  */}
 
   useEffect(() => {
     if (inputVisible) {

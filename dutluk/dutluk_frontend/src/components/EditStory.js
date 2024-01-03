@@ -5,9 +5,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
-// import DatePicker from "react-datetime-picker";
+import DatePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
-// import { format, getYear } from "date-fns";
+import { format, getYear } from "date-fns";
 import { Space, message, Input, Tag, Tooltip, Segmented, InputNumber, Slider } from 'antd';
 import "./css/EditStory.css";
 import DateTimerPicker from "./DateTimerPicker";
@@ -46,7 +46,7 @@ const EditStoryForm = () => {
   const [circles, setCircles] = useState([]);
   const [polygons, setPolygons] = useState([]);
   const [polylines, setPolylines] = useState([]);
-  // const [timeResolution, setTimeResolution] = useState("");
+  const [timeResolution, setTimeResolution] = useState("");
   const [tags, setTags] = useState([]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -54,10 +54,10 @@ const EditStoryForm = () => {
   const [editInputValue, setEditInputValue] = useState('');
   const inputRef = useRef(null);
   const editInputRef = useRef(null);
-  // const [verbalExpression, setVerbalExpression] = useState("");
+  const [verbalExpression, setVerbalExpression] = useState("");
 
-  // const [loading, setLoading] = useState(true); // Loading state
-  // const [geocodedLocations, setGeocodedLocations] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
+  const [geocodedLocations, setGeocodedLocations] = useState([]);
   const [locations, setLocations] = useState([]);
 
 
@@ -158,7 +158,7 @@ const EditStoryForm = () => {
       // setEndDateFlag(existingStory.endDateFlag);
       // setTimeType(existingStory.timeType);
       // setTimeExpression(existingStory.timeExpression);
-      // setVerbalExpression(existingStory.verbalExpression);
+      setVerbalExpression(existingStory.verbalExpression);
 
     // Initialize arrays to hold location data
     const newMarkers = [];
@@ -167,8 +167,8 @@ const EditStoryForm = () => {
     const newPolylines = [];
 
     // Loop through existingStory.locations
-    existingStory.locations.forEach((location, index) => {
-      const { isCircle, isPolygon, isPolyline, isPoint  } = location;
+    existingStory.locations.map((location, index) => {
+      const { latitude, longitude, name, isCircle, isPolygon, isPolyline, isPoint  } = location;
 
       if (isCircle !== null) {
         newCircles.push({
@@ -200,7 +200,7 @@ const EditStoryForm = () => {
     setPolygons(newPolygons);
     setPolylines(newPolylines);
 
-    // setLoading(false); // Set loading to false after fetching data
+    setLoading(false); // Set loading to false after fetching data
 
     } catch (error) {
       console.log(error);
@@ -270,31 +270,33 @@ const EditStoryForm = () => {
       return;
     }
 
-    //   const currentDateTime = new Date();
-    //   let formattedStartTimeStamp = null;
-    //   let formattedEndTimeStamp = null;
+    {/* 
+    const currentDateTime = new Date();
+    let formattedStartTimeStamp = null;
+    let formattedEndTimeStamp = null;
 
-    //   if (startTimeStamp !== null) {
-    //     if (startTimeStamp > currentDateTime) {
-    //       return;
-    //     }
-    //   }
+    if(startTimeStamp !== null) {
+      if (startTimeStamp && startTimeStamp > currentDateTime) {
+        return;
+      }
 
-    //   if (endTimeStamp !== null) {
-    //     if (endTimeStamp > currentDateTime) {
-    //       return;
-    //     }
+    if(endTimeStamp !== null) {
+        if (endTimeStamp && endTimeStamp > currentDateTime) {
+          return;
+        }
 
-    //     if (decade) {
-    //       formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
-    //       formattedEndTimeStamp = endTimeStamp
-    //         ? format(endTimeStamp, "yyyy-MM-dd HH:mm")
-    //         : null;
-    //     } else {
-    //       formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
-    //       formattedEndTimeStamp = null;
-    //     }
-    //   }
+        if (decade) {
+          formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
+          formattedEndTimeStamp = endTimeStamp
+            ? format(endTimeStamp, "yyyy-MM-dd HH:mm")
+            : null;
+        } else {
+          formattedStartTimeStamp = format(startTimeStamp, "yyyy-MM-dd HH:mm");
+          formattedEndTimeStamp = null;
+        }
+      }
+    }
+    */}
 
     const editedStory = {
       title,
@@ -378,10 +380,10 @@ const EditStoryForm = () => {
   };
   
 
-  // const mapContainerStyle = {
-  //   width: "80%",
-  //   height: "400px",
-  // };
+  const mapContainerStyle = {
+    width: "80%",
+    height: "400px",
+  };
 
   const center = {
     lat: 41.085064,
