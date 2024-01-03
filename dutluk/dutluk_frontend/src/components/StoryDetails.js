@@ -231,7 +231,7 @@ function StoryDetails() {
                 </div>
               </div>
               <button className="like-button" onClick={handleLikeStory} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none" }} type="submit">
-                Like
+                {isLiked ? 'Unlike' : 'Like!'}
               </button>
             </div>
 
