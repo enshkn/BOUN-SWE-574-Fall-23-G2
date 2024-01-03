@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swe/_application/session/session_cubit.dart';
 import 'package:swe/_core/storage/hive/i_cache_service.dart';
 import 'package:swe/_core/utility/record_utils.dart';
@@ -29,6 +31,7 @@ final class SplashCubit extends BaseCubit<SplashState> {
     await Future.wait(
       [
         initCacheManagers(),
+        getCurrentLocation(),
         Future.delayed(const Duration(seconds: 2), () {}),
       ],
     );
@@ -83,5 +86,19 @@ final class SplashCubit extends BaseCubit<SplashState> {
         }
       },
     );
+  }
+
+  Future<void> getCurrentLocation() async {
+    late LocationData currentLocation;
+    final locationController = Location();
+    final prefs = await SharedPreferences.getInstance();
+
+    currentLocation = await locationController.getLocation();
+    if (currentLocation.latitude != null && currentLocation.longitude != null) {
+      await prefs.setDouble('latitude', currentLocation.latitude!);
+      await prefs.setDouble('longitude', currentLocation.longitude!);
+    }
+
+    // currentLocation = await locationController.getLocation();
   }
 }
