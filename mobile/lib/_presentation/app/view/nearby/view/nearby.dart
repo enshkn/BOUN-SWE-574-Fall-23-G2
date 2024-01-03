@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:geocode/geocode.dart';
 import 'package:location/location.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swe/_application/session/session_cubit.dart';
 import 'package:swe/_application/session/session_state.dart';
 import 'package:swe/_application/story/story_cubit.dart';
@@ -18,6 +20,7 @@ import 'package:swe/_presentation/widgets/base/base_list_view.dart';
 import 'package:swe/_presentation/widgets/card/story_card.dart';
 import 'package:swe/_presentation/widgets/textformfield/app_text_form_field.dart';
 import 'package:swe/_presentation/widgets/wrapper/favorite_wrapper.dart';
+import 'package:geocoding/geocoding.dart';
 
 @RoutePage()
 class NearbyView extends StatefulWidget {
@@ -29,8 +32,10 @@ class NearbyView extends StatefulWidget {
 
 class _NearbyViewState extends State<NearbyView> {
   final FocusNode _focusNode = FocusNode();
-  final Location _locationController = Location();
+  //final Location _locationController = Location();
   late TextEditingController _radiusController;
+  String adress = '';
+  Address? _currentAddress;
   GetNearbyStoriesModel model = const GetNearbyStoriesModel(
     radius: 0,
     latitude: 0,
@@ -41,22 +46,39 @@ class _NearbyViewState extends State<NearbyView> {
   @override
   void initState() {
     _radiusController = TextEditingController();
-    getCurrentLocation();
     super.initState();
   }
 
   Future<void> getCurrentLocation() async {
-    currentLocation = await _locationController.getLocation();
-    if (currentLocation.latitude != null && currentLocation.longitude != null) {
+    final prefs = await SharedPreferences.getInstance();
+    final latitude = prefs.getDouble('latitude');
+    final longtitude = prefs.getDouble('longitude');
+    if (latitude != null && longtitude != null) {
+      currentLocation = LocationData.fromMap({
+        'latitude': latitude,
+        'longitude': longtitude,
+      });
       model = GetNearbyStoriesModel(
         radius: 10,
-        latitude: currentLocation.latitude,
-        longitude: currentLocation.longitude,
+        latitude: latitude,
+        longitude: longtitude,
       );
-      currentAddress = await GeoCode().reverseGeocoding(
-        latitude: currentLocation.latitude!,
-        longitude: currentLocation.longitude!,
-      );
+
+      await placemarkFromCoordinates(latitude, longtitude).then((placemarks) {
+        const output = 'No results found.';
+        if (placemarks.isNotEmpty) {
+          _currentAddress = Address(
+            streetAddress: placemarks[0].street.toString(),
+            city: placemarks[0].locality.toString(),
+            region: placemarks[0].administrativeArea.toString(),
+            countryCode: placemarks[0].isoCountryCode.toString(),
+          );
+        }
+
+        setState(() {
+          currentAddress = _currentAddress;
+        });
+      });
     }
   }
 
@@ -70,17 +92,8 @@ class _NearbyViewState extends State<NearbyView> {
           onCubitReady: (cubit) async {
             cubit.setContext(context);
             cubit.init();
+
             await getCurrentLocation();
-            if (currentLocation.latitude != null &&
-                currentLocation.longitude != null) {
-              model = GetNearbyStoriesModel(
-                radius: _radiusController.text != ''
-                    ? int.parse(_radiusController.text)
-                    : 10,
-                latitude: currentLocation.latitude,
-                longitude: currentLocation.longitude,
-              );
-            }
             await cubit.getNearbyStories(model);
           },
           builder: (context, cubit, state) {
@@ -170,7 +183,7 @@ class _NearbyViewState extends State<NearbyView> {
                         padding: const EdgeInsets.all(16),
                         child: SizedBox(
                           child: Text(
-                            '*Your Current Location: ${currentAddress!.city}, ${currentAddress!.streetAddress}, ${currentAddress!.region} ',
+                            '*Your Current Location: ${currentAddress!.city}, ${currentAddress!.streetAddress}, ${currentAddress!.region},  ${currentAddress!.countryCode} ',
                           ),
                         ),
                       ),

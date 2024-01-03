@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_map_location_picker/map_location_picker.dart'
     hide Location;
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swe/_application/profile/profile_cubit.dart';
 import 'package:swe/_application/profile/profile_state.dart';
 import 'package:swe/_application/session/session_cubit.dart';
@@ -47,17 +48,20 @@ class _TimelineViewState extends State<TimelineView> with ScrollAnimMixin {
 
   Future<void> getCurrentLocation() async {
     LocationData currentLocation;
-    Future.delayed(const Duration(seconds: 5), () async {
-      currentLocation = await _locationController.getLocation();
-      if (currentLocation.latitude != null &&
-          currentLocation.longitude != null) {
-        setState(() {
-          _currentPosition =
-              LatLng(currentLocation.latitude!, currentLocation.longitude!);
-          locationLoading = false;
-        });
-      }
-    });
+    final prefs = await SharedPreferences.getInstance();
+    final latitude = prefs.getDouble('latitude');
+    final longtitude = prefs.getDouble('longitude');
+    if (latitude != null && longtitude != null) {
+      currentLocation = LocationData.fromMap({
+        'latitude': latitude,
+        'longitude': longtitude,
+      });
+      setState(() {
+        _currentPosition =
+            LatLng(currentLocation.latitude!, currentLocation.longitude!);
+        locationLoading = false;
+      });
+    }
   }
 
   @override
