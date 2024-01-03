@@ -116,7 +116,7 @@ public class ImageService {
             Element firstImg = images.first();
             return Objects.requireNonNull(firstImg).attr("src");
         }
-        return null;
+        return "https://i.imgur.com/Pq1HpKl.png";
     }
 
 }
