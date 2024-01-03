@@ -136,14 +136,14 @@ const StoryList = ({ story }) => {
                         <button onClick={handleSaveClick} style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", marginRight: "10px"}} type="submit" className="btn btn-primary">
                             {isSaved ? 'Unstashed' : 'Stash'}
                         </button>
-                        {story.user.id == currentUserId && (
+                        {story.user.id.toString() === currentUserId && (
                             <button
                                 style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", marginRight: "10px" }}
                                 className="btn btn-primary"
                                 onClick={() => handleEditStory(story.id)}
                             >Update</button>)
                         }
-                        {story.user.id == currentUserId && (
+                        {story.user.id.toString() === currentUserId && (
                             <button
                                 className="btn btn-danger"
                                 style={{ marginRight: '10px' }}
