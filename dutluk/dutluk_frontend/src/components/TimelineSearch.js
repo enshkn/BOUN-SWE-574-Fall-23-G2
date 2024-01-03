@@ -327,6 +327,7 @@ const TimelineSearch = () => {
             <button
               type="button"
               className="btn btn-primary"
+              style={{ backgroundColor: "#ff5500ca", color: "white", border: "none", margin: "5px" }}
               onClick={handleSearch}
             >
               Search
