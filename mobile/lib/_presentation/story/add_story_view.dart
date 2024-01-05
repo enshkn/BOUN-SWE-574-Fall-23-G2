@@ -285,7 +285,7 @@ class _AddStoryViewState extends State<AddStoryView>
         selectedStartDate = DateFormat('dd-MM-yyyy').parse(newTime);
         formattedStartDate = widget.storyModel!.startTimeStamp ?? '';
       }
-      if (widget.storyModel!.endHourFlag != 0 &&
+      /*  if (widget.storyModel!.endHourFlag != 0 &&
           widget.storyModel!.endHourFlag != null &&
           widget.storyModel!.endTimeStamp != null) {
         exactDateWithTimeSelected = true;
@@ -294,10 +294,13 @@ class _AddStoryViewState extends State<AddStoryView>
         selectedEndDateTime =
             DateFormat('dd-MM-yyyy hh:mm:ss').parse(newTimeFormat);
         formattedEndDate = widget.storyModel!.endTimeStamp ?? '';
-      } else if (widget.storyModel!.endHourFlag != null &&
+      } else */
+      if (widget.storyModel!.endHourFlag != null &&
           widget.storyModel!.endHourFlag == 0 &&
-          widget.storyModel!.endTimeStamp != null) {
-        exatDateSelected = true;
+          widget.storyModel!.endTimeStamp != null &&
+          widget.storyModel!.endDateFlag != 1) {
+        dateRangeSelected = true;
+        exatDateSelected = false;
         final newTime = widget.storyModel!.endTimeStamp!.replaceAll('/', '-');
         selectedEndDate = DateFormat('dd-MM-yyyy').parse(newTime);
         formattedEndDate = widget.storyModel!.endTimeStamp ?? '';
@@ -930,13 +933,13 @@ class _AddStoryViewState extends State<AddStoryView>
                     onPressed: () async {
                       final dateTime = await dateTimePicker(
                         formattedStartDate,
-                        selectedStartDateTime,
+                        selectedStartDate,
                         OmniDateTimePickerType.date,
                       );
                       setState(() {
-                        selectedStartDateTime = dateTime!;
+                        selectedStartDate = dateTime!;
                         formattedStartDate =
-                            DateFormat.yMd().format(selectedStartDateTime);
+                            DateFormat.yMd().format(selectedStartDate);
                       });
                     },
                   ),
@@ -949,18 +952,18 @@ class _AddStoryViewState extends State<AddStoryView>
                     onPressed: () async {
                       final dateTime = await dateTimePicker(
                         formattedEndDate,
-                        selectedEndDateTime,
+                        selectedEndDate,
                         OmniDateTimePickerType.date,
                       );
                       setState(() {
-                        selectedEndDateTime = dateTime ??
+                        selectedEndDate = dateTime ??
                             DateTime(
                               0,
                               0,
                               0,
                             );
                         formattedEndDate =
-                            DateFormat.yMd().format(selectedEndDateTime);
+                            DateFormat.yMd().format(selectedEndDate);
                       });
                     },
                   ),
@@ -1151,7 +1154,7 @@ class _AddStoryViewState extends State<AddStoryView>
     if (selectedStartDateTime != DateTime(0)) {
       starttimecheck = true;
     }
-    if (selectedEndDateTime != DateTime(0)) {
+    if (selectedEndDate != DateTime(0) && dateRangeSelected) {
       endtimecheck = true;
     }
     String? timeExpression;
@@ -1162,6 +1165,8 @@ class _AddStoryViewState extends State<AddStoryView>
       timeExpression = 'day';
     } else if (yearSelected) {
       timeExpression = 'year';
+    } else if (dateRangeSelected) {
+      timeExpression = 'moment';
     } else if (decadeRangeSelected && seasonController.text == '') {
       timeExpression = 'decade';
     } else if (decadeSelected && seasonController.text == '') {
@@ -1193,18 +1198,10 @@ class _AddStoryViewState extends State<AddStoryView>
           : selectedStartDate != DateTime(0)
               ? selectedStartDate.toString()
               : null,
-      endTimeStamp: endtimecheck
-          ? exactDateWithTimeSelected
-              ? selectedEndDateTime.toString()
-              : selectedEndDate.toString()
-          : selectedEndDate != DateTime(0)
-              ? selectedStartDate.toString()
-              : null,
+      endTimeStamp: endtimecheck ? selectedEndDate.toString() : null,
       startHourFlag: exactDateWithTimeSelected ? 1 : 0,
       endHourFlag:
-          exactDateWithTimeSelected && selectedEndDateTime != DateTime(0)
-              ? 1
-              : 0,
+          exactDateWithTimeSelected && selectedEndDate != DateTime(0) ? 1 : 0,
       locations: locations,
       startDateFlag: selectedStartDate != DateTime(0) && !yearSelected
           ? 3
@@ -1232,15 +1229,15 @@ class _AddStoryViewState extends State<AddStoryView>
       if (widget.myStories) {
         await cubit.editStory(model, widget.storyModel!.id).then((value) {
           if (value) {
-            Navigator.of(context).pop();
             cubit.showNotification('Your Story is edited.');
+            Navigator.of(context).pop();
           }
         });
       } else {
         await cubit.addStory(model).then((value) {
           if (value) {
-            Navigator.of(context).pop();
             cubit.showNotification('Your Story is added.');
+            Navigator.of(context).pop();
           }
         });
       }
